@@ -42,9 +42,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 
 #### PHP
-1. **`php_proto_library`** - PHP **macro**, which generates php protobuf stubs by calling protobuf compiller with `--php_out` parameter.
+1. **`php_proto_library`** - PHP **macro**, which generates php protobuf stubs by calling protobuf compiler with `--php_out` parameter.
 
-2. **`php_grpc_library`** - PHP **macro**, which generates php gRPC stubs by calling protobuf compiller with the php gRPC plugin.
+2. **`php_grpc_library`** - PHP **macro**, which generates php gRPC stubs by calling protobuf compiler with the php gRPC plugin.
 
 3. **`php_gapic_srcjar`** - PHP **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the php-specific postprocessing of the code (calling using `php-cs-fixer` and `phpcbf` tools, splitting the code into main and test and smoke test `.srcjar` files (zip format)).
 
@@ -61,9 +61,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 
 #### Ruby
-1. **`ruby_proto_library`** - Ruby **macro**, which generates Ruby protobuf stubs by calling protobuf compiller with `--ruby_out` parameter.
+1. **`ruby_proto_library`** - Ruby **macro**, which generates Ruby protobuf stubs by calling protobuf compiler with `--ruby_out` parameter.
 
-2. **`ruby_grpc_library`** - Ruby **macro**, which generates Ruby gRPC stubs by calling protobuf compiller with the Ruby gRPC plugin.
+2. **`ruby_grpc_library`** - Ruby **macro**, which generates Ruby gRPC stubs by calling protobuf compiler with the Ruby gRPC plugin.
 
 3. **`ruby_gapic_srcjar`** - Ruby **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the ruby-specific postprocessing of the code (currenly just splitting the code into main and test and smoke test `.srcjar` files (zip format)).
 
@@ -72,9 +72,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 5. **`ruby_gapic_assembly_pkg`** - Ruby **macro** which accepts the previously built `ruby_proto_library`, `ruby_grpc_library` and `ruby_gapic_library` artifacts as arguments and packages them into an idiomatic (for Ruby) package which is ready for opensourcing and is independent from Bazel.
 
 #### C#
-1. **`csharp_proto_library`** - C# **macro**, which generates C# protobuf stubs by calling protobuf compiller with `--csharp_out` parameter.
+1. **`csharp_proto_library`** - C# **macro**, which generates C# protobuf stubs by calling protobuf compiler with `--csharp_out` parameter.
 
-2. **`csharp_grpc_library`** - C# **macro**, which generates C# gRPC stubs by calling protobuf compiller with the C# gRPC plugin.
+2. **`csharp_grpc_library`** - C# **macro**, which generates C# gRPC stubs by calling protobuf compiler with the C# gRPC plugin.
 
 3. **`csharp_gapic_srcjar`** - C# **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the C#-specific postprocessing of the code (currenly just splitting the code into main, test, smoke test and package `.srcjar` files (zip format)).
 
