@@ -68,7 +68,7 @@ gapic_srcjar = rule(
         "package_yaml2": attr.label(mandatory = False),
         "package": attr.string(mandatory = False),
         "output_suffix": attr.string(mandatory = False, default = ".srcjar"),
-        "grpc_service_config": attr.string(mandator = False),
+        "grpc_service_config": attr.string(mandatory = False),
         "gapic_generator": attr.label(
             default = Label("//:gapic_generator"),
             executable = True,
