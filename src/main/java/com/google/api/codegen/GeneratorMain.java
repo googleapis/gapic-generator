@@ -141,6 +141,14 @@ public class GeneratorMain {
           .hasArgs()
           .argName("SAMPLE-YAMLS")
           .build();
+  private static final Option GRPC_SERVICE_CONFIG_OPTION =
+      Option.builder()
+          .longOpt("grpc_service_config")
+          .desc("The filepath of the JSON gRPC Service Config file.")
+          .hasArg()
+          .argName("GRPC-SERVICE-CONFIG")
+          .required(false)
+          .build();
 
   public static void printAvailableCommands() {
     System.err.println("  Available artifact types:");
@@ -240,6 +248,7 @@ public class GeneratorMain {
     options.addOption(TARGET_API_PROTO_PACKAGE);
     options.addOption(OUTPUT_OPTION);
     options.addOption(SAMPLE_YAML_NONREQUIRED_OPTION);
+    options.addOption(GRPC_SERVICE_CONFIG_OPTION);
     Option enabledArtifactsOption =
         Option.builder()
             .longOpt("enabled_artifacts")
@@ -284,6 +293,9 @@ public class GeneratorMain {
     toolOptions.set(
         GapicGeneratorApp.PACKAGE_CONFIG2_FILE,
         cl.getOptionValue(PACKAGE_YAML2_OPTION.getLongOpt()));
+    toolOptions.set(
+        GapicGeneratorApp.GRPC_SERVICE_CONFIG,
+        cl.getOptionValue(GRPC_SERVICE_CONFIG_OPTION.getLongOpt()));
 
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
 
@@ -313,6 +325,9 @@ public class GeneratorMain {
       toolOptions.set(
           GapicGeneratorApp.ENABLED_ARTIFACTS,
           Lists.newArrayList(cl.getOptionValues(enabledArtifactsOption.getLongOpt())));
+    }
+    if (!Strings.isNullOrEmpty(toolOptions.get(GapicGeneratorApp.GRPC_SERVICE_CONFIG))) {
+      checkFile(toolOptions.get(GapicGeneratorApp.GRPC_SERVICE_CONFIG));
     }
 
     toolOptions.set(GapicGeneratorApp.DEV_SAMPLES, cl.hasOption(devSamplesOption.getLongOpt()));

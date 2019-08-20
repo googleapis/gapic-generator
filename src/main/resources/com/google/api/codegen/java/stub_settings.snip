@@ -447,13 +447,27 @@
     RetrySettings settings = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
       settings = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.params.getInitialRetryDelayMillis}L))
-          .setRetryDelayMultiplier({@retryParamsDef.params.getRetryDelayMultiplier})
-          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.params.getMaxRetryDelayMillis}L))
-          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getInitialRpcTimeoutMillis}L))
-          .setRpcTimeoutMultiplier({@retryParamsDef.params.getRpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getMaxRpcTimeoutMillis}L))
-          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.params.getTotalTimeoutMillis}L))
+          @if retryParamsDef.params.getInitialRetryDelayMillis
+            .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.params.getInitialRetryDelayMillis}L))
+          @end
+          @if retryParamsDef.params.getRetryDelayMultiplier
+            .setRetryDelayMultiplier({@retryParamsDef.params.getRetryDelayMultiplier})
+          @end
+          @if retryParamsDef.params.getMaxRetryDelayMillis
+            .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.params.getMaxRetryDelayMillis}L))
+          @end
+          @if retryParamsDef.params.getInitialRpcTimeoutMillis
+            .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getInitialRpcTimeoutMillis}L))
+          @end
+          @if retryParamsDef.params.getRpcTimeoutMultiplier
+            .setRpcTimeoutMultiplier({@retryParamsDef.params.getRpcTimeoutMultiplier})
+          @end
+          @if retryParamsDef.params.getMaxRpcTimeoutMillis
+            .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.params.getMaxRpcTimeoutMillis}L))
+          @end
+          @if retryParamsDef.params.getTotalTimeoutMillis
+            .setTotalTimeout(Duration.ofMillis({@retryParamsDef.params.getTotalTimeoutMillis}L))
+          @end
           .build();
       definitions.put("{@retryParamsDef.key}", settings);
     @end

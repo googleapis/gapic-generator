@@ -71,9 +71,42 @@ def com_google_api_codegen_repositories():
     )
 
     _maybe(
+        http_archive,
+        name = "com_google_googleapis",
+        strip_prefix = "googleapis-84c8ad4e52f8eec8f08a60636cfa597b86969b5c",
+        urls = [
+            "https://github.com/googleapis/googleapis/archive/84c8ad4e52f8eec8f08a60636cfa597b86969b5c.zip",
+        ],
+    )
+
+    _maybe(
         native.bind,
         name = "zlib",
         actual = "@net_zlib//:zlib",
+    )
+
+    _maybe(
+        native.bind,
+        name = "guava",
+        actual = "@com_google_guava_guava__com_google_api_codegen//jar",
+    )
+
+    _maybe(
+        native.bind,
+        name = "gson",
+        actual = "@com_google_code_gson_gson//jar",
+    )
+
+    _maybe(
+        native.maven_jar,
+        name = "error_prone_annotations_maven",
+        artifact = "com.google.errorprone:error_prone_annotations:2.3.2",
+    )
+
+    _maybe(
+        native.bind,
+        name = "error_prone_annotations",
+        actual = "@error_prone_annotations_maven//jar",
     )
 
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
