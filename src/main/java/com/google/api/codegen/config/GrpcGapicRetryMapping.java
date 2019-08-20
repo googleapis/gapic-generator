@@ -154,8 +154,7 @@ public abstract class GrpcGapicRetryMapping {
     return RetryParamsDefinitionProto.newBuilder()
         .setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()))
         .setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()))
-        .setRetryDelayMultiplier(
-            convertFloatToDouble(retryPolicy.getBackoffMultiplier()))
+        .setRetryDelayMultiplier(convertFloatToDouble(retryPolicy.getBackoffMultiplier()))
         .setTotalTimeoutMillis(timeout)
         .setName(policyName);
   }
