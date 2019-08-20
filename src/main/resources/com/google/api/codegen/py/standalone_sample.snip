@@ -18,6 +18,7 @@
         {@descriptionLines("#", sample.descriptionLine, sample.additionalDescriptionLines)}
       @end
       @#   usage: python3 {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
+
       {@standaloneSample(apiMethod, sample)}
     @end
   @end
@@ -27,10 +28,7 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-  import sys
-
   @# [START {@sample.regionTag}]
-
   @if sample.sampleImports.appImports.size
     {@importList(sample.sampleImports.appImports)}
   @end
@@ -274,6 +272,7 @@
 @private processArrayLoopView(view)
   for {@view.variableName} in {@variableField(view.collection)}:
     {@processOutputViews(view.body)}
+
 @end
 
 @private processMapLoopView(view)
