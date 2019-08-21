@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//rules_gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
+load("//rules_gapic:gapic.bzl", "GapicInfo", "gapic_srcjar", "proto_custom_library")
 
-def ruby_proto_library(name, deps, **kwargs):
+def csharp_proto_library(name, deps, **kwargs):
     srcjar_target_name = name
     proto_custom_library(
         name = srcjar_target_name,
         deps = deps,
-        output_type = "ruby",
+        output_type = "csharp",
         output_suffix = ".srcjar",
         extra_args = [
             "--include_source_info",
@@ -27,13 +27,15 @@ def ruby_proto_library(name, deps, **kwargs):
         **kwargs
     )
 
-def ruby_grpc_library(name, srcs, deps, **kwargs):
+def csharp_grpc_library(name, srcs, deps, **kwargs):
     srcjar_target_name = name
-    # `deps` is not used now but may be used if ruby_grpc_library ever tries to "compile" its output
+
+    # `deps` is not used now but may be used if csharp_grpc_library ever tries to "compile" its
+    # output
     proto_custom_library(
         name = srcjar_target_name,
         deps = srcs,
-        plugin = Label("@com_github_grpc_grpc//:grpc_ruby_plugin"),
+        plugin = Label("@com_github_grpc_grpc//:grpc_csharp_plugin"),
         output_type = "grpc",
         output_suffix = ".srcjar",
         extra_args = [
@@ -42,38 +44,28 @@ def ruby_grpc_library(name, srcs, deps, **kwargs):
         **kwargs
     )
 
-def _ruby_gapic_postprocessed_srcjar_impl(ctx):
+def _csharp_gapic_postprocessed_srcjar_impl(ctx):
     gapic_srcjar = ctx.file.gapic_srcjar
-
-    output_main = ctx.outputs.main
-    output_test = ctx.outputs.test
-    output_smoke_test = ctx.outputs.smoke_test
-    output_pkg = ctx.outputs.pkg
-
     output_dir_name = ctx.label.name
+
+    output_main = ctx.actions.declare_file("%s.srcjar" % output_dir_name)
+    output_test = ctx.actions.declare_file("%s-test.srcjar" % output_dir_name)
+    output_smoke_test = ctx.actions.declare_file("%s-smoke-test.srcjar" % output_dir_name)
+    output_pkg = ctx.actions.declare_file("%s-pkg.srcjar" % output_dir_name)
+    outputs = [output_main, output_test, output_smoke_test, output_pkg]
+
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
 
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
     pushd {output_dir_path}
-    zip -q -r {output_dir_name}.srcjar lib
-    zip -q -r {output_dir_name}-test.srcjar test
-    if [ -d "acceptance" ]; then
-        zip -q -r {output_dir_name}-smoke-test.srcjar acceptance
-    else
-        touch empty_file
-        zip -q -r {output_dir_name}-smoke-test.srcjar empty_file
-        zip -d {output_dir_name}-smoke-test.srcjar empty_file
-    fi
-    zip -q -r {output_dir_name}-pkg.srcjar . -i \
-        './*.yaml' \
-        './*.yml' \
-        './*.md' \
-        './*file' \
-        './*.gemspec' \
-        './LICENSE' \
-        './.gitignore' \
-        './.yardopts'
+    zip -q -r {output_dir_name}-pkg.srcjar . -i "*.csproj"
+    find . -name "*.csproj" -delete
+    zip -q -r {output_dir_name}-smoke-test.srcjar */*.SmokeTests */*.Snippets
+    rm -rf **/*.SmokeTests */*.Snippets
+    zip -q -r {output_dir_name}-test.srcjar */*.Tests
+    rm -rf */*.Tests
+    zip -q -r {output_dir_name}.srcjar */*
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-test.srcjar {output_test}
@@ -94,23 +86,29 @@ def _ruby_gapic_postprocessed_srcjar_impl(ctx):
         inputs = [gapic_srcjar],
         tools = [],
         command = script,
-        outputs = [output_main, output_test, output_pkg, output_smoke_test],
+        outputs = outputs,
     )
 
-_ruby_gapic_postprocessed_srcjar = rule(
-    _ruby_gapic_postprocessed_srcjar_impl,
+    return [
+        DefaultInfo(
+            files = depset(direct = outputs),
+        ),
+        GapicInfo(
+            main = output_main,
+            test = output_test,
+            smoke_test = output_smoke_test,
+            pkg = output_pkg,
+        ),
+    ]
+
+_csharp_gapic_postprocessed_srcjar = rule(
+    _csharp_gapic_postprocessed_srcjar_impl,
     attrs = {
         "gapic_srcjar": attr.label(mandatory = True, allow_single_file = True),
     },
-    outputs = {
-        "main": "%{name}.srcjar",
-        "test": "%{name}-test.srcjar",
-        "smoke_test": "%{name}-smoke-test.srcjar",
-        "pkg": "%{name}-pkg.srcjar"
-    },
 )
 
-def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
+def csharp_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -119,20 +117,20 @@ def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         artifact_type = "LEGACY_GAPIC_AND_PACKAGE",
-        language = "ruby",
+        language = "csharp",
         **kwargs
     )
 
-    _ruby_gapic_postprocessed_srcjar(
+    _csharp_gapic_postprocessed_srcjar(
         name = name,
         gapic_srcjar = ":%s" % raw_srcjar_name,
         **kwargs
     )
 
-def ruby_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs):
+def csharp_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs):
     srcjar_name = "%s_srcjar" % name
 
-    ruby_gapic_srcjar(
+    csharp_gapic_srcjar(
         name = srcjar_name,
         src = src,
         gapic_yaml = gapic_yaml,
@@ -140,7 +138,7 @@ def ruby_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs)
         **kwargs
     )
 
-    # Change with ruby_library if Ruby gets full support in Bazel
+    # Change with csharp_library if csharp gets full support in Bazel
     native.alias(
         name = name,
         actual = ":%s" % srcjar_name,

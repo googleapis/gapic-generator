@@ -25,6 +25,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.mergers.LanguageSettingsMerger;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
@@ -150,7 +151,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, null, null, language);
+    return create(model, configProto, null, null, null, language, null);
   }
 
   /**
@@ -173,7 +174,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable SampleConfigProto sampleConfigProto,
       @Nullable String protoPackage,
       @Nullable String clientPackage,
-      TargetLanguage language) {
+      TargetLanguage language,
+      @Nullable ServiceConfig grpcServiceConfig) {
 
     final String defaultPackage;
     SymbolTable symbolTable = model.getSymbolTable();
@@ -313,6 +315,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       return null;
     }
 
+    GrpcGapicRetryMapping grpcGapicRetryMapping = null;
+    if (grpcServiceConfig != null) {
+      grpcGapicRetryMapping = GrpcGapicRetryMapping.create(grpcServiceConfig, protoInterfaces);
+    }
+
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             diagCollector,
@@ -322,7 +329,8 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             language,
-            protoParser);
+            protoParser,
+            grpcGapicRetryMapping);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -680,7 +688,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       TargetLanguage language,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GrpcGapicRetryMapping grpcGapicRetryMapping) {
     // Return value; maps interface names to their InterfaceConfig.
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
 
@@ -698,7 +707,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs,
-              protoParser);
+              protoParser,
+              grpcGapicRetryMapping);
       if (interfaceConfig == null) {
         continue;
       }

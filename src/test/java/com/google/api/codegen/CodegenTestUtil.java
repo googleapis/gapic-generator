@@ -15,19 +15,25 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicTestConfig;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.SampleConfigSanitizer;
 import com.google.api.tools.framework.model.ConfigSource;
+import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.setup.StandardSetup;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +79,29 @@ public class CodegenTestUtil {
     }
 
     return (ConfigProto) configSource.getConfig();
+  }
+
+  public static ServiceConfig readGRPCServiceConfig(
+      DiagCollector diagCollector, TestDataLocator testDataLocator, String serviceConfigFileName) {
+    URL serviceConfigUrl = testDataLocator.findTestData(serviceConfigFileName);
+
+    String serviceConfigPath = Objects.requireNonNull(serviceConfigUrl).getPath();
+
+    ServiceConfig.Builder builder = ServiceConfig.newBuilder();
+
+    try {
+      FileReader file = new FileReader(serviceConfigPath);
+      JsonFormat.parser().merge(file, builder);
+    } catch (IOException e) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Error reading gRPC ServiceConfig JSON file '%s': %s",
+              serviceConfigFileName,
+              e.getMessage()));
+    }
+
+    return builder.build();
   }
 
   public static SampleConfigProto readSampleConfig(
