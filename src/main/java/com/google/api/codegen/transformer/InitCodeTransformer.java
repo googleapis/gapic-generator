@@ -578,8 +578,10 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.MapInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyType()));
-    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueType()));
+    surfaceLine.keyTypeName(
+        typeTable.getAndSaveNicknameForElementType(item.getType().getMapKeyType()));
+    surfaceLine.valueTypeName(
+        typeTable.getAndSaveNicknameForElementType(item.getType().getMapValueType()));
 
     List<MapEntryView> entries = new ArrayList<>();
     for (Map.Entry<String, InitCodeNode> entry : item.getChildren().entrySet()) {
