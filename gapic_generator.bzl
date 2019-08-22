@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 def gapic_generator_tests(name, srcs, runtime_deps, size):
     classNames = []
     for src in srcs:
@@ -19,29 +20,31 @@ def gapic_generator_tests(name, srcs, runtime_deps, size):
         className = src[(src.index("/com/") + 1):-5].replace("/", ".")
         classNames.append(className)
         native.java_test(
-            name = className,
-            test_class = className,
-            runtime_deps = runtime_deps,
-            size = size,
+            name=className,
+            test_class=className,
+            runtime_deps=runtime_deps,
+            size=size,
         )
     if classNames:
         native.test_suite(
-            name = name,
-            tests = classNames,
+            name=name,
+            tests=classNames,
         )
+
 
 def google_java_format(name, srcs, formatter):
     native.genrule(
-        name = name,
-        outs = ["%s.sh" % name],
-        srcs = srcs,
+        name=name,
+        outs=["%s.sh" % name],
+        srcs=srcs,
         # TODO: this may fail if list of files is too long (exceeds max command line limit in shell).
         #       Split the command into multiple executions if this ever fails (good enough for now)
-        cmd = "echo ' $(location %s) --replace $(SRCS)' > $@" % formatter,
-        executable = True,
-        tools = [formatter],
-        local = 1,
+        cmd="echo ' $(location %s) --replace $(SRCS)' > $@" % formatter,
+        executable=True,
+        tools=[formatter],
+        local=1,
     )
+
 
 def _google_java_format_verification_impl(ctx):
     src_files = [src.path for src in ctx.files.srcs]
@@ -49,23 +52,71 @@ def _google_java_format_verification_impl(ctx):
     formatter = ctx.executable.formatter
 
     ctx.actions.run_shell(
-        inputs = ctx.files.srcs,
-        arguments = ["--dry-run", "--set-exit-if-changed"] + src_files,
-        tools = [formatter],
-        command = "%s $@ > %s" % (formatter.path, output_file.path),
-        outputs = [output_file],
-        progress_message =
-            "If this target fails check the list of files that must be formatted in %s" % output_file.path,
+        inputs=ctx.files.srcs,
+        arguments=["--dry-run", "--set-exit-if-changed"] + src_files,
+        tools=[formatter],
+        command="%s $@ > %s" % (formatter.path, output_file.path),
+        outputs=[output_file],
+        progress_message="If this target fails check the list of files that must be formatted in %s" % output_file.path,
     )
 
+
 google_java_format_verification = rule(
-    attrs = {
-        "srcs": attr.label_list(allow_files = True),
+    attrs={
+        "srcs": attr.label_list(allow_files=True),
         "formatter": attr.label(
-            executable = True,
-            cfg = "host",
+            executable=True,
+            cfg="host",
         ),
     },
-    outputs = {"output_file": "%{name}.txt"},
-    implementation = _google_java_format_verification_impl,
+    outputs={"output_file": "%{name}.txt"},
+    implementation=_google_java_format_verification_impl,
 )
+
+
+#
+# Samplegen stuff
+#
+def _samplegen_custom_library_impl(ctx):
+    args = ["--samples=%s" % s for s in ctx.attr.sample_configs]
+    args.extend(["--language", ctx.attr.language])
+    ctx.actions.run(
+        inputs=ctx.files.sample_configs,
+        outputs=["samples"],
+        executable=ctx.executable.gapic_generator,
+        arguments=args,
+        progress_message="",  # TODO: flesh this output
+    )
+
+
+samplegen = rule(
+    attrs={
+        "service_proto_library": attr.label(),
+        "sample_configs": attr.label_list(),
+        "_protoc": attr.label(
+            default=Label("@com_google_protobuf//:protoc"),
+            executable=True,
+            cfg="host",
+        ),
+        "gapic_generator": attr.label(
+            default=Label("//:gapic_generator"),
+            executable=True,
+            cfg="host",
+        ),
+        "language": attr.string(mandatory=True),
+    },
+    outputs={
+        "output": "samples"
+    },
+    implementation=_samplegen_custom_library_impl,
+)
+
+
+# Also need the serialized proto
+def java_generated_samples(name, service_proto_library, sample_configs):
+    samplegen(
+        name=name,
+        service_proto_library=service_proto_library,
+        sample_configs=sample_configs,
+        language="java",
+    )

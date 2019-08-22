@@ -3,6 +3,7 @@ load(
     "gapic_generator_tests",
     "google_java_format",
     "google_java_format_verification",
+    "java_generated_samples",
 )
 
 _COMPILE_DEPS = [
@@ -51,40 +52,68 @@ _JAVA_COPTS = [
 ]
 
 java_plugin(
-    name = "auto_value_plugin",
-    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = ["@com_google_auto_value_auto_value//jar"],
+    name="auto_value_plugin",
+    processor_class="com.google.auto.value.processor.AutoValueProcessor",
+    deps=["@com_google_auto_value_auto_value//jar"],
 )
 
 proto_library(
-    name = "config_proto",
-    srcs = ["src/main/proto/com/google/api/codegen/config.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto"],
+    name="config_proto",
+    srcs=["src/main/proto/com/google/api/codegen/config.proto"],
+    deps=["@com_google_protobuf//:wrappers_proto"],
 )
 
 proto_library(
-    name = "config_v2_proto",
-    srcs = ["src/main/proto/com/google/api/codegen/v2/config_v2.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto"],
+    name="config_v2_proto",
+    srcs=["src/main/proto/com/google/api/codegen/v2/config_v2.proto"],
+    deps=["@com_google_protobuf//:wrappers_proto"],
 )
 
 proto_library(
-    name = "sample_config_proto",
-    srcs = ["src/main/proto/com/google/api/codegen/samplegen/v1p2/sample_config_v1p2.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto"],
+    name="sample_config_proto",
+    srcs=["src/main/proto/com/google/api/codegen/samplegen/v1p2/sample_config_v1p2.proto"],
+    deps=["@com_google_protobuf//:wrappers_proto"],
 )
 
 proto_library(
-    name = "grpc_service_config_proto",
-    srcs = ["src/main/proto/com/google/api/codegen/grpc/service_config.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto",
-            "@com_google_protobuf//:duration_proto",
-            "@com_google_googleapis//google/rpc:code_proto"],
+    name="grpc_service_config_proto",
+    srcs=["src/main/proto/com/google/api/codegen/grpc/service_config.proto"],
+    deps=["@com_google_protobuf//:wrappers_proto",
+          "@com_google_protobuf//:duration_proto",
+          "@com_google_googleapis//google/rpc:code_proto"],
+)
+
+proto_library(
+    name="library_proto",
+    srcs=[
+        "src/test/java/com/google/api/codegen/packagegen/testdata/library.proto",
+    ],
+    deps=[
+        "@com_google_googleapis//google/api:annotations_proto",
+        "@com_google_googleapis//google/api:field_behavior_proto",
+        "@com_google_googleapis//google/longrunning:operations_proto",
+        "@com_google_googleapis//google/api:resource_proto",
+        "@com_google_googleapis//google/api:client_proto",
+        "@com_google_protobuf//:empty_proto",
+    ],
+)
+
+filegroup(
+    name="library_sample_configs",
+    srcs=[
+        "src/test/java/com/google/api/codegen/samplegen/library_sample_config.yaml",
+    ],
+)
+
+java_generated_samples(
+    name="library_samples",
+    sample_configs=[":library_sample_configs"],
+    service_proto_library=":library_proto",
 )
 
 java_proto_library(
-    name = "config_java_proto",
-    deps = [
+    name="config_java_proto",
+    deps=[
         ":config_proto",
         ":config_v2_proto",
         ":sample_config_proto",
@@ -93,16 +122,16 @@ java_proto_library(
 )
 
 java_binary(
-    name = "gapic_generator",
-    srcs = glob(["src/main/java/**/*.java"]),
-    create_executable = True,
-    javacopts = _JAVA_COPTS,
-    jvm_flags = ["-Xmx512m"],
-    main_class = "com.google.api.codegen.GeneratorMain",
-    plugins = [":auto_value_plugin"],
-    resources = glob(["src/main/resources/**/*"]),
-    visibility = ["//visibility:public"],
-    deps = [
+    name="gapic_generator",
+    srcs=glob(["src/main/java/**/*.java"]),
+    create_executable=True,
+    javacopts=_JAVA_COPTS,
+    jvm_flags=["-Xmx512m"],
+    main_class="com.google.api.codegen.GeneratorMain",
+    plugins=[":auto_value_plugin"],
+    resources=glob(["src/main/resources/**/*"]),
+    visibility=["//visibility:public"],
+    deps=[
         ":config_java_proto",
     ] + _COMPILE_DEPS,
 )
@@ -111,31 +140,31 @@ java_binary(
 # api-compiler module expects "protoc" binary to be accessible during tests execution, this genrule
 # "puts" the "binary" in a proper location (the tests are still hermetic, even with this hack).
 genrule(
-    name = "protoc_binary_hack_for_test",
-    outs = ["protoc"],
-    cmd = "echo 'external/com_google_protobuf/protoc \"$$@\"' > $@",
-    executable = True,
-    tools = ["@com_google_protobuf//:protoc"],
+    name="protoc_binary_hack_for_test",
+    outs=["protoc"],
+    cmd="echo 'external/com_google_protobuf/protoc \"$$@\"' > $@",
+    executable=True,
+    tools=["@com_google_protobuf//:protoc"],
 )
 
 java_library(
-    name = "gapic_generator_testlib",
-    srcs = glob(["src/test/java/**/*.java"]),
-    data = glob([
+    name="gapic_generator_testlib",
+    srcs=glob(["src/test/java/**/*.java"]),
+    data=glob([
         "src/**/testdata/**/*",
         "src/**/testsrc/**/*",
         "src/main/resources/**/*",
     ]) + [":protoc_binary_hack_for_test"],
-    javacopts = _JAVA_COPTS,
-    resources = glob([
+    javacopts=_JAVA_COPTS,
+    resources=glob([
         "src/**/testdata/**/*",
         "src/**/testsrc/**/*",
         "src/**/discoverytestdata/**/*",
         "src/test/java/**/*.proto",
     ]) + ["@com_google_protobuf//:well_known_protos"],
-    visibility = ["//visibility:public"],
-    runtime_deps = ["@com_google_protobuf//:protoc"],
-    deps = [
+    visibility=["//visibility:public"],
+    runtime_deps=["@com_google_protobuf//:protoc"],
+    deps=[
         ":config_java_proto",
         ":gapic_generator",
     ] + _COMPILE_DEPS + _TEST_COMPILE_DEPS,
@@ -150,32 +179,32 @@ java_library(
 #    or
 #   `bazel test //:gapic_generator_tests --test_output=errors`
 gapic_generator_tests(
-    name = "gapic_generator_tests",
-    size = "small",
-    srcs = glob(["src/test/java/**/*Test.java"]),
-    runtime_deps = [":gapic_generator_testlib"],
+    name="gapic_generator_tests",
+    size="small",
+    srcs=glob(["src/test/java/**/*Test.java"]),
+    runtime_deps=[":gapic_generator_testlib"],
 )
 
 # google-java-format
 java_binary(
-    name = "google_java_format_binary",
-    jvm_flags = ["-Xmx512m"],
-    main_class = "com.google.googlejavaformat.java.Main",
-    visibility = ["//visibility:public"],
-    runtime_deps = ["@google_java_format_all_deps//jar"],
+    name="google_java_format_binary",
+    jvm_flags=["-Xmx512m"],
+    main_class="com.google.googlejavaformat.java.Main",
+    visibility=["//visibility:public"],
+    runtime_deps=["@google_java_format_all_deps//jar"],
 )
 
 # Run `bazel build //:google_java_format_verification` to verify that gapic-generator java sources
 # are formatted correctly
 google_java_format_verification(
-    name = "google_java_format_verification",
-    srcs = glob(["src/**/*.java"]),
-    formatter = "//:google_java_format_binary",
+    name="google_java_format_verification",
+    srcs=glob(["src/**/*.java"]),
+    formatter="//:google_java_format_binary",
 )
 
 # Run `bazel run //:google_java_format` to format gapic-generator sources
 google_java_format(
-    name = "google_java_format",
-    srcs = glob(["src/**/*.java"]),
-    formatter = "//:google_java_format_binary",
+    name="google_java_format",
+    srcs=glob(["src/**/*.java"]),
+    formatter="//:google_java_format_binary",
 )
