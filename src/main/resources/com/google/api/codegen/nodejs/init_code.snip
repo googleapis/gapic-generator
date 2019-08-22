@@ -80,12 +80,22 @@
 @end
 
 @private initLineMap(line)
-  const {@line.identifier} = {{@keyVarList(line.initEntries)}};
+  @if line.initEntries.size.toString == "1"
+    const {@line.identifier} = {{@keyVarList(line.initEntries)}};
+  @else
+    const {@line.identifier} = {
+      {@keyVarList(mapEntries)}
+    };
+  @end
 @end
 
 @private keyVarList(mapEntries)
-  @join mapEntry : mapEntries vertical
-    {@mapEntry.key} : {@mapEntry.valueString},
+  @if mapEntries.size.toString == "1"
+    {@mapEntries.get(0).key} : {@mapEntries.get(0).valueString}
+  @else
+    @join mapEntry : mapEntries vertical
+      {@mapEntry.key} : {@mapEntry.valueString},
+    @end
   @end
 @end
 
