@@ -19,9 +19,9 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     formatter = ctx.executable.formatter
     output_dir_name = ctx.label.name
 
-    output_main = ctx.actions.declare_file("%s.srcjar" % output_dir_name)
-    output_test = ctx.actions.declare_file("%s-test.srcjar" % output_dir_name)
-    output_pkg = ctx.actions.declare_file("%s-pkg.srcjar" % output_dir_name)
+    output_main = ctx.outputs.main
+    output_test = ctx.outputs.test
+    output_pkg = ctx.outputs.pkg
     outputs = [output_main, output_test, output_pkg]
 
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
@@ -86,6 +86,11 @@ _py_gapic_postprocessed_srcjar = rule(
             cfg = "host",
         ),
     },
+    outputs = {
+      "main": "%{name}.srcjar",
+      "test": "%{name}-test.srcjar",
+      "pkg": "%{name}-pkg.srcjar",
+    },
     doc = """Runs Python-specific post-processing for the generated GAPIC
     client.
     Post-processing includes running the formatter and splitting the main and
@@ -114,7 +119,7 @@ def py_gapic_srcjar(
         **kwargs
     )
 
-    return _py_gapic_postprocessed_srcjar(
+    _py_gapic_postprocessed_srcjar(
         name = name,
         gapic_srcjar = ":%s" % raw_srcjar_name,
         **kwargs
