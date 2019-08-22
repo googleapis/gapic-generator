@@ -12,15 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//rules_gapic:gapic.bzl", "gapic_srcjar", "unzipped_srcjar")
+load("//rules_gapic:gapic.bzl", "GapicInfo", "gapic_srcjar", "unzipped_srcjar")
 
 def _py_gapic_postprocessed_srcjar_impl(ctx):
     gapic_srcjar = ctx.file.gapic_srcjar
-    output_main = ctx.outputs.main
-    output_test = ctx.outputs.test
     formatter = ctx.executable.formatter
-
     output_dir_name = ctx.label.name
+
+    output_main = ctx.actions.declare_file("%s.srcjar" % output_dir_name)
+    output_test = ctx.actions.declare_file("%s-test.srcjar" % output_dir_name)
+    output_pkg = ctx.actions.declare_file("%s-pkg.srcjar" % output_dir_name)
+    outputs = [output_main, output_test, output_pkg]
+
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
 
     # Note the script is more complicated than it intuitively should be because of limitations
@@ -30,6 +33,7 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     unzip -q {gapic_srcjar} -d {output_dir_path}
     {formatter} -q {output_dir_path}
     pushd {output_dir_path}
+    zip -q -r {output_dir_name}-pkg.srcjar nox.py docs
     rm nox.py setup.py
     rm -rf docs
     zip -q -r {output_dir_name}-test.srcjar tests
@@ -38,6 +42,8 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-test.srcjar {output_test}
+    mv {output_dir_path}/{output_dir_name}-pkg.srcjar {output_pkg}
+    rm -rf {output_dir_path}
     """.format(
         gapic_srcjar = gapic_srcjar.path,
         output_dir_name = output_dir_name,
@@ -45,13 +51,25 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
         formatter = formatter.path,
         output_main = output_main.path,
         output_test = output_test.path,
+        output_pkg = output_pkg.path,
     )
 
     ctx.actions.run_shell(
         inputs = [gapic_srcjar],
         command = script,
-        outputs = [output_main, output_test],
+        outputs = outputs,
     )
+
+    return [
+        DefaultInfo(
+            files = depset(direct = outputs)
+        ),
+        GapicInfo(
+            main = output_main,
+            test = output_test,
+            pkg = output_pkg,
+        ),
+    ]
 
 _py_gapic_postprocessed_srcjar = rule(
     implementation = _py_gapic_postprocessed_srcjar_impl,
@@ -67,10 +85,6 @@ _py_gapic_postprocessed_srcjar = rule(
             executable = True,
             cfg = "host",
         ),
-    },
-    outputs = {
-        "main": "%{name}.srcjar",
-        "test": "%{name}-test.srcjar",
     },
     doc = """Runs Python-specific post-processing for the generated GAPIC
     client.
@@ -100,7 +114,7 @@ def py_gapic_srcjar(
         **kwargs
     )
 
-    _py_gapic_postprocessed_srcjar(
+    return _py_gapic_postprocessed_srcjar(
         name = name,
         gapic_srcjar = ":%s" % raw_srcjar_name,
         **kwargs
