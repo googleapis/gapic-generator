@@ -61,15 +61,6 @@ def com_google_api_codegen_repositories():
         urls = ["https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz"],
     )
 
-#    _maybe(
-#        http_archive,
-#        name = "net_zlib",
-#        build_file = "@com_google_protobuf//:third_party/zlib.BUILD",
-#        sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
-#        strip_prefix = "zlib-1.2.11",
-#        urls = ["https://zlib.net/zlib-1.2.11.tar.gz"],
-#    )
-
     _maybe(
         http_archive,
         name = "com_google_googleapis",
@@ -78,12 +69,6 @@ def com_google_api_codegen_repositories():
             "https://github.com/googleapis/googleapis/archive/84c8ad4e52f8eec8f08a60636cfa597b86969b5c.zip",
         ],
     )
-
-#    _maybe(
-#        native.bind,
-#        name = "zlib",
-#        actual = "@net_zlib//:zlib",
-#    )
 
     _maybe(
         native.bind,
