@@ -33,9 +33,8 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     unzip -q {gapic_srcjar} -d {output_dir_path}
     {formatter} -q {output_dir_path}
     pushd {output_dir_path}
-    zip -q -r {output_dir_name}-pkg.srcjar nox.py docs
-    rm nox.py setup.py
-    rm -rf docs
+    zip -q -r {output_dir_name}-pkg.srcjar nox.py setup.py setup.cfg docs MANIFEST.in README.rst LICENSE
+    rm -rf nox.py setup.py docs
     zip -q -r {output_dir_name}-test.srcjar tests
     rm -rf tests
     zip -q -r {output_dir_name}.srcjar . -i \*.py
