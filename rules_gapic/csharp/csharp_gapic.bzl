@@ -35,7 +35,7 @@ def csharp_grpc_library(name, srcs, deps, **kwargs):
     proto_custom_library(
         name = srcjar_target_name,
         deps = srcs,
-        plugin = Label("@com_github_grpc_grpc//:grpc_csharp_plugin"),
+        plugin = Label("@com_github_grpc_grpc//src/compiler:grpc_php_plugin"),
         output_type = "grpc",
         output_suffix = ".srcjar",
         extra_args = [
@@ -121,7 +121,7 @@ def csharp_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         **kwargs
     )
 
-    _csharp_gapic_postprocessed_srcjar(
+    return _csharp_gapic_postprocessed_srcjar(
         name = name,
         gapic_srcjar = ":%s" % raw_srcjar_name,
         **kwargs
