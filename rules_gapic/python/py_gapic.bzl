@@ -21,8 +21,9 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
 
     output_main = ctx.outputs.main
     output_test = ctx.outputs.test
+    output_smoke_test = ctx.outputs.smoke_test
     output_pkg = ctx.outputs.pkg
-    outputs = [output_main, output_test, output_pkg]
+    outputs = [output_main, output_test, output_smoke_test, output_pkg]
 
     output_dir_path = "%s/%s" % (output_main.dirname, output_dir_name)
 
@@ -35,12 +36,15 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     pushd {output_dir_path}
     zip -q -r {output_dir_name}-pkg.srcjar nox.py setup.py setup.cfg docs MANIFEST.in README.rst LICENSE
     rm -rf nox.py setup.py docs
-    zip -q -r {output_dir_name}-test.srcjar tests
-    rm -rf tests
+    zip -q -r {output_dir_name}-test.srcjar tests/unit
+    rm -rf tests/unit
+    zip -q -r {output_dir_name}-smoke-test.srcjar tests/system
+    rm -rf tests/system
     zip -q -r {output_dir_name}.srcjar . -i \*.py
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-test.srcjar {output_test}
+    mv {output_dir_path}/{output_dir_name}-smoke-test.srcjar {output_smoke_test}
     mv {output_dir_path}/{output_dir_name}-pkg.srcjar {output_pkg}
     rm -rf {output_dir_path}
     """.format(
@@ -50,6 +54,7 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
         formatter = formatter.path,
         output_main = output_main.path,
         output_test = output_test.path,
+        output_smoke_test = output_smoke_test.path,
         output_pkg = output_pkg.path,
     )
 
@@ -66,6 +71,7 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
         GapicInfo(
             main = output_main,
             test = output_test,
+            smoke_test = output_smoke_test,
             pkg = output_pkg,
         ),
     ]
@@ -88,6 +94,7 @@ _py_gapic_postprocessed_srcjar = rule(
     outputs = {
       "main": "%{name}.srcjar",
       "test": "%{name}-test.srcjar",
+      "smoke_test": "%{name}-smoke-test.srcjar",
       "pkg": "%{name}-pkg.srcjar",
     },
     doc = """Runs Python-specific post-processing for the generated GAPIC
@@ -166,5 +173,23 @@ def py_gapic_library(
     unzipped_srcjar(
         name = test_dir,
         srcjar = test_file,
+        extension = ".py",
+    )
+
+    smoke_test_file = ":%s-smoke-test.srcjar" % srcjar_name
+    smoke_test_dir = "%s_smoke_test" % srcjar_name
+
+    unzipped_srcjar(
+        name = smoke_test_dir,
+        srcjar = smoke_test_file,
+        extension = ".py",
+    )
+
+    pkg_file = ":%s-pkg.srcjar" % srcjar_name
+    pkg_dir = "%s_pkg" % srcjar_name
+
+    unzipped_srcjar(
+        name = pkg_dir,
+        srcjar = pkg_file,
         extension = ".py",
     )
