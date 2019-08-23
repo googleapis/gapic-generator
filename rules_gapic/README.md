@@ -1,4 +1,4 @@
-## GAPIC Generator [Bazel](https://www.bazel.build/) Integration 
+## GAPIC Generator [Bazel](https://www.bazel.build/) Integration
 
 ### Requirements
 
@@ -8,9 +8,9 @@
 
 ### Usage
 
-The rules will call `gapic-generator` and do all the necessary pre- and post- generation steps to generate a fully-functional client library for a specified service API in a specified language (currently only `Java` is supported). The rules are expected to be used from within a Bazel workspace containing service interface definitions in one of the following formats: 
+The rules will call `gapic-generator` and do all the necessary pre- and post- generation steps to generate a fully-functional client library for a specified service API in a specified language. The rules are expected to be used from within a Bazel workspace containing service interface definitions in one of the following formats:
 - **`proto/grpc`** format, defined by `<service>.proto`, `<service>.yaml` and `<service>_gapic.yaml` files; see [googleapis](https://github.com/googleapis/googleapis) repository for an example.
-- **`discovery/httpjson`** format, defined by `<service>.json` and `<service>_gapic.yaml`; see [discovery-artifact-manager](https://github.com/googleapis/discovery-artifact-manager) repository for an example. 
+- **`discovery/httpjson`** format, defined by `<service>.json` and `<service>_gapic.yaml`; see [discovery-artifact-manager](https://github.com/googleapis/discovery-artifact-manager) repository for an example.
 
 ### Rules and Macros
 
@@ -24,7 +24,7 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 2. **`java_gapic_library`** - Java **macro**, which subsequently calls `gapic_srcjar` to generate sources, then `java_gapic_srcjar` to post-process them, then  native `java_library` (twice, one for main and one for tests) to build Java binary lib from the generated output within Bazel. This is **the rule**, which intends to put gapic-generator on same level of tools integration as protoc (`java_proto_library`) and gRPC (`java_grpc_library`).
 3. **`java_discogapic_library`** - Java **macro**, which is very similar to `java_gapic_library` and does same, but for discogapic libraries.
 4. **`java_resource_name_proto_library`** - Java **macro**, which uses `proto_custom_library` and `java_library` rules to generate resource names sources and then calls `java_library` to build the corresponding library from the generated sources. Notice that resource names can be generated and compiled as a standalone library (do not have to be  a part of `proto-<service>` library).
-5. **`java_gapic_build_configs_pkg`** - Java **rule**, which is responsible for generating (from templates) build-specific resources for third_party build systems (like gradle). For example it is used to generate `build.gradle` and `settings.gradle` from templates. 
+5. **`java_gapic_build_configs_pkg`** - Java **rule**, which is responsible for generating (from templates) build-specific resources for third_party build systems (like gradle). For example it is used to generate `build.gradle` and `settings.gradle` from templates.
 6. **`java_gapic_srcs_pkg`** - Java **rule**, which organizes generated sources in a "custom" form (expected/defined by third_party build system package, typically gradle or maven).
 7. **gradle**-specific rules and macros (to build idiomatic package ready for opensourcing and independent from Bazel):
     1. **`_java_gapic_gradle_pkg`** - **private** Java **rule**, used by most other `java*_pkg` (see below) macros to package stuff (i.e. generate artman-like output).
@@ -40,6 +40,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 3. **`go_gapic_assembly_pkg`** - Go **macro** which accepts the previously built `go_gapic_library` (including the `-test.srcjar` and `-smoke-test.srcjar`) and `go_proto_library` artifacts and packages them into an idiomatic (for Go) package which is ready for opensourcing and is independent from Bazel.
 
+#### Python
+1. **`py_gapic_srcjar`** - Python **macro**, which first calls `gapic_srcjar` to generate the source code. Then, it calls an internal rule, which does all the Python-specific postprocessing of the code. This postprocessing includes formatting the code and splitting the code into main and test `.srcjar` archives (a zip format).
+2. **`py_gapic_library`** - Python **macro**, which first calls `py_gapic_srcjar` to generate and post process the gapic library. Then, it calls the native `py_library` rule to build the generated code. It declares directories. Finally, it unpacks the sources for the main and test into those directories, so that they can be consumed by `py_library` and `py_test` (which do not accept `.srcjar` files as an input).
 
 #### PHP
 1. **`php_proto_library`** - PHP **macro**, which generates php protobuf stubs by calling protobuf compiler with `--php_out` parameter.
@@ -48,16 +51,16 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 3. **`php_gapic_srcjar`** - PHP **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the php-specific postprocessing of the code (calling using `php-cs-fixer` and `phpcbf` tools, splitting the code into main and test and smoke test `.srcjar` files (zip format)).
 
-4. **`php_gapic_library`** - PHP **macro**, which calls `php_gapic_srcjar` to generate and postprocess gapic library. 
+4. **`php_gapic_library`** - PHP **macro**, which calls `php_gapic_srcjar` to generate and postprocess gapic library.
 
 5. **`php_gapic_assembly_pkg`** - PHP **macro** which accepts the previously built `php_proto_library`, `php_grpc_library` and `php_gapic_library` artifacts as arguments and packages them into an idiomatic (for PHP) package which is ready for opensourcing and is independent from Bazel.
 
 #### Node.js
 1. **`nodejs_gapic_srcjar`** - Node.js **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the specific to Node.js postprocessing of the code (mainly just splitting the code into main, test, smoke test and packaging (`package.json`) `.srcjar` files (zip format)).
 
-2. **`nodejs_gapic_library`** - Node.js **macro**, which calls `nodejs_gapic_srcjar` to generate and postprocess gapic library. 
+2. **`nodejs_gapic_library`** - Node.js **macro**, which calls `nodejs_gapic_srcjar` to generate and postprocess gapic library.
 
-3. **`nodejs_gapic_assembly_pkg`** - Node.js **macro** which accepts the previously built `nodejs_proto_library` and `proto_library` artifact as arguments and packages them into an idiomatic (for Node.js) package which is ready for opensourcing and is independent from Bazel. This rule does not need corresponding `nodejs_proto_library` input arguments, because the Node.js client does not use pregenerated protbuf/grpc stubs but does it in runtime (loading protobuf files directly, that is why a `proto_library` taget is expected as input to this rule).  
+3. **`nodejs_gapic_assembly_pkg`** - Node.js **macro** which accepts the previously built `nodejs_proto_library` and `proto_library` artifact as arguments and packages them into an idiomatic (for Node.js) package which is ready for opensourcing and is independent from Bazel. This rule does not need corresponding `nodejs_proto_library` input arguments, because the Node.js client does not use pregenerated protbuf/grpc stubs but does it in runtime (loading protobuf files directly, that is why a `proto_library` target is expected as input to this rule).  
 
 
 #### Ruby
@@ -67,7 +70,7 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 3. **`ruby_gapic_srcjar`** - Ruby **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the ruby-specific postprocessing of the code (currenly just splitting the code into main and test and smoke test `.srcjar` files (zip format)).
 
-4. **`ruby_gapic_library`** - Ruby **macro**, which calls `ruby_gapic_srcjar` to generate and postprocess gapic library. 
+4. **`ruby_gapic_library`** - Ruby **macro**, which calls `ruby_gapic_srcjar` to generate and postprocess gapic library.
 
 5. **`ruby_gapic_assembly_pkg`** - Ruby **macro** which accepts the previously built `ruby_proto_library`, `ruby_grpc_library` and `ruby_gapic_library` artifacts as arguments and packages them into an idiomatic (for Ruby) package which is ready for opensourcing and is independent from Bazel.
 
@@ -76,9 +79,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 2. **`csharp_grpc_library`** - C# **macro**, which generates C# gRPC stubs by calling protobuf compiler with the C# gRPC plugin.
 
-3. **`csharp_gapic_srcjar`** - C# **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the C#-specific postprocessing of the code (currenly just splitting the code into main, test, smoke test and package `.srcjar` files (zip format)).
+3. **`csharp_gapic_srcjar`** - C# **macro**, which first calls `gapic_srcjar` to generate the source code, then calls an internal rule which does all the C#-specific postprocessing of the code (currently just splitting the code into main, test, smoke test and package `.srcjar` files (zip format)).
 
-4. **`csharp_gapic_library`** - C# **macro**, which calls `csharp_gapic_srcjar` to generate and postprocess gapic library. 
+4. **`csharp_gapic_library`** - C# **macro**, which calls `csharp_gapic_srcjar` to generate and postprocess gapic library.
 
 5. **`csharp_gapic_assembly_pkg`** - C# **macro** which accepts the previously built `csharp_proto_library`, `csharp_grpc_library` and `csharp_gapic_library` artifacts as arguments and packages them into an idiomatic (for C#) package which is ready for opensourcing and is independent from Bazel.
 
@@ -88,6 +91,9 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 
 #### Go
 1. **`go/go_gapic_repositories.bzl`** - this file declares the Go-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for example in `googleapis`).
+
+#### Python
+1. **`python/py_gapic_repositories.bzl`** - this file declares the Python-specific dependencies of the generated output. It is intended to be included in the `WORKSPACE` file of the consuming workspace (for example, in `googleapis`).
 
 #### PHP
 1. **`php/php_gapic_repositories.bzl`** - this file declares the PHP-specific dependencies of the generated output and is supposed to be included in the WORKSPACE file of the consuming workspace (for example in `googleapis`). This file also declares the `php` repository rule, which downloads and builds from sources the PHP interpreter (by using `gcc`, `make` and `autoconf` tools, so they are expected to be installed on the system).
