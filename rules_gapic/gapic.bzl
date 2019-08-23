@@ -128,7 +128,8 @@ def _proto_custom_library_impl(ctx):
             for f in t.files.to_list():
                 extra_inputs.append(f)
                 plugin_file_args.append("%s=%s" % (k, f.path) if k else f.path)
-        output_paths = ctx.attr.plugin_args + plugin_file_args + output_paths
+        if ctx.attr.plugin_args or plugin_file_args:
+            output_paths.insert(0, ",".join(ctx.attr.plugin_args + plugin_file_args))
         calculated_args = [
             "--plugin=protoc-gen-%s=%s" % (output_type, plugin.path),
         ]
