@@ -33,7 +33,7 @@ def php_grpc_library(name, srcs, deps, **kwargs):
     proto_custom_library(
         name = srcjar_target_name,
         deps = srcs,
-        plugin = Label("@com_github_grpc_grpc//:grpc_php_plugin"),
+        plugin = Label("@com_github_grpc_grpc//src/compiler:grpc_php_plugin"),
         plugin_args = ["class_suffix=GrpcClient"],
         output_type = "grpc",
         output_suffix = ".srcjar",
