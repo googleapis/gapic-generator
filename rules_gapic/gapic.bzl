@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+GapicInfo = provider(fields = ["main", "test", "smoke_test", "pkg"])
+
 def _set_args(arg, arg_name, args, inputs = None, required = False):
     if not arg:
         if required:
@@ -36,10 +38,12 @@ def _gapic_srcjar_impl(ctx):
         _set_args(attr.language, "--language=", arguments, required = True)
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
+        _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
     else:
         _set_args(attr.language, "--language=", arguments)
         _set_args(attr.src, "--descriptor=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
+        _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
 
     gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
@@ -66,6 +70,7 @@ gapic_srcjar = rule(
         "package_yaml2": attr.label(mandatory = False),
         "package": attr.string(mandatory = False),
         "output_suffix": attr.string(mandatory = False, default = ".srcjar"),
+        "grpc_service_config": attr.string(mandatory = False),
         "gapic_generator": attr.label(
             default = Label("//:gapic_generator"),
             executable = True,
@@ -117,12 +122,14 @@ def _proto_custom_library_impl(ctx):
     plugin = ctx.executable.plugin
 
     if plugin:
-        extra_inputs.extend(ctx.files.plugin_file_args)
         tools.append(plugin)
-        output_paths = \
-            ctx.attr.plugin_args + \
-            [f.path for f in ctx.files.plugin_file_args] + \
-            output_paths
+        plugin_file_args = []
+        for t, k in ctx.attr.plugin_file_args.items():
+            for f in t.files.to_list():
+                extra_inputs.append(f)
+                plugin_file_args.append("%s=%s" % (k, f.path) if k else f.path)
+        if ctx.attr.plugin_args or plugin_file_args:
+            output_paths.insert(0, ",".join(ctx.attr.plugin_args + plugin_file_args))
         calculated_args = [
             "--plugin=protoc-gen-%s=%s" % (output_type, plugin.path),
         ]
@@ -172,11 +179,11 @@ proto_custom_library = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
-        "plugin_file_args": attr.label_list(
+        "plugin_file_args": attr.label_keyed_string_dict(
             mandatory = False,
             allow_empty = True,
             allow_files = True,
-            default = [],
+            default = {},
         ),
         "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
         "extra_args": attr.string_list(mandatory = False, default = []),

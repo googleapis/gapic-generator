@@ -92,6 +92,40 @@ public class RetryCodesConfig {
     return retryCodesConfig;
   }
 
+  public static RetryCodesConfig create(GrpcGapicRetryMapping retryMapping, String service) {
+    RetryCodesConfig retryCodesConfig = new RetryCodesConfig();
+    Map<String, ImmutableList<String>> codesDefMap = new HashMap<>();
+    Map<String, String> methodNamesMap = new HashMap<>();
+    ImmutableMap<String, String> methodCodesMap = retryMapping.methodCodesMap();
+    ImmutableMap<String, RetryCodesDefinitionProto> codesMap = retryMapping.codesDefMap();
+
+    for (String name : methodCodesMap.keySet()) {
+      if (name.startsWith(service)) {
+        // simple method name from fully-qualified name
+        String method = name.substring(name.lastIndexOf(".") + 1);
+        String codeDefName = methodCodesMap.get(name);
+
+        ImmutableList.Builder<String> codeListBuilder = ImmutableList.builder();
+        codeListBuilder.addAll(codesMap.get(codeDefName).getRetryCodesList());
+
+        // map code def name to list of codes
+        codesDefMap.putIfAbsent(codeDefName, codeListBuilder.build());
+
+        // map method name to code definition
+        methodNamesMap.putIfAbsent(method, codeDefName);
+      }
+    }
+
+    // force the addition of the default, no retry codes config
+    codesDefMap.putIfAbsent("no_retry_codes", ImmutableList.of());
+
+    retryCodesConfig.retryCodesDefinition = ImmutableMap.copyOf(codesDefMap);
+    retryCodesConfig.methodRetryNames = ImmutableMap.copyOf(methodNamesMap);
+    retryCodesConfig.setFinalRetryProperties();
+
+    return retryCodesConfig;
+  }
+
   private static ImmutableMap<String, String> createMethodRetryNamesFromConfigProto(
       InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();

@@ -38,7 +38,7 @@ def _nodejs_gapic_src_pkg_impl(ctx):
         cp -f --parents $proto_src {package_dir_path}/protos
     done
     cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}
+    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     rm -rf {package_dir_path}

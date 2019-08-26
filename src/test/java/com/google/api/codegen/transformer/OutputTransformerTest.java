@@ -37,7 +37,9 @@ import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -371,5 +373,17 @@ public class OutputTransformerTest {
     assertThat(child.getTypeName("str")).isEqualTo("String");
     assertThat(child.getTypeModel("book")).isEqualTo(null);
     assertThat(child.getTypeName("book")).isEqualTo("ShelfBookName");
+  }
+
+  @Test
+  public void testCommentViewNoNewLineAtEndOfBlock() {
+    List<String> configs =
+        ImmutableList.of(
+            "John Jacob Jingleheimer Schmidt.\nHis %s is my %s, too.\n", "name", "name");
+    when(namer.localVarName(Name.from("name"))).thenReturn("name");
+    OutputView.CommentView view = new OutputTransformer().commentView(configs, context);
+    assertThat(view.lines().size()).isEqualTo(2);
+    assertThat(view.lines().get(0)).isEqualTo("John Jacob Jingleheimer Schmidt.");
+    assertThat(view.lines().get(1)).isEqualTo("His name is my name, too.");
   }
 }

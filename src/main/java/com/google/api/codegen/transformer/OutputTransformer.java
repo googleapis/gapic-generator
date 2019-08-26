@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 
 public class OutputTransformer {
@@ -388,7 +389,8 @@ public class OutputTransformer {
         .build();
   }
 
-  private OutputView.CommentView commentView(List<String> configs, MethodContext context) {
+  @VisibleForTesting
+  OutputView.CommentView commentView(List<String> configs, MethodContext context) {
     String comment = configs.get(0);
     Object[] args =
         configs
@@ -397,7 +399,31 @@ public class OutputTransformer {
             .map(c -> context.getNamer().localVarName(Name.anyLower(c)))
             .toArray(Object[]::new);
     String formattedComment = String.format(comment, args);
-    ImmutableList<String> lines = ImmutableList.copyOf(formattedComment.split("\\n", -1));
+    // We need to call split with a negative limit because the user
+    // might explicitly specify empty comment lines at the end of
+    // the comment block, but we also need to explicitly trim the last
+    // element since we don't want to include the blankline introduced
+    // by YAML syntax.
+    //
+    // For example:
+    // If the YAML looks like:
+    // ```
+    // comment: |
+    //   I am line1
+    //   I am line2
+    // ```
+    // then the parsed config would be: `I am line1\nI am line2\n`,
+    //
+    // and splitComments would be: ["I am line1", "I am line2", ""],
+    //
+    // but we don't want the last empty string.
+    String[] splitComments = formattedComment.split("\\n", -1);
+    int end = splitComments.length - 1;
+    end = splitComments[end].equals("") ? end - 1 : end;
+    ImmutableList<String> lines =
+        IntStream.range(0, end + 1) // the second index is exclusive
+            .mapToObj(i -> splitComments[i])
+            .collect(ImmutableList.toImmutableList());
     return OutputView.CommentView.newBuilder().lines(lines).build();
   }
 

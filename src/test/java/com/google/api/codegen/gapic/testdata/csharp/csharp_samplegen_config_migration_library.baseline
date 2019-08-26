@@ -600,12 +600,10 @@ namespace Google.Example.Library.V1.Samples
             // fourScoreAndSevenYears ago
             //
             // our fathers brought forth upon this continent
-            //
             // a new nation
             // conceived in liberty
             //
             // and dedicated to the proposition that allMenAreCreatedEqual.
-            //
             // Do something with bookNames one by one
             IEnumerable<string> bookNames = response.BookNames;
             foreach (string title in response.BookNames) {
@@ -1229,6 +1227,78 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/TestingMap.cs ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Generated code. DO NOT EDIT!
+
+// This is a generated sample ("Request", "testing_map")
+
+// sample-metadata
+//   title: testing maps
+//   description: testing maps in request fields
+//   usage: dotnet run
+
+using CommandLine;
+
+namespace Google.Example.Library.V1.Samples
+{
+    // [START testing_map]
+    using Google.Example.Library.V1;
+    using System;
+    using System.Collections.Generic;
+
+    public class TestingMap
+    {
+        /// <summary>
+        /// testing maps in request fields
+        /// </summary>
+        public static void SampleCreateBook()
+        {
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            CreateBookRequest request = new CreateBookRequest
+            {
+                ShelfName = new ShelfName("my_shelf"),
+                Book = new Book
+                {
+                    MapStringValue = {
+                                         { 1, "my_string_value" },
+                                     },
+                    MapMessageValue = {
+                                          { "something",
+                                            new SomeMessage
+                                            {
+                                                Field = 4147,
+                                            } },
+                                      },
+                },
+            };
+            Book response = libraryServiceClient.CreateBook(request);
+            Console.WriteLine("Book created!");
+        }
+    }
+
+    // [END testing_map]
+
+    public class TestingMapMain {
+        public static void Main(string[] args)
+        {
+            TestingMap.SampleCreateBook();
+        }
+    }
+}
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/ThisTagShouldBeTheNameOfTheFile.cs ==============
 // Copyright 2019 Google LLC
 //
@@ -1418,6 +1488,123 @@ namespace Google.Example.Library.V1.Samples
         }
     }
 }
+============== file: Google.Example.Library.V1/Google.Example.Library.V1.Samples/library-example.csharp.20190801.120000.manifest.yaml ==============
+---
+type: manifest/samples
+schema_version: 3
+csharp: &csharp
+  environment: csharp
+  bin: dotnet run
+  base_path: Google.Example.Library.V1.Samples
+  package: Google.Example.Library.V1.Samples
+  invocation: dotnet build /p:StartupObject={package}; {bin} @args
+samples:
+- <<: *csharp
+  sample: "sample_get_shelf"
+  path: "{base_path}/SampleGetShelf.cs"
+  class: {package}.SampleGetShelfMain
+  region_tag: "sample_get_shelf"
+- <<: *csharp
+  sample: "test_setting_up_empty_objects_in_request"
+  path: "{base_path}/TestSettingUpEmptyObjectsInRequest.cs"
+  class: {package}.TestSettingUpEmptyObjectsInRequestMain
+  region_tag: "test_setting_up_empty_objects_in_request"
+- <<: *csharp
+  sample: "test_default_calling_form_for_paging"
+  path: "{base_path}/TestDefaultCallingFormForPaging.cs"
+  class: {package}.TestDefaultCallingFormForPagingMain
+  region_tag: "test_default_calling_form_for_paging"
+- <<: *csharp
+  sample: "delete_shelf_request_empty_response_type_with_response_handling"
+  path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.cs"
+  class: {package}.DeleteShelfRequestEmptyResponseTypeWithResponseHandlingMain
+  region_tag: "sample"
+- <<: *csharp
+  sample: "delete_shelf_request_empty_response_type_without_response_handling"
+  path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.cs"
+  class: {package}.DeleteShelfRequestEmptyResponseTypeWithoutResponseHandlingMain
+  region_tag: "sample"
+- <<: *csharp
+  sample: "testing_map"
+  path: "{base_path}/TestingMap.cs"
+  class: {package}.TestingMapMain
+  region_tag: "testing_map"
+- <<: *csharp
+  sample: "publish_series_request_pi_version"
+  path: "{base_path}/PublishSeriesRequestPiVersion.cs"
+  class: {package}.PublishSeriesRequestPiVersionMain
+  region_tag: "canonical"
+- <<: *csharp
+  sample: "publish_series_request_second_edition"
+  path: "{base_path}/PublishSeriesRequestSecondEdition.cs"
+  class: {package}.PublishSeriesRequestSecondEditionMain
+  region_tag: "canonical"
+- <<: *csharp
+  sample: "publish_series_test_request_object_field_comments"
+  path: "{base_path}/PublishSeriesTestRequestObjectFieldComments.cs"
+  class: {package}.PublishSeriesTestRequestObjectFieldCommentsMain
+  region_tag: "publish_series_test_request_object_field_comments"
+- <<: *csharp
+  sample: "publish_series_test_write_to_file"
+  path: "{base_path}/PublishSeriesTestWriteToFile.cs"
+  class: {package}.PublishSeriesTestWriteToFileMain
+  region_tag: "publish_series_test_write_to_file"
+- <<: *csharp
+  sample: "get_book_request_test_on_success_map"
+  path: "{base_path}/GetBookRequestTestOnSuccessMap.cs"
+  class: {package}.GetBookRequestTestOnSuccessMapMain
+  region_tag: "sample"
+- <<: *csharp
+  sample: "test_resource_name_oneof"
+  path: "{base_path}/TestResourceNameOneof.cs"
+  class: {package}.TestResourceNameOneofMain
+  region_tag: "test_resource_name_oneof"
+- <<: *csharp
+  sample: "test_resource_name_oneof_2"
+  path: "{base_path}/TestResourceNameOneof2.cs"
+  class: {package}.TestResourceNameOneof2Main
+  region_tag: "test_resource_name_oneof_2"
+- <<: *csharp
+  sample: "lovelace"
+  path: "{base_path}/Lovelace.cs"
+  class: {package}.LovelaceMain
+  region_tag: "lovelace"
+- <<: *csharp
+  sample: "turing"
+  path: "{base_path}/Turing.cs"
+  class: {package}.TuringMain
+  region_tag: "turing"
+- <<: *csharp
+  sample: "find_related_books_odyssey"
+  path: "{base_path}/FindRelatedBooksOdyssey.cs"
+  class: {package}.FindRelatedBooksOdysseyMain
+  region_tag: "find_related_books_odyssey"
+- <<: *csharp
+  sample: "hopper"
+  path: "{base_path}/Hopper.cs"
+  class: {package}.HopperMain
+  region_tag: "hopper"
+- <<: *csharp
+  sample: "this_tag_should_be_the_name_of_the_file"
+  path: "{base_path}/ThisTagShouldBeTheNameOfTheFile.cs"
+  class: {package}.ThisTagShouldBeTheNameOfTheFileMain
+  region_tag: "this_tag_should_be_the_name_of_the_file"
+- <<: *csharp
+  sample: "empty_response_type_with_response_handling"
+  path: "{base_path}/EmptyResponseTypeWithResponseHandling.cs"
+  class: {package}.EmptyResponseTypeWithResponseHandlingMain
+  region_tag: "empty_response_type_with_response_handling"
+- <<: *csharp
+  sample: "empty_response_type_without_response_handling"
+  path: "{base_path}/EmptyResponseTypeWithoutResponseHandling.cs"
+  class: {package}.EmptyResponseTypeWithoutResponseHandlingMain
+  region_tag: "empty_response_type_without_response_handling"
+- <<: *csharp
+  sample: "test_float_and_int64"
+  path: "{base_path}/TestFloatAndInt64.cs"
+  class: {package}.TestFloatAndInt64Main
+  region_tag: "test_float_and_int64"
+
 ============== file: Google.Example.Library.V1/Google.Example.Library.V1.SmokeTests/Google.Example.Library.V1.SmokeTests.csproj ==============
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
