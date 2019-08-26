@@ -41,6 +41,7 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
       "csharp/gapic_snippets_csproj.snip";
   private static final String UNITTEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_unittest_csproj.snip";
+  private static final String SAMPLE_CSPROJ_TEMPLATE_FILENAME = "csharp/gapic_samples_csproj.snip";
 
   private static final CSharpAliasMode ALIAS_MODE = CSharpAliasMode.MessagesOnly;
 
@@ -63,6 +64,11 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
     this.shouldGenerateFn = shouldGenerateFn;
   }
 
+  public static CSharpBasicPackageTransformer forSamples(GapicCodePathMapper pathMapper) {
+    return new CSharpBasicPackageTransformer(
+        pathMapper, SAMPLE_CSPROJ_TEMPLATE_FILENAME, ".Samples.csproj", shouldGenSamplePackage());
+  }
+
   public static CSharpBasicPackageTransformer forSmokeTests(GapicCodePathMapper pathMapper) {
     return new CSharpBasicPackageTransformer(
         pathMapper,
@@ -83,6 +89,22 @@ public class CSharpBasicPackageTransformer implements ModelToViewTransformer<Pro
 
   private static Predicate<GapicInterfaceContext> shouldGenSmokeTestPackage() {
     return parameter -> parameter.getInterfaceConfig().getSmokeTestConfig() != null;
+  }
+
+  private static Predicate<GapicInterfaceContext> shouldGenSamplePackage() {
+    return CSharpBasicPackageTransformer::shouldGenerateSamplePackage;
+  }
+
+  private static boolean shouldGenerateSamplePackage(GapicInterfaceContext interfaceContext) {
+    boolean fromSampleConfigs =
+        !interfaceContext.getProductConfig().getSampleConfigTable().cellSet().isEmpty();
+    boolean fromGapicConfigs =
+        interfaceContext
+            .getInterfaceConfig()
+            .getMethodConfigs()
+            .stream()
+            .anyMatch(config -> config.getSampleSpec().isConfigured());
+    return fromSampleConfigs || fromGapicConfigs;
   }
 
   @Override

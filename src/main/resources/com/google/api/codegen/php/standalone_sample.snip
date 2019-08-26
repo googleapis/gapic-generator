@@ -1,7 +1,8 @@
 @extends "php/common.snip"
+@extends "metadatagen/samplegen.snip"
 
 @snippet generate(sampleFile)
-    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.libraryMethod.samples.get(0))}
+    {@standaloneSample(sampleFile, sampleFile.libraryMethod, sampleFile.sample)}
 @end
 
 # The structure of this should be parallel to that of method_sample.snip:@incodeSampleCall
@@ -10,11 +11,17 @@
     {@license(sampleFile.fileHeader)}
 
     /*
-     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+     * DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.id}")
      */
 
+    // sample-metadata
+    //   title: {@sample.title}
+    @if sample.descriptionLine
+        {@descriptionLines("//", sample.descriptionLine, sample.additionalDescriptionLines)}
+    @end
+    //   usage: php {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
     // [START {@sample.regionTag}]
-    require {@sampleFile.extraInfo.autoloadPath};
+    require {@sampleFile.autoloadPath};
 
     @if sample.sampleImports.appImports
         {@importList(sample.sampleImports.appImports)}
@@ -25,25 +32,8 @@
     @end
     function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)})
     {
-        // [START {@sample.regionTag}_core]
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
 
-        @if sampleFile.extraInfo.hasMissingDefaultOptions
-            $options = [
-                @if sampleFile.extraInfo.missingDefaultServiceAddress
-                    'serviceAddress' => 'my-service-address',
-                @end
-                @if sampleFile.extraInfo.missingDefaultServiceScopes
-                    'credentialsConfig' => [
-                        'scopes' => ['my-service-scope'],
-                    ],
-                @end
-                ];
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}($options);
-
-        @else
-            ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
-
-        @end
         @if sample.sampleInitCode.lines
             {@sampleInitCode(sample.sampleInitCode, apiMethod.apiVariableName)}
 
@@ -74,20 +64,13 @@
                 $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
             @end
         } finally {
-            @if sampleFile.extraInfo.hasMissingDefaultOptions
-                if (isset(${@apiMethod.apiVariableName})) {
-                    ${@apiMethod.apiVariableName}->close();
-                }
-            @else
-                ${@apiMethod.apiVariableName}->close();
-            @end
+            ${@apiMethod.apiVariableName}->close();
         }
-
-        // [END {@sample.regionTag}_core]
     }
     // [END {@sample.regionTag}]
     {@processCliArguments(sample)}
     {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)});
+
 @end
 
 @private processDoc(doc)
@@ -159,17 +142,17 @@
 
 @end
 
-@private methodCallSampleCode(apiMethod)
+@private methodCallSampleCode(sample, apiMethod)
     @if apiMethod.isSingularRequestMethod
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode)})
+            {@sampleMethodCallArgList(sample.sampleInitCode)})
     @else
         ${@apiMethod.apiVariableName}->{@apiMethod.name}()
     @end
 @end
 
 @private longRunningSampleCode(sample, apiMethod)
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse = {@methodCallSampleCode(sample, apiMethod)};
     $operationResponse->pollUntilComplete();
     if ($operationResponse->operationSucceeded()) {
         @if apiMethod.longRunningView.isEmptyOperation
@@ -188,7 +171,7 @@
 
 @private longRunningAsyncSampleCode(sample, apiMethod)
     // start the operation, keep the operation name, and resume later
-    $operationResponse = {@methodCallSampleCode(apiMethod)};
+    $operationResponse = {@methodCallSampleCode(sample, apiMethod)};
     $operationName = $operationResponse->getName();
     // ... do other work
     $newOperationResponse = ${@apiMethod.apiVariableName}->resumeOperation($operationName, '{@apiMethod.name}');
@@ -213,10 +196,10 @@
 
 @private requestSampleCode(sample, apiMethod)
     @if apiMethod.hasReturnValue
-        $response = {@methodCallSampleCode(apiMethod)};
+        $response = {@methodCallSampleCode(sample, apiMethod)};
 
     @else
-        {@methodCallSampleCode(apiMethod)};
+        {@methodCallSampleCode(sample, apiMethod)};
 
     @end
     @if sample.outputs
@@ -226,7 +209,7 @@
 
 @private pagedSampleCode(sample, apiMethod)
     // Iterate over pages of elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    $pagedResponse = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $responseItem) {
             {@processResponse(sample)}
@@ -236,7 +219,7 @@
 
 @private pagedAllSampleCode(sample, apiMethod)
     // Iterate through all elements
-    $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    $pagedResponse = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($pagedResponse->iterateAllElements() as $responseItem) {
         {@processResponse(sample)}
     }
@@ -245,7 +228,7 @@
 @private clientStreamingSampleCode(sample, apiMethod)
     // Write data to server and wait for a response
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     $response = $stream->writeAllAndReadResponse($requests);
     @if sample.outputs
         {@processResponse(sample)}
@@ -255,7 +238,7 @@
 @private clientStreamingAsyncSampleCode(sample, apiMethod)
     // Write data as it becomes available, then wait for a response
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($requests as $request) {
         $stream->write($request);
     }
@@ -267,7 +250,7 @@
 
 @private serverStreamingSampleCode(sample, apiMethod)
     // Read all responses until the stream is complete
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($stream->readAll() as $responseItem) {
         {@processResponse(sample)}
     }
@@ -277,7 +260,7 @@
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     $stream->writeAll($requests);
     foreach ($stream->closeWriteAndReadAll() as $responseItem) {
         {@processResponse(sample)}
@@ -289,7 +272,7 @@
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
     $requests = [$request];
-    $stream = {@methodCallSampleCode(apiMethod)};
+    $stream = {@methodCallSampleCode(sample, apiMethod)};
     foreach ($requests as $request) {
         $stream->write($request);
         // if required, read a single response from the stream

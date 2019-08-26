@@ -18,6 +18,7 @@ import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.AnyResourceNameConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -35,6 +36,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -52,6 +54,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
 
@@ -700,12 +703,122 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
             CallingForm.FlattenedAsyncPaged,
             CallingForm.FlattenedAsyncPagedAll,
             CallingForm.FlattenedAsyncPagedPageSize,
-            CallingForm.LongRunningPromiseAwait)
+            CallingForm.LongRunningPromiseAwait,
+            CallingForm.FlattenedStreamingBidi,
+            CallingForm.FlattenedStreamingServer,
+            CallingForm.RequestStreamingBidi,
+            CallingForm.RequestStreamingServer,
+            CallingForm.LongRunningFlattenedAsyncPollUntilComplete,
+            CallingForm.LongRunningRequestAsyncPollUntilComplete)
         .contains(form);
   }
 
   @Override
   public CallingForm getDefaultCallingForm(MethodContext context) {
     return CallingForm.getDefaultCallingForm(context, TargetLanguage.CSHARP);
+  }
+
+  @Override
+  public ImmutableList<String> getInterpolatedFormatAndArgs(String spec, List<String> args) {
+    if (args.isEmpty()) {
+      spec = EscaperFactory.getDoubleQuoteEscaper().escape(spec);
+      return ImmutableList.of(spec);
+    }
+    if (args.size() == 1 && "%s".equals(spec)) {
+      return ImmutableList.of(spec, args.get(0));
+    }
+    spec =
+        EscaperFactory.newBaseEscapersBuilder()
+            .addEscape('"', "\\\"")
+            .addEscape('{', "{{")
+            .addEscape('}', "}}")
+            .build()
+            .escape(spec);
+    String[] formattedArgs =
+        args.stream().map(a -> String.format("{%s}", a)).toArray(String[]::new);
+    return ImmutableList.<String>builder()
+        .add(String.format(spec, (Object[]) formattedArgs))
+        .addAll(args)
+        .build();
+  }
+
+  @Override
+  public String getIndexAccessorName(int index) {
+    return String.format("[%d]", index);
+  }
+
+  @Override
+  public String getFieldAccessorName(FieldModel field) {
+    return String.format(".%s", getFieldGetFunctionName(field));
+  }
+
+  @Override
+  public String getMapKeyAccessorName(TypeModel keyType, String key) {
+    return String.format("[%s]", getModelTypeFormatter().renderPrimitiveValue(keyType, key));
+  }
+
+  @Override
+  public Set<String> getSampleUsedVarNames(MethodContext context, CallingForm form) {
+    switch (form) {
+      case FlattenedStreamingBidi:
+      case RequestStreamingBidi:
+        return ImmutableSet.of("responseStream", "item");
+      case FlattenedStreamingServer:
+      case RequestStreamingServer:
+        return ImmutableSet.of("response", "responseStream", "item");
+      case FlattenedPaged:
+      case RequestPaged:
+      case FlattenedAsyncPaged:
+      case RequestAsyncPaged:
+        return ImmutableSet.of("response", "page", "item");
+      case FlattenedPagedAll:
+      case RequestPagedAll:
+      case FlattenedAsyncPagedAll:
+      case RequestAsyncPagedAll:
+        return ImmutableSet.of("response", "item");
+      case FlattenedPagedPageSize:
+      case RequestPagedPageSize:
+      case FlattenedAsyncPagedPageSize:
+      case RequestAsyncPagedPageSize:
+        return ImmutableSet.of("response", "singlePage", "item");
+      case Request:
+      case Flattened:
+      case RequestAsync:
+      case FlattenedAsync:
+        return ImmutableSet.of("response");
+      case LongRunningFlattenedPollUntilComplete:
+      case LongRunningFlattenedAsyncPollUntilComplete:
+      case LongRunningRequestPollUntilComplete:
+      case LongRunningRequestAsyncPollUntilComplete:
+        return ImmutableSet.of("operation", "response");
+      default:
+        throw new IllegalArgumentException("Unrecognized calling form: " + form);
+    }
+  }
+
+  @Override
+  public String getSampleResponseVarName(MethodContext context, CallingForm form) {
+    MethodConfig config = context.getMethodConfig();
+    if (config.getPageStreaming() != null) {
+      return "item";
+    }
+    if (config.getGrpcStreaming() != null) {
+      GrpcStreamingConfig.GrpcStreamingType type = config.getGrpcStreaming().getType();
+      if (type == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming
+          || type == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming) {
+        return "item";
+      }
+    }
+    return "response";
+  }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    List<CallingForm> forms = CallingForm.getCallingForms(context, TargetLanguage.CSHARP);
+    if (context.isFlattenedMethodContext()) {
+      forms =
+          forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+    }
+    return forms;
   }
 }

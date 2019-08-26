@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -166,10 +167,6 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
     }
 
     boolean useGrpcName = elem instanceof Interface || elem instanceof Method;
-    if (elem.getFile().getSimpleName().equals("google/iam/v1/iam_policy.proto")) {
-      // IAM policy gRPC service isn't actually used; API producers implement this themselves.
-      useGrpcName = false;
-    }
 
     if (useGrpcName) {
       path.add(0, getGrpcPbFileName(elem.getFile().getSimpleName()));
@@ -234,9 +231,9 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
       case TYPE_BOOL:
         return Name.from(value.toLowerCase()).toUpperCamel();
       case TYPE_STRING:
-        return "'" + value + "'";
+        return "'" + EscaperFactory.getSingleQuoteEscaper().escape(value) + "'";
       case TYPE_BYTES:
-        return "b'" + value + "'";
+        return "b'" + EscaperFactory.getSingleQuoteEscaper().escape(value) + "'";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here

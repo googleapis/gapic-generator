@@ -14,48 +14,35 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SampleFileRegistry;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.codegen.viewmodel.DynamicLangSampleView;
-import com.google.api.codegen.viewmodel.MethodSampleView;
-import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.Function;
 
 /**
  * A transformer to generate NodeJS standalone samples for each method in the GAPIC surface
  * generated from the same ApiModel.
  */
-public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<ProtoApiModel> {
+public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "nodejs/standalone_sample.snip";
 
-  private final GapicCodePathMapper pathMapper;
-  private final NodeJSImportSectionTransformer importSectionTransformer =
+  private static final ImportSectionTransformer importSectionTransformer =
       new NodeJSImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
+  private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-  private final DynamicLangApiMethodTransformer apiMethodTransformer =
+  private static final DynamicLangApiMethodTransformer apiMethodTransformer =
       new DynamicLangApiMethodTransformer(
           new NodeJSApiMethodParamTransformer(),
           SampleTransformer.newBuilder()
@@ -63,91 +50,30 @@ public class NodeJSGapicSamplesTransformer implements ModelToViewTransformer<Pro
               .sampleImportTransformer(new NodeJSSampleImportTransformer())
               .sampleType(SampleType.STANDALONE)
               .build());
-  private final NodeJSMethodViewGenerator methodGenerator =
-      new NodeJSMethodViewGenerator(apiMethodTransformer);
-  private final PackageMetadataConfig packageConfig;
+  private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
+      product -> new NodeJSSurfaceNamer(product.getPackageName(), NodeJSUtils.isGcloud(product));
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg -> new ModelTypeTable(new JSTypeTable(pkg), new NodeJSModelTypeNameConverter(pkg));
+  private final GapicCodePathMapper pathMapper;
 
-  public NodeJSGapicSamplesTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
+  public NodeJSGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
+    super(
+        STANDALONE_SAMPLE_TEMPLATE_FILENAME,
+        pathMapper,
+        fileHeaderTransformer,
+        apiMethodTransformer,
+        new NodeJSFeatureConfig(),
+        newSurfaceNamer,
+        newTypeTable);
     this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
   }
 
-  @Override
-  public List<String> getTemplateFileNames() {
-    return ImmutableList.of(STANDALONE_SAMPLE_TEMPLATE_FILENAME);
-  }
-
-  @Override
-  public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    models.addAll(generateSampleClassesForModel(model, productConfig));
-    return models.build();
-  }
-
-  private List<ViewModel> generateSampleClassesForModel(
-      ApiModel model, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
-    for (InterfaceModel apiInterface : interfaces) {
-      if (!productConfig.hasInterfaceConfig(apiInterface)) {
-        continue;
-      }
-
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.addAll(generateSampleClasses(context, model.hasMultipleServices()));
-    }
-    return models.build();
-  }
-
-  private List<ViewModel> generateSampleClasses(
-      GapicInterfaceContext context, boolean hasMultipleServices) {
-    ImmutableList.Builder<ViewModel> viewModels = new ImmutableList.Builder<>();
-    SurfaceNamer namer = context.getNamer();
-
-    List<OptionalArrayMethodView> allMethods =
-        methodGenerator.generateApiMethods(context, hasMultipleServices);
-    List<MethodSampleView> allSamples =
-        allMethods
-            .stream()
-            .flatMap(m -> m.samples().stream())
-            .collect(ImmutableList.toImmutableList());
-    SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    DynamicLangSampleView.Builder sampleClassBuilder = DynamicLangSampleView.newBuilder();
-    for (OptionalArrayMethodView method : allMethods) {
-      String subPath =
-          pathMapper.getSamplesOutputPath(
-              context.getInterfaceModel().getFullName(),
-              context.getProductConfig(),
-              Name.lowerCamel(method.name()).toLowerUnderscore());
-      for (MethodSampleView methodSample : method.samples()) {
-        String sampleOutputPath =
-            subPath
-                + File.separator
-                + registry.getSampleFileName(
-                    methodSample, Name.anyLower((method.name())).toLowerUnderscore());
-        viewModels.add(
-            sampleClassBuilder
-                .templateFileName(STANDALONE_SAMPLE_TEMPLATE_FILENAME)
-                .fileHeader(fileHeaderTransformer.generateFileHeader(context))
-                .outputPath(sampleOutputPath)
-                .libraryMethod(method.toBuilder().samples(Arrays.asList(methodSample)).build())
-                .gapicPackageName(namer.getGapicPackageName(packageConfig.packageName()))
-                .build());
-      }
-    }
-    return viewModels.build();
-  }
-
-  private GapicInterfaceContext createContext(
-      InterfaceModel apiInterface, GapicProductConfig productConfig) {
-    return GapicInterfaceContext.create(
-        apiInterface,
-        productConfig,
-        new ModelTypeTable(
-            new JSTypeTable(productConfig.getPackageName()),
-            new NodeJSModelTypeNameConverter(productConfig.getPackageName())),
-        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig)),
-        new NodeJSFeatureConfig());
+  public SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new NodeJSSampleMetadataNamer(this, pathMapper),
+        p -> new NodeJSFeatureConfig(),
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }

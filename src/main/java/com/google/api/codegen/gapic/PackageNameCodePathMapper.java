@@ -22,10 +22,4 @@ public class PackageNameCodePathMapper implements GapicCodePathMapper {
   public String getOutputPath(String elementFullName, ProductConfig config) {
     return config.getPackageName();
   }
-
-  @Override
-  public String getSamplesOutputPath(
-      String elementFullName, ProductConfig config, String methodName) {
-    return getOutputPath(elementFullName, config) + "/" + SAMPLES_DIRECTORY + "/" + methodName;
-  }
 }

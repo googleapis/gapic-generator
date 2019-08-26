@@ -82,6 +82,15 @@ public class ScannerTest {
   }
 
   @Test
+  public void testUnescapeStrings() {
+    Scanner scanner = new Scanner("a + \"abc\\\"\\b\\n\\t\\\\''\"");
+    assertThat(scanner.scan()).isEqualTo(Scanner.IDENT);
+    assertThat(scanner.scan()).isEqualTo('+');
+    assertThat(scanner.scan()).isEqualTo(Scanner.STRING);
+    assertThat(scanner.tokenStr()).isEqualTo("abc\"\b\n\t\\''");
+  }
+
+  @Test
   public void testScannerInt() {
     {
       Scanner scanner = new Scanner("123 456");

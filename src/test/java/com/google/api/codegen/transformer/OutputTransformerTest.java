@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import static com.google.api.codegen.transformer.OutputTransformer.accessorNewVariable;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.api.codegen.SampleValueSet;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -28,13 +28,18 @@ import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.config.SampleContext;
+import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.Scanner;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.OutputView;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,7 +49,7 @@ public class OutputTransformerTest {
 
   private OutputTransformer.ScopeTable parent;
   private OutputTransformer.ScopeTable child;
-  private SampleValueSet valueSet;
+  private SampleContext sampleContext;
   private final CallingForm form = CallingForm.Request; // enums can't be mocked
 
   @Mock private FeatureConfig featureConfig;
@@ -58,7 +63,20 @@ public class OutputTransformerTest {
 
   @Before
   public void setUp() {
-    valueSet = SampleValueSet.newBuilder().setId("test-sample-value-set-id").build();
+    SampleConfig sampleConfig =
+        SampleConfig.newBuilder()
+            .id("test-sample-value-set-id")
+            .type(SampleSpec.SampleType.STANDALONE)
+            .build();
+    sampleContext =
+        SampleContext.newBuilder()
+            .uniqueSampleId("test-sample-value-set-id")
+            .sampleConfig(sampleConfig)
+            .sampleType(SampleSpec.SampleType.STANDALONE)
+            .callingForm(form)
+            .initCodeOutputType(InitCodeOutputType.FieldList)
+            .build();
+
     parent = new OutputTransformer.ScopeTable();
     child = new OutputTransformer.ScopeTable(parent);
     MockitoAnnotations.initMocks(this);
@@ -82,12 +100,13 @@ public class OutputTransformerTest {
     when(namer.getSampleUsedVarNames(context, form)).thenReturn(ImmutableSet.of("fooResponse"));
     try {
       OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "fooResponse", false, form);
+          accessorNewVariable(scanner, context, sampleContext, parent, "fooResponse", false);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage())
           .contains(
-              "cannot define variable \"fooResponse\": it is already used by the sample template for calling form");
+              "cannot define variable \"fooResponse\": it is already used by the sample template"
+                  + " for calling form");
     }
   }
 
@@ -102,7 +121,7 @@ public class OutputTransformerTest {
     when(featureConfig.useResourceNameFormatOption(resourceFieldConfig)).thenReturn(true);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -125,7 +144,7 @@ public class OutputTransformerTest {
     when(typeTable.getNicknameFor(typeModel)).thenReturn("TypeName");
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -143,7 +162,7 @@ public class OutputTransformerTest {
     when(model.getOutputType()).thenReturn(typeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("sampleResponseVarName");
     assertThat(variableView.accessors()).isEmpty();
@@ -157,7 +176,7 @@ public class OutputTransformerTest {
     Scanner scanner = new Scanner("old_var");
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).isEmpty();
@@ -173,7 +192,7 @@ public class OutputTransformerTest {
     when(namer.localVarName(Name.from("old_var"))).thenReturn("oldVar");
     when(typeTable.getNicknameFor(oldVarTypeModel)).thenReturn("OldVarTypeName");
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).isEmpty();
@@ -199,7 +218,7 @@ public class OutputTransformerTest {
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).containsExactly(".getProperty()").inOrder();
@@ -217,7 +236,7 @@ public class OutputTransformerTest {
     when(namer.getAndSaveTypeName(typeTable, oldVarTypeModel)).thenReturn("OldVarTypeName");
     try {
       OutputView.VariableView variableView =
-          accessorNewVariable(scanner, context, valueSet, parent, "newVar", true, form);
+          accessorNewVariable(scanner, context, sampleContext, parent, "newVar", true);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("is not a repeated field");
@@ -248,7 +267,7 @@ public class OutputTransformerTest {
     when(propertyFieldModel.getType()).thenReturn(propertyTypeModel);
 
     OutputView.VariableView variableView =
-        accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+        accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
 
     assertThat(variableView.variable()).isEqualTo("oldVar");
     assertThat(variableView.accessors()).containsExactly(".getProperty()", "[0]").inOrder();
@@ -278,7 +297,7 @@ public class OutputTransformerTest {
     when(propertyTypeModel.getMapKeyType()).thenReturn(boolTypeModel);
     when(propertyTypeModel.getMapValueType()).thenReturn(stringTypeModel);
     try {
-      accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+      accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("Could not assign value 'not_boolean' to type bool");
@@ -306,7 +325,7 @@ public class OutputTransformerTest {
     when(propertyTypeModel.getMapKeyType()).thenReturn(stringTypeModel);
     when(propertyTypeModel.getMapValueType()).thenReturn(stringTypeModel);
     try {
-      accessorNewVariable(scanner, context, valueSet, parent, "newVar", false, form);
+      accessorNewVariable(scanner, context, sampleContext, parent, "newVar", false);
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("expected string type for map key");
@@ -354,5 +373,17 @@ public class OutputTransformerTest {
     assertThat(child.getTypeName("str")).isEqualTo("String");
     assertThat(child.getTypeModel("book")).isEqualTo(null);
     assertThat(child.getTypeName("book")).isEqualTo("ShelfBookName");
+  }
+
+  @Test
+  public void testCommentViewNoNewLineAtEndOfBlock() {
+    List<String> configs =
+        ImmutableList.of(
+            "John Jacob Jingleheimer Schmidt.\nHis %s is my %s, too.\n", "name", "name");
+    when(namer.localVarName(Name.from("name"))).thenReturn("name");
+    OutputView.CommentView view = new OutputTransformer().commentView(configs, context);
+    assertThat(view.lines().size()).isEqualTo(2);
+    assertThat(view.lines().get(0)).isEqualTo("John Jacob Jingleheimer Schmidt.");
+    assertThat(view.lines().get(1)).isEqualTo("His name is my name, too.");
   }
 }

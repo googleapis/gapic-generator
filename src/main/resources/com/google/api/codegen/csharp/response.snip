@@ -1,0 +1,105 @@
+@snippet processOutputViews(outputViews)
+    @join view : outputViews on BREAK
+        @switch view.kind
+            @case "COMMENT"
+                {@processCommentView(view)}
+            @case "DEFINE"
+                {@processDefineView(view)}
+            @case "ARRAY_LOOP"
+                {@processArrayLoopView(view)}
+            @case "MAP_LOOP"
+                {@processMapLoopView(view)}
+            @case "PRINT"
+                {@processPrintView(view)}
+            @case "WRITE_FILE"
+                {@processWriteFileView(view)}
+            @default
+                $unhandledResponseForm: {@view}
+        @end
+    @end
+@end
+
+@private processCommentView(view)
+    @join line : view.lines
+        // {@line}
+    @end
+@end
+
+@private processDefineView(view)
+    {@view.variableTypeName} {@view.variableName} = {@variableField(view.reference)};
+@end
+
+@private processPrintView(view)
+    @if view.interpolatedString.args.isEmpty
+        Console.WriteLine("{@view.interpolatedString.format}");
+    @else
+        @if view.interpolatedString.format == "%s"
+            Console.WriteLine({@view.interpolatedString.args.get(0)});
+        @else
+            Console.WriteLine($"{@view.interpolatedString.format}");
+        @end
+    @end
+@end
+
+@private processArrayLoopView(view)
+    foreach ({@view.variableType} {@view.variableName} in {@variableField(@view.collection)}) {
+        {@processOutputViews(@view.body)}
+    }
+@end
+
+@private processMapLoopView(view)
+    @if and(view.keyVariableName, view.valueVariableName)
+        foreach (KeyValuePair<{@view.keyType}, {@view.valueType}> entry in {@variableField(@view.map)}.entrySet()) {
+            {@view.keyType} {@view.keyVariableName} = entry.Key;
+            {@view.valueType} {@view.valueVariableName} = entry.Value;
+            {@processOutputViews(@view.body)}
+        }
+    @else
+        @if view.keyVariableName
+            foreach ({@view.keyType} {@view.keyVariableName} in {@variableField(@view.map)}.Keys) {
+                {@processOutputViews(@view.body)}
+            }
+        @else
+            @if view.valueVariableName
+                for ({@view.valueType} {@view.valueVariableName} in {@variableField(@view.map)}.Values) {
+                    {@processOutputViews(@view.body)}
+                }
+            @else
+                $unhandledMapLoopView: {@view}
+            @end
+        @end
+    @end
+
+@end    
+
+@private processWriteFileView(view)
+    @if view.contents.type.isBytesType
+        File.WriteAllBytes({@formattedFileName(view.fileName)}, {@variableField(view.contents)}.ToArray());
+    @else
+        @if view.contents.type.isStringType
+            File.WriteAllText({@formattedFileName(view.fileName)}, {@variableField(view.contents)});
+        @else
+            $unhandled type: {@view.contents.type}
+        @end
+    @end
+@end
+
+
+
+@private formattedFileName(fileName)
+    @if fileName.args.isEmpty
+        "{@fileName.format}"
+    @else
+        $"{@fileName.format}"
+    @end
+@end
+
+@private variableField(arg)
+    {@arg.variable}{@accessor(arg.accessors)}
+@end
+
+@private accessor(accessors)
+    @join field : accessors on ""
+        {@field}
+    @end
+@end

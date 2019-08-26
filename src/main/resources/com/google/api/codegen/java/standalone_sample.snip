@@ -1,13 +1,25 @@
 @extends "java/common.snip"
 @extends "java/initcode.snip"
+@extends "metadatagen/samplegen.snip"
 
 #FIXME: currently the variable of output of an api call is hardcoded to "response"
 # and "response_item". We should fix it by saving the variable name in the view model
 @snippet generate(sampleFile)
   @let apiMethod = sampleFile.classView.libraryMethod, \
-       sample = apiMethod.samples.get(0)
+       sample = sampleFile.classView.sample
     {@license(sampleFile.fileHeader)}
-    // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+    // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.id}")
+    // sample-metadata:
+    //   title: {@sample.title}
+    @if sample.descriptionLine
+      {@descriptionLines("//", sample.descriptionLine, sample.additionalDescriptionLines)}
+    @end
+    @if sample.sampleInitCode.argDefaultParams 
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name} [--args='{@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}']
+    @else
+      //   usage: gradle run -PmainClass={@sampleFile.fileHeader.examplePackageName}.{@sampleFile.classView.name}
+    @end
+
     package {@sampleFile.fileHeader.examplePackageName};
     
     @if sample.sampleInitCode.argDefaultParams.size
@@ -30,7 +42,6 @@
         {@processDoc(sample.sampleFunctionDoc)}
       @end
       public static void {@sample.sampleFunctionName}({@commaSeparatedArgAndTypes(sample.sampleInitCode.argDefaultParams)}) {
-        // [START {@sample.regionTag}_core]
         try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.create()) {
           @let coreSampleCode = generateSample(apiMethod, sample)
             {@methodLines(coreSampleCode)}
@@ -38,7 +49,6 @@
         } catch (Exception exception) {
           System.err.println("Failed to create the client due to: " + exception);
         }
-        // [END {@sample.regionTag}_core]
       }
       // [END {@sample.regionTag}]
 
@@ -111,14 +121,14 @@
 # since standalone samples can perform more sophisticated response handling
 @private pagedIterableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
-  for ({@apiMethod.listMethod.resourceTypeName} responseItem : {@sampleSyncMethodCall(apiMethod)}.{@apiMethod.listMethod.iterateMethodName}()) {
+  for ({@apiMethod.listMethod.resourceTypeName} responseItem : {@sampleSyncMethodCall(apiMethod, sample)}.{@apiMethod.listMethod.iterateMethodName}()) {
     {@processResponse(sample)}
   }
 @end
 
 @private pagedCallableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
-  ApiFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
+  ApiFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod, sample)};
 
   // Do something
 
@@ -158,9 +168,9 @@
 @private syncMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
   @if apiMethod.hasReturnValue
-    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod, sample)};
   @else
-    {@sampleSyncMethodCall(apiMethod)};
+    {@sampleSyncMethodCall(apiMethod, sample)};
   @end
 @end
 
@@ -177,7 +187,7 @@
 
 @private callableMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
-  ApiFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  ApiFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod, sample)};
 
   // Do something
 
@@ -192,7 +202,7 @@
   {@initCode(sample.sampleInitCode)}
   OperationFuture<{@apiMethod.responseTypeName}, \
   {@apiMethod.operationMethod.metadataTypeName}> future = \
-  {@sampleFutureMethodCall(apiMethod)};
+  {@sampleFutureMethodCall(apiMethod, sample)};
 
   // Do something
 
@@ -290,6 +300,16 @@
         boolean {@param.identifier} =
             cl.getOptionValue("{@param.cliFlagName}") != null
                 ? Boolean.parseBoolean(cl.getOptionValue("{@param.cliFlagName}"))
+                : {@renderInitValue(param.initValue)};
+      @case "float"
+        float {@param.identifier} =
+            cl.getOptionValue("{@param.cliFlagName}") != null
+                ? Float.parseFloat(cl.getOptionValue("{@param.cliFlagName}"))
+                : {@renderInitValue(param.initValue)};
+      @case "long"
+        long {@param.identifier} =
+            cl.getOptionValue("{@param.cliFlagName}") != null
+                ? Long.parseLong(cl.getOptionValue("{@param.cliFlagName}"))
                 : {@renderInitValue(param.initValue)};
       @default
         $unhandledCase: {@param.typeName}$
@@ -460,14 +480,14 @@
   @end
 @end
 
-@private sampleFutureMethodCall(apiMethod)
+@private sampleFutureMethodCall(apiMethod, sample)
   {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
-      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+      {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)})
 @end
 
-@private sampleSyncMethodCall(apiMethod)
+@private sampleSyncMethodCall(apiMethod, sample)
   {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+      {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)})
 @end
 
 @private sampleMethodCallArgList(fieldSettings)

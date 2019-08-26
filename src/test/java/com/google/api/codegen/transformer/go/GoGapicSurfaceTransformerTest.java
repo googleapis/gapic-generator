@@ -118,7 +118,6 @@ public class GoGapicSurfaceTransformerTest {
         new ProtoMethodModel(getMethod(context.getInterface(), "PageStreamMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    assertThat(context.getImportTypeTable().getImports()).containsKey("math");
     assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("cloud.google.com/go/longrunning");
   }
@@ -128,7 +127,6 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method = new ProtoMethodModel(getMethod(context.getInterface(), "LroMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    assertThat(context.getImportTypeTable().getImports()).doesNotContainKey("math");
     assertThat(context.getImportTypeTable().getImports())
         .containsKey("cloud.google.com/go/longrunning");
   }

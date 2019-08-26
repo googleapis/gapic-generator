@@ -27,7 +27,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -79,8 +78,7 @@ public class JavaSurfaceTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final JavaMethodViewGenerator methodGenerator =
-      new JavaMethodViewGenerator(SampleType.IN_CODE);
+  private final JavaApiMethodTransformer javaApiMethodTransformer = new JavaApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -188,7 +186,7 @@ public class JavaSurfaceTransformer {
 
     addApiImports(context);
 
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(context);
+    List<StaticLangApiMethodView> methods = javaApiMethodTransformer.generateApiMethods(context);
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
@@ -297,19 +295,44 @@ public class JavaSurfaceTransformer {
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
     StaticLangApiMethodView exampleApiMethod =
-        searchExampleMethod(methods, ClientMethodType.FlattenedMethod);
+        searchExampleMethod(
+            methods, ClientMethodType.FlattenedMethod, GrpcStreamingType.NonStreaming);
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.PagedFlattenedMethod);
-    }
-    if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.RequestObjectMethod);
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.PagedFlattenedMethod, GrpcStreamingType.NonStreaming);
     }
     if (exampleApiMethod == null) {
       exampleApiMethod =
-          searchExampleMethod(methods, ClientMethodType.AsyncOperationFlattenedMethod);
+          searchExampleMethod(
+              methods, ClientMethodType.RequestObjectMethod, GrpcStreamingType.NonStreaming);
     }
     if (exampleApiMethod == null) {
-      exampleApiMethod = searchExampleMethod(methods, ClientMethodType.CallableMethod);
+      exampleApiMethod =
+          searchExampleMethod(
+              methods,
+              ClientMethodType.AsyncOperationFlattenedMethod,
+              GrpcStreamingType.NonStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.NonStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.ServerStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.BidiStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.CallableMethod, GrpcStreamingType.ClientStreaming);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
@@ -318,9 +341,11 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangApiMethodView searchExampleMethod(
-      List<StaticLangApiMethodView> methods, ClientMethodType methodType) {
+      List<StaticLangApiMethodView> methods,
+      ClientMethodType methodType,
+      GrpcStreamingType grpcStreamingType) {
     for (StaticLangApiMethodView method : methods) {
-      if (method.type().equals(methodType)) {
+      if (method.type().equals(methodType) && method.grpcStreamingType() == grpcStreamingType) {
         return method;
       }
     }
@@ -518,7 +543,8 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from methods classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods =
+        javaApiMethodTransformer.generateApiMethods(apiMethodsContext);
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
@@ -572,7 +598,8 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from method, request, and resource classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods =
+        javaApiMethodTransformer.generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -723,7 +750,8 @@ public class JavaSurfaceTransformer {
         .map(InterfaceModel::getFullName)
         .findFirst()
         .map(name -> pathMapper.getOutputPath(name, productConfig))
-        .ifPresent(path -> packageInfo.outputPath(path + File.separator + "package-info.java"));
+        .map(path -> packageInfo.outputPath(path + File.separator + "package-info.java"))
+        .orElseThrow(() -> new IllegalStateException("found no configured interface."));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
@@ -980,6 +1008,9 @@ public class JavaSurfaceTransformer {
     settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
+    settingsDoc.exampleApiMethodSettingsHasRetrySettings(
+        exampleApiMethod.grpcStreamingType() == GrpcStreamingType.ServerStreaming
+            || exampleApiMethod.grpcStreamingType() == GrpcStreamingType.NonStreaming);
     settingsDoc.apiClassName(apiClassName);
     settingsDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
     settingsDoc.settingsClassName(settingsClassName);

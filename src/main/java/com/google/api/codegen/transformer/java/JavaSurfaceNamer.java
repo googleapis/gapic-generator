@@ -48,6 +48,7 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -422,7 +423,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<CallingForm> getCallingForms(MethodContext context) {
-    return CallingForm.getCallingForms(context, TargetLanguage.JAVA);
+    List<CallingForm> forms = CallingForm.getCallingForms(context, TargetLanguage.JAVA);
+    if (context.isFlattenedMethodContext()) {
+      forms =
+          forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+    }
+    return forms;
   }
 
   @Override
@@ -438,14 +444,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   /**
    * Returns the package name of standalone samples.
    *
-   * <p>Currently we assume that package names always start with "com.google.". For example, if
-   * package name is "com.google.foo", the sample package name returned by this method will be
-   * "com.google.foo.examples.snippets". If package name is "com.google.foo.bar", the sample package
-   * name returned by this method will be "com.google.foo.examples.bar.snippets".
+   * <p>Most of the time package names start with "com.google.". For example, if the package name is
+   * "com.google.foo", the sample package name returned by this method will be
+   * "com.google.foo.examples.snippets". If the package name is "com.google.foo.bar", the sample
+   * package name returned by this method will be "com.google.foo.examples.bar.snippets".
    *
    * <p>We structure the example package name in this way because in the case of a package named
    * "com.google.foo.bar", 'foo' is very often the organization name, and this lets us group
    * examples from the same org into a common package. E.g. "com.google.cloud.library.v1"
+   *
+   * <p>If a package name does not start with "com.google.", for example, grafeas (
+   * https://github.com/googleapis/googleapis/blob/master/grafeas/v1/grafeas_gapic.yaml#L6), we
+   * simply append an "example" at the end of it. This might not be optimal, but we can adjust this
+   * when we start to generate samples for non-cloud APIs.
    */
   @Override
   public String getExamplePackageName() {
@@ -453,9 +464,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   public static String getExamplePackageName(String packageName) {
-    checkArgument(
-        packageName.startsWith("com.google."),
-        "We currently only support packages beginning with 'com.google'");
+    if (!packageName.startsWith("com.google.")) {
+      return packageName + ".examples";
+    }
+
+    // special treatment for cloud clients because we anticipate they will be
+    // published in google-cloud-examples:
+    // https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-examples
     packageName = packageName.replaceFirst("com.google.", "");
     checkArgument(
         !packageName.isEmpty(),

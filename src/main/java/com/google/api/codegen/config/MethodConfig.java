@@ -86,6 +86,10 @@ public abstract class MethodConfig {
     return getLroConfig() != null;
   }
 
+  boolean isIam() {
+    return getMethodModel().getOutputFullName().contains(".iam.");
+  }
+
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();

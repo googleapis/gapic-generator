@@ -21,8 +21,8 @@ import com.google.common.collect.ImmutableList;
 @AutoValue
 public abstract class MethodSampleView {
 
-  /** The value set used in this sample. */
-  public abstract SampleValueSetView valueSet();
+  /** The ID of the sample. */
+  public abstract String id();
 
   /** The calling form used in this sample. */
   public abstract CallingForm callingForm();
@@ -50,13 +50,20 @@ public abstract class MethodSampleView {
   /** Used by Node.js and C#. */
   public abstract boolean usesAsyncAwaitPattern();
 
+  public abstract String title();
+
+  public abstract String descriptionLine();
+
+  public abstract ImmutableList<String> additionalDescriptionLines();
+
   public static Builder newBuilder() {
     return new AutoValue_MethodSampleView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder valueSet(SampleValueSetView val);
+
+    public abstract Builder id(String val);
 
     public abstract Builder callingForm(CallingForm val);
 
@@ -75,6 +82,12 @@ public abstract class MethodSampleView {
     public abstract Builder hasMultipleFileOutputs(boolean hasMultipleFileOutputs);
 
     public abstract Builder usesAsyncAwaitPattern(boolean val);
+
+    public abstract Builder title(String val);
+
+    public abstract Builder descriptionLine(String val);
+
+    public abstract Builder additionalDescriptionLines(ImmutableList<String> val);
 
     public abstract MethodSampleView build();
   }

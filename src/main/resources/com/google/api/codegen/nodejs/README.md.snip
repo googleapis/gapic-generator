@@ -1,23 +1,11 @@
-@extends "nodejs/method_sample.snip"
-@extends "readme.snip"
+@extends "common.snip"
 
 @snippet generate(metadata)
   {@generateReadme(metadata.readmeMetadata)}
 @end
 
 @private generateReadme(metadata)
-  {@readme(metadata, exampleMethods(metadata.exampleMethods, metadata), installationLines(metadata))}
-@end
-
-@private exampleMethods(methods, metadata)
-  @join method : methods on BREAK
-    @#### {@method.apiClassName}
-    ```js
-     {@decorateSampleCodeUnversioned(method, @incodeSamples(method, empty()))}
-    ```
-  @end
-@end
-
-@private installationLines(metadata)
-  $ npm install --save {@metadata.identifier}
+  @# {@metadata.targetLanguage} \
+      Client{@simplePlurality(metadata.hasMultipleServices)} for {@metadata.fullName}
+  This is a generated README.md placeholder. Put your own documentation here.
 @end

@@ -157,7 +157,7 @@ public class DiscoGapicGeneratorApp {
 
     GapicProductConfig productConfig = GapicProductConfig.create(model, configProto, language);
 
-    ArtifactFlags artifactFlags = new ArtifactFlags(enabledArtifacts, artifactType);
+    ArtifactFlags artifactFlags = new ArtifactFlags(enabledArtifacts, artifactType, false);
     return DiscoGapicGeneratorFactory.create(
         language, model, productConfig, packageConfig, artifactFlags);
   }

@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.util.EscaperFactory;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -45,7 +46,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "number")
           .put(Type.TYPE_SFIXED32, "number")
           .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "string")
+          .put(Type.TYPE_BYTES, "Buffer")
           .build();
 
   /** A map from primitive types in proto to zero value in NodeJS */
@@ -65,7 +66,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
-          .put(Type.TYPE_BYTES, "\'\'")
+          .put(Type.TYPE_BYTES, "Buffer.from(\'\')")
           .build();
 
   private TypeNameConverter typeNameConverter;
@@ -160,7 +161,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
         return value.toLowerCase();
       case TYPE_STRING:
       case TYPE_BYTES:
-        return "\'" + value + "\'";
+        return "\'" + EscaperFactory.getSingleQuoteEscaper().escape(value) + "\'";
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here

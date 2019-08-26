@@ -1845,11 +1845,13 @@ module Google
     # 01:30 UTC on January 15, 2017.
     #
     # In JavaScript, one can convert a Date object to this format using the
-    # standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
+    # standard
+    # [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
     # method. In Python, a standard `datetime.datetime` object can be converted
-    # to this format using [`strftime`](https://docs.python.org/2/library/time.html#time.strftime)
-    # with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
-    # can use the Joda Time's [`ISODateTimeFormat.dateTime()`](
+    # to this format using
+    # [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with
+    # the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use
+    # the Joda Time's [`ISODateTimeFormat.dateTime()`](
     # http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime%2D%2D
     # ) to obtain a formatter capable of generating timestamps in this format.
     # @!attribute [rw] seconds
@@ -2597,6 +2599,70 @@ module Google
         #   @return [Array<Integer>]
         # @!attribute [rw] required_map
         #   @return [Hash{Integer => String}]
+        # @!attribute [rw] required_any_value
+        #   @return [Google::Protobuf::Any]
+        # @!attribute [rw] required_struct_value
+        #   @return [Google::Protobuf::Struct]
+        # @!attribute [rw] required_value_value
+        #   @return [Google::Protobuf::Value]
+        # @!attribute [rw] required_list_value_value
+        #   @return [Google::Protobuf::ListValue]
+        # @!attribute [rw] required_time_value
+        #   @return [Google::Protobuf::Timestamp]
+        # @!attribute [rw] required_duration_value
+        #   @return [Google::Protobuf::Duration]
+        # @!attribute [rw] required_field_mask_value
+        #   @return [Google::Protobuf::FieldMask]
+        # @!attribute [rw] required_int32_value
+        #   @return [Google::Protobuf::Int32Value]
+        # @!attribute [rw] required_uint32_value
+        #   @return [Google::Protobuf::UInt32Value]
+        # @!attribute [rw] required_int64_value
+        #   @return [Google::Protobuf::Int64Value]
+        # @!attribute [rw] required_uint64_value
+        #   @return [Google::Protobuf::UInt64Value]
+        # @!attribute [rw] required_float_value
+        #   @return [Google::Protobuf::FloatValue]
+        # @!attribute [rw] required_double_value
+        #   @return [Google::Protobuf::DoubleValue]
+        # @!attribute [rw] required_string_value
+        #   @return [Google::Protobuf::StringValue]
+        # @!attribute [rw] required_bool_value
+        #   @return [Google::Protobuf::BoolValue]
+        # @!attribute [rw] required_bytes_value
+        #   @return [Google::Protobuf::BytesValue]
+        # @!attribute [rw] required_repeated_any_value
+        #   @return [Array<Google::Protobuf::Any>]
+        # @!attribute [rw] required_repeated_struct_value
+        #   @return [Array<Google::Protobuf::Struct>]
+        # @!attribute [rw] required_repeated_value_value
+        #   @return [Array<Google::Protobuf::Value>]
+        # @!attribute [rw] required_repeated_list_value_value
+        #   @return [Array<Google::Protobuf::ListValue>]
+        # @!attribute [rw] required_repeated_time_value
+        #   @return [Array<Google::Protobuf::Timestamp>]
+        # @!attribute [rw] required_repeated_duration_value
+        #   @return [Array<Google::Protobuf::Duration>]
+        # @!attribute [rw] required_repeated_field_mask_value
+        #   @return [Array<Google::Protobuf::FieldMask>]
+        # @!attribute [rw] required_repeated_int32_value
+        #   @return [Array<Google::Protobuf::Int32Value>]
+        # @!attribute [rw] required_repeated_uint32_value
+        #   @return [Array<Google::Protobuf::UInt32Value>]
+        # @!attribute [rw] required_repeated_int64_value
+        #   @return [Array<Google::Protobuf::Int64Value>]
+        # @!attribute [rw] required_repeated_uint64_value
+        #   @return [Array<Google::Protobuf::UInt64Value>]
+        # @!attribute [rw] required_repeated_float_value
+        #   @return [Array<Google::Protobuf::FloatValue>]
+        # @!attribute [rw] required_repeated_double_value
+        #   @return [Array<Google::Protobuf::DoubleValue>]
+        # @!attribute [rw] required_repeated_string_value
+        #   @return [Array<Google::Protobuf::StringValue>]
+        # @!attribute [rw] required_repeated_bool_value
+        #   @return [Array<Google::Protobuf::BoolValue>]
+        # @!attribute [rw] required_repeated_bytes_value
+        #   @return [Array<Google::Protobuf::BytesValue>]
         # @!attribute [rw] optional_singular_int32
         #   @return [Integer]
         # @!attribute [rw] optional_singular_int64
@@ -2932,6 +2998,12 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
+      PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/books/{book}"
+      )
+
+      private_constant :PROJECT_BOOK_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -2967,6 +3039,17 @@ module Library
       def self.book_path book_shelf, book
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified project_book resource name string.
+      # @param project [String]
+      # @param book [String]
+      # @return [String]
+      def self.project_book_path project, book
+        PROJECT_BOOK_PATH_TEMPLATE.render(
+          :"project" => project,
           :"book" => book
         )
       end
@@ -3034,6 +3117,7 @@ module Library
           timeout: timeout,
           lib_name: lib_name,
           lib_version: lib_version,
+          metadata: metadata,
         )
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
@@ -4457,6 +4541,102 @@ module Library
       # @param required_repeated_fixed32 [Array<Integer>]
       # @param required_repeated_fixed64 [Array<Integer>]
       # @param required_map [Hash{Integer => String}]
+      # @param required_any_value [Google::Protobuf::Any | Hash]
+      #   A hash of the same form as `Google::Protobuf::Any`
+      #   can also be provided.
+      # @param required_struct_value [Google::Protobuf::Struct | Hash]
+      #   A hash of the same form as `Google::Protobuf::Struct`
+      #   can also be provided.
+      # @param required_value_value [Google::Protobuf::Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Value`
+      #   can also be provided.
+      # @param required_list_value_value [Google::Protobuf::ListValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param required_time_value [Google::Protobuf::Timestamp | Hash]
+      #   A hash of the same form as `Google::Protobuf::Timestamp`
+      #   can also be provided.
+      # @param required_duration_value [Google::Protobuf::Duration | Hash]
+      #   A hash of the same form as `Google::Protobuf::Duration`
+      #   can also be provided.
+      # @param required_field_mask_value [Google::Protobuf::FieldMask | Hash]
+      #   A hash of the same form as `Google::Protobuf::FieldMask`
+      #   can also be provided.
+      # @param required_int32_value [Google::Protobuf::Int32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int32Value`
+      #   can also be provided.
+      # @param required_uint32_value [Google::Protobuf::UInt32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt32Value`
+      #   can also be provided.
+      # @param required_int64_value [Google::Protobuf::Int64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int64Value`
+      #   can also be provided.
+      # @param required_uint64_value [Google::Protobuf::UInt64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt64Value`
+      #   can also be provided.
+      # @param required_float_value [Google::Protobuf::FloatValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::FloatValue`
+      #   can also be provided.
+      # @param required_double_value [Google::Protobuf::DoubleValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::DoubleValue`
+      #   can also be provided.
+      # @param required_string_value [Google::Protobuf::StringValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::StringValue`
+      #   can also be provided.
+      # @param required_bool_value [Google::Protobuf::BoolValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BoolValue`
+      #   can also be provided.
+      # @param required_bytes_value [Google::Protobuf::BytesValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BytesValue`
+      #   can also be provided.
+      # @param required_repeated_any_value [Array<Google::Protobuf::Any | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Any`
+      #   can also be provided.
+      # @param required_repeated_struct_value [Array<Google::Protobuf::Struct | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Struct`
+      #   can also be provided.
+      # @param required_repeated_value_value [Array<Google::Protobuf::Value | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Value`
+      #   can also be provided.
+      # @param required_repeated_list_value_value [Array<Google::Protobuf::ListValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param required_repeated_time_value [Array<Google::Protobuf::Timestamp | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Timestamp`
+      #   can also be provided.
+      # @param required_repeated_duration_value [Array<Google::Protobuf::Duration | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Duration`
+      #   can also be provided.
+      # @param required_repeated_field_mask_value [Array<Google::Protobuf::FieldMask | Hash>]
+      #   A hash of the same form as `Google::Protobuf::FieldMask`
+      #   can also be provided.
+      # @param required_repeated_int32_value [Array<Google::Protobuf::Int32Value | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Int32Value`
+      #   can also be provided.
+      # @param required_repeated_uint32_value [Array<Google::Protobuf::UInt32Value | Hash>]
+      #   A hash of the same form as `Google::Protobuf::UInt32Value`
+      #   can also be provided.
+      # @param required_repeated_int64_value [Array<Google::Protobuf::Int64Value | Hash>]
+      #   A hash of the same form as `Google::Protobuf::Int64Value`
+      #   can also be provided.
+      # @param required_repeated_uint64_value [Array<Google::Protobuf::UInt64Value | Hash>]
+      #   A hash of the same form as `Google::Protobuf::UInt64Value`
+      #   can also be provided.
+      # @param required_repeated_float_value [Array<Google::Protobuf::FloatValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::FloatValue`
+      #   can also be provided.
+      # @param required_repeated_double_value [Array<Google::Protobuf::DoubleValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::DoubleValue`
+      #   can also be provided.
+      # @param required_repeated_string_value [Array<Google::Protobuf::StringValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::StringValue`
+      #   can also be provided.
+      # @param required_repeated_bool_value [Array<Google::Protobuf::BoolValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::BoolValue`
+      #   can also be provided.
+      # @param required_repeated_bytes_value [Array<Google::Protobuf::BytesValue | Hash>]
+      #   A hash of the same form as `Google::Protobuf::BytesValue`
+      #   can also be provided.
       # @param optional_singular_int32 [Integer]
       # @param optional_singular_int64 [Integer]
       # @param optional_singular_float [Float]
@@ -4681,7 +4861,103 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #
+      #   # TODO: Initialize `required_any_value`:
+      #   required_any_value = {}
+      #
+      #   # TODO: Initialize `required_struct_value`:
+      #   required_struct_value = {}
+      #
+      #   # TODO: Initialize `required_value_value`:
+      #   required_value_value = {}
+      #
+      #   # TODO: Initialize `required_list_value_value`:
+      #   required_list_value_value = {}
+      #
+      #   # TODO: Initialize `required_time_value`:
+      #   required_time_value = {}
+      #
+      #   # TODO: Initialize `required_duration_value`:
+      #   required_duration_value = {}
+      #
+      #   # TODO: Initialize `required_field_mask_value`:
+      #   required_field_mask_value = {}
+      #
+      #   # TODO: Initialize `required_int32_value`:
+      #   required_int32_value = {}
+      #
+      #   # TODO: Initialize `required_uint32_value`:
+      #   required_uint32_value = {}
+      #
+      #   # TODO: Initialize `required_int64_value`:
+      #   required_int64_value = {}
+      #
+      #   # TODO: Initialize `required_uint64_value`:
+      #   required_uint64_value = {}
+      #
+      #   # TODO: Initialize `required_float_value`:
+      #   required_float_value = {}
+      #
+      #   # TODO: Initialize `required_double_value`:
+      #   required_double_value = {}
+      #
+      #   # TODO: Initialize `required_string_value`:
+      #   required_string_value = {}
+      #
+      #   # TODO: Initialize `required_bool_value`:
+      #   required_bool_value = {}
+      #
+      #   # TODO: Initialize `required_bytes_value`:
+      #   required_bytes_value = {}
+      #
+      #   # TODO: Initialize `required_repeated_any_value`:
+      #   required_repeated_any_value = []
+      #
+      #   # TODO: Initialize `required_repeated_struct_value`:
+      #   required_repeated_struct_value = []
+      #
+      #   # TODO: Initialize `required_repeated_value_value`:
+      #   required_repeated_value_value = []
+      #
+      #   # TODO: Initialize `required_repeated_list_value_value`:
+      #   required_repeated_list_value_value = []
+      #
+      #   # TODO: Initialize `required_repeated_time_value`:
+      #   required_repeated_time_value = []
+      #
+      #   # TODO: Initialize `required_repeated_duration_value`:
+      #   required_repeated_duration_value = []
+      #
+      #   # TODO: Initialize `required_repeated_field_mask_value`:
+      #   required_repeated_field_mask_value = []
+      #
+      #   # TODO: Initialize `required_repeated_int32_value`:
+      #   required_repeated_int32_value = []
+      #
+      #   # TODO: Initialize `required_repeated_uint32_value`:
+      #   required_repeated_uint32_value = []
+      #
+      #   # TODO: Initialize `required_repeated_int64_value`:
+      #   required_repeated_int64_value = []
+      #
+      #   # TODO: Initialize `required_repeated_uint64_value`:
+      #   required_repeated_uint64_value = []
+      #
+      #   # TODO: Initialize `required_repeated_float_value`:
+      #   required_repeated_float_value = []
+      #
+      #   # TODO: Initialize `required_repeated_double_value`:
+      #   required_repeated_double_value = []
+      #
+      #   # TODO: Initialize `required_repeated_string_value`:
+      #   required_repeated_string_value = []
+      #
+      #   # TODO: Initialize `required_repeated_bool_value`:
+      #   required_repeated_bool_value = []
+      #
+      #   # TODO: Initialize `required_repeated_bytes_value`:
+      #   required_repeated_bytes_value = []
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -4713,6 +4989,38 @@ module Library
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
+          required_any_value,
+          required_struct_value,
+          required_value_value,
+          required_list_value_value,
+          required_time_value,
+          required_duration_value,
+          required_field_mask_value,
+          required_int32_value,
+          required_uint32_value,
+          required_int64_value,
+          required_uint64_value,
+          required_float_value,
+          required_double_value,
+          required_string_value,
+          required_bool_value,
+          required_bytes_value,
+          required_repeated_any_value,
+          required_repeated_struct_value,
+          required_repeated_value_value,
+          required_repeated_list_value_value,
+          required_repeated_time_value,
+          required_repeated_duration_value,
+          required_repeated_field_mask_value,
+          required_repeated_int32_value,
+          required_repeated_uint32_value,
+          required_repeated_int64_value,
+          required_repeated_uint64_value,
+          required_repeated_float_value,
+          required_repeated_double_value,
+          required_repeated_string_value,
+          required_repeated_bool_value,
+          required_repeated_bytes_value,
           optional_singular_int32: nil,
           optional_singular_int64: nil,
           optional_singular_float: nil,
@@ -4806,6 +5114,38 @@ module Library
           required_repeated_fixed32: required_repeated_fixed32,
           required_repeated_fixed64: required_repeated_fixed64,
           required_map: required_map,
+          required_any_value: required_any_value,
+          required_struct_value: required_struct_value,
+          required_value_value: required_value_value,
+          required_list_value_value: required_list_value_value,
+          required_time_value: required_time_value,
+          required_duration_value: required_duration_value,
+          required_field_mask_value: required_field_mask_value,
+          required_int32_value: required_int32_value,
+          required_uint32_value: required_uint32_value,
+          required_int64_value: required_int64_value,
+          required_uint64_value: required_uint64_value,
+          required_float_value: required_float_value,
+          required_double_value: required_double_value,
+          required_string_value: required_string_value,
+          required_bool_value: required_bool_value,
+          required_bytes_value: required_bytes_value,
+          required_repeated_any_value: required_repeated_any_value,
+          required_repeated_struct_value: required_repeated_struct_value,
+          required_repeated_value_value: required_repeated_value_value,
+          required_repeated_list_value_value: required_repeated_list_value_value,
+          required_repeated_time_value: required_repeated_time_value,
+          required_repeated_duration_value: required_repeated_duration_value,
+          required_repeated_field_mask_value: required_repeated_field_mask_value,
+          required_repeated_int32_value: required_repeated_int32_value,
+          required_repeated_uint32_value: required_repeated_uint32_value,
+          required_repeated_int64_value: required_repeated_int64_value,
+          required_repeated_uint64_value: required_repeated_uint64_value,
+          required_repeated_float_value: required_repeated_float_value,
+          required_repeated_double_value: required_repeated_double_value,
+          required_repeated_string_value: required_repeated_string_value,
+          required_repeated_bool_value: required_repeated_bool_value,
+          required_repeated_bytes_value: required_repeated_bytes_value,
           optional_singular_int32: optional_singular_int32,
           optional_singular_int64: optional_singular_int64,
           optional_singular_float: optional_singular_float,
@@ -5387,13 +5727,17 @@ gem "google-cloud-library", path: "../../"
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
 
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test response handling for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5405,17 +5749,16 @@ def sample_babble_about_book
 
   # No one replied
   puts "No one replied."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
+
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5433,13 +5776,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
 
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
 def sample_babble_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5448,17 +5795,16 @@ def sample_babble_about_book
 
   requests = [request]
   library_client.babble_about_book(requests)
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
+
 ============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5476,13 +5822,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
 
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   bundle exec ruby samples/v1/delete_shelf_request_empty_response_type_with_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test response handling for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5492,17 +5842,16 @@ def sample_delete_shelf
 
   # Shelf deleted
   puts "Shelf deleted."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
+
 ============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5520,30 +5869,33 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
 
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   bundle exec ruby samples/v1/delete_shelf_request_empty_response_type_without_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
 def sample_delete_shelf
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
   formatted_name = library_client.class.shelf_path("[SHELF_ID]")
 
   library_client.delete_shelf(formatted_name)
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
+
 ============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5561,13 +5913,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
 
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/find_related_books_request_paged_all_odyssey.rb
+
 require "library"
 
 # [START sample]
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5581,17 +5937,16 @@ def sample_find_related_books
     book = element
     puts "Here's a related book: #{book}"
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_find_related_books
 end
+
 ============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5609,13 +5964,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
 
+# sample-metadata
+#   title: The Odyssey
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/find_related_books_request_paged_odyssey.rb
+
 require "library"
 
 # [START sample]
 
 # Testing calling forms
 def sample_find_related_books
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5632,17 +5991,16 @@ def sample_find_related_books
       puts "Here's a related book: #{book}"
     end
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_find_related_books
 end
+
 ============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5660,17 +6018,21 @@ end
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap.rb [--shelf "Novel\\\"\`\b\t\n\r"]
+
 require "library"
 
 # [START hopper]
 
 # Testing calling forms
-def sample_get_big_book(shelf)
-  # [START hopper_core]
+def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel"
+  # shelf = "Novel\\\"`\b\t\n\r"
   formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
 
   # Make the long-running operation request
@@ -5700,17 +6062,15 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END hopper_core]
 end
 # [END hopper]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel"
+  shelf = "Novel\\\"`\b\t\n\r"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
@@ -5720,6 +6080,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
+
 ============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5737,17 +6098,21 @@ end
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
 
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing resource name overlap
+#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap2.rb [--shelf Novel] [--big_book_name "War and Peace"]
+
 require "library"
 
 # [START hopper]
 
- # Testing resource name overlap
- #
- # @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
- # shelf to retrieve the big book from.
- # @param big_book_name {String} The name of the book.
-def sample_get_big_book(shelf, big_book_name)
-  # [START hopper_core]
+# Testing resource name overlap
+#
+# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
+# shelf to retrieve the big book from.
+# @param big_book_name {String} The name of the book.
+def sample_get_big_book shelf, big_book_name
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5766,15 +6131,13 @@ def sample_get_big_book(shelf, big_book_name)
   response = operation.response
 
   puts response.inspect
-
-  # [END hopper_core]
 end
 # [END hopper]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf = "Novel"
   big_book_name = "War and Peace"
@@ -5788,6 +6151,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf, big_book_name)
 end
+
 ============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5805,13 +6169,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
 
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test response handling for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5829,17 +6197,16 @@ def sample_get_big_nothing
 
   # Got nothing
   puts "Got nothing."
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
 end
+
 ============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5857,13 +6224,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
 
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb
+
 require "library"
 
 # [START sample]
 
 # Test default response handling is turned off for methods that return empty
 def sample_get_big_nothing
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5878,17 +6249,16 @@ def sample_get_big_nothing
   raise operation.results.message if operation.error?
 
   response = operation.response
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_big_nothing
 end
+
 ============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5906,12 +6276,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
 
+# sample-metadata
+#   title: test maps in response handling
+#   description: When there is a very long description for a sample file we can split
+#     the description into multiple lines and the samples will be just fine
+#   bundle exec ruby samples/v1/get_book_request_test_on_success_map.rb
+
 require "library"
 
 # [START sample]
 
 def sample_get_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5923,17 +6298,16 @@ def sample_get_book
   map_value_field = response.map_message_value["key"].field
   puts "Test printing map fields: #{response.map_list_value_value["quoted_key"].inspect}"
   puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_book
 end
+
 ============== file: samples/v1/lovelace.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5951,13 +6325,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
 
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/lovelace.rb
+
 require "library"
 
 # [START lovelace]
 
 # Testing calling forms
 def sample_stream_books
-  # [START lovelace_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -5966,17 +6344,16 @@ def sample_stream_books
   library_client.stream_books(name).each do |element|
     puts element.inspect
   end
-
-  # [END lovelace_core]
 end
 # [END lovelace]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_stream_books
 end
+
 ============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -5994,13 +6371,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
 
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/monolog_about_book_request_streaming_client_prog.rb
+
 require "library"
 
 # [START sample]
 
 # Testing calling forms
 def sample_monolog_about_book
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6011,17 +6392,16 @@ def sample_monolog_about_book
   response = library_client.monolog_about_book(requests, sample)
 
   puts "The stage of the comment is: #{response.stage}"
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_monolog_about_book
 end
+
 ============== file: samples/v1/publish_series_request_pi_version.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6039,16 +6419,20 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
 
+# sample-metadata
+#   title: Pi version
+#   description: Testing <@calling forms>
+#   bundle exec ruby samples/v1/publish_series_request_pi_version.rb [--shelf_name Math] [--edition 123]
+
 require "library"
 
 # [START canonical]
 
- # Testing <@calling forms>
- #
- # @param shelf_name {String} The name of the shelf where books are published to.
- # @param edition {Integer} The edition of the series.
-def sample_publish_series(shelf_name, edition)
-  # [START canonical_core]
+# Testing <@calling forms>
+#
+# @param shelf_name {String} The name of the shelf where books are published to.
+# @param edition {Integer} The edition of the series.
+def sample_publish_series shelf_name, edition
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6064,12 +6448,10 @@ def sample_publish_series(shelf_name, edition)
   # four_score_and_seven_years ago
   #
   # our fathers brought forth upon this continent
-  #
   # a new nation
   # conceived in liberty
   #
   # and dedicated to the proposition that all_men_are_created_equal.
-  #
   # Do something with book_names one by one
   book_names = response.book_names
   response.book_names.each do |title|
@@ -6080,15 +6462,13 @@ def sample_publish_series(shelf_name, edition)
   puts "The author of the first book is: #{response.books[0].author}"
   puts "That's all!"
   puts "series_uuid: #{response.series_uuid.series_bytes}"
-
-  # [END canonical_core]
 end
 # [END canonical]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   shelf_name = "Math"
   edition = 123
@@ -6102,6 +6482,7 @@ if $0 == __FILE__
 
   sample_publish_series(shelf_name, edition)
 end
+
 ============== file: samples/v1/publish_series_request_second_edition.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6119,13 +6500,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
 
+# sample-metadata
+#   title: Second edition
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/publish_series_request_second_edition.rb
+
 require "library"
 
 # [START canonical]
 
 # Testing calling forms
 def sample_publish_series
-  # [START canonical_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6136,17 +6521,16 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END canonical_core]
 end
 # [END canonical]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6164,13 +6548,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
 
+# sample-metadata
+#   title: request object field comments
+#   description: Test request object field comments
+#   bundle exec ruby samples/v1/publish_series_request_test_request_object_field_comments.rb
+
 require "library"
 
 # [START sample]
 
 # Test request object field comments
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6204,17 +6592,16 @@ def sample_publish_series
 
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6232,13 +6619,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
 
+# sample-metadata
+#   title: test writing fields to files
+#   description: Testing write fields to files.
+#   bundle exec ruby samples/v1/publish_series_request_test_write_to_file.rb
+
 require "library"
 
 # [START sample]
 
 # Testing write fields to files.
 def sample_publish_series
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6246,7 +6637,7 @@ def sample_publish_series
   books = []
   series_uuid = {}
 
-  response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
+  response = library_client.publish_series(shelf, books, series_uuid)
   # testing writing bytes field.
   File.open("uuid_of_series_with_book_#{response.book_names[0]}.raw", "wb") do |file|
     file.write(response.series_uuid.series_bytes)
@@ -6255,17 +6646,16 @@ def sample_publish_series
   # testing writing string field.
   File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
 
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
+
 ============== file: samples/v1/sample_get_shelf.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6283,13 +6673,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
 
+# sample-metadata
+#   title: test_default_calling_form_unary
+#   description: Test default calling forms for unary methods.
+#   bundle exec ruby samples/v1/sample_get_shelf.rb
+
 require "library"
 
 # [START sample_get_shelf]
 
 # Test default calling forms for unary methods.
 def sample_get_shelf
-  # [START sample_get_shelf_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6298,17 +6692,16 @@ def sample_get_shelf
 
   response = library_client.get_shelf(formatted_name, options_)
   puts "The theme of the shelf is: #{response.theme}"
-
-  # [END sample_get_shelf_core]
 end
 # [END sample_get_shelf]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_get_shelf
 end
+
 ============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6326,13 +6719,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
 
+# sample-metadata
+#   title: Server streaming
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/stream_shelves_request_streaming_server_empty.rb
+
 require "library"
 
 # [START sample]
 
 # Testing calling forms
 def sample_stream_shelves
-  # [START sample_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6341,17 +6738,16 @@ def sample_stream_shelves
   library_client.stream_shelves(formatted_name).each do |element|
     puts element.inspect
   end
-
-  # [END sample_core]
 end
 # [END sample]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_stream_shelves
 end
+
 ============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6369,13 +6765,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
 
+# sample-metadata
+#   title: test default calling form for paging
+#   description: Test default calling form for paging methods.
+#   bundle exec ruby samples/v1/test_default_calling_form_for_paging.rb
+
 require "library"
 
 # [START test_default_calling_form_for_paging]
 
 # Test default calling form for paging methods.
 def sample_list_shelves
-  # [START test_default_calling_form_for_paging_core]
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6383,17 +6783,266 @@ def sample_list_shelves
   library_client.list_shelves.each do |element|
     puts "shelf name: #{element.inspect}"
   end
-
-  # [END test_default_calling_form_for_paging_core]
 end
 # [END test_default_calling_form_for_paging]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   sample_list_shelves
 end
+
+============== file: samples/v1/test_float_and_int64.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_float_and_int64")
+
+# sample-metadata
+#   title:
+#   bundle exec ruby samples/v1/test_float_and_int64.rb [--param_float 1.2345] [--param_long 67890]
+
+require "library"
+
+# [START test_float_and_int64]
+
+def sample_test_optional_required_flattening_params param_float, param_long
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  # param_float = 1.2345
+  # param_long = 67890
+  required_singular_int32 = 0
+  required_singular_double = 0.0
+  required_singular_bool = false
+  required_singular_enum = :ZERO
+  required_singular_string = ''
+  required_singular_bytes = ''
+  required_singular_message = {}
+  formatted_required_singular_resource_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+  formatted_required_singular_resource_name_oneof = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+  required_singular_resource_name_common = ''
+  required_singular_fixed32 = 0
+  required_singular_fixed64 = 0
+  required_repeated_int32 = []
+  required_repeated_int64 = []
+  required_repeated_float = []
+  required_repeated_double = []
+  required_repeated_bool = []
+  required_repeated_enum = []
+  required_repeated_string = []
+  required_repeated_bytes = []
+  required_repeated_message = []
+  formatted_required_repeated_resource_name = []
+  formatted_required_repeated_resource_name_oneof = []
+  required_repeated_resource_name_common = []
+  required_repeated_fixed32 = []
+  required_repeated_fixed64 = []
+  required_map = {}
+  required_any_value = {}
+  required_struct_value = {}
+  required_value_value = {}
+  required_list_value_value = {}
+  required_time_value = {}
+  required_duration_value = {}
+  required_field_mask_value = {}
+  required_int32_value = {}
+  required_uint32_value = {}
+  required_int64_value = {}
+  required_uint64_value = {}
+  required_float_value = {}
+  required_double_value = {}
+  required_string_value = {}
+  required_bool_value = {}
+  required_bytes_value = {}
+  required_repeated_any_value = []
+  required_repeated_struct_value = []
+  required_repeated_value_value = []
+  required_repeated_list_value_value = []
+  required_repeated_time_value = []
+  required_repeated_duration_value = []
+  required_repeated_field_mask_value = []
+  required_repeated_int32_value = []
+  required_repeated_uint32_value = []
+  required_repeated_int64_value = []
+  required_repeated_uint64_value = []
+  required_repeated_float_value = []
+  required_repeated_double_value = []
+  required_repeated_string_value = []
+  required_repeated_bool_value = []
+  required_repeated_bytes_value = []
+
+  response = library_client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+  puts response.inspect
+end
+# [END test_float_and_int64]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+
+  param_float = 1.2345
+  param_long = 67890
+
+  ARGV.options do |opts|
+    opts.on("--param_float=val") { |val| param_float = val }
+    opts.on("--param_long=val") { |val| param_long = val }
+    opts.parse!
+  end
+
+
+  sample_test_optional_required_flattening_params(param_float, param_long)
+end
+
+============== file: samples/v1/test_resource_name_oneof.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof")
+
+# sample-metadata
+#   title:
+#   bundle exec ruby samples/v1/test_resource_name_oneof.rb
+
+require "library"
+
+# [START test_resource_name_oneof]
+
+def sample_get_book_from_absolutely_anywhere
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+
+  response = library_client.get_book_from_absolutely_anywhere(formatted_name)
+  puts "Archived book found."
+end
+# [END test_resource_name_oneof]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_book_from_absolutely_anywhere
+end
+
+============== file: samples/v1/test_resource_name_oneof_2.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_resource_name_oneof_2")
+
+# sample-metadata
+#   title:
+#   bundle exec ruby samples/v1/test_resource_name_oneof_2.rb
+
+require "library"
+
+# [START test_resource_name_oneof_2]
+
+def sample_get_book_from_absolutely_anywhere
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
+
+  response = library_client.get_book_from_absolutely_anywhere(formatted_name)
+  puts "Book on shelf found."
+end
+# [END test_resource_name_oneof_2]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_book_from_absolutely_anywhere
+end
+
+============== file: samples/v1/test_setting_up_empty_objects_in_request.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "test_setting_up_empty_objects_in_request")
+
+# sample-metadata
+#   title: test_setting_up_empty_objects_in_request
+#   description: Test setting up empty objects in the request objects.
+#   bundle exec ruby samples/v1/test_setting_up_empty_objects_in_request.rb
+
+require "library"
+
+# [START test_setting_up_empty_objects_in_request]
+
+# Test setting up empty objects in the request objects.
+def sample_get_shelf
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("my-shelf")
+  options_ = ''
+
+  # we can set up this empty nested object now
+  message = {}
+  string_builder = {}
+
+  response = library_client.get_shelf(formatted_name, options_, message: message, string_builder: string_builder)
+  puts "Shelf found."
+end
+# [END test_setting_up_empty_objects_in_request]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_shelf
+end
+
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6411,17 +7060,21 @@ end
 
 # DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
 
+# sample-metadata
+#   title: GetBigBook: 'War and Peace'
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf "Novel\\\"\`\b\t\n\r"]
+
 require "library"
 
 # [START this_tag_should_be_the_name_of_the_file]
 
 # Testing calling forms
-def sample_get_big_book(shelf)
-  # [START this_tag_should_be_the_name_of_the_file_core]
+def sample_get_big_book shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel"
+  # shelf = "Novel\\\"`\b\t\n\r"
   formatted_name = library_client.class.book_path("[BOOK_SHELF]", "[BOOK]")
 
   # Make the long-running operation request
@@ -6451,17 +7104,15 @@ def sample_get_big_book(shelf)
 
   puts "name: #{response.name}"
   puts "author: #{response.author}"
-
-  # [END this_tag_should_be_the_name_of_the_file_core]
 end
 # [END this_tag_should_be_the_name_of_the_file]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel"
+  shelf = "Novel\\\"`\b\t\n\r"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
@@ -6471,6 +7122,7 @@ if $0 == __FILE__
 
   sample_get_big_book(shelf)
 end
+
 ============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -6488,13 +7140,17 @@ end
 
 # DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
 
+# sample-metadata
+#   title: Programming Books
+#   description: Testing calling forms
+#   bundle exec ruby samples/v1/turing_prog_request_streaming_bidi.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
+
 require "library"
 
 # [START turing_prog_request_streaming_bidi]
 
 # Testing calling forms
-def sample_discuss_book(image_file_name, stage)
-  # [START turing_prog_request_streaming_bidi_core]
+def sample_discuss_book image_file_name, stage
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
@@ -6514,15 +7170,13 @@ def sample_discuss_book(image_file_name, stage)
   library_client.discuss_book(requests).each do |element|
     puts element.inspect
   end
-
-  # [END turing_prog_request_streaming_bidi_core]
 end
 # [END turing_prog_request_streaming_bidi]
 
 
 require "optparse"
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
 
   image_file_name = "image_file.jpg"
   stage = :DRAFT
@@ -6536,6 +7190,7 @@ if $0 == __FILE__
 
   sample_discuss_book(image_file_name, stage)
 end
+
 ============== file: test/library/v1/library_service_client_test.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -8849,6 +9504,38 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
+      required_any_value = {}
+      required_struct_value = {}
+      required_value_value = {}
+      required_list_value_value = {}
+      required_time_value = {}
+      required_duration_value = {}
+      required_field_mask_value = {}
+      required_int32_value = {}
+      required_uint32_value = {}
+      required_int64_value = {}
+      required_uint64_value = {}
+      required_float_value = {}
+      required_double_value = {}
+      required_string_value = {}
+      required_bool_value = {}
+      required_bytes_value = {}
+      required_repeated_any_value = []
+      required_repeated_struct_value = []
+      required_repeated_value_value = []
+      required_repeated_list_value_value = []
+      required_repeated_time_value = []
+      required_repeated_duration_value = []
+      required_repeated_field_mask_value = []
+      required_repeated_int32_value = []
+      required_repeated_uint32_value = []
+      required_repeated_int64_value = []
+      required_repeated_uint64_value = []
+      required_repeated_float_value = []
+      required_repeated_double_value = []
+      required_repeated_string_value = []
+      required_repeated_bool_value = []
+      required_repeated_bytes_value = []
 
       # Create expected grpc response
       expected_response = {}
@@ -8889,6 +9576,86 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
+        assert_equal(Google::Gax::to_proto(required_any_value, Google::Protobuf::Any), request.required_any_value)
+        assert_equal(Google::Gax::to_proto(required_struct_value, Google::Protobuf::Struct), request.required_struct_value)
+        assert_equal(Google::Gax::to_proto(required_value_value, Google::Protobuf::Value), request.required_value_value)
+        assert_equal(Google::Gax::to_proto(required_list_value_value, Google::Protobuf::ListValue), request.required_list_value_value)
+        assert_equal(Google::Gax::to_proto(required_time_value, Google::Protobuf::Timestamp), request.required_time_value)
+        assert_equal(Google::Gax::to_proto(required_duration_value, Google::Protobuf::Duration), request.required_duration_value)
+        assert_equal(Google::Gax::to_proto(required_field_mask_value, Google::Protobuf::FieldMask), request.required_field_mask_value)
+        assert_equal(Google::Gax::to_proto(required_int32_value, Google::Protobuf::Int32Value), request.required_int32_value)
+        assert_equal(Google::Gax::to_proto(required_uint32_value, Google::Protobuf::UInt32Value), request.required_uint32_value)
+        assert_equal(Google::Gax::to_proto(required_int64_value, Google::Protobuf::Int64Value), request.required_int64_value)
+        assert_equal(Google::Gax::to_proto(required_uint64_value, Google::Protobuf::UInt64Value), request.required_uint64_value)
+        assert_equal(Google::Gax::to_proto(required_float_value, Google::Protobuf::FloatValue), request.required_float_value)
+        assert_equal(Google::Gax::to_proto(required_double_value, Google::Protobuf::DoubleValue), request.required_double_value)
+        assert_equal(Google::Gax::to_proto(required_string_value, Google::Protobuf::StringValue), request.required_string_value)
+        assert_equal(Google::Gax::to_proto(required_bool_value, Google::Protobuf::BoolValue), request.required_bool_value)
+        assert_equal(Google::Gax::to_proto(required_bytes_value, Google::Protobuf::BytesValue), request.required_bytes_value)
+        required_repeated_any_value = required_repeated_any_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Any)
+        end
+        assert_equal(required_repeated_any_value, request.required_repeated_any_value)
+        required_repeated_struct_value = required_repeated_struct_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Struct)
+        end
+        assert_equal(required_repeated_struct_value, request.required_repeated_struct_value)
+        required_repeated_value_value = required_repeated_value_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Value)
+        end
+        assert_equal(required_repeated_value_value, request.required_repeated_value_value)
+        required_repeated_list_value_value = required_repeated_list_value_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::ListValue)
+        end
+        assert_equal(required_repeated_list_value_value, request.required_repeated_list_value_value)
+        required_repeated_time_value = required_repeated_time_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Timestamp)
+        end
+        assert_equal(required_repeated_time_value, request.required_repeated_time_value)
+        required_repeated_duration_value = required_repeated_duration_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Duration)
+        end
+        assert_equal(required_repeated_duration_value, request.required_repeated_duration_value)
+        required_repeated_field_mask_value = required_repeated_field_mask_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::FieldMask)
+        end
+        assert_equal(required_repeated_field_mask_value, request.required_repeated_field_mask_value)
+        required_repeated_int32_value = required_repeated_int32_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Int32Value)
+        end
+        assert_equal(required_repeated_int32_value, request.required_repeated_int32_value)
+        required_repeated_uint32_value = required_repeated_uint32_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::UInt32Value)
+        end
+        assert_equal(required_repeated_uint32_value, request.required_repeated_uint32_value)
+        required_repeated_int64_value = required_repeated_int64_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Int64Value)
+        end
+        assert_equal(required_repeated_int64_value, request.required_repeated_int64_value)
+        required_repeated_uint64_value = required_repeated_uint64_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::UInt64Value)
+        end
+        assert_equal(required_repeated_uint64_value, request.required_repeated_uint64_value)
+        required_repeated_float_value = required_repeated_float_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::FloatValue)
+        end
+        assert_equal(required_repeated_float_value, request.required_repeated_float_value)
+        required_repeated_double_value = required_repeated_double_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::DoubleValue)
+        end
+        assert_equal(required_repeated_double_value, request.required_repeated_double_value)
+        required_repeated_string_value = required_repeated_string_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::StringValue)
+        end
+        assert_equal(required_repeated_string_value, request.required_repeated_string_value)
+        required_repeated_bool_value = required_repeated_bool_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::BoolValue)
+        end
+        assert_equal(required_repeated_bool_value, request.required_repeated_bool_value)
+        required_repeated_bytes_value = required_repeated_bytes_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::BytesValue)
+        end
+        assert_equal(required_repeated_bytes_value, request.required_repeated_bytes_value)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
@@ -8930,7 +9697,39 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
-            required_map
+            required_map,
+            required_any_value,
+            required_struct_value,
+            required_value_value,
+            required_list_value_value,
+            required_time_value,
+            required_duration_value,
+            required_field_mask_value,
+            required_int32_value,
+            required_uint32_value,
+            required_int64_value,
+            required_uint64_value,
+            required_float_value,
+            required_double_value,
+            required_string_value,
+            required_bool_value,
+            required_bytes_value,
+            required_repeated_any_value,
+            required_repeated_struct_value,
+            required_repeated_value_value,
+            required_repeated_list_value_value,
+            required_repeated_time_value,
+            required_repeated_duration_value,
+            required_repeated_field_mask_value,
+            required_repeated_int32_value,
+            required_repeated_uint32_value,
+            required_repeated_int64_value,
+            required_repeated_uint64_value,
+            required_repeated_float_value,
+            required_repeated_double_value,
+            required_repeated_string_value,
+            required_repeated_bool_value,
+            required_repeated_bytes_value
           )
 
           # Verify the response
@@ -8966,7 +9765,39 @@ describe Library::V1::LibraryServiceClient do
             required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
-            required_map
+            required_map,
+            required_any_value,
+            required_struct_value,
+            required_value_value,
+            required_list_value_value,
+            required_time_value,
+            required_duration_value,
+            required_field_mask_value,
+            required_int32_value,
+            required_uint32_value,
+            required_int64_value,
+            required_uint64_value,
+            required_float_value,
+            required_double_value,
+            required_string_value,
+            required_bool_value,
+            required_bytes_value,
+            required_repeated_any_value,
+            required_repeated_struct_value,
+            required_repeated_value_value,
+            required_repeated_list_value_value,
+            required_repeated_time_value,
+            required_repeated_duration_value,
+            required_repeated_field_mask_value,
+            required_repeated_int32_value,
+            required_repeated_uint32_value,
+            required_repeated_int64_value,
+            required_repeated_uint64_value,
+            required_repeated_float_value,
+            required_repeated_double_value,
+            required_repeated_string_value,
+            required_repeated_bool_value,
+            required_repeated_bytes_value
           ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
@@ -9007,6 +9838,38 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
+      required_any_value = {}
+      required_struct_value = {}
+      required_value_value = {}
+      required_list_value_value = {}
+      required_time_value = {}
+      required_duration_value = {}
+      required_field_mask_value = {}
+      required_int32_value = {}
+      required_uint32_value = {}
+      required_int64_value = {}
+      required_uint64_value = {}
+      required_float_value = {}
+      required_double_value = {}
+      required_string_value = {}
+      required_bool_value = {}
+      required_bytes_value = {}
+      required_repeated_any_value = []
+      required_repeated_struct_value = []
+      required_repeated_value_value = []
+      required_repeated_list_value_value = []
+      required_repeated_time_value = []
+      required_repeated_duration_value = []
+      required_repeated_field_mask_value = []
+      required_repeated_int32_value = []
+      required_repeated_uint32_value = []
+      required_repeated_int64_value = []
+      required_repeated_uint64_value = []
+      required_repeated_float_value = []
+      required_repeated_double_value = []
+      required_repeated_string_value = []
+      required_repeated_bool_value = []
+      required_repeated_bytes_value = []
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9043,6 +9906,86 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
+        assert_equal(Google::Gax::to_proto(required_any_value, Google::Protobuf::Any), request.required_any_value)
+        assert_equal(Google::Gax::to_proto(required_struct_value, Google::Protobuf::Struct), request.required_struct_value)
+        assert_equal(Google::Gax::to_proto(required_value_value, Google::Protobuf::Value), request.required_value_value)
+        assert_equal(Google::Gax::to_proto(required_list_value_value, Google::Protobuf::ListValue), request.required_list_value_value)
+        assert_equal(Google::Gax::to_proto(required_time_value, Google::Protobuf::Timestamp), request.required_time_value)
+        assert_equal(Google::Gax::to_proto(required_duration_value, Google::Protobuf::Duration), request.required_duration_value)
+        assert_equal(Google::Gax::to_proto(required_field_mask_value, Google::Protobuf::FieldMask), request.required_field_mask_value)
+        assert_equal(Google::Gax::to_proto(required_int32_value, Google::Protobuf::Int32Value), request.required_int32_value)
+        assert_equal(Google::Gax::to_proto(required_uint32_value, Google::Protobuf::UInt32Value), request.required_uint32_value)
+        assert_equal(Google::Gax::to_proto(required_int64_value, Google::Protobuf::Int64Value), request.required_int64_value)
+        assert_equal(Google::Gax::to_proto(required_uint64_value, Google::Protobuf::UInt64Value), request.required_uint64_value)
+        assert_equal(Google::Gax::to_proto(required_float_value, Google::Protobuf::FloatValue), request.required_float_value)
+        assert_equal(Google::Gax::to_proto(required_double_value, Google::Protobuf::DoubleValue), request.required_double_value)
+        assert_equal(Google::Gax::to_proto(required_string_value, Google::Protobuf::StringValue), request.required_string_value)
+        assert_equal(Google::Gax::to_proto(required_bool_value, Google::Protobuf::BoolValue), request.required_bool_value)
+        assert_equal(Google::Gax::to_proto(required_bytes_value, Google::Protobuf::BytesValue), request.required_bytes_value)
+        required_repeated_any_value = required_repeated_any_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Any)
+        end
+        assert_equal(required_repeated_any_value, request.required_repeated_any_value)
+        required_repeated_struct_value = required_repeated_struct_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Struct)
+        end
+        assert_equal(required_repeated_struct_value, request.required_repeated_struct_value)
+        required_repeated_value_value = required_repeated_value_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Value)
+        end
+        assert_equal(required_repeated_value_value, request.required_repeated_value_value)
+        required_repeated_list_value_value = required_repeated_list_value_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::ListValue)
+        end
+        assert_equal(required_repeated_list_value_value, request.required_repeated_list_value_value)
+        required_repeated_time_value = required_repeated_time_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Timestamp)
+        end
+        assert_equal(required_repeated_time_value, request.required_repeated_time_value)
+        required_repeated_duration_value = required_repeated_duration_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Duration)
+        end
+        assert_equal(required_repeated_duration_value, request.required_repeated_duration_value)
+        required_repeated_field_mask_value = required_repeated_field_mask_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::FieldMask)
+        end
+        assert_equal(required_repeated_field_mask_value, request.required_repeated_field_mask_value)
+        required_repeated_int32_value = required_repeated_int32_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Int32Value)
+        end
+        assert_equal(required_repeated_int32_value, request.required_repeated_int32_value)
+        required_repeated_uint32_value = required_repeated_uint32_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::UInt32Value)
+        end
+        assert_equal(required_repeated_uint32_value, request.required_repeated_uint32_value)
+        required_repeated_int64_value = required_repeated_int64_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::Int64Value)
+        end
+        assert_equal(required_repeated_int64_value, request.required_repeated_int64_value)
+        required_repeated_uint64_value = required_repeated_uint64_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::UInt64Value)
+        end
+        assert_equal(required_repeated_uint64_value, request.required_repeated_uint64_value)
+        required_repeated_float_value = required_repeated_float_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::FloatValue)
+        end
+        assert_equal(required_repeated_float_value, request.required_repeated_float_value)
+        required_repeated_double_value = required_repeated_double_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::DoubleValue)
+        end
+        assert_equal(required_repeated_double_value, request.required_repeated_double_value)
+        required_repeated_string_value = required_repeated_string_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::StringValue)
+        end
+        assert_equal(required_repeated_string_value, request.required_repeated_string_value)
+        required_repeated_bool_value = required_repeated_bool_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::BoolValue)
+        end
+        assert_equal(required_repeated_bool_value, request.required_repeated_bool_value)
+        required_repeated_bytes_value = required_repeated_bytes_value.map do |req|
+          Google::Gax::to_proto(req, Google::Protobuf::BytesValue)
+        end
+        assert_equal(required_repeated_bytes_value, request.required_repeated_bytes_value)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
@@ -9085,7 +10028,39 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
-              required_map
+              required_map,
+              required_any_value,
+              required_struct_value,
+              required_value_value,
+              required_list_value_value,
+              required_time_value,
+              required_duration_value,
+              required_field_mask_value,
+              required_int32_value,
+              required_uint32_value,
+              required_int64_value,
+              required_uint64_value,
+              required_float_value,
+              required_double_value,
+              required_string_value,
+              required_bool_value,
+              required_bytes_value,
+              required_repeated_any_value,
+              required_repeated_struct_value,
+              required_repeated_value_value,
+              required_repeated_list_value_value,
+              required_repeated_time_value,
+              required_repeated_duration_value,
+              required_repeated_field_mask_value,
+              required_repeated_int32_value,
+              required_repeated_uint32_value,
+              required_repeated_int64_value,
+              required_repeated_uint64_value,
+              required_repeated_float_value,
+              required_repeated_double_value,
+              required_repeated_string_value,
+              required_repeated_bool_value,
+              required_repeated_bytes_value
             )
           end
 

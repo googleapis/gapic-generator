@@ -111,20 +111,33 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GrpcGapicRetryMapping grpcGapicRetryMapping) {
 
     Interface apiInterface = interfaceInput.getInterface();
     Map<Method, MethodConfigProto> methodsToGenerate = interfaceInput.getMethodsToGenerate();
     InterfaceConfigProto interfaceConfigProto = interfaceInput.getInterfaceConfigProto();
 
-    RetryCodesConfig retryCodesConfig =
-        RetryCodesConfig.create(
-            interfaceConfigProto,
-            new ArrayList<>(interfaceInput.getMethodsToGenerate().keySet()),
-            protoParser);
+    RetryCodesConfig retryCodesConfig;
+    ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition;
+    if (grpcGapicRetryMapping != null) {
+      // use the gRPC ServiceConfig retry mapping as the source
+      retryCodesConfig =
+          RetryCodesConfig.create(grpcGapicRetryMapping, interfaceConfigProto.getName());
+      retrySettingsDefinition =
+          RetryDefinitionsTransformer.createRetryDefinitionsFromGRPCServiceConfig(
+              grpcGapicRetryMapping, interfaceConfigProto.getName());
+    } else {
+      // use the GAPIC config as the source of retry
+      retryCodesConfig =
+          RetryCodesConfig.create(
+              interfaceConfigProto,
+              new ArrayList<>(interfaceInput.getMethodsToGenerate().keySet()),
+              protoParser);
 
-    ImmutableMap<String, RetryParamsDefinitionProto> retrySettingsDefinition =
-        RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
+      retrySettingsDefinition =
+          RetryDefinitionsTransformer.createRetrySettingsDefinition(interfaceConfigProto);
+    }
 
     ImmutableMap<String, GapicMethodConfig> methodConfigsMap;
     List<GapicMethodConfig> methodConfigs;
@@ -139,7 +152,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               resourceNameConfigs,
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
-              protoParser);
+              protoParser,
+              grpcGapicRetryMapping);
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -238,7 +252,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      ProtoParser protoParser) {
+      ProtoParser protoParser,
+      GrpcGapicRetryMapping retryMapping) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
@@ -257,7 +272,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
                 resourceNameConfigs,
                 retryCodesConfig,
                 retryParamsConfigNames,
-                protoParser);
+                protoParser,
+                retryMapping);
       } else {
         methodConfig =
             GapicMethodConfig.createGapicMethodConfigFromGapicYaml(
@@ -375,6 +391,16 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public boolean hasLongRunningOperations() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.hasLroConfig()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean hasIamMethods() {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isIam()) {
         return true;
       }
     }

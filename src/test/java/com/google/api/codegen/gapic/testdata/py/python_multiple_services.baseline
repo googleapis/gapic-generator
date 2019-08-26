@@ -618,7 +618,7 @@ intersphinx_mapping = {
     'google-gax': ('https://gax-python.readthedocs.io/en/latest/', None),
     'google.api_core': ('https://googleapis.github.io/google-cloud-python/latest', None),
     'grpc': ('https://grpc.io/grpc/python/', None),
-    'requests': ('http://docs.python-requests.org/en/master/', None),
+    'requests': ('https://2.python-requests.org/en/master/', None),
     'fastavro': ('https://fastavro.readthedocs.io/en/stable/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
 }
@@ -877,6 +877,7 @@ import pkg_resources
 import warnings
 
 from google.oauth2 import service_account
+import google.api_core.client_options
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
@@ -927,7 +928,7 @@ class DecrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=None, client_info=None):
+            client_config=None, client_info=None, client_options=None):
         """Constructor.
 
         Args:
@@ -957,6 +958,9 @@ class DecrementerServiceClient(object):
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
+            client_options (Union[dict, google.api_core.client_options.ClientOptions]):
+                Client options used to set user options on the client. API Endpoint
+                should be set through client_options.
         """
         # Raise deprecation warnings for things we want to go away.
         if client_config is not None:
@@ -970,6 +974,13 @@ class DecrementerServiceClient(object):
                           '`transport` instead.',
                           PendingDeprecationWarning, stacklevel=2)
 
+        api_endpoint = self.SERVICE_ADDRESS
+        if client_options:
+            if type(client_options) == dict:
+                client_options = google.api_core.client_options.from_dict(client_options)
+            if client_options.api_endpoint:
+                api_endpoint = client_options.api_endpoint
+
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
         # deserialization and actually sending data to the service.
@@ -978,6 +989,7 @@ class DecrementerServiceClient(object):
                 self.transport = transport(
                     credentials=credentials,
                     default_class=decrementer_service_grpc_transport.DecrementerServiceGrpcTransport,
+                    address=api_endpoint,
                 )
             else:
                 if credentials:
@@ -988,7 +1000,7 @@ class DecrementerServiceClient(object):
                 self.transport = transport
         else:
             self.transport = decrementer_service_grpc_transport.DecrementerServiceGrpcTransport(
-                address=self.SERVICE_ADDRESS,
+                address=api_endpoint,
                 channel=channel,
                 credentials=credentials,
             )
@@ -1043,8 +1055,8 @@ class DecrementerServiceClient(object):
             requests (iterator[dict|google.cloud.example_v1.proto.foo.multiple_services_pb2.DecrementRequest]): The input objects. If a dict is provided, it must be of the
                 same form as the protobuf message :class:`~google.cloud.example_v1.types.DecrementRequest`
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
-                to retry requests. If ``None`` is specified, requests will not
-                be retried.
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
@@ -1124,6 +1136,7 @@ import pkg_resources
 import warnings
 
 from google.oauth2 import service_account
+import google.api_core.client_options
 import google.api_core.gapic_v1.client_info
 import google.api_core.gapic_v1.config
 import google.api_core.gapic_v1.method
@@ -1174,7 +1187,7 @@ class IncrementerServiceClient(object):
     from_service_account_json = from_service_account_file
 
     def __init__(self, transport=None, channel=None, credentials=None,
-            client_config=None, client_info=None):
+            client_config=None, client_info=None, client_options=None):
         """Constructor.
 
         Args:
@@ -1204,6 +1217,9 @@ class IncrementerServiceClient(object):
                 API requests. If ``None``, then default info will be used.
                 Generally, you only need to set this if you're developing
                 your own client library.
+            client_options (Union[dict, google.api_core.client_options.ClientOptions]):
+                Client options used to set user options on the client. API Endpoint
+                should be set through client_options.
         """
         # Raise deprecation warnings for things we want to go away.
         if client_config is not None:
@@ -1217,6 +1233,13 @@ class IncrementerServiceClient(object):
                           '`transport` instead.',
                           PendingDeprecationWarning, stacklevel=2)
 
+        api_endpoint = self.SERVICE_ADDRESS
+        if client_options:
+            if type(client_options) == dict:
+                client_options = google.api_core.client_options.from_dict(client_options)
+            if client_options.api_endpoint:
+                api_endpoint = client_options.api_endpoint
+
         # Instantiate the transport.
         # The transport is responsible for handling serialization and
         # deserialization and actually sending data to the service.
@@ -1225,6 +1248,7 @@ class IncrementerServiceClient(object):
                 self.transport = transport(
                     credentials=credentials,
                     default_class=incrementer_service_grpc_transport.IncrementerServiceGrpcTransport,
+                    address=api_endpoint,
                 )
             else:
                 if credentials:
@@ -1235,7 +1259,7 @@ class IncrementerServiceClient(object):
                 self.transport = transport
         else:
             self.transport = incrementer_service_grpc_transport.IncrementerServiceGrpcTransport(
-                address=self.SERVICE_ADDRESS,
+                address=api_endpoint,
                 channel=channel,
                 credentials=credentials,
             )
@@ -1280,8 +1304,8 @@ class IncrementerServiceClient(object):
 
         Args:
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
-                to retry requests. If ``None`` is specified, requests will not
-                be retried.
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
             timeout (Optional[float]): The amount of time, in seconds, to wait
                 for the request to complete. Note that if ``retry`` is
                 specified, the timeout applies to each individual attempt.
@@ -1405,6 +1429,10 @@ class DecrementerServiceGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                }.items(),
             )
 
         self._channel = channel
@@ -1420,7 +1448,8 @@ class DecrementerServiceGrpcTransport(object):
     def create_channel(
                 cls,
                 address='no-path-templates.googleapis.com:443',
-                credentials=None):
+                credentials=None,
+                **kwargs):
         """Create and return a gRPC channel object.
 
         Args:
@@ -1430,6 +1459,8 @@ class DecrementerServiceGrpcTransport(object):
                 credentials identify this application to the service. If
                 none are specified, the client will attempt to ascertain
                 the credentials from the environment.
+            kwargs (dict): Keyword arguments, which are passed to the
+                channel creation.
 
         Returns:
             grpc.Channel: A gRPC channel object.
@@ -1438,6 +1469,7 @@ class DecrementerServiceGrpcTransport(object):
             address,
             credentials=credentials,
             scopes=cls._OAUTH_SCOPES,
+            **kwargs
         )
 
     @property
@@ -1525,6 +1557,10 @@ class IncrementerServiceGrpcTransport(object):
             channel = self.create_channel(
                 address=address,
                 credentials=credentials,
+                options={
+                    'grpc.max_send_message_length': -1,
+                    'grpc.max_receive_message_length': -1,
+                }.items(),
             )
 
         self._channel = channel
@@ -1540,7 +1576,8 @@ class IncrementerServiceGrpcTransport(object):
     def create_channel(
                 cls,
                 address='no-path-templates.googleapis.com:443',
-                credentials=None):
+                credentials=None,
+                **kwargs):
         """Create and return a gRPC channel object.
 
         Args:
@@ -1550,6 +1587,8 @@ class IncrementerServiceGrpcTransport(object):
                 credentials identify this application to the service. If
                 none are specified, the client will attempt to ascertain
                 the credentials from the environment.
+            kwargs (dict): Keyword arguments, which are passed to the
+                channel creation.
 
         Returns:
             grpc.Channel: A gRPC channel object.
@@ -1558,6 +1597,7 @@ class IncrementerServiceGrpcTransport(object):
             address,
             credentials=credentials,
             scopes=cls._OAUTH_SCOPES,
+            **kwargs
         )
 
     @property
@@ -1718,9 +1758,9 @@ import setuptools
 name = 'google-cloud-multiple_services'
 description = 'Google Example API API client library'
 version = '0.1.0'
-release_status = '5 - Production/Stable'
+release_status = 'Development Status :: 5 - Production/Stable'
 dependencies = [
-  'google-api-core[grpc] >= 1.4.1, < 2.0.0dev',
+  'google-api-core[grpc] >= 1.14.0, < 2.0.0dev',
 
   'python-other-package >= 12.1.0, < 13.5.1',
   'enum34; python_version < "3.4"',

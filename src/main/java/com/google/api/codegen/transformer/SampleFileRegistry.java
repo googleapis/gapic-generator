@@ -14,6 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
+import com.google.api.codegen.config.SampleConfig;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
@@ -22,61 +27,119 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@code SampleFileRegistry} is used to verify that the samples we generate with different
- * parameters have different paths, so they don't clobber each other.
+ * {@code SampleFileRegistry} is used to provide unique IDs for samples we generate with different
+ * so they don't clobber each other.
  *
- * <p>If a sample has a unique region tag, the file name of the sample will be its region tag in the
- * language-idiomatic case, followed by an appropriate extension.
+ * <p>If the user provided a sample ID, the user provided ID will be used as a base ID.
  *
- * <p>If the region tag of a sample is not unique, the file name of the sample will be constructed
- * by concatinating `method_name`, `calling_form` and `value_set_id`. The file name will be in the
- * language-idiomatic case and followed by an appropriate extension as well.
+ * <p>If the user did not provide a sample ID, the generator will use the combination of the word
+ * "sample" and the method name as a base ID.
+ *
+ * <p>If there are multiple calling forms specified for one base ID, the calling form will be added
+ * to the base ID.
+ *
+ * <p>If the base ID is still not unique, a numeric suffix will be added to disambiguate them.
  */
 public class SampleFileRegistry {
 
   private final Map<String, SampleInfo> files = new HashMap<>();
-  private final Map<String, Integer> regionTagCount = new HashMap<>();
+  private final Map<String, Integer> userProvidedIdCount = new HashMap<>();
+  private final Map<String, Integer> usedSuffixes = new HashMap<>();
   private final SurfaceNamer namer;
 
   public SampleFileRegistry(SurfaceNamer namer, List<MethodSampleView> allSamples) {
     this.namer = namer;
     for (MethodSampleView sample : allSamples) {
-      regionTagCount.put(
-          sample.regionTag(), regionTagCount.getOrDefault(sample.regionTag(), 0) + 1);
+      userProvidedIdCount.put(
+          sample.regionTag(), userProvidedIdCount.getOrDefault(sample.regionTag(), 0) + 1);
     }
   }
 
+  public SampleFileRegistry(
+      SurfaceNamer namer, Map<String, List<CallingForm>> configAndMatchingForms) {
+    this.namer = namer;
+    for (Map.Entry<String, List<CallingForm>> entry : configAndMatchingForms.entrySet()) {
+      userProvidedIdCount.put(entry.getKey(), entry.getValue().size());
+    }
+  }
+
+  public String getUniqueSampleId(SampleConfig config, CallingForm callingForm) {
+    String userProvidedId = config.id();
+    String calculatedBaseId;
+    if (!userProvidedId.equals("")) {
+      Integer count = userProvidedIdCount.get(userProvidedId);
+      Preconditions.checkState(
+          count != null && count > 0,
+          "sample not registered. Id: %s, calling_form: %s",
+          userProvidedId,
+          callingForm);
+
+      // There is only one valid calling form for this sample config,
+      // and the user provided id becomes the final unique id
+      if (count == 1) {
+        return userProvidedId;
+      }
+
+      // The user-provided sample id contains multiple calling forms
+      // We use `{id}_{calling_form}` as the new base id
+      calculatedBaseId =
+          Name.anyLower(userProvidedId, callingForm.toLowerUnderscore()).toLowerUnderscore();
+    } else {
+
+      // User did not provide a sample id. Use `sample_{method_name}`
+      // as a base id.
+      calculatedBaseId =
+          "sample_"
+              + Name.upperCamel(config.methodConfig().getMethodModel().getSimpleName())
+                  .toLowerUnderscore();
+    }
+
+    // Find a unique id based on base id and save the unique id.
+    String calculatedId = calculatedBaseId;
+    while (userProvidedIdCount.containsKey(calculatedId)) {
+      int suffix = firstNonNull(usedSuffixes.get(calculatedBaseId), 0) + 1;
+      usedSuffixes.put(calculatedId, suffix);
+      calculatedId = calculatedBaseId + '_' + suffix;
+    }
+    return calculatedId;
+  }
+
+  // TODO(hzyi): remove this method after migrating to sample config.
+  @Deprecated
   public String getSampleClassName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
     Preconditions.checkState(
-        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        userProvidedIdCount.get(regionTag) != null && userProvidedIdCount.get(regionTag) > 0,
         "Sample not registered.");
-    if (regionTagCount.get(regionTag) == 1) {
+    // method names can be in snake_case, camelCase or UpperCamelCase depending on the language
+    Name methodName =
+        Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
+    method = methodName.toLowerUnderscore();
+    if (userProvidedIdCount.get(regionTag) == 1) {
       return namer.getApiSampleClassName(regionTag);
-    } else {
-      String callingForm = sample.callingForm().toLowerCamel();
-      String valueSet = sample.valueSet().id();
-      return namer.getApiSampleClassName(
-          method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
     }
+    return namer.getApiSampleClassName(method, sample.callingForm().toLowerCamel(), sample.id());
   }
 
+  @Deprecated
   public String getSampleFileName(MethodSampleView sample, String method) {
     String regionTag = sample.regionTag();
     String callingForm = sample.callingForm().toLowerCamel();
-    String valueSet = sample.valueSet().id();
+    String id = sample.id();
     Preconditions.checkState(
-        regionTagCount.get(regionTag) != null && regionTagCount.get(regionTag) > 0,
+        userProvidedIdCount.get(regionTag) != null && userProvidedIdCount.get(regionTag) > 0,
         "Sample not registered.");
     String fileName;
-    if (regionTagCount.get(regionTag) == 1) {
+    if (userProvidedIdCount.get(regionTag) == 1) {
       fileName = namer.getApiSampleFileName(regionTag);
     } else {
-      fileName =
-          namer.getApiSampleFileName(
-              method, sample.callingForm().toLowerUnderscore(), sample.valueSet().id());
+      // method names can be in snake_case, camelCase or UpperCamelCase depending on the language
+      Name methodName =
+          Character.isUpperCase(method.charAt(0)) ? Name.anyCamel(method) : Name.anyLower(method);
+      method = methodName.toLowerUnderscore();
+      fileName = namer.getApiSampleFileName(method, callingForm, id);
     }
-    addFile(fileName, method, callingForm, valueSet, regionTag);
+    addFile(fileName, method, callingForm, id, regionTag);
     return fileName;
   }
 
@@ -86,13 +149,13 @@ public class SampleFileRegistry {
    * describing the conflict.
    */
   private void addFile(
-      String path, String method, String callingForm, String valueSet, String regionTag) {
+      String path, String method, String callingForm, String id, String regionTag) {
     SampleInfo current =
         SampleInfo.newBuilder()
             .path(path)
             .method(method)
             .callingForm(callingForm)
-            .valueSet(valueSet)
+            .id(id)
             .regionTag(regionTag)
             .build();
     SampleInfo previous = files.get(path);
@@ -114,7 +177,7 @@ public class SampleFileRegistry {
 
     public abstract String callingForm();
 
-    public abstract String valueSet();
+    public abstract String id();
 
     public abstract String regionTag();
 
@@ -130,7 +193,7 @@ public class SampleFileRegistry {
 
       public abstract SampleInfo.Builder callingForm(String value);
 
-      public abstract SampleInfo.Builder valueSet(String value);
+      public abstract SampleInfo.Builder id(String value);
 
       public abstract SampleInfo.Builder regionTag(String value);
 

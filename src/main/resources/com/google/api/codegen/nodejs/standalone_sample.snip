@@ -1,17 +1,27 @@
 @extends "nodejs/common.snip"
 @extends "nodejs/init_code.snip"
+@extends "metadatagen/samplegen.snip"
 
 @snippet generate(sampleFile)
   @let apiMethod = sampleFile.libraryMethod
-    @let sample = apiMethod.samples.get(0)
-      // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.valueSet.id}")
+    @let sample = sampleFile.sample
+      {@lineComments(sampleFile.fileHeader.copyrightLines)}
+      //
+      {@lineComments(sampleFile.fileHeader.licenseLines)}
+
+      // DO NOT EDIT! This is a generated sample ("{@sample.callingForm}",  "{@sample.id}")
+
+      // sample-metadata:
+      //   title: {@sample.title}
+      @if sample.descriptionLine
+        {@descriptionLines("//", sample.descriptionLine, sample.additionalDescriptionLines)}
+      @end
+      //   usage: node {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
+
       'use strict';
 
       // [START {@sample.regionTag}]
-      // [START {@sample.regionTag}_core]
       {@standaloneSample(apiMethod, sample)}
-
-      // [END {@sample.regionTag}_core]
       // [END {@sample.regionTag}]
       // tslint:disable-next-line:no-any
 

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -46,6 +47,18 @@ public class InitCodeTransformerTest {
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a%x", "a")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a.x%y", "a")));
     assertThrows(() -> InitCodeTransformer.assertNoOverlap(root, ImmutableList.of("a%x", "a%x")));
+  }
+
+  @Test
+  public void testCliFlagDefaultValue() {
+    assertThat(InitCodeTransformer.getEscapedCliFlagDefaultValue("abc")).isEqualTo("abc");
+    assertThat(InitCodeTransformer.getEscapedCliFlagDefaultValue("ab'c")).isEqualTo("\"ab'c\"");
+    assertThat(InitCodeTransformer.getEscapedCliFlagDefaultValue("abc def 123"))
+        .isEqualTo("\"abc def 123\"");
+    assertThat(InitCodeTransformer.getEscapedCliFlagDefaultValue("ab\\cd\n"))
+        .isEqualTo("\"ab\\\\cd\\n\"");
+    assertThat(InitCodeTransformer.getEscapedCliFlagDefaultValue("!~`@$%#"))
+        .isEqualTo("\"!~\\`@$%#\"");
   }
 
   private static void assertThrows(Runnable runnable) {

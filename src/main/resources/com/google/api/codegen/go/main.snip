@@ -22,6 +22,8 @@
             option.WithEndpoint("{@view.serviceHostname}:{@view.servicePort}"),
             option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
             option.WithScopes(DefaultAuthScopes()...),
+            option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+            			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
         }
     }
 
@@ -443,7 +445,7 @@
     @end
     ",
     @join headerRequestParam : headerRequestParams on ", "
-        "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}
+        "{@headerRequestParam.fullyQualifiedName}", url.QueryEscape(req.{@requestParamGetter(headerRequestParam.gettersChain)})
     @end
     )
 @end

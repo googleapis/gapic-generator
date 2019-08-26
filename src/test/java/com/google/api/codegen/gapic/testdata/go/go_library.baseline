@@ -197,6 +197,7 @@ import (
     "context"
     "fmt"
     "math"
+    "net/url"
     "time"
 
     "cloud.google.com/go/longrunning"
@@ -251,6 +252,8 @@ func defaultClientOptions() []option.ClientOption {
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
         option.WithScopes(DefaultAuthScopes()...),
+        option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+        			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
     }
 }
 
@@ -408,7 +411,7 @@ func (c *LibClient) CreateShelf(ctx context.Context, req *librarypb.CreateShelfR
 
 // GetShelf gets a shelf.
 func (c *LibClient) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetShelf[0:len(c.CallOptions.GetShelf):len(c.CallOptions.GetShelf)], opts...)
     var resp *librarypb.Shelf
@@ -463,7 +466,7 @@ func (c *LibClient) ListShelves(ctx context.Context, req *librarypb.ListShelvesR
 
 // DeleteShelf deletes a shelf.
 func (c *LibClient) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest, opts ...gax.CallOption) error {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.DeleteShelf[0:len(c.CallOptions.DeleteShelf):len(c.CallOptions.DeleteShelf)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -478,7 +481,7 @@ func (c *LibClient) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfR
 // other_shelf_name to shelf name, and deletes
 // other_shelf_name. Returns the updated shelf.
 func (c *LibClient) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.MergeShelves[0:len(c.CallOptions.MergeShelves):len(c.CallOptions.MergeShelves)], opts...)
     var resp *librarypb.Shelf
@@ -495,7 +498,7 @@ func (c *LibClient) MergeShelves(ctx context.Context, req *librarypb.MergeShelve
 
 // CreateBook creates a book.
 func (c *LibClient) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.CreateBook[0:len(c.CallOptions.CreateBook):len(c.CallOptions.CreateBook)], opts...)
     var resp *librarypb.Book
@@ -512,7 +515,7 @@ func (c *LibClient) CreateBook(ctx context.Context, req *librarypb.CreateBookReq
 
 // PublishSeries creates a series of books.
 func (c *LibClient) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest, opts ...gax.CallOption) (*librarypb.PublishSeriesResponse, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "shelf.name", req.GetShelf().GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "shelf.name", url.QueryEscape(req.GetShelf().GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.PublishSeries[0:len(c.CallOptions.PublishSeries):len(c.CallOptions.PublishSeries)], opts...)
     var resp *librarypb.PublishSeriesResponse
@@ -529,7 +532,7 @@ func (c *LibClient) PublishSeries(ctx context.Context, req *librarypb.PublishSer
 
 // GetBook gets a book.
 func (c *LibClient) GetBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBook[0:len(c.CallOptions.GetBook):len(c.CallOptions.GetBook)], opts...)
     var resp *librarypb.Book
@@ -546,7 +549,7 @@ func (c *LibClient) GetBook(ctx context.Context, req *librarypb.GetBookRequest, 
 
 // ListBooks lists books in a shelf.
 func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest, opts ...gax.CallOption) *BookIterator {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.ListBooks[0:len(c.CallOptions.ListBooks):len(c.CallOptions.ListBooks)], opts...)
     it := &BookIterator{}
@@ -585,7 +588,7 @@ func (c *LibClient) ListBooks(ctx context.Context, req *librarypb.ListBooksReque
 
 // DeleteBook deletes a book.
 func (c *LibClient) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest, opts ...gax.CallOption) error {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.DeleteBook[0:len(c.CallOptions.DeleteBook):len(c.CallOptions.DeleteBook)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -598,7 +601,7 @@ func (c *LibClient) DeleteBook(ctx context.Context, req *librarypb.DeleteBookReq
 
 // UpdateBook updates a book.
 func (c *LibClient) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.UpdateBook[0:len(c.CallOptions.UpdateBook):len(c.CallOptions.UpdateBook)], opts...)
     var resp *librarypb.Book
@@ -615,7 +618,7 @@ func (c *LibClient) UpdateBook(ctx context.Context, req *librarypb.UpdateBookReq
 
 // MoveBook moves a book to another shelf, and returns the new book.
 func (c *LibClient) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.MoveBook[0:len(c.CallOptions.MoveBook):len(c.CallOptions.MoveBook)], opts...)
     var resp *librarypb.Book
@@ -670,7 +673,7 @@ func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsR
 
 // AddComments adds comments to a book
 func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest, opts ...gax.CallOption) error {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.AddComments[0:len(c.CallOptions.AddComments):len(c.CallOptions.AddComments)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -683,7 +686,7 @@ func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsR
 
 // GetBookFromAnywhere gets a book from a shelf or archive.
 func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromAnywhere[0:len(c.CallOptions.GetBookFromAnywhere):len(c.CallOptions.GetBookFromAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
@@ -700,7 +703,7 @@ func (c *LibClient) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetB
 
 // GetBookFromAbsolutelyAnywhere test proper OneOf-Any resource name mapping
 func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v&%s=%v", "name", req.GetName(), "alt_book_name", req.GetAltBookName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v&%s=%v", "name", url.QueryEscape(req.GetName()), "alt_book_name", url.QueryEscape(req.GetAltBookName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBookFromAbsolutelyAnywhere[0:len(c.CallOptions.GetBookFromAbsolutelyAnywhere):len(c.CallOptions.GetBookFromAbsolutelyAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
@@ -717,7 +720,7 @@ func (c *LibClient) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *libr
 
 // UpdateBookIndex updates the index of a book.
 func (c *LibClient) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest, opts ...gax.CallOption) error {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.UpdateBookIndex[0:len(c.CallOptions.UpdateBookIndex):len(c.CallOptions.UpdateBookIndex)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -851,7 +854,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
 
 // addLabel adds a label to the entity.
 func (c *LibClient) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest, opts ...gax.CallOption) (*taggerpb.AddLabelResponse, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", req.GetResource()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", url.QueryEscape(req.GetResource())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.AddLabel[0:len(c.CallOptions.AddLabel):len(c.CallOptions.AddLabel)], opts...)
     var resp *taggerpb.AddLabelResponse
@@ -868,7 +871,7 @@ func (c *LibClient) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest,
 
 // GetBigBook test long-running operations
 func (c *LibClient) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigBookOperation, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBigBook[0:len(c.CallOptions.GetBigBook):len(c.CallOptions.GetBigBook)], opts...)
     var resp *longrunningpb.Operation
@@ -887,7 +890,7 @@ func (c *LibClient) GetBigBook(ctx context.Context, req *librarypb.GetBookReques
 
 // GetBigNothing test long-running operations with empty return type.
 func (c *LibClient) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigNothingOperation, error) {
-    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName()))
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)
     opts = append(c.CallOptions.GetBigNothing[0:len(c.CallOptions.GetBigNothing):len(c.CallOptions.GetBigNothing)], opts...)
     var resp *longrunningpb.Operation
@@ -1808,10 +1811,16 @@ package library
 import (
     pb ""
 
+    anypb "github.com/golang/protobuf/ptypes/any"
+    durationpb "github.com/golang/protobuf/ptypes/duration"
     emptypb "github.com/golang/protobuf/ptypes/empty"
+    structpbpb "github.com/golang/protobuf/ptypes/struct"
+    timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+    wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
+    field_maskpb "google.golang.org/genproto/protobuf/field_mask"
 )
 
 import (
@@ -4137,6 +4146,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
+    var requiredAnyValue *anypb.Any = &anypb.Any{}
+    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
+    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
+    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
+    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
+    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
+    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
+    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
+    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
+    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
+    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
+    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
+    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
+    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
+    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
+    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
+    var requiredRepeatedAnyValue []*anypb.Any = nil
+    var requiredRepeatedStructValue []*structpbpb.Struct = nil
+    var requiredRepeatedValueValue []*structpbpb.Value = nil
+    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
+    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
+    var requiredRepeatedDurationValue []*durationpb.Duration = nil
+    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
+    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
+    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
+    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
+    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
+    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
+    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
+    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
+    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
+    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4167,6 +4208,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
+        RequiredAnyValue: requiredAnyValue,
+        RequiredStructValue: requiredStructValue,
+        RequiredValueValue: requiredValueValue,
+        RequiredListValueValue: requiredListValueValue,
+        RequiredTimeValue: requiredTimeValue,
+        RequiredDurationValue: requiredDurationValue,
+        RequiredFieldMaskValue: requiredFieldMaskValue,
+        RequiredInt32Value: requiredInt32Value,
+        RequiredUint32Value: requiredUint32Value,
+        RequiredInt64Value: requiredInt64Value,
+        RequiredUint64Value: requiredUint64Value,
+        RequiredFloatValue: requiredFloatValue,
+        RequiredDoubleValue: requiredDoubleValue,
+        RequiredStringValue: requiredStringValue,
+        RequiredBoolValue: requiredBoolValue,
+        RequiredBytesValue: requiredBytesValue,
+        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
+        RequiredRepeatedStructValue: requiredRepeatedStructValue,
+        RequiredRepeatedValueValue: requiredRepeatedValueValue,
+        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
+        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
+        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
+        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
+        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
+        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
+        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
+        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
+        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
+        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
+        RequiredRepeatedStringValue: requiredRepeatedStringValue,
+        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
+        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4222,6 +4295,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
+    var requiredAnyValue *anypb.Any = &anypb.Any{}
+    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
+    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
+    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
+    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
+    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
+    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
+    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
+    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
+    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
+    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
+    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
+    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
+    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
+    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
+    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
+    var requiredRepeatedAnyValue []*anypb.Any = nil
+    var requiredRepeatedStructValue []*structpbpb.Struct = nil
+    var requiredRepeatedValueValue []*structpbpb.Value = nil
+    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
+    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
+    var requiredRepeatedDurationValue []*durationpb.Duration = nil
+    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
+    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
+    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
+    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
+    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
+    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
+    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
+    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
+    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
+    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4252,6 +4357,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
+        RequiredAnyValue: requiredAnyValue,
+        RequiredStructValue: requiredStructValue,
+        RequiredValueValue: requiredValueValue,
+        RequiredListValueValue: requiredListValueValue,
+        RequiredTimeValue: requiredTimeValue,
+        RequiredDurationValue: requiredDurationValue,
+        RequiredFieldMaskValue: requiredFieldMaskValue,
+        RequiredInt32Value: requiredInt32Value,
+        RequiredUint32Value: requiredUint32Value,
+        RequiredInt64Value: requiredInt64Value,
+        RequiredUint64Value: requiredUint64Value,
+        RequiredFloatValue: requiredFloatValue,
+        RequiredDoubleValue: requiredDoubleValue,
+        RequiredStringValue: requiredStringValue,
+        RequiredBoolValue: requiredBoolValue,
+        RequiredBytesValue: requiredBytesValue,
+        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
+        RequiredRepeatedStructValue: requiredRepeatedStructValue,
+        RequiredRepeatedValueValue: requiredRepeatedValueValue,
+        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
+        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
+        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
+        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
+        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
+        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
+        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
+        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
+        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
+        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
+        RequiredRepeatedStringValue: requiredRepeatedStringValue,
+        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
+        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4402,6 +4539,7 @@ package library
 import (
     pb ""
     "context"
+    "math"
 
     gax "github.com/googleapis/gax-go/v2"
     "google.golang.org/api/option"
@@ -4420,6 +4558,8 @@ func defaultMyProtoClientOptions() []option.ClientOption {
         option.WithEndpoint("library-example.googleapis.com:1234"),
         option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
         option.WithScopes(DefaultAuthScopes()...),
+        option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
+        			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
     }
 }
 

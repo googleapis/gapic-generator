@@ -1,36 +1,6 @@
 ============== file: README.md ==============
-# Node.js Clients for Google Example API ([Production/Stable](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
-
-[Google Example API][Product Documentation]:
-This description tests descriptions that span multiple lines. This is a service
-that increments and decrements a counter.
-- [Client Library Documentation][]
-- [Product Documentation][]
-
-## Quick Start
-In order to use this library, you first need to go through the following
-steps:
-
-1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the Google Example API.](https://console.cloud.google.com/apis/library/multiple_services.googleapis.com)
-4. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/master/guides/authentication)
-
-### Installation
-```
-$ npm install --save @google-cloud/multiple-services
-```
-
-### Next Steps
-- Read the [Client Library Documentation][] for Google Example API
-  to see other available methods on the client.
-- Read the [Google Example API Product documentation][Product Documentation]
-  to learn more about the product and see How-to Guides.
-- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/README.md)
-  to see the full list of Cloud APIs that we cover.
-
-[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-node/#/docs/multiple_services
-[Product Documentation]: https://cloud.google.com/multiple_services
+# Node.js Clients for Google Example API
+This is a generated README.md placeholder. Put your own documentation here.
 ============== file: package.json ==============
 {
   "repository": "GoogleCloudPlatform/google-cloud-node",
@@ -54,21 +24,19 @@ $ npm install --save @google-cloud/multiple-services
     "google cloud platform",
     "google cloud",
     "cloud",
-    "google multiple_services",
-    "multiple_services",
+    "google multiple-services",
+    "multiple-services",
     "Google Example API"
   ],
   "dependencies": {
-    "google-gax": "^1.1.0",
     "google-some-other-package-v1": "^0.2.1",
-    "lodash.union": "^4.6.0"
+    "lodash.union": "^4.6.0",
+    "google-gax": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
-    "through2": "^2.0.3"
+    "mocha": "^5.2.0"
   },
   "scripts": {
-    "publish-module": "node ../../scripts/publish.js multiple_services",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -219,10 +187,11 @@ class DecrementerServiceClient {
    *     your project ID will be detected automatically.
    * @param {function} [options.promise] - Custom promise module to use instead
    *     of native Promises.
-   * @param {string} [options.servicePath] - The domain name of the
+   * @param {string} [options.apiEndpoint] - The domain name of the
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
     const servicePath =
@@ -250,7 +219,7 @@ class DecrementerServiceClient {
 
     // Determine the client header string.
     const clientHeader = [
-      `gl-node/${process.version}`,
+      `gl-node/${process.versions.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
       `gapic/${VERSION}`,
@@ -552,10 +521,11 @@ class IncrementerServiceClient {
    *     your project ID will be detected automatically.
    * @param {function} [options.promise] - Custom promise module to use instead
    *     of native Promises.
-   * @param {string} [options.servicePath] - The domain name of the
+   * @param {string} [options.apiEndpoint] - The domain name of the
    *     API remote host.
    */
   constructor(opts) {
+    opts = opts || {};
     this._descriptors = {};
 
     const servicePath =
@@ -583,7 +553,7 @@ class IncrementerServiceClient {
 
     // Determine the client header string.
     const clientHeader = [
-      `gl-node/${process.version}`,
+      `gl-node/${process.versions.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
       `gapic/${VERSION}`,
@@ -719,6 +689,7 @@ class IncrementerServiceClient {
       callback = options;
       options = {};
     }
+    request = request || {};
     options = options || {};
     if (request === undefined) {
       request = {};
@@ -804,7 +775,7 @@ module.exports.DecrementerServiceClient = DecrementerServiceClient;
 'use strict';
 
 const assert = require('assert');
-const through2 = require('through2');
+const {PassThrough} = require('stream');
 
 const multipleServicesModule = require('../src');
 
@@ -827,6 +798,11 @@ describe('IncrementerServiceClient', () => {
     const port = multipleServicesModule.v1.IncrementerServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.IncrementerServiceClient();
+    assert(client);
   });
 
   describe('increment', () => {
@@ -888,6 +864,11 @@ describe('DecrementerServiceClient', () => {
     const port = multipleServicesModule.v1.DecrementerServiceClient.port;
     assert(port);
     assert(typeof port === 'number');
+  });
+
+  it('should create a client with no options', () => {
+    const client = new multipleServicesModule.v1.DecrementerServiceClient();
+    assert(client);
   });
 
   describe('decrement', () => {
@@ -957,13 +938,16 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
 
 function mockBidiStreamingGrpcMethod(expectedRequest, response, error) {
   return () => {
-    const mockStream = through2.obj((chunk, enc, callback) => {
-      assert.deepStrictEqual(chunk, expectedRequest);
-      if (error) {
-        callback(error);
-      }
-      else {
-        callback(null, response);
+    const mockStream = new PassThrough({
+      objectMode: true,
+      transform: (chunk, enc, callback) => {
+        assert.deepStrictEqual(chunk, expectedRequest);
+        if (error) {
+          callback(error);
+        }
+        else {
+          callback(null, response);
+        }
       }
     });
     return mockStream;

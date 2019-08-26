@@ -77,8 +77,8 @@ public abstract class InitCodeContext {
     return sampleParamConfigMap()
         .values()
         .stream()
-        .filter(SampleParameterConfig::isSampleArgument)
-        .map(SampleParameterConfig::identifier)
+        .filter(SampleParameterConfig::isInputParameter)
+        .map(SampleParameterConfig::field)
         .collect(ImmutableList.toImmutableList());
   }
 
