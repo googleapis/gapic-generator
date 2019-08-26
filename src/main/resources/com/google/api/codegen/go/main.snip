@@ -20,10 +20,10 @@
     func {@view.defaultClientOptionFunctionName}() []option.ClientOption {
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceHostname}:{@view.servicePort}"),
-            option.WithGRPCDialOption(grpc.WithDisableServiceConfig()),
             option.WithScopes(DefaultAuthScopes()...),
-            option.WithGRPCDialOption(grpc.WithDefaultCallOptions(
-            			grpc.MaxCallRecvMsgSize(math.MaxInt32))),
+            option.WithGRPCDialOption(
+              grpc.WithDisableServiceConfig(),
+              grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(math.MaxInt32))),
         }
     }
 
