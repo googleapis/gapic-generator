@@ -181,8 +181,6 @@ public class GapicGeneratorFactory {
           generators.add(
               newCsharpGenerator.apply(CSharpBasicPackageTransformer.forSamples(samplePathMapper)));
         }
-        generators.add(
-            newCsharpGenerator.apply(csharpSampleTransformer.createManifestTransformer()));
       }
 
     } else if (language.equals(GO)) {
@@ -228,8 +226,6 @@ public class GapicGeneratorFactory {
             generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer()));
             generators.add(
                 newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
-            generators.add(
-                newJavaGenerator.apply(JavaGapicSamplesTransformer.createManifestTransformer()));
           }
         }
 
@@ -321,17 +317,8 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(
                       new NodeJSSamplePackageMetadataTransformer(packageConfig))
                   .build();
-          CodeGenerator sampleManifestGenerator =
-              GapicGenerator.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(
-                      nodejsGapicSamplesTransformer.createManifestTransformer())
-                  .build();
           generators.add(sampleGenerator);
           generators.add(sampleMetadataGenerator);
-          generators.add(sampleManifestGenerator);
         }
 
         CodeGenerator messageGenerator =
@@ -405,15 +392,7 @@ public class GapicGeneratorFactory {
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(phpGapicSamplesTransformer)
                   .build();
-          CodeGenerator sampleManifestGenerator =
-              GapicGenerator.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(phpGapicSamplesTransformer.createManifestTransformer())
-                  .build();
           generators.add(sampleGenerator);
-          generators.add(sampleManifestGenerator);
         }
       }
       if (artifactFlags.testGeneratorEnabled()) {
@@ -461,16 +440,7 @@ public class GapicGeneratorFactory {
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                   .setModelToViewTransformer(pythonGapicSampleTransformer)
                   .build();
-          CodeGenerator sampleManifestGenerator =
-              GapicGenerator.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
-                  .setModelToViewTransformer(
-                      pythonGapicSampleTransformer.createManifestTransformer())
-                  .build();
           generators.add(sampleGenerator);
-          generators.add(sampleManifestGenerator);
         }
 
         CodeGenerator metadataGenerator =
@@ -550,17 +520,8 @@ public class GapicGeneratorFactory {
                   .setModelToViewTransformer(
                       new RubySamplePackageMetadataTransformer(packageConfig))
                   .build();
-          CodeGenerator sampleManifestGenerator =
-              GapicGenerator.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(
-                      rubyGapicSamplesTransformer.createManifestTransformer())
-                  .build();
           generators.add(sampleGenerator);
           generators.add(sampleMetadataGenerator);
-          generators.add(sampleManifestGenerator);
         }
         generators.add(mainGenerator);
         generators.add(clientConfigGenerator);
