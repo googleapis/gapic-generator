@@ -122,12 +122,14 @@ def _proto_custom_library_impl(ctx):
     plugin = ctx.executable.plugin
 
     if plugin:
-        extra_inputs.extend(ctx.files.plugin_file_args)
         tools.append(plugin)
-        output_paths = \
-            ctx.attr.plugin_args + \
-            [f.path for f in ctx.files.plugin_file_args] + \
-            output_paths
+        plugin_file_args = []
+        for t, k in ctx.attr.plugin_file_args.items():
+            for f in t.files.to_list():
+                extra_inputs.append(f)
+                plugin_file_args.append("%s=%s" % (k, f.path) if k else f.path)
+        if ctx.attr.plugin_args or plugin_file_args:
+            output_paths.insert(0, ",".join(ctx.attr.plugin_args + plugin_file_args))
         calculated_args = [
             "--plugin=protoc-gen-%s=%s" % (output_type, plugin.path),
         ]
@@ -177,11 +179,11 @@ proto_custom_library = rule(
     attrs = {
         "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
-        "plugin_file_args": attr.label_list(
+        "plugin_file_args": attr.label_keyed_string_dict(
             mandatory = False,
             allow_empty = True,
             allow_files = True,
-            default = [],
+            default = {},
         ),
         "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
         "extra_args": attr.string_list(mandatory = False, default = []),

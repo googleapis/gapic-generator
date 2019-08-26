@@ -33,7 +33,7 @@ def ruby_grpc_library(name, srcs, deps, **kwargs):
     proto_custom_library(
         name = srcjar_target_name,
         deps = srcs,
-        plugin = Label("@com_github_grpc_grpc//:grpc_ruby_plugin"),
+        plugin = Label("@com_github_grpc_grpc//src/compiler:grpc_ruby_plugin"),
         output_type = "grpc",
         output_suffix = ".srcjar",
         extra_args = [
