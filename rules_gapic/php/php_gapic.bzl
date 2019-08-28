@@ -33,7 +33,7 @@ def php_grpc_library(name, srcs, deps, **kwargs):
     proto_custom_library(
         name = srcjar_target_name,
         deps = srcs,
-        plugin = Label("@com_github_grpc_grpc//:grpc_php_plugin"),
+        plugin = Label("@com_github_grpc_grpc//src/compiler:grpc_php_plugin"),
         plugin_args = ["class_suffix=GrpcClient"],
         output_type = "grpc",
         output_suffix = ".srcjar",
@@ -57,8 +57,9 @@ def _php_gapic_postprocessed_srcjar_impl(ctx):
 
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
-    {php} {code_fixer} fix --rules=@Symfony,-phpdoc_annotation_without_dot {output_dir_path}
-    {php} {code_fixer} fix \
+    {php} {code_fixer} fix --using-cache=false \
+        --rules=@Symfony,-phpdoc_annotation_without_dot {output_dir_path}
+    {php} {code_fixer} fix --using-cache=false \
         --rules='{{"phpdoc_no_alias_tag":{{"replacements":{{"var":"type"}}}}}}' {output_dir_path}
     {php} {code_sniffer} --standard=PSR2 {output_dir_path}
     pushd {output_dir_path}

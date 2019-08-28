@@ -34,17 +34,6 @@ public class NodeJSCodePathMapper implements GapicCodePathMapper {
     return Joiner.on("/").join(dirs);
   }
 
-  @Override
-  public String getSamplesOutputPath(String elementFullName, ProductConfig config, String method) {
-    ArrayList<String> dirs = new ArrayList<>();
-    dirs.add("samples");
-    String apiVersion = getVersion(elementFullName);
-    if (!apiVersion.isEmpty()) {
-      dirs.add(apiVersion);
-    }
-    return Joiner.on("/").join(dirs);
-  }
-
   private String getVersion(String elementFullName) {
     String apiVersion = "";
     List<String> packages = Splitter.on(".").splitToList(elementFullName);

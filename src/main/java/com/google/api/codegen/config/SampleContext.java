@@ -16,7 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** The context of transforming a sample into a view model. */
 @AutoValue
@@ -35,8 +37,15 @@ public abstract class SampleContext {
 
   public abstract SampleConfig sampleConfig();
 
+  /** Used by Java and C#. */
+  @Nullable
+  public abstract ClientMethodType clientMethodType();
+
   /** Whether to pass a single object or a list of fields to the method call. */
   public abstract InitCodeOutputType initCodeOutputType();
+
+  @Nullable
+  public abstract MethodContext methodContext();
 
   public static Builder newBuilder() {
     return new AutoValue_SampleContext.Builder();
@@ -54,6 +63,10 @@ public abstract class SampleContext {
     public abstract Builder sampleConfig(SampleConfig val);
 
     public abstract Builder initCodeOutputType(InitCodeOutputType val);
+
+    public abstract Builder clientMethodType(ClientMethodType val);
+
+    public abstract Builder methodContext(MethodContext val);
 
     public abstract SampleContext build();
   }

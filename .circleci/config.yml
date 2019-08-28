@@ -68,7 +68,7 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
     # https://github.com/googleapis/gapic-generator/issues/2237
     - image: googleapis/nox:0.17.0
-    - image: gcr.io/gapic-images/gapic-showcase:0.2.0
+    - image: gcr.io/gapic-images/gapic-showcase:0.4.0
   steps:
     - attach_workspace:
         at: workspace
@@ -353,13 +353,24 @@ jobs:
     working_directory: /tmp/
     environment:
       TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
-    docker:
-      - image: l.gcr.io/google/bazel:0.23.1
+      BAZEL_VERSION: 0.28.1
+      PYTHON_VERSION: 3.5.2
+    machine: true
     steps:
       - checkout:
           path: gapic-generator
       - attach_workspace:
           at: workspace
+      - run:
+          name: Set Python version
+          command: |
+            pyenv global ${PYTHON_VERSION}
+      - run:
+          name: Install Bazel
+          command: |
+            wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh -O bazel_installer.sh
+            chmod +x bazel_installer.sh
+            ./bazel_installer.sh --user
       - run:
           name: Make reports directory
           command: |
@@ -368,11 +379,7 @@ jobs:
           name: Run unit tests for gapic-generator
           command: |
             cd gapic-generator
-            bazel --host_jvm_args="-Xmx512m" \
-              test //... \
-              --jvmopt="-Xmx512m" \
-              --local_resources=3072,0.5,1.0 \
-              --experimental_enable_repo_mapping
+            bazel test //...
             find . -type f -regex ".*/bazel-testlogs/.*xml" -exec cp {} ${TEST_REPORTS_DIR} \;
       - store_test_results:
           path: bazel/reports/gapic-generator
@@ -400,7 +407,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.30.0
+      - image: googleapis/artman:0.32.1
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -415,7 +422,7 @@ jobs:
           name: Generate Pubsub Libraries
           command: |
             cd workspace/gapic-generator
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/pubsub/artman_pubsub.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -424,7 +431,7 @@ jobs:
           name: Generate Logging Libraries
           command: |
             cd workspace/gapic-generator
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/logging/artman_logging.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -434,7 +441,7 @@ jobs:
           command: |
             cd workspace/gapic-generator
             # TODO: Move off artman once package2.yaml is no longer needed.
-            python generate_clients.py \
+            python3 generate_clients.py \
                 google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
@@ -443,7 +450,7 @@ jobs:
          name: Generate Showcase Libraries
          command: |
            cd workspace/gapic-generator
-           python generate_clients.py \
+           python3 generate_clients.py \
                google/showcase/artman_showcase.yaml \
                --user-config=.circleci/artman_config.yaml \
                --log-dir=${ARTMAN_REPORTS_DIR} \
@@ -721,7 +728,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:0.30.0
+      - image: googleapis/artman:0.32.1
     steps:
       - attach_workspace:
           at: workspace

@@ -84,10 +84,11 @@ public abstract class DynamicLangGapicSamplesTransformer
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))
-            .filter(i -> productConfig.hasInterfaceConfig(i))
+            .filter(iface -> productConfig.hasInterfaceConfig(iface))
             .map(
-                i ->
-                    GapicInterfaceContext.create(i, productConfig, typeTable, namer, featureConfig))
+                iface ->
+                    GapicInterfaceContext.create(
+                        iface, productConfig, typeTable, namer, featureConfig))
             .collect(ImmutableList.toImmutableList());
 
     ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
@@ -99,8 +100,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     }
 
     // Generate samples using sample configs.
-    return generateSamplesFromSampleConfigs(
-        interfaceContexts, productConfig, namer, sampleConfigTable);
+    return generateSamplesFromSampleConfigs(interfaceContexts, productConfig);
   }
 
   @Override
@@ -138,12 +138,35 @@ public abstract class DynamicLangGapicSamplesTransformer
   }
 
   private List<ViewModel> generateSamplesFromSampleConfigs(
-      List<InterfaceContext> interfaceContexts,
-      GapicProductConfig productConfig,
-      SurfaceNamer namer,
-      ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable) {
+      List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig) {
 
-    // Loop through sample configs and and map each sample id to its matching calling forms.
+    SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
+    List<SampleContext> sampleContexts = getSampleContexts(interfaceContexts, productConfig);
+    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+    for (SampleContext sampleContext : sampleContexts) {
+      OptionalArrayMethodView methodView =
+          apiMethodTransformer.generateApiMethod(sampleContext.methodContext(), sampleContext);
+
+      MethodSampleView methodSampleView = methodView.samples().get(0);
+      String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
+
+      InterfaceContext interfaceContext =
+          sampleContext.methodContext().getSurfaceInterfaceContext();
+      sampleFileViews.add(
+          newSampleFileView(
+              productConfig, interfaceContext, fileName, methodView, methodSampleView));
+    }
+    return sampleFileViews.build();
+  }
+
+  public List<SampleContext> getSampleContexts(
+      List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig) {
+    SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
+    ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
+        productConfig.getSampleConfigTable();
+    ImmutableList.Builder<SampleContext> sampleContexts = ImmutableList.builder();
+
+    // Loop through sample configs and and map each sample ID to its matching calling forms.
     // We need this information when we need to create, in a language-specific way, unique
     // sample ids when one sample id has multiple matching calling forms
     Map<String, List<CallingForm>> configsAndMatchingForms = new HashMap<>();
@@ -169,8 +192,6 @@ public abstract class DynamicLangGapicSamplesTransformer
     }
 
     SampleFileRegistry registry = new SampleFileRegistry(namer, configsAndMatchingForms);
-
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
     for (InterfaceContext interfaceContext : interfaceContexts) {
       for (MethodModel method : interfaceContext.getSupportedMethods()) {
         MethodContext methodContext = interfaceContext.asRequestMethodContext(method);
@@ -198,20 +219,14 @@ public abstract class DynamicLangGapicSamplesTransformer
                     .callingForm(form)
                     .sampleConfig(sampleConfig)
                     .initCodeOutputType(initCodeOutputType)
+                    .methodContext(methodContext)
                     .build();
-            OptionalArrayMethodView methodView =
-                apiMethodTransformer.generateApiMethod(methodContext, sampleContext);
-
-            MethodSampleView methodSampleView = methodView.samples().get(0);
-            String fileName = namer.getApiSampleFileName(sampleContext.uniqueSampleId());
-            sampleFileViews.add(
-                newSampleFileView(
-                    productConfig, interfaceContext, fileName, methodView, methodSampleView));
+            sampleContexts.add(sampleContext);
           }
         }
       }
     }
-    return sampleFileViews.build();
+    return sampleContexts.build();
   }
 
   private DynamicLangSampleView newSampleFileView(
@@ -230,11 +245,7 @@ public abstract class DynamicLangGapicSamplesTransformer
       OptionalArrayMethodView method,
       MethodSampleView sample) {
     String outputPath =
-        Paths.get(
-                pathMapper.getSamplesOutputPath(
-                    context.getInterfaceModel().getFullName(), productConfig, method.name()),
-                sampleFileName)
-            .toString();
+        Paths.get(pathMapper.getOutputPath(null, productConfig), sampleFileName).toString();
     return DynamicLangSampleView.newBuilder()
         .templateFileName(templateFileName)
         .fileHeader(fileHeaderTransformer.generateFileHeader(context))

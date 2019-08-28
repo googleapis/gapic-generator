@@ -27,6 +27,7 @@ import com.google.api.codegen.config.MethodContext;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 
@@ -132,6 +133,42 @@ public enum CallingForm {
   private static final Table<TargetLanguage, RpcType, ImmutableList<CallingForm>>
       CALLING_FORM_TABLE =
           ImmutableTable.<TargetLanguage, RpcType, ImmutableList<CallingForm>>builder()
+              .put(
+                  CSHARP,
+                  RpcType.UNARY,
+                  ImmutableList.of(Request, RequestAsync, Flattened, FlattenedAsync))
+              .put(
+                  CSHARP,
+                  RpcType.PAGED_STREAMING,
+                  ImmutableList.of(
+                      RequestPaged,
+                      RequestPagedAll,
+                      RequestPagedPageSize,
+                      FlattenedPaged,
+                      FlattenedPagedAll,
+                      FlattenedPagedPageSize,
+                      RequestAsyncPagedAll,
+                      RequestAsyncPagedPageSize,
+                      FlattenedAsyncPaged,
+                      FlattenedAsyncPagedAll,
+                      FlattenedAsyncPagedPageSize))
+              .put(
+                  CSHARP,
+                  RpcType.LRO,
+                  ImmutableList.of(
+                      LongRunningFlattenedPollUntilComplete,
+                      LongRunningFlattenedAsyncPollUntilComplete,
+                      LongRunningRequestPollUntilComplete,
+                      LongRunningRequestAsyncPollUntilComplete))
+              .put(
+                  CSHARP,
+                  RpcType.SERVER_STREAMING,
+                  ImmutableList.of(RequestStreamingServer, FlattenedStreamingServer))
+              .put(
+                  CSHARP,
+                  RpcType.BIDI_STREAMING,
+                  ImmutableList.of(RequestStreamingBidi, FlattenedStreamingBidi))
+              .put(CSHARP, RpcType.CLIENT_STREAMING, ImmutableList.of())
               .put(JAVA, RpcType.UNARY, ImmutableList.of(Request, Flattened, Callable))
               .put(
                   JAVA,
@@ -247,5 +284,21 @@ public enum CallingForm {
       MethodContext methodContext, TargetLanguage lang) {
     Preconditions.checkArgument(lang != TargetLanguage.GO, "Go is not supported for now.");
     return DEFAULT_CALLING_FORM_TABLE.get(lang, RpcType.fromMethodContext(methodContext));
+  }
+
+  /** Whether this calling form takes a flattened parameter list. */
+  public static boolean isFlattened(CallingForm form) {
+    return ImmutableSet.<CallingForm>of(
+            Flattened,
+            FlattenedPaged,
+            FlattenedPagedAll,
+            FlattenedPagedPageSize,
+            FlattenedAsync,
+            FlattenedAsyncPaged,
+            FlattenedAsyncPagedAll,
+            FlattenedAsyncPagedPageSize,
+            FlattenedStreamingBidi,
+            FlattenedStreamingServer)
+        .contains(form);
   }
 }

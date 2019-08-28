@@ -151,7 +151,8 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
     MethodConfig methodConfig = methodContext.getMethodConfig();
     StaticLangApiMethodView.Builder apiMethodView;
     if (methodConfig.isPageStreaming()) {
-      apiMethodView = apiMethodTransformer.generatePagedFlattenedMethod(methodContext).toBuilder();
+      apiMethodView =
+          apiMethodTransformer.generatePagedFlattenedMethod(methodContext, null).toBuilder();
       FieldConfig resourceFieldConfig =
           methodContext.getMethodConfig().getPageStreaming().getResourcesFieldConfig();
       String callerResponseTypeName =
@@ -161,10 +162,10 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer<P
       ArrayList<ParamWithSimpleDoc> emptyParams = new ArrayList<ParamWithSimpleDoc>();
       apiMethodView =
           apiMethodTransformer
-              .generateOperationFlattenedMethod(methodContext, emptyParams)
+              .generateOperationFlattenedMethod(methodContext, emptyParams, null)
               .toBuilder();
     } else {
-      apiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext).toBuilder();
+      apiMethodView = apiMethodTransformer.generateFlattenedMethod(methodContext, null).toBuilder();
     }
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =

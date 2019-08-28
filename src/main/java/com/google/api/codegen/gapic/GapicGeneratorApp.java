@@ -24,9 +24,11 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
 import com.google.api.codegen.util.ProtoParser;
+import com.google.api.codegen.util.SampleConfigSanitizer;
 import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -41,7 +43,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +105,13 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "Whether to generate samples in non-production-ready languages.",
           false);
 
+  public static final Option<String> GRPC_SERVICE_CONFIG =
+      ToolOptions.createOption(
+          String.class,
+          "grpc_service_config",
+          "The filepath of the JSON gRPC Service Config file.",
+          "");
+
   private ArtifactType artifactType;
 
   private final GapicWriter gapicWriter;
@@ -149,13 +160,24 @@ public class GapicGeneratorApp extends ToolDriverBase {
       }
     }
 
+    // if gRPC Service Config is given, consume it
+    String gRPCServiceConfigPath = options.get(GRPC_SERVICE_CONFIG);
+    ServiceConfig gRPCServiceConfig = null;
+    if (!Strings.isNullOrEmpty(gRPCServiceConfigPath)) {
+      ServiceConfig.Builder builder = ServiceConfig.newBuilder();
+      FileReader file = new FileReader(gRPCServiceConfigPath);
+      JsonFormat.parser().merge(file, builder);
+
+      gRPCServiceConfig = builder.build();
+    }
+
     // Read the sample configs, if they are given, and convert them to protos.
     SampleConfigProto sampleConfigProto = null;
     List<String> sampleConfigFileNames = options.get(SAMPLE_CONFIG_FILES);
     if (sampleConfigFileNames.size() > 0) {
       ConfigSource configSource =
           loadConfigFromFiles(
-              sampleConfigFileNames,
+              SampleConfigSanitizer.sanitize(sampleConfigFileNames),
               SampleConfigProto.getDescriptor().getFullName(),
               SampleConfigProto.getDefaultInstance());
 
@@ -177,15 +199,6 @@ public class GapicGeneratorApp extends ToolDriverBase {
     ApiDefaultsConfig apiDefaultsConfig = ApiDefaultsConfig.load();
     DependenciesConfig dependenciesConfig = DependenciesConfig.load();
 
-    PackagingConfig packagingConfig = null;
-    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
-      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
-    }
-
-    PackageMetadataConfig packageConfig =
-        PackageMetadataConfig.createFromPackaging(
-            apiDefaultsConfig, dependenciesConfig, packagingConfig);
-
     TargetLanguage language;
     if (!Strings.isNullOrEmpty(options.get(LANGUAGE))) {
       language = TargetLanguage.fromString(options.get(LANGUAGE).toUpperCase());
@@ -197,11 +210,29 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
     GapicProductConfig productConfig =
         GapicProductConfig.create(
-            model, configProto, sampleConfigProto, protoPackage, clientPackage, language);
+            model,
+            configProto,
+            sampleConfigProto,
+            protoPackage,
+            clientPackage,
+            language,
+            gRPCServiceConfig);
     if (productConfig == null) {
       ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;
     }
+
+    PackagingConfig packagingConfig;
+    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG2_FILE))) {
+      packagingConfig = PackagingConfig.load(options.get(PACKAGE_CONFIG2_FILE));
+    } else {
+      packagingConfig =
+          PackagingConfig.loadFromProductConfig(productConfig.getInterfaceConfigMap());
+    }
+
+    PackageMetadataConfig packageConfig =
+        PackageMetadataConfig.createFromPackaging(
+            apiDefaultsConfig, dependenciesConfig, packagingConfig);
 
     // TODO(hzyi-google): Once we switch to sample configs, require an
     // additional check to generate samples:

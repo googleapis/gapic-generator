@@ -20,7 +20,6 @@ package com.google.api.codegen.transformer.php;
  */
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -29,13 +28,16 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SampleManifestTransformer;
 import com.google.api.codegen.transformer.SampleTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.DynamicLangSampleView;
 import com.google.api.codegen.viewmodel.MethodSampleView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.common.base.Strings;
 import java.io.File;
+import java.util.function.Function;
 
 public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransformer {
 
@@ -54,19 +56,25 @@ public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransform
   private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
 
-  // TODO(hzyi): `packageConfig` is not actually needed. Remove it in a coming PR.
-  public PhpGapicSamplesTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
+  private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
+      product -> new PhpSurfaceNamer(product.getPackageName());
+  private static final Function<String, ModelTypeTable> newTypeTable =
+      pkg ->
+          new ModelTypeTable(
+              new PhpTypeTable(pkg + "\\Samples"),
+              new PhpModelTypeNameConverter(pkg + "\\Samples"));
+  private final GapicCodePathMapper pathMapper;
+
+  public PhpGapicSamplesTransformer(GapicCodePathMapper pathMapper) {
     super(
         STANDALONE_SAMPLE_TEMPLATE_FILENAME,
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
         new PhpFeatureConfig(),
-        p -> new PhpSurfaceNamer(p.getPackageName()),
-        p ->
-            new ModelTypeTable(
-                new PhpTypeTable(p + "\\Samples"), new PhpModelTypeNameConverter(p + "\\Samples")));
+        newSurfaceNamer,
+        newTypeTable);
+    this.pathMapper = pathMapper;
   }
 
   @Override
@@ -87,5 +95,14 @@ public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransform
             + "/vendor/autoload.php'";
 
     return builder.autoloadPath(autoloadPath);
+  }
+
+  public SampleManifestTransformer createManifestTransformer() {
+    return new SampleManifestTransformer(
+        new PhpSampleMetadataNamer(this, pathMapper),
+        p -> new PhpFeatureConfig(),
+        newSurfaceNamer,
+        newTypeTable,
+        pathMapper);
   }
 }

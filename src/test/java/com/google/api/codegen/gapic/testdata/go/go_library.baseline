@@ -1810,10 +1810,16 @@ package library
 import (
     pb ""
 
+    anypb "github.com/golang/protobuf/ptypes/any"
+    durationpb "github.com/golang/protobuf/ptypes/duration"
     emptypb "github.com/golang/protobuf/ptypes/empty"
+    structpbpb "github.com/golang/protobuf/ptypes/struct"
+    timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+    wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
+    field_maskpb "google.golang.org/genproto/protobuf/field_mask"
 )
 
 import (
@@ -4139,6 +4145,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
+    var requiredAnyValue *anypb.Any = &anypb.Any{}
+    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
+    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
+    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
+    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
+    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
+    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
+    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
+    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
+    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
+    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
+    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
+    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
+    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
+    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
+    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
+    var requiredRepeatedAnyValue []*anypb.Any = nil
+    var requiredRepeatedStructValue []*structpbpb.Struct = nil
+    var requiredRepeatedValueValue []*structpbpb.Value = nil
+    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
+    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
+    var requiredRepeatedDurationValue []*durationpb.Duration = nil
+    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
+    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
+    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
+    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
+    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
+    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
+    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
+    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
+    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
+    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4169,6 +4207,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
+        RequiredAnyValue: requiredAnyValue,
+        RequiredStructValue: requiredStructValue,
+        RequiredValueValue: requiredValueValue,
+        RequiredListValueValue: requiredListValueValue,
+        RequiredTimeValue: requiredTimeValue,
+        RequiredDurationValue: requiredDurationValue,
+        RequiredFieldMaskValue: requiredFieldMaskValue,
+        RequiredInt32Value: requiredInt32Value,
+        RequiredUint32Value: requiredUint32Value,
+        RequiredInt64Value: requiredInt64Value,
+        RequiredUint64Value: requiredUint64Value,
+        RequiredFloatValue: requiredFloatValue,
+        RequiredDoubleValue: requiredDoubleValue,
+        RequiredStringValue: requiredStringValue,
+        RequiredBoolValue: requiredBoolValue,
+        RequiredBytesValue: requiredBytesValue,
+        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
+        RequiredRepeatedStructValue: requiredRepeatedStructValue,
+        RequiredRepeatedValueValue: requiredRepeatedValueValue,
+        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
+        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
+        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
+        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
+        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
+        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
+        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
+        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
+        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
+        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
+        RequiredRepeatedStringValue: requiredRepeatedStringValue,
+        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
+        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4224,6 +4294,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
+    var requiredAnyValue *anypb.Any = &anypb.Any{}
+    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
+    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
+    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
+    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
+    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
+    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
+    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
+    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
+    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
+    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
+    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
+    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
+    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
+    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
+    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
+    var requiredRepeatedAnyValue []*anypb.Any = nil
+    var requiredRepeatedStructValue []*structpbpb.Struct = nil
+    var requiredRepeatedValueValue []*structpbpb.Value = nil
+    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
+    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
+    var requiredRepeatedDurationValue []*durationpb.Duration = nil
+    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
+    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
+    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
+    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
+    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
+    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
+    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
+    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
+    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
+    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4254,6 +4356,38 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
+        RequiredAnyValue: requiredAnyValue,
+        RequiredStructValue: requiredStructValue,
+        RequiredValueValue: requiredValueValue,
+        RequiredListValueValue: requiredListValueValue,
+        RequiredTimeValue: requiredTimeValue,
+        RequiredDurationValue: requiredDurationValue,
+        RequiredFieldMaskValue: requiredFieldMaskValue,
+        RequiredInt32Value: requiredInt32Value,
+        RequiredUint32Value: requiredUint32Value,
+        RequiredInt64Value: requiredInt64Value,
+        RequiredUint64Value: requiredUint64Value,
+        RequiredFloatValue: requiredFloatValue,
+        RequiredDoubleValue: requiredDoubleValue,
+        RequiredStringValue: requiredStringValue,
+        RequiredBoolValue: requiredBoolValue,
+        RequiredBytesValue: requiredBytesValue,
+        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
+        RequiredRepeatedStructValue: requiredRepeatedStructValue,
+        RequiredRepeatedValueValue: requiredRepeatedValueValue,
+        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
+        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
+        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
+        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
+        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
+        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
+        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
+        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
+        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
+        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
+        RequiredRepeatedStringValue: requiredRepeatedStringValue,
+        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
+        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)

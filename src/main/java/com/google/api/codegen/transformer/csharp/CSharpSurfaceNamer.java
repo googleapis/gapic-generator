@@ -811,4 +811,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     }
     return "response";
   }
+
+  @Override
+  public List<CallingForm> getCallingForms(MethodContext context) {
+    List<CallingForm> forms = CallingForm.getCallingForms(context, TargetLanguage.CSHARP);
+    if (context.isFlattenedMethodContext()) {
+      forms =
+          forms.stream().filter(CallingForm::isFlattened).collect(ImmutableList.toImmutableList());
+    }
+    return forms;
+  }
 }

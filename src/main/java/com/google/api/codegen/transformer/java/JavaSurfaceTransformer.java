@@ -27,7 +27,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
-import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -79,8 +78,7 @@ public class JavaSurfaceTransformer {
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final JavaMethodViewGenerator methodGenerator =
-      new JavaMethodViewGenerator(SampleType.IN_CODE);
+  private final JavaApiMethodTransformer javaApiMethodTransformer = new JavaApiMethodTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -188,7 +186,7 @@ public class JavaSurfaceTransformer {
 
     addApiImports(context);
 
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(context);
+    List<StaticLangApiMethodView> methods = javaApiMethodTransformer.generateApiMethods(context);
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
@@ -545,7 +543,8 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from methods classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods =
+        javaApiMethodTransformer.generateApiMethods(apiMethodsContext);
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
@@ -599,7 +598,8 @@ public class JavaSurfaceTransformer {
     // Stub class has different default package name from method, request, and resource classes.
     InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
-    List<StaticLangApiMethodView> methods = methodGenerator.generateApiMethods(apiMethodsContext);
+    List<StaticLangApiMethodView> methods =
+        javaApiMethodTransformer.generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -750,7 +750,8 @@ public class JavaSurfaceTransformer {
         .map(InterfaceModel::getFullName)
         .findFirst()
         .map(name -> pathMapper.getOutputPath(name, productConfig))
-        .ifPresent(path -> packageInfo.outputPath(path + File.separator + "package-info.java"));
+        .map(path -> packageInfo.outputPath(path + File.separator + "package-info.java"))
+        .orElseThrow(() -> new IllegalStateException("found no configured interface."));
     packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
