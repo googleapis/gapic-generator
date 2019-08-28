@@ -32,7 +32,7 @@ This is a generated README.md placeholder. Put your own documentation here.
   "dependencies": {
     "google-some-other-package-v1": "^0.2.1",
     "lodash.union": "^4.6.0",
-    "google-gax": "^1.2.0"
+    "google-gax": "^1.5.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
@@ -4961,6 +4961,16 @@ class LibraryServiceClient {
     opts = opts || {};
     this._descriptors = {};
 
+    if (global.isBrowser) {
+      // If we're in browser, we use gRPC fallback.
+      opts.fallback = true;
+    }
+
+    // If we are in browser, we are already using fallback because of the
+    // "browser" field in package.json.
+    // But if we were explicitly requested to use fallback, let's do it now.
+    const gaxModule = !global.isBrowser && opts.fallback ? gax.fallback : gax;
+
     const servicePath =
       opts.servicePath ||
       opts.apiEndpoint ||
@@ -4979,18 +4989,24 @@ class LibraryServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    const gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gaxModule.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    const clientHeader = [
-      `gl-node/${process.versions.node}`,
-      `grpc/${gaxGrpc.grpcVersion}`,
-      `gax/${gax.version}`,
-      `gapic/${VERSION}`,
-    ];
+    const clientHeader = [];
+
+    if (typeof process !== 'undefined' && 'versions' in process) {
+      clientHeader.push(`gl-node/${process.versions.node}`);
+    }
+    clientHeader.push(`gax/${gaxModule.version}`);
+    if (opts.fallback) {
+      clientHeader.push(`gl-web/${gaxModule.version}`);
+    } else {
+      clientHeader.push(`grpc/${gaxGrpc.grpcVersion}`);
+    }
+    clientHeader.push(`gapic/${VERSION}`);
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
@@ -5001,7 +5017,7 @@ class LibraryServiceClient {
 
     const nodejsProtoPath = path.join(__dirname, '..', '..', 'protos', 'protos.json');
     const protos = gaxGrpc.loadProto(
-      global.isBrowser ?
+      opts.fallback ?
         require("../../protos/protos.json") :
         nodejsProtoPath
     );
@@ -5010,19 +5026,19 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
-      archiveBookPathTemplate: new gax.PathTemplate(
+      archiveBookPathTemplate: new gaxModule.PathTemplate(
         'archives/{archive}/books/{book}'
       ),
-      archivedBookPathTemplate: new gax.PathTemplate(
+      archivedBookPathTemplate: new gaxModule.PathTemplate(
         'archives/{archive}/books/{book}'
       ),
-      bookPathTemplate: new gax.PathTemplate(
+      bookPathTemplate: new gaxModule.PathTemplate(
         'bookShelves/{book_shelf}/books/{book}'
       ),
-      projectBookPathTemplate: new gax.PathTemplate(
+      projectBookPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/books/{book}'
       ),
-      shelfPathTemplate: new gax.PathTemplate(
+      shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf_id}'
       ),
     };
@@ -5031,22 +5047,22 @@ class LibraryServiceClient {
     // (e.g. 50 results at a time, with tokens to get subsequent
     // pages). Denote the keys used for pagination and results.
     this._descriptors.page = {
-      listShelves: new gax.PageDescriptor(
+      listShelves: new gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'shelves'
       ),
-      listBooks: new gax.PageDescriptor(
+      listBooks: new gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'books'
       ),
-      listStrings: new gax.PageDescriptor(
+      listStrings: new gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'strings'
       ),
-      findRelatedBooks: new gax.PageDescriptor(
+      findRelatedBooks: new gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'names'
@@ -5056,21 +5072,21 @@ class LibraryServiceClient {
     // Some of the methods on this service provide streaming responses.
     // Provide descriptors for these.
     this._descriptors.stream = {
-      streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
-      streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
-      discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
-      monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
-      babbleAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
+      streamShelves: new gaxModule.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+      streamBooks: new gaxModule.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
+      discussBook: new gaxModule.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
+      monologAboutBook: new gaxModule.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
+      babbleAboutBook: new gaxModule.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
 
-    const protoFilesRoot = global.isBrowser ?
-      gax.protobuf.Root.fromJSON(require("../../protos/protos.json")) :
-      gax.protobuf.loadSync(nodejsProtoPath);
+    const protoFilesRoot = opts.fallback ?
+      gaxModule.protobuf.Root.fromJSON(require("../../protos/protos.json")) :
+      gaxModule.protobuf.loadSync(nodejsProtoPath);
 
     // Some methods on this API support automatically batching
     // requests; denote this.
     this._descriptors.batching = {
-      publishSeries: new gax.BundleDescriptor(
+      publishSeries: new gaxModule.BundleDescriptor(
         'books',
         [
           'edition',
@@ -5079,7 +5095,7 @@ class LibraryServiceClient {
         'bookNames',
         gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book'))
       ),
-      addComments: new gax.BundleDescriptor(
+      addComments: new gaxModule.BundleDescriptor(
         'comments',
         [
           'name',
@@ -5092,7 +5108,7 @@ class LibraryServiceClient {
     // This API contains "long-running operations", which return a
     // an Operation object that allows for tracking of the operation,
     // rather than holding a request open.
-    this.operationsClient = new gax.lro({
+    this.operationsClient = new gaxModule.lro({
       auth: gaxGrpc.auth,
       grpc: gaxGrpc.grpc,
     }).operationsClient(opts);
@@ -5111,12 +5127,12 @@ class LibraryServiceClient {
     );
 
     this._descriptors.longrunning = {
-      getBigBook: new gax.LongrunningDescriptor(
+      getBigBook: new gaxModule.LongrunningDescriptor(
         this.operationsClient,
         getBigBookResponse.decode.bind(getBigBookResponse),
         getBigBookMetadata.decode.bind(getBigBookMetadata)
       ),
-      getBigNothing: new gax.LongrunningDescriptor(
+      getBigNothing: new gaxModule.LongrunningDescriptor(
         this.operationsClient,
         getBigNothingResponse.decode.bind(getBigNothingResponse),
         getBigNothingMetadata.decode.bind(getBigNothingMetadata)
@@ -5139,7 +5155,7 @@ class LibraryServiceClient {
     // Put together the "service stub" for
     // google.example.library.v1.LibraryService.
     const libraryServiceStub = gaxGrpc.createStub(
-      global.isBrowser ?
+      opts.fallback ?
         protos.lookupService('google.example.library.v1.LibraryService') :
         protos.google.example.library.v1.LibraryService,
       opts
@@ -5186,7 +5202,7 @@ class LibraryServiceClient {
           throw err;
         }
       );
-      this._innerApiCalls[methodName] = gax.createApiCall(
+      this._innerApiCalls[methodName] = gaxModule.createApiCall(
         innerCallPromise,
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
@@ -5196,7 +5212,7 @@ class LibraryServiceClient {
     // Put together the "service stub" for
     // google.tagger.v1.Labeler.
     const labelerStub = gaxGrpc.createStub(
-      global.isBrowser ?
+      opts.fallback ?
         protos.lookupService('google.tagger.v1.Labeler') :
         protos.google.tagger.v1.Labeler,
       opts
@@ -5216,7 +5232,7 @@ class LibraryServiceClient {
           throw err;
         }
       );
-      this._innerApiCalls[methodName] = gax.createApiCall(
+      this._innerApiCalls[methodName] = gaxModule.createApiCall(
         innerCallPromise,
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
@@ -8068,6 +8084,16 @@ class MyProtoClient {
     opts = opts || {};
     this._descriptors = {};
 
+    if (global.isBrowser) {
+      // If we're in browser, we use gRPC fallback.
+      opts.fallback = true;
+    }
+
+    // If we are in browser, we are already using fallback because of the
+    // "browser" field in package.json.
+    // But if we were explicitly requested to use fallback, let's do it now.
+    const gaxModule = !global.isBrowser && opts.fallback ? gax.fallback : gax;
+
     const servicePath =
       opts.servicePath ||
       opts.apiEndpoint ||
@@ -8086,18 +8112,24 @@ class MyProtoClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    const gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gaxModule.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    const clientHeader = [
-      `gl-node/${process.versions.node}`,
-      `grpc/${gaxGrpc.grpcVersion}`,
-      `gax/${gax.version}`,
-      `gapic/${VERSION}`,
-    ];
+    const clientHeader = [];
+
+    if (typeof process !== 'undefined' && 'versions' in process) {
+      clientHeader.push(`gl-node/${process.versions.node}`);
+    }
+    clientHeader.push(`gax/${gaxModule.version}`);
+    if (opts.fallback) {
+      clientHeader.push(`gl-web/${gaxModule.version}`);
+    } else {
+      clientHeader.push(`grpc/${gaxGrpc.grpcVersion}`);
+    }
+    clientHeader.push(`gapic/${VERSION}`);
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
@@ -8108,7 +8140,7 @@ class MyProtoClient {
 
     const nodejsProtoPath = path.join(__dirname, '..', '..', 'protos', 'protos.json');
     const protos = gaxGrpc.loadProto(
-      global.isBrowser ?
+      opts.fallback ?
         require("../../protos/protos.json") :
         nodejsProtoPath
     );
@@ -8129,7 +8161,7 @@ class MyProtoClient {
     // Put together the "service stub" for
     // google.example.library.v1.MyProto.
     const myProtoStub = gaxGrpc.createStub(
-      global.isBrowser ?
+      opts.fallback ?
         protos.lookupService('google.example.library.v1.MyProto') :
         protos.google.example.library.v1.MyProto,
       opts
@@ -8149,7 +8181,7 @@ class MyProtoClient {
           throw err;
         }
       );
-      this._innerApiCalls[methodName] = gax.createApiCall(
+      this._innerApiCalls[methodName] = gaxModule.createApiCall(
         innerCallPromise,
         defaults[methodName],
         null
@@ -8338,6 +8370,11 @@ describe('LibraryServiceClient', () => {
 
   it('should create a client with no options', () => {
     const client = new libraryModule.v1.LibraryServiceClient();
+    assert(client);
+  });
+
+  it('should create a client with gRPC fallback', () => {
+    const client = new libraryModule.v1.LibraryServiceClient({fallback: true});
     assert(client);
   });
 
@@ -10348,6 +10385,11 @@ describe('MyProtoClient', () => {
     assert(client);
   });
 
+  it('should create a client with gRPC fallback', () => {
+    const client = new libraryModule.v1.MyProtoClient({fallback: true});
+    assert(client);
+  });
+
   describe('myMethod', () => {
     it('invokes myMethod without error', done => {
       const client = new libraryModule.v1.MyProtoClient({
@@ -10481,6 +10523,11 @@ module.exports = {
       library: "@google-cloud/library",
       filename: "./@google-cloud/library.js"
     },
+    node: {
+      child_process: 'empty',
+      fs: 'empty',
+      crypto: 'empty',
+    },
     resolve: {
       extensions: ['.js', '.json']
     },
@@ -10489,7 +10536,19 @@ module.exports = {
         {
           test: /node_modules[\\\/]retry-request[\\\/]/,
           use: 'null-loader',
-        }
+        },
+        {
+          test: /node_modules[\\\/]retry-request/,
+          use: 'null-loader'
+        },
+        {
+          test: /node_modules[\\\/]https-proxy-agent/,
+          use: 'null-loader'
+        },
+        {
+          test: /node_modules[\\\/]gtoken/,
+          use: 'null-loader'
+        },
       ]
     },
     mode: 'production'

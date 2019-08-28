@@ -1,11 +1,10 @@
-@snippet generate(metadata)
 const path = require('path');
-  
+
 module.exports = {
-    entry: './src/browser.js',
+    entry: './index.js',
     output: {
-      library: "{@metadata.identifier}",
-      filename: "./{@metadata.identifier}.js"
+      library: "showcaseTest",
+      filename: "./main.js"
     },
     node: {
       child_process: 'empty',
@@ -18,8 +17,12 @@ module.exports = {
     module: {
       rules: [
         {
-          test: /node_modules[\\\/]retry-request[\\\/]/,
-          use: 'null-loader',
+          test: /node_modules[\\\/]@grpc[\\\/]grpc-js/,
+          use: 'null-loader'
+        },
+        {
+          test: /node_modules[\\\/]grpc/,
+          use: 'null-loader'
         },
         {
           test: /node_modules[\\\/]retry-request/,
@@ -37,5 +40,3 @@ module.exports = {
     },
     mode: 'production'
 }
-
-@end
