@@ -176,12 +176,15 @@
 
 @private asyncOperationMethodSampleCode(apiMethod, sample)
   {@initCode(sample.sampleInitCode)}
+  OperationFuture<{@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+    future = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)});
+
+  System.out.println("Waiting for operation to complete...");
   @if apiMethod.hasReturnValue
-    {@apiMethod.responseTypeName} response = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
+    {@apiMethod.responseTypeName} response = future.get();
   @else
-    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-        {@sampleMethodCallArgList(sample.sampleInitCode.fieldSettings)}).get();
+    future.get();
   @end
 @end
 
