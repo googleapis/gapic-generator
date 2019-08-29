@@ -244,6 +244,9 @@ unzipped_srcjar = rule(
 # Private helper functions
 #
 def _path_ignoring_repository(f):
+    virtual_imports = "/_virtual_imports/"
+    if virtual_imports in f.path:
+        return f.path.split(virtual_imports)[1].split("/", 1)[1]
     if f.owner.workspace_root:
         return f.path[f.path.find(f.owner.workspace_root) + len(f.owner.workspace_root) + 1:]
     return f.short_path
