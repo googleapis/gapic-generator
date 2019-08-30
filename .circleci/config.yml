@@ -638,6 +638,11 @@ jobs:
             npm test
             npm run browser-test
       - run:
+          name: Test webpack
+          command: |
+            cd workspace/gapic-generator/showcase/nodejs
+            npx webpack
+      - run:
           name: Prepare to test Pubsub
           command: |
             echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
