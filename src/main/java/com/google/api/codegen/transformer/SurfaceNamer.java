@@ -1456,6 +1456,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getProtoFileName");
   }
 
+  /** The list of proto files for the given service. Currently, only for Node.js. */
+  public String getProtoListFileName(InterfaceConfig interfaceConfig) {
+    return getNotImplementedString("SurfaceNamer.getProtoListFileName");
+  }
+
   ////////////////////////////////////////// Test /////////////////////////////////////////////
 
   public String getTestPackageName() {

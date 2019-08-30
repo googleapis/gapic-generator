@@ -9,6 +9,7 @@ This is a generated README.md placeholder. Put your own documentation here.
   "author": "Google LLC",
   "description": "Google Fake API client for Node.js",
   "main": "src/index.js",
+  "browser": "src/browser.js",
   "files": [
     "protos",
     "src",
@@ -30,12 +31,16 @@ This is a generated README.md placeholder. Put your own documentation here.
   ],
   "dependencies": {
     "google-some-other-package-v1": "^0.2.1",
-    "google-gax": "^1.1.0"
+    "google-gax": "^1.5.0"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "null-loader": "^3.0.0",
+    "webpack": "^4.37.0",
+    "webpack-cli": "^3.3.6"
   },
   "scripts": {
+    "compile-protos": "compileProtos ./src",
     "smoke-test": "mocha smoke-test/*.js --timeout 5000",
     "test": "mocha test/*.js"
   },
@@ -185,6 +190,16 @@ class NoTemplatesApiServiceClient {
     opts = opts || {};
     this._descriptors = {};
 
+    if (global.isBrowser) {
+      // If we're in browser, we use gRPC fallback.
+      opts.fallback = true;
+    }
+
+    // If we are in browser, we are already using fallback because of the
+    // "browser" field in package.json.
+    // But if we were explicitly requested to use fallback, let's do it now.
+    const gaxModule = !global.isBrowser && opts.fallback ? gax.fallback : gax;
+
     const servicePath =
       opts.servicePath ||
       opts.apiEndpoint ||
@@ -203,28 +218,37 @@ class NoTemplatesApiServiceClient {
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
     opts.scopes = this.constructor.scopes;
-    const gaxGrpc = new gax.GrpcClient(opts);
+    const gaxGrpc = new gaxModule.GrpcClient(opts);
 
     // Save the auth object to the client, for use by other methods.
     this.auth = gaxGrpc.auth;
 
     // Determine the client header string.
-    const clientHeader = [
-      `gl-node/${process.versions.node}`,
-      `grpc/${gaxGrpc.grpcVersion}`,
-      `gax/${gax.version}`,
-      `gapic/${VERSION}`,
-    ];
+    const clientHeader = [];
+
+    if (typeof process !== 'undefined' && 'versions' in process) {
+      clientHeader.push(`gl-node/${process.versions.node}`);
+    }
+    clientHeader.push(`gax/${gaxModule.version}`);
+    if (opts.fallback) {
+      clientHeader.push(`gl-web/${gaxModule.version}`);
+    } else {
+      clientHeader.push(`grpc/${gaxGrpc.grpcVersion}`);
+    }
+    clientHeader.push(`gapic/${VERSION}`);
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
+    // For Node.js, pass the path to JSON proto file.
+    // For browsers, pass the JSON content.
+
+    const nodejsProtoPath = path.join(__dirname, '..', 'protos', 'protos.json');
     const protos = gaxGrpc.loadProto(
-      path.join(__dirname, '..', '..', 'protos'),
-      [
-        'no_path_templates.proto'
-      ]
+      opts.fallback ?
+        require("../../protos/protos.json") :
+        nodejsProtoPath
     );
 
     // Put together the default options sent with requests.
@@ -243,7 +267,9 @@ class NoTemplatesApiServiceClient {
     // Put together the "service stub" for
     // google.cloud.example.v1.NoTemplatesAPIService.
     const noTemplatesApiServiceStub = gaxGrpc.createStub(
-      protos.google.cloud.example.v1.NoTemplatesAPIService,
+      opts.fallback ?
+        protos.lookupService('google.cloud.example.v1.NoTemplatesAPIService') :
+        protos.google.cloud.example.v1.NoTemplatesAPIService,
       opts
     );
 
@@ -253,18 +279,16 @@ class NoTemplatesApiServiceClient {
       'increment',
     ];
     for (const methodName of noTemplatesApiServiceStubMethods) {
-      this._innerApiCalls[methodName] = gax.createApiCall(
-        noTemplatesApiServiceStub.then(
-          stub =>
-            function() {
-              const args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            },
-          err =>
-            function() {
-              throw err;
-            }
-        ),
+      const innerCallPromise = noTemplatesApiServiceStub.then(
+        stub => (...args) => {
+          return stub[methodName].apply(stub, args);
+        },
+        err => () => {
+          throw err;
+        }
+      );
+      this._innerApiCalls[methodName] = gaxModule.createApiCall(
+        innerCallPromise,
         defaults[methodName],
         null
       );
@@ -396,6 +420,10 @@ module.exports = NoTemplatesApiServiceClient;
   }
 }
 
+============== file: src/v1/no_templates_api_service_proto_list.json ==============
+[
+  "../protos/no_path_templates.proto"
+]
 ============== file: test/gapic.js ==============
 // Copyright 2019 Google LLC
 //
@@ -440,6 +468,11 @@ describe('NoTemplatesApiServiceClient', () => {
 
   it('should create a client with no options', () => {
     const client = new exampleModule.NoTemplatesApiServiceClient();
+    assert(client);
+  });
+
+  it('should create a client with gRPC fallback', () => {
+    const client = new exampleModule.NoTemplatesApiServiceClient({fallback: true});
     assert(client);
   });
 
@@ -499,5 +532,45 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
       callback(null);
     }
   };
+}
+
+============== file: webpack.config.js ==============
+const path = require('path');
+
+module.exports = {
+    entry: './src/browser.js',
+    output: {
+      library: "example",
+      filename: "./example.js"
+    },
+    node: {
+      child_process: 'empty',
+      fs: 'empty',
+      crypto: 'empty',
+    },
+    resolve: {
+      extensions: ['.js', '.json']
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules[\\\/]retry-request[\\\/]/,
+          use: 'null-loader',
+        },
+        {
+          test: /node_modules[\\\/]retry-request/,
+          use: 'null-loader'
+        },
+        {
+          test: /node_modules[\\\/]https-proxy-agent/,
+          use: 'null-loader'
+        },
+        {
+          test: /node_modules[\\\/]gtoken/,
+          use: 'null-loader'
+        },
+      ]
+    },
+    mode: 'production'
 }
 

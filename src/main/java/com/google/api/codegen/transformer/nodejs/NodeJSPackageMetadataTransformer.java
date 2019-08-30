@@ -51,14 +51,14 @@ import java.util.Objects;
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String README_FILE = "nodejs/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
-  private static final List<String> TOP_LEVEL_FILES = ImmutableList.of("nodejs/package.json.snip");
+  private static final List<String> TOP_LEVEL_FILES =
+      ImmutableList.of("nodejs/package.json.snip", "nodejs/webpack.config.js.snip");
 
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-node";
   private static final String GITHUB_REPO_HOST =
       "https://github.com/GoogleCloudPlatform/google-cloud-node";
   private static final String AUTH_DOC_PATH = "/#/docs/google-cloud/master/guides/authentication";
-  private static final String LIB_DOC_PATH = "/#/docs/%s";
   private static final String MAIN_README_PATH = "/blob/master/README.md";
   private static final String VERSIONING_DOC_PATH = "#versioning";
 
@@ -205,10 +205,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer<
     if (model.hasMultipleServices()) {
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
-    }
-    if (hasLongrunning(model, productConfig) || hasBatching(model, productConfig)) {
-      dependencies.add(
-          PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
     }
     return dependencies.build();
   }

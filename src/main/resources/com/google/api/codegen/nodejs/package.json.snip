@@ -6,6 +6,7 @@
     "author": "{@metadata.author}",
     "description": "{@metadata.fullName} client for Node.js",
     "main": "src/index.js",
+    "browser": "src/browser.js",
     "files": [
       "protos",
       "src",
@@ -29,12 +30,16 @@
       @join packageDep : metadata.dependencies
         "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
       @end
-      "google-gax": "^1.1.0"
+      "google-gax": "^1.5.0"
     },
     "devDependencies": {
-      "mocha": "^5.2.0"
+      "mocha": "^5.2.0",
+      "null-loader": "^3.0.0",
+      "webpack": "^4.37.0",
+      "webpack-cli": "^3.3.6"
     },
     "scripts": {
+      "compile-protos": "compileProtos ./src",
       "smoke-test": "mocha smoke-test/*.js --timeout 5000",
       "test": "mocha test/*.js"
     },
