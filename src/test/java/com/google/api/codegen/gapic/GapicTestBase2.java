@@ -197,7 +197,6 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
     productConfig = productConfig.withGenerationTimestamp(frozenTimestamp);
-
     ArtifactFlags artifactFlags =
         new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE, true);
 

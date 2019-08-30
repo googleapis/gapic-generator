@@ -51,6 +51,8 @@ public class GapicCodeGeneratorShowcaseSamplesTest extends GapicTestBase2 {
         GapicCodegenTestConfig.newBuilder()
             .targetLanguage(TargetLanguage.JAVA)
             .packageConfigFileName("showcase_pkg2.yaml")
+            .gapicConfigFileNames(ImmutableList.of("showcase_gapic.yaml"))
+            .sampleConfigFileNames(ImmutableList.of("echo.sample.yaml"))
             .apiName("showcase")
             .protoPackage("google.showcase.v1beta1")
             .clientPackage("com.google.showcase.v1beta1")
