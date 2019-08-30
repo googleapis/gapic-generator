@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.Service;
 import com.google.api.codegen.ArtifactType;
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.GapicCodegenTestConfig;
 import com.google.api.codegen.MixedPathTestDataLocator;
 import com.google.api.codegen.common.CodeGenerator;
 import com.google.api.codegen.common.GeneratedResult;
@@ -30,13 +30,11 @@ import com.google.api.codegen.config.PackagingConfig;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,27 +71,18 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final String grpcServiceConfigFileName;
   private ServiceConfig grpcServiceConfig;
 
-  public GapicTestBase2(
-      TargetLanguage language,
-      String[] gapicConfigFileNames,
-      String[] sampleConfigFileNames,
-      String packageConfigFileName,
-      List<String> snippetNames,
-      String baselineFile,
-      String protoPackage,
-      String clientPackage,
-      String grpcServiceConfigFileName) {
-    this.language = language;
-    this.gapicConfigFileNames = gapicConfigFileNames;
-    this.sampleConfigFileNames = sampleConfigFileNames;
-    this.packageConfigFileName = packageConfigFileName;
-    this.snippetNames = ImmutableList.copyOf(snippetNames);
-    this.baselineFile = baselineFile;
-    this.clientPackage = clientPackage;
-    this.grpcServiceConfigFileName = grpcServiceConfigFileName;
+  public GapicTestBase2(GapicCodegenTestConfig testConfig) {
+    this.language = testConfig.targetLanguage();
+    this.gapicConfigFileNames = testConfig.gapicConfigFileNames().stream().toArray(String[]::new);
+    this.sampleConfigFileNames = testConfig.sampleConfigFileNames().stream().toArray(String[]::new);
+    this.packageConfigFileName = testConfig.packageConfigFileName();
+    this.snippetNames = ImmutableList.copyOf(testConfig.snippetNames());
+    this.baselineFile = testConfig.baseline();
+    this.clientPackage = testConfig.clientPackage();
+    this.grpcServiceConfigFileName = testConfig.grpcServiceConfigFileName();
 
     // Represents the test value for the --package flag.
-    this.protoPackage = protoPackage;
+    this.protoPackage = testConfig.protoPackage();
 
     String dir = language.toString().toLowerCase();
     if ("python".equals(dir)) {
@@ -117,7 +106,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   @Override
   protected void setupModel() {
     super.setupModel();
-    if (gapicConfigFileNames != null) {
+    if (gapicConfigFileNames.length != 0) {
       gapicConfig =
           CodegenTestUtil.readConfig(
               model.getDiagReporter().getDiagCollector(),
@@ -125,7 +114,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
               gapicConfigFileNames);
     }
 
-    if (sampleConfigFileNames != null) {
+    if (sampleConfigFileNames.length != 0) {
       sampleConfig =
           CodegenTestUtil.readSampleConfig(
               model.getDiagReporter().getDiagCollector(),
@@ -170,98 +159,6 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
     return true;
   }
 
-  /**
-   * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
-   * methods. The language is passed to GapicGeneratorFactory to get the GapicGenerators provided by
-   * that language, and then the snippet file names are scraped from those generators, and a set of
-   * arguments is created for each combination of CodeGenerator x snippet that GapicGeneratorFactory
-   * returns.
-   */
-  static Object[] createTestConfig(
-      TargetLanguage language,
-      String[] gapicConfigFileNames,
-      String packageConfigFileName,
-      String apiName,
-      String grpcServiceConfigFileName,
-      String... baseNames) {
-    return createTestConfig(
-        language,
-        gapicConfigFileNames,
-        packageConfigFileName,
-        apiName,
-        null,
-        null,
-        grpcServiceConfigFileName,
-        null,
-        null,
-        baseNames);
-  }
-
-  /**
-   * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
-   * methods. The langauge String is passed to GapicGeneratorFactory to get the GapicGenerators
-   * provided by that language, and then the snippet file names are scraped from those generators,
-   * and a set of arguments is created for each combination of CodeGenerator x snippet that
-   * GapicGeneratorFactory returns.
-   */
-  public static Object[] createTestConfig(
-      TargetLanguage language,
-      String[] gapicConfigFileNames,
-      String packageConfigFileName,
-      String apiName,
-      String protoPackage,
-      String clientPackage,
-      String grpcServiceConfigFileName,
-      String[] sampleConfigFileNames,
-      String baseline,
-      String... baseNames) {
-    Model model = Model.create(Service.getDefaultInstance());
-    GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
-    PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
-    ArtifactFlags artifactFlags =
-        new ArtifactFlags(
-            Arrays.asList("surface", "test", "samples"),
-            ArtifactType.LEGACY_GAPIC_AND_PACKAGE,
-            true);
-
-    List<CodeGenerator<?>> generators =
-        GapicGeneratorFactory.create(language, model, productConfig, packageConfig, artifactFlags);
-
-    List<String> snippetNames = new ArrayList<>();
-    for (CodeGenerator<?> generator : generators) {
-      snippetNames.addAll(generator.getInputFileNames());
-    }
-
-    // The name of the baseline file to compare the generated code with. If not given, an
-    // autogenerated name will be provided.
-    if (baseline == null) {
-      StringBuilder suffix = new StringBuilder();
-      if (gapicConfigFileNames == null || gapicConfigFileNames.length == 0) {
-        suffix.append("_no_gapic_config");
-      }
-
-      if (!Strings.isNullOrEmpty(grpcServiceConfigFileName)) {
-        suffix.append("_with_grpc_service_config");
-      }
-
-      baseline = language.toString().toLowerCase() + "_" + apiName + suffix + ".baseline";
-    }
-    baseNames = Lists.asList(apiName, baseNames).toArray(new String[0]);
-
-    return new Object[] {
-      language,
-      gapicConfigFileNames,
-      sampleConfigFileNames,
-      packageConfigFileName,
-      snippetNames,
-      baseline,
-      protoPackage,
-      clientPackage,
-      grpcServiceConfigFileName,
-      baseNames
-    };
-  }
-
   @Override
   protected String baselineFileName() {
     return baselineFile;
@@ -269,6 +166,10 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
   @Override
   public Map<String, ?> run() throws IOException {
+    return runWithArtifacts(new ArrayList<>(Arrays.asList("surface", "test", "samples")));
+  }
+
+  protected Map<String, ?> runWithArtifacts(List<String> enabledArtifacts) throws IOException {
     model.establishStage(Merged.KEY);
     if (model.getDiagReporter().getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
@@ -289,18 +190,14 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             language,
             grpcServiceConfig);
 
-    productConfig = productConfig.withGenerationTimestamp(frozenTimestamp);
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;
     }
+    productConfig = productConfig.withGenerationTimestamp(frozenTimestamp);
 
-    List<String> enabledArtifacts = new ArrayList<>();
-    if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts.addAll(Arrays.asList("surface", "test", "samples"));
-    }
     ArtifactFlags artifactFlags =
         new ArtifactFlags(enabledArtifacts, ArtifactType.LEGACY_GAPIC_AND_PACKAGE, true);
 
