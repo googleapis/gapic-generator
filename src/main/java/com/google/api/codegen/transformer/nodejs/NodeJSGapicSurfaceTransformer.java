@@ -67,6 +67,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private static final String VERSION_BROWSER_TEMPLATE_FILE = "nodejs/version_browser.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
   private static final String PROTO_LIST_TEMPLATE_FILENAME = "nodejs/protos.snip";
+  private static final String WEBPACK_CONFIG_TEMPLATE_FILENAME = "nodejs/webpack.config.js.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -92,7 +93,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
         VERSION_INDEX_TEMPLATE_FILE,
         VERSION_BROWSER_TEMPLATE_FILE,
         XAPI_TEMPLATE_FILENAME,
-        PROTO_LIST_TEMPLATE_FILENAME);
+        PROTO_LIST_TEMPLATE_FILENAME,
+        WEBPACK_CONFIG_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -311,6 +313,18 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
       indexViewbuilder.apiVersion(version);
     }
     indexViews.add(indexViewbuilder.build());
+
+    String webpackConfigOutputPath = "webpack.config.js";
+    VersionIndexView.Builder webpackConfigViewBuilder =
+        VersionIndexView.newBuilder()
+            .templateFileName(WEBPACK_CONFIG_TEMPLATE_FILENAME)
+            .outputPath(webpackConfigOutputPath)
+            .requireViews(requireViews)
+            .namespace(packageMetadataNamer.getServiceName())
+            .fileHeader(
+                fileHeaderTransformer.generateFileHeader(
+                    productConfig, ImportSectionView.newBuilder().build(), namer));
+    indexViews.add(webpackConfigViewBuilder.build());
 
     if (hasVersion) {
       String versionIndexOutputPath = "src/index.js";
