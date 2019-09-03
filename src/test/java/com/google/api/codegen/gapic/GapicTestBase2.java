@@ -219,7 +219,6 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
         testedGenerators.add(generator);
       }
     }
-
     Map<String, Object> output = new TreeMap<>();
     for (CodeGenerator<?> generator : testedGenerators) {
       Map<String, ? extends GeneratedResult<?>> out = generator.generate();

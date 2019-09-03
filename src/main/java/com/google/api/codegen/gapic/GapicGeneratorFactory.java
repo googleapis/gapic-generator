@@ -222,11 +222,6 @@ public class GapicGeneratorFactory {
 
         if (artifactFlags.codeFilesEnabled()) {
           generators.add(newJavaGenerator.apply(new JavaGapicSurfaceTransformer(javaPathMapper)));
-          if (artifactFlags.devSamplesEnabled()) {
-            generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer()));
-            generators.add(
-                newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
-          }
         }
 
         if (artifactFlags.packagingFilesEnabled()) {
@@ -261,6 +256,14 @@ public class GapicGeneratorFactory {
                       javaTestPathMapper,
                       new JavaGapicSurfaceTransformer(javaTestPathMapper),
                       "java/grpc_test.snip")));
+        }
+      }
+
+      if (artifactFlags.devSamplesEnabled()) {
+        if (artifactFlags.codeFilesEnabled()) {
+          generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer()));
+          generators.add(
+              newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
         }
       }
       return generators;

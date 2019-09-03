@@ -1,0 +1,59 @@
+============== file: samples/src/main/java/com/google/showcase/examples/v1beta1/ShowcaseEchoSample.java ==============
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// DO NOT EDIT! This is a generated sample ("Request",  "showcase_echo_sample")
+// sample-metadata:
+//   title: Showcase Echo Sample
+//   description: Send something to the server and print the echoed text from the server
+//   usage: gradle run -PmainClass=com.google.showcase.examples.v1beta1.ShowcaseEchoSample
+
+package com.google.showcase.examples.v1beta1;
+
+import com.google.showcase.v1beta1.EchoClient;
+import com.google.showcase.v1beta1.EchoRequest;
+import com.google.showcase.v1beta1.EchoResponse;
+
+public class ShowcaseEchoSample {
+  // [START showcase_echo_sample]
+  /*
+   * Please include the following imports to run this sample.
+   *
+   * import com.google.showcase.v1beta1.EchoClient;
+   * import com.google.showcase.v1beta1.EchoRequest;
+   * import com.google.showcase.v1beta1.EchoResponse;
+   */
+
+  /** Send something to the server and print the echoed text from the server */
+  public static void sampleEcho() {
+    try (EchoClient echoClient = EchoClient.create()) {
+      String content = "echo this back!";
+      EchoRequest request = EchoRequest.newBuilder()
+        .setContent(content)
+        .build();
+      EchoResponse response = echoClient.echo(request);
+      // the content echoed back from the server
+      String content = response.getContent();
+      System.out.printf("The server echoes: %s\n", content);
+    } catch (Exception exception) {
+      System.err.println("Failed to create the client due to: " + exception);
+    }
+  }
+  // [END showcase_echo_sample]
+
+  public static void main(String[] args) {
+    sampleEcho();
+  }
+}
