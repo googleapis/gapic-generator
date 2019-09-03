@@ -64,7 +64,10 @@ import java.util.TreeSet;
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
   private static final String INDEX_TEMPLATE_FILE = "nodejs/index.snip";
   private static final String VERSION_INDEX_TEMPLATE_FILE = "nodejs/version_index.snip";
+  private static final String VERSION_BROWSER_TEMPLATE_FILE = "nodejs/version_browser.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "nodejs/main.snip";
+  private static final String PROTO_LIST_TEMPLATE_FILENAME = "nodejs/protos.snip";
+  private static final String WEBPACK_CONFIG_TEMPLATE_FILENAME = "nodejs/webpack.config.js.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -76,19 +79,22 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final BatchingTransformer batchingTransformer = new BatchingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  private final PackageMetadataConfig packageConfig;
   private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   public NodeJSGapicSurfaceTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageConfig;
   }
 
   @Override
   public List<String> getTemplateFileNames() {
     return ImmutableList.of(
-        INDEX_TEMPLATE_FILE, VERSION_INDEX_TEMPLATE_FILE, XAPI_TEMPLATE_FILENAME);
+        INDEX_TEMPLATE_FILE,
+        VERSION_INDEX_TEMPLATE_FILE,
+        VERSION_BROWSER_TEMPLATE_FILE,
+        XAPI_TEMPLATE_FILENAME,
+        PROTO_LIST_TEMPLATE_FILENAME,
+        WEBPACK_CONFIG_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -111,20 +117,41 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     for (InterfaceModel apiInterface : apiInterfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       models.add(generateApiClass(context));
+      models.add(generateProtoList(context));
     }
     return models.build();
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context) {
+  private ViewModel generateProtoList(GapicInterfaceContext context) {
+    DynamicLangXApiView.Builder protoList = prepareApiClassBuilder(context);
     SurfaceNamer namer = context.getNamer();
     String subPath =
         pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
-    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
 
-    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
+    protoList.templateFileName(PROTO_LIST_TEMPLATE_FILENAME);
+    protoList.outputPath(subPath + "/" + namer.getProtoListFileName(context.getInterfaceConfig()));
+
+    return protoList.build();
+  }
+
+  private ViewModel generateApiClass(GapicInterfaceContext context) {
+    DynamicLangXApiView.Builder xapiClass = prepareApiClassBuilder(context);
+
+    SurfaceNamer namer = context.getNamer();
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.outputPath(subPath + "/" + namer.getServiceFileName(context.getInterfaceConfig()));
+
+    return xapiClass.build();
+  }
+
+  private DynamicLangXApiView.Builder prepareApiClassBuilder(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    List<OptionalArrayMethodView> methods = apiMethodTransformer.generateApiMethods(context);
+
+    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
@@ -170,7 +197,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
 
-    return xapiClass.build();
+    return xapiClass;
   }
 
   private List<String> generateValidDescriptorsNames(GapicInterfaceContext context) {
@@ -287,6 +314,18 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     }
     indexViews.add(indexViewbuilder.build());
 
+    String webpackConfigOutputPath = "webpack.config.js";
+    VersionIndexView.Builder webpackConfigViewBuilder =
+        VersionIndexView.newBuilder()
+            .templateFileName(WEBPACK_CONFIG_TEMPLATE_FILENAME)
+            .outputPath(webpackConfigOutputPath)
+            .requireViews(requireViews)
+            .namespace(packageMetadataNamer.getServiceName())
+            .fileHeader(
+                fileHeaderTransformer.generateFileHeader(
+                    productConfig, ImportSectionView.newBuilder().build(), namer));
+    indexViews.add(webpackConfigViewBuilder.build());
+
     if (hasVersion) {
       String versionIndexOutputPath = "src/index.js";
       VersionIndexView.Builder versionIndexViewBuilder =
@@ -303,7 +342,24 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
               .packageName(packageMetadataNamer.getMetadataIdentifier())
               .namespace(packageMetadataNamer.getServiceName());
       indexViews.add(versionIndexViewBuilder.build());
+
+      String versionBrowserOutputPath = "src/browser.js";
+      VersionIndexView.Builder versionBrowserViewBuilder =
+          VersionIndexView.newBuilder()
+              .templateFileName(VERSION_BROWSER_TEMPLATE_FILE)
+              .outputPath(versionBrowserOutputPath)
+              .requireViews(requireViews)
+              .primaryService(requireViews.get(0))
+              .apiVersion(version)
+              .stubs(versionIndexStubs(apiInterfaces, productConfig))
+              .fileHeader(
+                  fileHeaderTransformer.generateFileHeader(
+                      productConfig, ImportSectionView.newBuilder().build(), namer))
+              .packageName(packageMetadataNamer.getMetadataIdentifier())
+              .namespace(packageMetadataNamer.getServiceName());
+      indexViews.add(versionBrowserViewBuilder.build());
     }
+
     return indexViews;
   }
 
