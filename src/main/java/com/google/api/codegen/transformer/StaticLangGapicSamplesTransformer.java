@@ -79,7 +79,6 @@ public abstract class StaticLangGapicSamplesTransformer
 
   @Override
   public List<ViewModel> transform(ProtoApiModel apiModel, GapicProductConfig productConfig) {
-    System.out.println("Generatinggggg!");
     String packageName = productConfig.getPackageName();
     SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
     ModelTypeTable typeTable = newTypeTable.apply(packageName);
