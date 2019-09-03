@@ -264,11 +264,28 @@ public class FieldStructureParser {
         return tokenStr;
       }
     }
+
+    // Scanner parsed more than one token. Prepend the parse text to the rest of value and return
+    if (token == Scanner.IDENT || token == Scanner.INT) {
+      return scanner.tokenStr() + scanner.input().substring(scanner.pos());
+    }
+
+    // There can't be nothing on the RHS of '='
+    if (token == Scanner.EOF) {
+      throw new IllegalStateException("unexpected EOF when parsing values");
+    }
+
+    // Empty object literal
     if (token == '{') {
       if (scanner.scan() == '}') {
         return EMPTY_OBJECT;
       }
     }
-    return scanner.tokenStr() + scanner.input().substring(scanner.pos());
+
+    // Scanner parsed one token. Prepend it to the rest of value and return
+    return new StringBuilder()
+        .append((char) token)
+        .append(scanner.input().substring(scanner.pos()))
+        .toString();
   }
 }

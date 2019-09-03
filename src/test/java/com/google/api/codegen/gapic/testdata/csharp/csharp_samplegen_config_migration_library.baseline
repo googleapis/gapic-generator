@@ -558,7 +558,7 @@ namespace Google.Example.Library.V1.Samples
 // sample-metadata
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: dotnet run [--shelf_name Math] [--edition 123]
+//   usage: dotnet run [--shelf_name "[Math]"] [--edition 123]
 
 using CommandLine;
 
@@ -579,14 +579,14 @@ namespace Google.Example.Library.V1.Samples
         public static void SamplePublishSeries(string shelfName, uint edition)
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // string shelfName = "Math"
+            // string shelfName = "[Math]"
             // uint edition = 123
             PublishSeriesRequest request = new PublishSeriesRequest
             {
                 Shelf = new Shelf
                 {
                     // The name of the shelf where books are published to.
-                    Name = "Math",
+                    Name = "[Math]",
                 },
                 Books = { },
                 SeriesUuid = new SeriesUuid
@@ -629,7 +629,7 @@ namespace Google.Example.Library.V1.Samples
 
         public class Options
         {
-            [Option("shelf_name", Default = "Math")]
+            [Option("shelf_name", Default = "[Math]")]
             public string ShelfName { get; set; }
 
             [Option("edition", Default = 123)]

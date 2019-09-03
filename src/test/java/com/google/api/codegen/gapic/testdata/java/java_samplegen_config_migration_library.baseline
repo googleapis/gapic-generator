@@ -819,7 +819,7 @@ public class Hopper {
 // sample-metadata:
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestPiVersion [--args='[--shelf_name Math] [--edition 123]']
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestPiVersion [--args='[--shelf_name "[Math]"] [--edition 123]']
 
 package com.google.example.examples.library.v1;
 
@@ -859,7 +859,7 @@ public class PublishSeriesRequestPiVersion {
    */
   public static void samplePublishSeries(String shelfName, int edition) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelfName = "Math";
+      // shelfName = "[Math]";
       // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
@@ -916,7 +916,7 @@ public class PublishSeriesRequestPiVersion {
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelfName = cl.getOptionValue("shelf_name", "Math");
+    String shelfName = cl.getOptionValue("shelf_name", "[Math]");
     int edition =
         cl.getOptionValue("edition") != null
             ? Integer.parseInt(cl.getOptionValue("edition"))
