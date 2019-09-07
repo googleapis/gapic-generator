@@ -210,9 +210,14 @@ public class ResourceNameMessageConfigsTest {
         .getResourceReference(shelfName);
     Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
+    WellKnownResourceNames wellKnownResourceNames = new WellKnownResourceNames(protoFile);
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
-            null, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
+            null,
+            sourceProtoFiles,
+            protoParser,
+            resourceDescriptorConfigMap,
+            wellKnownResourceNames);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
@@ -273,6 +278,7 @@ public class ResourceNameMessageConfigsTest {
   public void testCreateResourceNameConfigs() {
     DiagCollector diagCollector = new BoundedDiagCollector();
 
+    WellKnownResourceNames wellKnownResourceNames = new WellKnownResourceNames(protoFile);
     Map<String, ResourceNameConfig> resourceNameConfigs =
         GapicProductConfig.createResourceNameConfigsFromAnnotationsAndGapicConfig(
             null,
@@ -281,6 +287,7 @@ public class ResourceNameMessageConfigsTest {
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
+            wellKnownResourceNames,
             ImmutableSet.of());
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
@@ -360,9 +367,14 @@ public class ResourceNameMessageConfigsTest {
             .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
+    WellKnownResourceNames wellKnownResourceNames = new WellKnownResourceNames(protoFile);
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
-            diagCollector, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
+            diagCollector,
+            sourceProtoFiles,
+            protoParser,
+            resourceDescriptorConfigMap,
+            wellKnownResourceNames);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
@@ -373,6 +385,7 @@ public class ResourceNameMessageConfigsTest {
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
+            wellKnownResourceNames,
             ImmutableSet.of());
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 

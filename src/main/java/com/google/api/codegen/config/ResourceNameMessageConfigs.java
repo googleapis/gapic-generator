@@ -53,7 +53,8 @@ public abstract class ResourceNameMessageConfigs {
       DiagCollector diagCollector,
       List<ProtoFile> protoFiles,
       ProtoParser parser,
-      Map<String, ResourceDescriptorConfig> descriptorConfigMap) {
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
+      WellKnownResourceNames wellKnownResourceNames) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
@@ -73,6 +74,7 @@ public abstract class ResourceNameMessageConfigs {
                   false,
                   diagCollector,
                   descriptorConfigMap,
+                  wellKnownResourceNames,
                   resourceDescriptor.getType(),
                   message,
                   resourceField);
@@ -99,7 +101,13 @@ public abstract class ResourceNameMessageConfigs {
           }
           String entityName =
               getResourceDescriptorTypeForField(
-                  isChildReference, diagCollector, descriptorConfigMap, type, message, field);
+                  isChildReference,
+                  diagCollector,
+                  descriptorConfigMap,
+                  wellKnownResourceNames,
+                  type,
+                  message,
+                  field);
           if (Strings.isNullOrEmpty(entityName)) continue;
           fieldEntityMapBuilder.put(field.getSimpleName(), entityName);
         }
@@ -119,11 +127,18 @@ public abstract class ResourceNameMessageConfigs {
       boolean isChildReference,
       DiagCollector diagCollector,
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
+      WellKnownResourceNames wellKnownResourceNames,
       String type,
       MessageType message,
       Field field) {
     ResourceDescriptorConfig config = descriptorConfigMap.get(type);
     if (config == null) {
+      // check well-known resource names before failing
+      // Don't know how to handle child_type yet; and it's very likely we don't need those
+      if (!isChildReference && wellKnownResourceNames.containsType(type)) {
+        return wellKnownResourceNames.reference(type).getEntityName().toLowerCamel();
+      }
+
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
