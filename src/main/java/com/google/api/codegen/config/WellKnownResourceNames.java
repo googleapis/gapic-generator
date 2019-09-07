@@ -20,7 +20,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,8 @@ public class WellKnownResourceNames {
                 "cloudresourcemanager.googleapis.com/Project",
                 PROJECT.setAssignedProtoFile(sourceProtoFile).build())
             .build();
-    this.entityNameTypeNameMap = ImmutableMap.of("project", "cloudresourcemanager.googleapis.com/Project");
+    this.entityNameTypeNameMap =
+        ImmutableMap.of("project", "cloudresourcemanager.googleapis.com/Project");
   }
 
   public boolean containsType(String type) {
@@ -90,7 +90,9 @@ public class WellKnownResourceNames {
    */
   public ResourceNameConfig referenceByEntityName(String entityName) {
     Preconditions.checkArgument(
-        containsTypeWithEntityName(entityName), "not a well-known resource type entity name: %s", entityName);
+        containsTypeWithEntityName(entityName),
+        "not a well-known resource type entity name: %s",
+        entityName);
     ResourceNameConfig resource = RESOURCE_NAMES.get(entityNameTypeNameMap.get(entityName));
     referencedResourceNames.add(resource);
     return resource;

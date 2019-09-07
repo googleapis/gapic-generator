@@ -195,7 +195,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     List<ProtoFile> sourceProtos =
-        model.getFiles().stream()
+        model
+            .getFiles()
+            .stream()
             .filter(f -> f.getProto().getPackage().equals(defaultPackage))
             .collect(Collectors.toList());
 
@@ -238,7 +240,8 @@ public abstract class GapicProductConfig implements ProductConfig {
           protoParser.getResourceDescriptorConfigMap(sourceProtos, diagCollector);
 
       Set<String> configsWithChildTypeReferences =
-          sourceProtos.stream()
+          sourceProtos
+              .stream()
               .flatMap(protoFile -> protoFile.getMessages().stream())
               .flatMap(messageType -> messageType.getFields().stream())
               .filter(protoParser::hasResourceReference)
@@ -522,7 +525,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector,
         language,
         protoInterfaces.values(),
-        interfaceConfigProtosList.stream()
+        interfaceConfigProtosList
+            .stream()
             .collect(Collectors.toMap(InterfaceConfigProto::getName, Function.identity())));
   }
 
@@ -544,7 +548,9 @@ public abstract class GapicProductConfig implements ProductConfig {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null) {
         List<String> interfaces =
-            symbolTable.getInterfaces().stream()
+            symbolTable
+                .getInterfaces()
+                .stream()
                 .map(ProtoElement::getFullName)
                 .collect(Collectors.toList());
         String interfacesString = String.join(",", interfaces);
@@ -652,11 +658,14 @@ public abstract class GapicProductConfig implements ProductConfig {
                 SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
         continue;
       }
-      if (methodConfigProto.getSurfaceTreatmentsList().stream()
+      if (methodConfigProto
+          .getSurfaceTreatmentsList()
+          .stream()
           .anyMatch(
               s ->
                   s.getVisibility().equals(VisibilityProto.DISABLED)
-                      && s.getIncludeLanguagesList().stream()
+                      && s.getIncludeLanguagesList()
+                          .stream()
                           .anyMatch(lang -> lang.equalsIgnoreCase(targetLanguage.name())))) {
         gapicDisabledMethods.add(protoMethod);
         continue;
@@ -782,20 +791,21 @@ public abstract class GapicProductConfig implements ProductConfig {
             diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
 
     HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
-    resourceDescriptorConfigs.values().stream()
+    resourceDescriptorConfigs
+        .values()
+        .stream()
         .flatMap(
             r ->
-                r
-                    .buildResourceNameConfigs(
-                        diagCollector, singleResourceNameConfigsFromGapicConfig)
+                r.buildResourceNameConfigs(diagCollector, singleResourceNameConfigsFromGapicConfig)
                     .stream())
         .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
-    resourceDescriptorConfigs.values().stream()
+    resourceDescriptorConfigs
+        .values()
+        .stream()
         .filter(c -> typesWithChildReferences.contains(c.getUnifiedResourceType()))
         .flatMap(
             r ->
-                r
-                    .buildParentResourceNameConfigs(
+                r.buildParentResourceNameConfigs(
                         diagCollector, singleResourceNameConfigsFromGapicConfig)
                     .stream())
         .forEach(config -> annotationResourceNameConfigs.put(config.getEntityId(), config));
@@ -846,7 +856,9 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs =
         new ImmutableSortedMap.Builder<>(Comparator.naturalOrder());
-    wellKnownResourceNames.getReferencedResourceNameConfigs().stream()
+    wellKnownResourceNames
+        .getReferencedResourceNameConfigs()
+        .stream()
         .forEach(r -> resourceNameConfigs.put(r.getEntityId(), r));
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
@@ -1123,7 +1135,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   public List<LongRunningConfig> getAllLongRunningConfigs() {
-    return getInterfaceConfigMap().values().stream()
+    return getInterfaceConfigMap()
+        .values()
+        .stream()
         .flatMap(i -> i.getMethodConfigs().stream())
         .map(MethodConfig::getLroConfig)
         .filter(Objects::nonNull)
@@ -1133,7 +1147,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   private static Map<CollectionConfigProto, Interface> getAllCollectionConfigProtos(
       @Nullable Model model, ConfigProto configProto) {
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
-        configProto.getCollectionsList().stream()
+        configProto
+            .getCollectionsList()
+            .stream()
             .collect(HashMap::new, (map, config) -> map.put(config, null), HashMap::putAll);
     configProto
         .getInterfacesList()
