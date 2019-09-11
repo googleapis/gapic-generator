@@ -239,6 +239,11 @@ public abstract class GapicProductConfig implements ProductConfig {
       Map<String, ResourceDescriptorConfig> descriptorConfigMap =
           protoParser.getResourceDescriptorConfigMap(sourceProtos, diagCollector);
 
+      descriptorConfigMap
+          .entrySet()
+          .stream()
+          .forEach(e -> System.out.printf("key: %s\nvalue: %s\n----\n", e.getKey(), e.getValue()));
+
       Set<String> configsWithChildTypeReferences =
           sourceProtos
               .stream()
@@ -811,14 +816,16 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
+                "Found single resource name \"%s\" in GAPIC config that has no corresponding"
+                    + " annotation",
                 key));
       }
       if (annotationResourceNameConfigs.get(key).getResourceNameType() != ResourceNameType.SINGLE) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that had entity name matching a non-single resource annotation: %s",
+                "Found single resource name \"%s\" in GAPIC config that had entity name matching a"
+                    + " non-single resource annotation: %s",
                 key,
                 annotationResourceNameConfigs.get(key)));
       }

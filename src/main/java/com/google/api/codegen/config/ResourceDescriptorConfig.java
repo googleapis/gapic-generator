@@ -53,28 +53,16 @@ public abstract class ResourceDescriptorConfig {
   public abstract ResourceDescriptor.History getHistory();
 
   /**
-   * Boolean for whether this resource should be represented in client libraries by a Oneof object.
-   */
-  public abstract boolean getRequiresOneofConfig();
-
-  /**
-   * Pattern for a single resource that will be treated differently for the purposes of entity
-   * naming. This pattern will also exist in getPatterns. If there is no single resource, will be
-   * "".
-   */
-  public abstract String getSinglePattern();
-
-  /**
    * Returns the proto file to which the resource name config has been assigned. This is required to
    * ensure that a consistent namespace can be calculated for the resource name.
    */
   public abstract ProtoFile getAssignedProtoFile();
 
-  /** The entity name for the resource config. */
-  public abstract String getDerivedEntityName();
-
-  public static ResourceDescriptorConfig from(
-      ResourceDescriptor descriptor, ProtoFile assignedProtoFile) {
+  /**
+   * Boolean for whether this resource should be represented in client libraries by a Oneof object.
+   * The value is derived from history and number of patterns.
+   */
+  public boolean getRequiresOneofConfig() {
     // The logic for requiresOneofConfig and requiresSinglePattern is finicky, so let's lay out
     // the desired result for all possible combinations of History and number of patterns:
     // (history, patterns) -> (requiresOneofConfig, requiresSinglePattern)
@@ -85,25 +73,43 @@ public abstract class ResourceDescriptorConfig {
     // (ORIGINALLY_SINGLE_PATTERN, 2+) -> (true, true)
     // (FUTURE_MULTI_PATTERN,      1)  -> (true, false)
     // (FUTURE_MULTI_PATTERN,      2+) -> (true, false) !!! WARNING, very odd
+    return getHistory() == ResourceDescriptor.History.FUTURE_MULTI_PATTERN
+        || getPatterns().size() > 1;
+  }
 
-    boolean requiresOneofConfig =
-        descriptor.getHistory() == ResourceDescriptor.History.FUTURE_MULTI_PATTERN
-            || descriptor.getPatternList().size() > 1;
-    boolean requiresSinglePattern =
-        descriptor.getHistory() == ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN
-            || (descriptor.getHistory() == ResourceDescriptor.History.HISTORY_UNSPECIFIED
-                && descriptor.getPatternList().size() == 1);
+  /**
+   * Boolean for whether this resource should have a single resource pattern. The value is derived
+   * from history and number of patterns.
+   */
+  boolean getRequiresSinglePattern() {
+    return getHistory() == ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN
+        || (getHistory() == ResourceDescriptor.History.HISTORY_UNSPECIFIED
+            && getPatterns().size() == 1);
+  }
 
-    String unqualifiedTypeName = getUnqualifiedTypeName(descriptor.getType());
+  /**
+   * Pattern for a single resource that will be treated differently for the purposes of entity
+   * naming. This pattern will also exist in getPatterns. If there is no single resource, will be
+   * "".
+   */
+  public String getSinglePattern() {
+    return getRequiresSinglePattern() ? getPatterns().get(0) : "";
+  }
+
+  /** The entity name for the resource config. */
+  public String getDerivedEntityName() {
+    String unqualifiedTypeName = getUnqualifiedTypeName(getUnifiedResourceType());
+    return getRequiresOneofConfig() ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName;
+  }
+
+  public static ResourceDescriptorConfig from(
+      ResourceDescriptor descriptor, ProtoFile assignedProtoFile) {
     return new AutoValue_ResourceDescriptorConfig(
         descriptor.getType(),
         ImmutableList.copyOf(descriptor.getPatternList()),
         descriptor.getNameField(),
         descriptor.getHistory(),
-        requiresOneofConfig,
-        requiresSinglePattern ? descriptor.getPattern(0) : "",
-        assignedProtoFile,
-        requiresOneofConfig ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName);
+        assignedProtoFile);
   }
 
   private static String getUnqualifiedTypeName(String typeName) {

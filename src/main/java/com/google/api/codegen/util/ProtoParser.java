@@ -23,6 +23,7 @@ import com.google.api.ResourceDescriptor;
 import com.google.api.ResourceProto;
 import com.google.api.ResourceReference;
 import com.google.api.codegen.config.ResourceDescriptorConfig;
+import com.google.api.codegen.config.ResourceDescriptorConfigs;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -179,7 +180,6 @@ public class ProtoParser {
     if (!enableProtoAnnotations) return mapBuilder.build();
 
     for (ProtoFile protoFile : protoFiles) {
-
       // Maps base names to ResourceDescriptors.
       Map<String, ResourceDescriptor> localDefs = new LinkedHashMap<>();
 
@@ -199,6 +199,12 @@ public class ProtoParser {
           }
           ResourceDescriptorConfig config =
               ResourceDescriptorConfig.from(definition, message.getFile());
+          mapBuilder.put(config.getUnifiedResourceType(), config);
+        }
+
+        List<ResourceDescriptorConfig> iamResourceConfigs =
+            ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
+        for (ResourceDescriptorConfig config : iamResourceConfigs) {
           mapBuilder.put(config.getUnifiedResourceType(), config);
         }
       }
