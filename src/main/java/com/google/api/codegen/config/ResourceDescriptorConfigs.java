@@ -60,7 +60,9 @@ public class ResourceDescriptorConfigs {
         if (collectionPatterns.isEmpty()) {
           continue;
         }
-        configs.add(createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile));
+        ResourceDescriptorConfig config = createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile);
+        configs.add(config);
+        System.out.println(config);
       }
     }
     return configs.build();

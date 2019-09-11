@@ -11,6 +11,8 @@ import "google/api/field_behavior.proto";
 import "google/longrunning/operations.proto";
 import "google/api/resource.proto";
 import "google/api/client.proto";
+import "google/iam/v1/iam_policy.proto";
+import "google/iam/v1/policy.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
@@ -249,34 +251,47 @@ service LibraryService {
     };
   }
 
-  // // Gets the access control policy for a shelf resource. Returns an empty
-  // // policy if a book exists but does not have a policy set.
-  // rpc GetIamPolicy(google.iam.v1.GetIamPolicyRequest)
-  //     returns (google.iam.v1.Policy) {
-  //   option (google.api.http) = {
-  //     post: "/v2/{resource=shelves/*}:getIamPolicy"
-  //     body: "*"
-  //   };
-  // }
+  // Gets the access control policy for a shelf resource. Returns an empty
+  // policy if a book exists but does not have a policy set.
+  rpc GetIamPolicy(google.iam.v1.GetIamPolicyRequest)
+      returns (google.iam.v1.Policy) {
+    option (google.api.http) = {
+      post: "/v2/{resource=shelves/*}:getIamPolicy"
+      body: "*"
+      additional_bindings {
+        post: "/v2/{resource=shelves/*/books/*}:getIamPolicy"
+        body: "*"
+      }
+    };
+  }
 
-  // // Sets the access control policy on a shelf resource. Replaces any
-  // // existing policy.
-  // rpc SetIamPolicy(google.iam.v1.SetIamPolicyRequest)
-  //     returns (google.iam.v1.Policy) {
-  //   option (google.api.http) = {
-  //     post: "/v2/{resource=shelves/*}:setIamPolicy"
-  //     body: "*"
-  //   };
-  // }
+  // Sets the access control policy on a shelf resource. Replaces any
+  // existing policy.
+  rpc SetIamPolicy(google.iam.v1.SetIamPolicyRequest)
+      returns (google.iam.v1.Policy) {
+    option (google.api.http) = {
+      post: "/v2/{resource=shelves/*}:setIamPolicy"
+      body: "*"
+      additional_bindings {
+        post: "/v2/{resource=shelves/*/books/*}:setIamPolicy"
+        body: "*"
+      }
+    };
+  }
 
-  // // Returns permissions that the caller has on the specified shelf resource.
-  // rpc TestIamPermissions(google.iam.v1.TestIamPermissionsRequest)
-  //     returns (google.iam.v1.TestIamPermissionsResponse) {
-  //   option (google.api.http) = {
-  //     post: "/v2/{resource=shelves/*}:testIamPermissions"
-  //     body: "*"
-  //   };
-  // }
+  // Returns permissions that the caller has on the specified shelf resource.
+  rpc TestIamPermissions(google.iam.v1.TestIamPermissionsRequest)
+      returns (google.iam.v1.TestIamPermissionsResponse) {
+    option (google.api.http) = {
+      post: "/v2/{resource=shelves/*}:testIamPermissions"
+      body: "*"
+      additional_bindings {
+        post: "/v2/{resource=shelves/*/books/*}:testIamPermissions"
+        body: "*"
+      }
+    };
+  }
+
 
   // Test optional flattening parameters of all types
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
