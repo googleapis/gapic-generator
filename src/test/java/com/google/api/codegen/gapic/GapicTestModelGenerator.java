@@ -30,6 +30,7 @@ public class GapicTestModelGenerator extends TestModelGenerator {
   @Override
   public TestConfig createTestConfig(
       String tempDir, List<String> protoFiles, Experiments experiments) {
+    protoFiles.stream().forEach(System.out::println);
     return new GapicTestConfig(getTestDataLocator(), tempDir, protoFiles);
   }
 }
