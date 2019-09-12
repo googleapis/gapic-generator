@@ -14,24 +14,17 @@
  */
 package com.google.api.codegen.config;
 
-// import static com.google.common.truth.Truth.assertThat;
-// import static org.mockito.Mockito.when;
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
-// import com.google.api.ResourceDescriptor;
-// import com.google.api.codegen.configgen.CollectionPattern;
-// import com.google.api.tools.framework.model.Interface;
-// import com.google.api.tools.framework.model.Method;
-// import com.google.api.tools.framework.model.ProtoFile;
-// import com.google.common.collect.ImmutableList;
-// import com.google.common.collect.ImmutableSet;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.Set;
-// import org.junit.Test;
-// import org.mockito.Mockito;
-// import org.mockito.Mock;
+import com.google.api.ResourceDescriptor;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.collect.ImmutableList;
+import java.util.Map;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -49,16 +42,12 @@ public class ResourceDescriptorConfigsTest {
   @Mock private static HttpAttribute testMethodAttr;
   @Mock private static HttpAttribute testMethodAdditionalAttr;
 
-  private final ImmutableList<PathSegment>
-      setMethodBook; // v2/resource="shelves/*/books/*":setIamPolicy
-  private final ImmutableList<PathSegment>
-      getMethodBook; // v2/resource="shelves/*/books/*":getIamPolicy
-  private final ImmutableList<PathSegment>
-      testMethodBook; // v2/resource="shelves/*/books/*":testIamPermissions
-  private final ImmutableList<PathSegment> getMethodShelf; // v2/resource="shelves/*":getIamPolicy
-  private final ImmutableList<PathSegment> setMethodShelf; // v2/resource="shelves/*":setIamPolicy
-  private final ImmutableList<PathSegment>
-      testMethodShelf; // v2/resource="shelves/*":testIamPermissions
+  private ImmutableList<PathSegment> setMethodBook;
+  private ImmutableList<PathSegment> getMethodBook;
+  private ImmutableList<PathSegment> testMethodBook;
+  private ImmutableList<PathSegment> getMethodShelf;
+  private ImmutableList<PathSegment> setMethodShelf;
+  private ImmutableList<PathSegment> testMethodShelf;
 
   @Before
   public void setUp() {
@@ -80,6 +69,19 @@ public class ResourceDescriptorConfigsTest {
     when(getMethodAdditionalAttr.getPath()).thenReturn(getMethodBook);
     when(setMethodAdditionalAttr.getPath()).thenReturn(setMethodBook);
     when(testMethodAdditionalAttr.getPath()).thenReturn(testMethodBook);
+
+    // v2/resource="shelves/*/books/*":setIamPolicy
+    setMethodBook = createSegments(setIamPolicyMethod, SegmentType.BOOK);
+    // v2/resource="shelves/*/books/*":getIamPolicy
+    getMethodBook = createSegments(tetIamPolicyMethod, SegmentType.BOOK);
+    // v2/resource="shelves/*/books/*":testIamPermissions
+    testMethodBook = createSegments(testIamPermissionsMethod, SegmentType.BOOK);
+    // v2/resource="shelves/*":setIamPolicy
+    setMethodShelf = createSegments(setIamPolicyMethod, SegmentType.SHELF);
+    // v2/resource="shelves/*":setIamPolicy
+    getMethodShelf = createSegments(tetIamPolicyMethod, SegmentType.SHELF);
+    // v2/resource="shelves/*":testIamPermissions
+    testMethodShelf = createSegments(testIamPermissionsMethod, SegmentType.SHELF);
   }
 
   @Test
