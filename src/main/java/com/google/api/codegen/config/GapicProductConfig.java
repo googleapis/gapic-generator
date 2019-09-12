@@ -852,6 +852,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
+    resourceNameConfigs.build().values().stream().forEach(System.out::println);
     return resourceNameConfigs.build();
   }
 

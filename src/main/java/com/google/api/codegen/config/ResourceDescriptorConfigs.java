@@ -21,7 +21,9 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /* Utility class for ResourceDescriptorConfig. */
@@ -46,9 +48,9 @@ public class ResourceDescriptorConfigs {
    * <p>As a mitigation, we derive the resource name configs these methods need from the
    * `google.api.http` annotations.
    */
-  public static List<ResourceDescriptorConfig> createResourceNameDescriptorsFromIamMethods(
+  public static Map<String, ResourceDescriptorConfig> createResourceNameDescriptorsFromIamMethods(
       ProtoFile protoFile) {
-    ImmutableList.Builder<ResourceDescriptorConfig> configs = ImmutableList.builder();
+    HashMap<String, ResourceDescriptorConfig> configs = new HashMap<>();
     for (Interface apiInterface : protoFile.getInterfaces()) {
       for (Method method : apiInterface.getMethods()) {
         if (!IAM_METHOD_NAMES.contains(method.getSimpleName())) {
@@ -56,16 +58,16 @@ public class ResourceDescriptorConfigs {
         }
 
         List<CollectionPattern> collectionPatterns =
-            CollectionPattern.getCollectionPatternsFromMethod(method);
+            CollectionPattern.getAllCollectionPatternsFromMethod(method);
         if (collectionPatterns.isEmpty()) {
           continue;
         }
-        ResourceDescriptorConfig config = createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile);
-        configs.add(config);
-        System.out.println(config);
+        ResourceDescriptorConfig config =
+            createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile);
+        configs.put(config.getUnifiedResourceType(), config);
       }
     }
-    return configs.build();
+    return configs;
   }
 
   private static ResourceDescriptorConfig createResourceNameDescriptorFromPatterns(
@@ -80,7 +82,7 @@ public class ResourceDescriptorConfigs {
         "*/" + unifiedTypeName,
         patterns
             .stream()
-            .map(CollectionPattern::getFieldPath)
+            .map(CollectionPattern::getTemplatizedResourcePath)
             .collect(ImmutableList.toImmutableList()),
         "resource",
         ResourceDescriptor.History.FUTURE_MULTI_PATTERN,

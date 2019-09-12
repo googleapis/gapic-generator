@@ -202,10 +202,15 @@ public class ProtoParser {
           mapBuilder.put(config.getUnifiedResourceType(), config);
         }
 
-        List<ResourceDescriptorConfig> iamResourceConfigs =
+        // Build a temporary map for de-duplicating.
+        Map<String, ResourceDescriptorConfig> existingResources = mapBuilder.build();
+
+        Map<String, ResourceDescriptorConfig> iamResourceConfigs =
             ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
-        for (ResourceDescriptorConfig config : iamResourceConfigs) {
-          mapBuilder.put(config.getUnifiedResourceType(), config);
+        for (Map.Entry<String, ResourceDescriptorConfig> entry : iamResourceConfigs.entrySet()) {
+          if (!existingResources.containsKey(entry.getKey())) {
+            mapBuilder.put(entry);
+          }
         }
       }
     }

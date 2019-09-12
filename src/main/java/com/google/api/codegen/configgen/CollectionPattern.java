@@ -26,7 +26,8 @@ import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardS
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -184,15 +185,39 @@ public class CollectionPattern {
     return PathSegment.toSyntax(templatizedSubpath).substring(1);
   }
 
-  /** Returns a list of CollectionPattern objects. */
+  /** Returns a list of CollectionPattern objects. Exclude any `additional_binding`. */
   public static List<CollectionPattern> getCollectionPatternsFromMethod(Method method) {
-    List<CollectionPattern> collectionPatterns = new LinkedList<CollectionPattern>();
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-    if (httpAttr != null) {
-      for (PathSegment pathSegment : httpAttr.getPath()) {
-        if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
-          collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
-        }
+    return getCollectionPatternsFromHttpAttribute(httpAttr);
+  }
+
+  /**
+   * Returns a list of CollectionPattern objects. Include those derived from `additional_binding`.
+   */
+  public static List<CollectionPattern> getAllCollectionPatternsFromMethod(Method method) {
+    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    if (httpAttr == null) {
+      return Collections.emptyList();
+    }
+    List<CollectionPattern> collectionPatterns = new ArrayList<CollectionPattern>();
+    collectionPatterns.addAll(getCollectionPatternsFromHttpAttribute(httpAttr));
+    for (HttpAttribute additionalBinding : httpAttr.getAdditionalBindings()) {
+      collectionPatterns.addAll(getCollectionPatternsFromHttpAttribute(additionalBinding));
+    }
+    return collectionPatterns;
+  }
+
+  private static List<CollectionPattern> getCollectionPatternsFromHttpAttribute(
+      HttpAttribute httpAttr) {
+    if (httpAttr == null) {
+      return Collections.emptyList();
+    }
+    List<CollectionPattern> collectionPatterns = new ArrayList<>();
+    for (PathSegment pathSegment : httpAttr.getPath()) {
+      System.out.println(pathSegment.getClass());
+      System.out.println(pathSegment);
+      if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
+        collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
       }
     }
     return collectionPatterns;
