@@ -239,11 +239,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       Map<String, ResourceDescriptorConfig> descriptorConfigMap =
           protoParser.getResourceDescriptorConfigMap(sourceProtos, diagCollector);
 
-      descriptorConfigMap
-          .entrySet()
-          .stream()
-          .forEach(e -> System.out.printf("key: %s\nvalue: %s\n----\n", e.getKey(), e.getValue()));
-
       Set<String> configsWithChildTypeReferences =
           sourceProtos
               .stream()
@@ -852,7 +847,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
-    resourceNameConfigs.build().values().stream().forEach(System.out::println);
     return resourceNameConfigs.build();
   }
 

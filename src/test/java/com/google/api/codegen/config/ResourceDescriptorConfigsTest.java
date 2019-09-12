@@ -18,6 +18,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.google.api.ResourceDescriptor;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -30,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 
 public class ResourceDescriptorConfigsTest {
   @Mock private static ProtoFile protoFile;
-  @Mock private static Interface apiInterface;
+  @Mock private static Interface service;
   @Mock private static Method getIamPolicyMethod;
   @Mock private static Method setIamPolicyMethod;
   @Mock private static Method testIamPermissionsMethod;
@@ -42,18 +47,19 @@ public class ResourceDescriptorConfigsTest {
   @Mock private static HttpAttribute testMethodAttr;
   @Mock private static HttpAttribute testMethodAdditionalAttr;
 
-  private ImmutableList<PathSegment> setMethodBook;
-  private ImmutableList<PathSegment> getMethodBook;
-  private ImmutableList<PathSegment> testMethodBook;
-  private ImmutableList<PathSegment> getMethodShelf;
-  private ImmutableList<PathSegment> setMethodShelf;
-  private ImmutableList<PathSegment> testMethodShelf;
+  private ImmutableList<PathSegment> setMethodBookUri;
+  private ImmutableList<PathSegment> getMethodBookUri;
+  private ImmutableList<PathSegment> testMethodBookUri;
+  private ImmutableList<PathSegment> getMethodShelfUri;
+  private ImmutableList<PathSegment> setMethodShelfUri;
+  private ImmutableList<PathSegment> testMethodShelfUri;
 
   @Before
   public void setUp() {
+
     MockitoAnnotations.initMocks(this);
-    when(protoFile.getInterfaces()).thenReturn(ImmutableList.of(apiInterface));
-    when(apiInterface.getMethods())
+    when(protoFile.getInterfaces()).thenReturn(ImmutableList.of(service));
+    when(service.getMethods())
         .thenReturn(
             ImmutableList.of(getIamPolicyMethod, setIamPolicyMethod, testIamPermissionsMethod));
     when(getIamPolicyMethod.getSimpleName()).thenReturn("GetIamPolicy");
@@ -61,38 +67,44 @@ public class ResourceDescriptorConfigsTest {
     when(testIamPermissionsMethod.getSimpleName()).thenReturn("TestIamPermissions");
     when(getIamPolicyMethod.getAttribute(HttpAttribute.KEY)).thenReturn(getMethodAttr);
     when(setIamPolicyMethod.getAttribute(HttpAttribute.KEY)).thenReturn(setMethodAttr);
-    when(testIamPolicyMethod.getAttribute(HttpAttribute.KEY)).thenReturn(testMethodAttr);
+    when(testIamPermissionsMethod.getAttribute(HttpAttribute.KEY)).thenReturn(testMethodAttr);
 
-    when(getMethodAttr.getPath()).thenReturn(getMethodShelf);
-    when(setMethodAttr.getPath()).thenReturn(setMethodShelf);
-    when(testMethodAttr.getPath()).thenReturn(testMethodShelf);
-    when(getMethodAdditionalAttr.getPath()).thenReturn(getMethodBook);
-    when(setMethodAdditionalAttr.getPath()).thenReturn(setMethodBook);
-    when(testMethodAdditionalAttr.getPath()).thenReturn(testMethodBook);
-
-    // v2/resource="shelves/*/books/*":setIamPolicy
-    setMethodBook = createSegments(setIamPolicyMethod, SegmentType.BOOK);
-    // v2/resource="shelves/*/books/*":getIamPolicy
-    getMethodBook = createSegments(tetIamPolicyMethod, SegmentType.BOOK);
-    // v2/resource="shelves/*/books/*":testIamPermissions
-    testMethodBook = createSegments(testIamPermissionsMethod, SegmentType.BOOK);
     // v2/resource="shelves/*":setIamPolicy
-    setMethodShelf = createSegments(setIamPolicyMethod, SegmentType.SHELF);
+    setMethodShelfUri = createSegments(setIamPolicyMethod, Resource.SHELF);
     // v2/resource="shelves/*":setIamPolicy
-    getMethodShelf = createSegments(tetIamPolicyMethod, SegmentType.SHELF);
+    getMethodShelfUri = createSegments(getIamPolicyMethod, Resource.SHELF);
     // v2/resource="shelves/*":testIamPermissions
-    testMethodShelf = createSegments(testIamPermissionsMethod, SegmentType.SHELF);
+    testMethodShelfUri = createSegments(testIamPermissionsMethod, Resource.SHELF);
+    // v2/resource="shelves/*/books/*":setIamPolicy
+    setMethodBookUri = createSegments(setIamPolicyMethod, Resource.BOOK);
+    // v2/resource="shelves/*/books/*":getIamPolicy
+    getMethodBookUri = createSegments(getIamPolicyMethod, Resource.BOOK);
+    // v2/resource="shelves/*/books/*":testIamPermissions
+    testMethodBookUri = createSegments(testIamPermissionsMethod, Resource.BOOK);
+
+    when(getMethodAttr.getPath()).thenReturn(getMethodShelfUri);
+    when(setMethodAttr.getPath()).thenReturn(setMethodShelfUri);
+    when(testMethodAttr.getPath()).thenReturn(testMethodShelfUri);
+    when(getMethodAdditionalAttr.getPath()).thenReturn(getMethodBookUri);
+    when(setMethodAdditionalAttr.getPath()).thenReturn(setMethodBookUri);
+    when(testMethodAdditionalAttr.getPath()).thenReturn(testMethodBookUri);
   }
 
   @Test
   public void testCreateIamResourceDescriptorConfigsWithoutAdditionalBindings() {
-    Map<String, ResourceDescriptorConfig> configs =
-        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
-    assertThat(configs.size()).isEqualTo(1);
+    when(getMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
+    when(setMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
+    when(testMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
 
-    ResourceDescriptorConfig config = configs.get("*/Book");
-    assertThat(config.getUnifiedResourceType()).isEqualTo("*/Book");
-    assertThat(config.getPatterns()).containsExactly("shelves/{shelf}/books/{book}");
+    Map<String, ResourceDescriptorConfig> configs =
+        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
+            protoFile, service, "foo.googleapis.com");
+    assertThat(configs.size()).isEqualTo(1);
+    System.out.println(configs.size());
+    configs.keySet().stream().forEach(System.out::println);
+    ResourceDescriptorConfig config = configs.get("foo.googleapis.com/Shelf");
+    assertThat(config.getUnifiedResourceType()).isEqualTo("foo.googleapis.com/Shelf");
+    assertThat(config.getPatterns()).containsExactly("shelves/{shelf}");
     assertThat(config.getNameField()).isEqualTo("resource");
     assertThat(config.getHistory()).isEqualTo(ResourceDescriptor.History.FUTURE_MULTI_PATTERN);
     assertThat(config.getAssignedProtoFile()).isEqualTo(protoFile);
@@ -108,11 +120,12 @@ public class ResourceDescriptorConfigsTest {
         .thenReturn(ImmutableList.of(testMethodAdditionalAttr));
 
     Map<String, ResourceDescriptorConfig> configs =
-        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
+        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
+            protoFile, service, "foo.googleapis.com");
     assertThat(configs.size()).isEqualTo(1);
 
-    ResourceDescriptorConfig config = configs.get("*/IamResource");
-    assertThat(config.getUnifiedResourceType()).isEqualTo("*/IamResource");
+    ResourceDescriptorConfig config = configs.get("foo.googleapis.com/IamResource");
+    assertThat(config.getUnifiedResourceType()).isEqualTo("foo.googleapis.com/IamResource");
     assertThat(config.getPatterns())
         .containsExactly("shelves/{shelf}/books/{book}", "shelves/{shelf}");
     assertThat(config.getNameField()).isEqualTo("resource");
@@ -120,26 +133,12 @@ public class ResourceDescriptorConfigsTest {
     assertThat(config.getAssignedProtoFile()).isEqualTo(protoFile);
   }
 
-  @Test
-  public void testMultipleIamMethodsWithDifferentURIsFail() {
-    when(getMethodAttr.getAdditionalBindings())
-        .thenReturn(ImmutableList.of(getMethodAdditionalAttr));
-
-    try {
-      Map<String, ResourceDescriptorConfig> configs =
-          ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
-      fail();
-    } catch (IllegalArgumentException expection) {
-
-    }
-  }
-
-  private static ImmutableList<FieldSegement> createSegments(Method method, SegmentType type) {
+  private static ImmutableList<PathSegment> createSegments(Method method, Resource type) {
     switch (type) {
       case BOOK:
-        return ImmutableList.of(
+        return ImmutableList.<PathSegment>of(
             new LiteralSegment("v2"),
-            new FieldSegement(
+            new FieldSegment(
                 "resource",
                 ImmutableList.of(
                     new LiteralSegment("shelves"),
@@ -150,7 +149,7 @@ public class ResourceDescriptorConfigsTest {
       case SHELF:
         return ImmutableList.of(
             new LiteralSegment("v2"),
-            new FieldSegement(
+            new FieldSegment(
                 "resource",
                 ImmutableList.of(new LiteralSegment("shelves"), new WildcardSegment(false))),
             new LiteralSegment("setIamPolicy"));
@@ -159,7 +158,7 @@ public class ResourceDescriptorConfigsTest {
     }
   }
 
-  private static enum SegmentType {
+  private static enum Resource {
     SHELF,
     BOOK
   }

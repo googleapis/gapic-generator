@@ -49,29 +49,27 @@ public class ResourceDescriptorConfigs {
    * `google.api.http` annotations.
    */
   public static Map<String, ResourceDescriptorConfig> createResourceNameDescriptorsFromIamMethods(
-      ProtoFile protoFile) {
+      ProtoFile protoFile, Interface service, String serviceName) {
     HashMap<String, ResourceDescriptorConfig> configs = new HashMap<>();
-    for (Interface apiInterface : protoFile.getInterfaces()) {
-      for (Method method : apiInterface.getMethods()) {
-        if (!IAM_METHOD_NAMES.contains(method.getSimpleName())) {
-          continue;
-        }
-
-        List<CollectionPattern> collectionPatterns =
-            CollectionPattern.getAllCollectionPatternsFromMethod(method);
-        if (collectionPatterns.isEmpty()) {
-          continue;
-        }
-        ResourceDescriptorConfig config =
-            createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile);
-        configs.put(config.getUnifiedResourceType(), config);
+    for (Method method : service.getMethods()) {
+      if (!IAM_METHOD_NAMES.contains(method.getSimpleName())) {
+        continue;
       }
+
+      List<CollectionPattern> collectionPatterns =
+          CollectionPattern.getAllCollectionPatternsFromMethod(method);
+      if (collectionPatterns.isEmpty()) {
+        continue;
+      }
+      ResourceDescriptorConfig config =
+          createResourceNameDescriptorFromPatterns(collectionPatterns, protoFile, serviceName);
+      configs.put(config.getUnifiedResourceType(), config);
     }
     return configs;
   }
 
   private static ResourceDescriptorConfig createResourceNameDescriptorFromPatterns(
-      List<CollectionPattern> patterns, ProtoFile assignedProtoFile) {
+      List<CollectionPattern> patterns, ProtoFile assignedProtoFile, String serviceName) {
 
     String unifiedTypeName =
         patterns.size() == 1
@@ -79,7 +77,7 @@ public class ResourceDescriptorConfigs {
             : DEFAULT_MULTI_PATTERN_IAM_RESOURCE_TYPE;
 
     return new AutoValue_ResourceDescriptorConfig(
-        "*/" + unifiedTypeName,
+        serviceName + "/" + unifiedTypeName,
         patterns
             .stream()
             .map(CollectionPattern::getTemplatizedResourcePath)

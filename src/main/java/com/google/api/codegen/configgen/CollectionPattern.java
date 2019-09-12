@@ -214,8 +214,6 @@ public class CollectionPattern {
     }
     List<CollectionPattern> collectionPatterns = new ArrayList<>();
     for (PathSegment pathSegment : httpAttr.getPath()) {
-      System.out.println(pathSegment.getClass());
-      System.out.println(pathSegment);
       if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
         collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
       }

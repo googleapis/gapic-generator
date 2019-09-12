@@ -45,6 +45,7 @@ import com.google.protobuf.*;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,10 +175,12 @@ public class ProtoParser {
   /** Return a Map of Unified Resource Types to a ResourceDescriptorConfig object. */
   public Map<String, ResourceDescriptorConfig> getResourceDescriptorConfigMap(
       List<ProtoFile> protoFiles, DiagCollector diagCollector) {
-    ImmutableMap.Builder<String, ResourceDescriptorConfig> mapBuilder = ImmutableMap.builder();
-
     // Skip unnecessary file parsing.
-    if (!enableProtoAnnotations) return mapBuilder.build();
+    if (!enableProtoAnnotations) return ImmutableMap.of();
+
+    // Descriptors parsed from IAM methods might be duplicates of those parsed from annotations,
+    // so we can't use an ImmutableMap.Builder
+    HashMap<String, ResourceDescriptorConfig> resourceDescriptors = new HashMap<>();
 
     for (ProtoFile protoFile : protoFiles) {
       // Maps base names to ResourceDescriptors.
@@ -199,22 +202,19 @@ public class ProtoParser {
           }
           ResourceDescriptorConfig config =
               ResourceDescriptorConfig.from(definition, message.getFile());
-          mapBuilder.put(config.getUnifiedResourceType(), config);
-        }
-
-        // Build a temporary map for de-duplicating.
-        Map<String, ResourceDescriptorConfig> existingResources = mapBuilder.build();
-
-        Map<String, ResourceDescriptorConfig> iamResourceConfigs =
-            ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(protoFile);
-        for (Map.Entry<String, ResourceDescriptorConfig> entry : iamResourceConfigs.entrySet()) {
-          if (!existingResources.containsKey(entry.getKey())) {
-            mapBuilder.put(entry);
-          }
+          resourceDescriptors.put(config.getUnifiedResourceType(), config);
         }
       }
+
+      for (Interface service : protoFile.getInterfaces()) {
+        resourceDescriptors.putAll(
+            ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
+                protoFile, service, getServiceAddress(service)));
+      }
     }
-    return mapBuilder.build();
+    return ImmutableMap.<String, ResourceDescriptorConfig>builder()
+        .putAll(resourceDescriptors)
+        .build();
   }
 
   /* Return a list of method signatures, aka flattenings, specified on a given method.
