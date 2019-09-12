@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.ResourceDescriptor;
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -73,7 +74,7 @@ public class ResourceDescriptorConfigs {
 
     String unifiedTypeName =
         patterns.size() == 1
-            ? patterns.get(0).getSimpleName()
+            ? Name.anyLower(patterns.get(0).getSimpleName()).toUpperCamel()
             : DEFAULT_MULTI_PATTERN_IAM_RESOURCE_TYPE;
 
     return new AutoValue_ResourceDescriptorConfig(

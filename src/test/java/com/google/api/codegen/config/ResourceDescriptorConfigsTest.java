@@ -100,8 +100,6 @@ public class ResourceDescriptorConfigsTest {
         ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
             protoFile, service, "foo.googleapis.com");
     assertThat(configs.size()).isEqualTo(1);
-    System.out.println(configs.size());
-    configs.keySet().stream().forEach(System.out::println);
     ResourceDescriptorConfig config = configs.get("foo.googleapis.com/Shelf");
     assertThat(config.getUnifiedResourceType()).isEqualTo("foo.googleapis.com/Shelf");
     assertThat(config.getPatterns()).containsExactly("shelves/{shelf}");
@@ -154,7 +152,7 @@ public class ResourceDescriptorConfigsTest {
                 ImmutableList.of(new LiteralSegment("shelves"), new WildcardSegment(false))),
             new LiteralSegment("setIamPolicy"));
       default:
-        throw new IllegalArgumentException("unknown segment type.");
+        throw new IllegalStateException("internal error: unknown segment type.");
     }
   }
 
