@@ -1,0 +1,16 @@
+@extends "nodejs/common.snip"
+
+@snippet generate(index)
+  {@lineComments(index.fileHeader.copyrightLines)}
+  //
+  {@lineComments(index.fileHeader.licenseLines)}
+
+  'use strict';
+
+  // Set a flag that we are running in a browser bundle.
+  global.isBrowser = true;
+
+  // Re-export all exports from ./index.js.
+  module.exports = require('./index');
+
+@end

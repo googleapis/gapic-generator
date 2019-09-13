@@ -42,26 +42,30 @@
 @end
 
 @private processArrayLoopView(view)
-    foreach ({@view.variableType} {@view.variableName} in {@variableField(@view.collection)}) {
+    foreach ({@view.variableType} {@view.variableName} in {@variableField(@view.collection)})
+    {
         {@processOutputViews(@view.body)}
     }
 @end
 
 @private processMapLoopView(view)
     @if and(view.keyVariableName, view.valueVariableName)
-        foreach (KeyValuePair<{@view.keyType}, {@view.valueType}> entry in {@variableField(@view.map)}.entrySet()) {
+        foreach (KeyValuePair<{@view.keyType}, {@view.valueType}> entry in {@variableField(@view.map)})
+        {
             {@view.keyType} {@view.keyVariableName} = entry.Key;
             {@view.valueType} {@view.valueVariableName} = entry.Value;
             {@processOutputViews(@view.body)}
         }
     @else
         @if view.keyVariableName
-            foreach ({@view.keyType} {@view.keyVariableName} in {@variableField(@view.map)}.Keys) {
+            foreach ({@view.keyType} {@view.keyVariableName} in {@variableField(@view.map)}.Keys)
+            {
                 {@processOutputViews(@view.body)}
             }
         @else
             @if view.valueVariableName
-                for ({@view.valueType} {@view.valueVariableName} in {@variableField(@view.map)}.Values) {
+                for ({@view.valueType} {@view.valueVariableName} in {@variableField(@view.map)}.Values)\
+                {
                     {@processOutputViews(@view.body)}
                 }
             @else
