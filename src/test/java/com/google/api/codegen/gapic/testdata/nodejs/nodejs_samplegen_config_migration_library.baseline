@@ -2980,6 +2980,219 @@ const TestOptionalRequiredFlatteningParamsRequest = {
 const TestOptionalRequiredFlatteningParamsResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
+============== file: src/v1/doc/google/iam/v1/doc_iam_policy.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
+
+/**
+ * Request message for `SetIamPolicy` method.
+ *
+ * @property {string} resource
+ *   REQUIRED: The resource for which the policy is being specified.
+ *   `resource` is usually specified as a path. For example, a Project
+ *   resource is specified as `projects/{project}`.
+ *
+ * @property {Object} policy
+ *   REQUIRED: The complete policy to be applied to the `resource`. The size of
+ *   the policy is limited to a few 10s of KB. An empty policy is a
+ *   valid policy but certain Cloud Platform services (such as Projects)
+ *   might reject them.
+ *
+ *   This object should have the same structure as [Policy]{@link google.iam.v1.Policy}
+ *
+ * @typedef SetIamPolicyRequest
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.SetIamPolicyRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/iam_policy.proto}
+ */
+const SetIamPolicyRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for `GetIamPolicy` method.
+ *
+ * @property {string} resource
+ *   REQUIRED: The resource for which the policy is being requested.
+ *   `resource` is usually specified as a path. For example, a Project
+ *   resource is specified as `projects/{project}`.
+ *
+ * @typedef GetIamPolicyRequest
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.GetIamPolicyRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/iam_policy.proto}
+ */
+const GetIamPolicyRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for `TestIamPermissions` method.
+ *
+ * @property {string} resource
+ *   REQUIRED: The resource for which the policy detail is being requested.
+ *   `resource` is usually specified as a path. For example, a Project
+ *   resource is specified as `projects/{project}`.
+ *
+ * @property {string[]} permissions
+ *   The set of permissions to check for the `resource`. Permissions with
+ *   wildcards (such as '*' or 'storage.*') are not allowed. For more
+ *   information see
+ *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+ *
+ * @typedef TestIamPermissionsRequest
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.TestIamPermissionsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/iam_policy.proto}
+ */
+const TestIamPermissionsRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for `TestIamPermissions` method.
+ *
+ * @property {string[]} permissions
+ *   A subset of `TestPermissionsRequest.permissions` that the caller is
+ *   allowed.
+ *
+ * @typedef TestIamPermissionsResponse
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.TestIamPermissionsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/iam_policy.proto}
+ */
+const TestIamPermissionsResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/iam/v1/doc_policy.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Note: this file is purely for documentation. Any contents are not expected
+// to be loaded as the JS file.
+
+/**
+ * Defines an Identity and Access Management (IAM) policy. It is used to
+ * specify access control policies for Cloud Platform resources.
+ *
+ *
+ * A `Policy` consists of a list of `bindings`. A `Binding` binds a list of
+ * `members` to a `role`, where the members can be user accounts, Google groups,
+ * Google domains, and service accounts. A `role` is a named list of permissions
+ * defined by IAM.
+ *
+ * **Example**
+ *
+ *     {
+ *       "bindings": [
+ *         {
+ *           "role": "roles/owner",
+ *           "members": [
+ *             "user:mike@example.com",
+ *             "group:admins@example.com",
+ *             "domain:google.com",
+ *             "serviceAccount:my-other-app@appspot.gserviceaccount.com",
+ *           ]
+ *         },
+ *         {
+ *           "role": "roles/viewer",
+ *           "members": ["user:sean@example.com"]
+ *         }
+ *       ]
+ *     }
+ *
+ * For a description of IAM and its features, see the
+ * [IAM developer's guide](https://cloud.google.com/iam).
+ *
+ * @property {number} version
+ *   Version of the `Policy`. The default version is 0.
+ *
+ * @property {Object[]} bindings
+ *   Associates a list of `members` to a `role`.
+ *   Multiple `bindings` must not be specified for the same `role`.
+ *   `bindings` with no members will result in an error.
+ *
+ *   This object should have the same structure as [Binding]{@link google.iam.v1.Binding}
+ *
+ * @property {Buffer} etag
+ *   `etag` is used for optimistic concurrency control as a way to help
+ *   prevent simultaneous updates of a policy from overwriting each other.
+ *   It is strongly suggested that systems make use of the `etag` in the
+ *   read-modify-write cycle to perform policy updates in order to avoid race
+ *   conditions: An `etag` is returned in the response to `getIamPolicy`, and
+ *   systems are expected to put that etag in the request to `setIamPolicy` to
+ *   ensure that their change will be applied to the same version of the policy.
+ *
+ *   If no `etag` is provided in the call to `setIamPolicy`, then the existing
+ *   policy is overwritten blindly.
+ *
+ * @typedef Policy
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.Policy definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/policy.proto}
+ */
+const Policy = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Associates `members` with a `role`.
+ *
+ * @property {string} role
+ *   Role that is assigned to `members`.
+ *   For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
+ *   Required
+ *
+ * @property {string[]} members
+ *   Specifies the identities requesting access for a Cloud Platform resource.
+ *   `members` can have the following values:
+ *
+ *   * `allUsers`: A special identifier that represents anyone who is
+ *      on the internet; with or without a Google account.
+ *
+ *   * `allAuthenticatedUsers`: A special identifier that represents anyone
+ *      who is authenticated with a Google account or a service account.
+ *
+ *   * `user:{emailid}`: An email address that represents a specific Google
+ *      account. For example, `alice@gmail.com` or `joe@example.com`.
+ *
+ *
+ *   * `serviceAccount:{emailid}`: An email address that represents a service
+ *      account. For example, `my-other-app@appspot.gserviceaccount.com`.
+ *
+ *   * `group:{emailid}`: An email address that represents a Google group.
+ *      For example, `admins@example.com`.
+ *
+ *   * `domain:{domain}`: A Google Apps domain name that represents all the
+ *      users of that domain. For example, `google.com` or `example.com`.
+ *
+ * @typedef Binding
+ * @memberof google.iam.v1
+ * @see [google.iam.v1.Binding definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/iam/v1/policy.proto}
+ */
+const Binding = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 ============== file: src/v1/doc/google/longrunning/doc_operations.js ==============
 // Copyright 2019 Google LLC
 //
@@ -4433,6 +4646,9 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'getIamPolicy',
+      'setIamPolicy',
+      'testIamPermissions',
       'privateListShelves',
     ];
     for (const methodName of libraryServiceStubMethods) {
@@ -6768,6 +6984,185 @@ class LibraryServiceClient {
   }
 
   /**
+   * Gets the access control policy for a shelf resource. Returns an empty
+   * policy if a book exists but does not have a policy set.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.resource]
+   *   REQUIRED: The resource for which the policy is being requested.
+   *   `resource` is usually specified as a path. For example, a Project
+   *   resource is specified as `projects/{project}`.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Policy]{@link google.iam.v1.Policy}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Policy]{@link google.iam.v1.Policy}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.getIamPolicy({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  getIamPolicy(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
+
+    return this._innerApiCalls.getIamPolicy(request, options, callback);
+  }
+
+  /**
+   * Sets the access control policy on a shelf resource. Replaces any
+   * existing policy.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.resource]
+   *   REQUIRED: The resource for which the policy is being specified.
+   *   `resource` is usually specified as a path. For example, a Project
+   *   resource is specified as `projects/{project}`.
+   * @param {Object} [request.policy]
+   *   REQUIRED: The complete policy to be applied to the `resource`. The size of
+   *   the policy is limited to a few 10s of KB. An empty policy is a
+   *   valid policy but certain Cloud Platform services (such as Projects)
+   *   might reject them.
+   *
+   *   This object should have the same structure as [Policy]{@link google.iam.v1.Policy}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Policy]{@link google.iam.v1.Policy}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Policy]{@link google.iam.v1.Policy}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.setIamPolicy({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  setIamPolicy(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
+
+    return this._innerApiCalls.setIamPolicy(request, options, callback);
+  }
+
+  /**
+   * Returns permissions that the caller has on the specified shelf resource.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.resource]
+   *   REQUIRED: The resource for which the policy detail is being requested.
+   *   `resource` is usually specified as a path. For example, a Project
+   *   resource is specified as `projects/{project}`.
+   * @param {string[]} [request.permissions]
+   *   The set of permissions to check for the `resource`. Permissions with
+   *   wildcards (such as '*' or 'storage.*') are not allowed. For more
+   *   information see
+   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.testIamPermissions({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  testIamPermissions(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
+
+    return this._innerApiCalls.testIamPermissions(request, options, callback);
+  }
+
+  /**
    * This method is not exposed in the GAPIC config. It should be generated.
    *
    * @param {Object} request
@@ -7126,6 +7521,21 @@ module.exports = LibraryServiceClient;
           "retry_params_name": "default"
         },
         "TestOptionalRequiredFlatteningParams": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetIamPolicy": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SetIamPolicy": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "TestIamPermissions": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -9356,6 +9766,169 @@ describe('LibraryServiceClient', () => {
       );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('getIamPolicy', () => {
+    it('invokes getIamPolicy without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const version = 351608024;
+      const etag = '21';
+      const expectedResponse = {
+        version: version,
+        etag: etag,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.getIamPolicy = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.getIamPolicy(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes getIamPolicy with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.getIamPolicy = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.getIamPolicy(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('setIamPolicy', () => {
+    it('invokes setIamPolicy without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const version = 351608024;
+      const etag = '21';
+      const expectedResponse = {
+        version: version,
+        etag: etag,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.setIamPolicy = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.setIamPolicy(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes setIamPolicy with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.setIamPolicy = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.setIamPolicy(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('testIamPermissions', () => {
+    it('invokes testIamPermissions without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const expectedResponse = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.testIamPermissions = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.testIamPermissions(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes testIamPermissions with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.testIamPermissions = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.testIamPermissions(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

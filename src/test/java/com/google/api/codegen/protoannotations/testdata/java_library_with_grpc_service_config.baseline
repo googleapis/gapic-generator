@@ -4240,6 +4240,11 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.stub.LibraryServiceStub;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import com.google.protobuf.Any;
@@ -4367,11 +4372,17 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}/books/{book}");
 
+  private static final PathTemplate BOOK_IAM_RESOURCE_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+
   private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
+
+  private static final PathTemplate SHELF_IAM_RESOURCE_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -4414,6 +4425,19 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Formats a string containing the fully-qualified path to represent
+   * a book_iam_resource resource.
+   *
+   * @deprecated Use the {@link BookIamResourceName} class instead.
+   */
+  @Deprecated
+  public static final String formatBookIamResourceName(String shelf, String book) {
+    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,
+        "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
    * a project_book resource.
    *
    * @deprecated Use the {@link ProjectBookName} class instead.
@@ -4435,6 +4459,18 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a shelf_iam_resource resource.
+   *
+   * @deprecated Use the {@link ShelfIamResourceName} class instead.
+   */
+  @Deprecated
+  public static final String formatShelfIamResourceName(String shelf) {
+    return SHELF_IAM_RESOURCE_PATH_TEMPLATE.instantiate(
+        "shelf", shelf);
   }
 
   /**
@@ -4504,6 +4540,28 @@ public class LibraryClient implements BackgroundResource {
   }
 
   /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a book_iam_resource resource.
+   *
+   * @deprecated Use the {@link BookIamResourceName} class instead.
+   */
+  @Deprecated
+  public static final String parseShelfFromBookIamResourceName(String bookIamResourceName) {
+    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.parse(bookIamResourceName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book_iam_resource resource.
+   *
+   * @deprecated Use the {@link BookIamResourceName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromBookIamResourceName(String bookIamResourceName) {
+    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.parse(bookIamResourceName).get("book");
+  }
+
+  /**
    * Parses the project from the given fully-qualified path which
    * represents a project_book resource.
    *
@@ -4534,6 +4592,17 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a shelf_iam_resource resource.
+   *
+   * @deprecated Use the {@link ShelfIamResourceName} class instead.
+   */
+  @Deprecated
+  public static final String parseShelfFromShelfIamResourceName(String shelfIamResourceName) {
+    return SHELF_IAM_RESOURCE_PATH_TEMPLATE.parse(shelfIamResourceName).get("shelf");
   }
 
   /**
@@ -8267,6 +8336,121 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Gets the access control policy for a shelf resource. Returns an empty
+   * policy if a book exists but does not have a policy set.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder().build();
+   *   Policy response = libraryClient.getIamPolicy(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Policy getIamPolicy(GetIamPolicyRequest request) {
+    return getIamPolicyCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets the access control policy for a shelf resource. Returns an empty
+   * policy if a book exists but does not have a policy set.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder().build();
+   *   ApiFuture&lt;Policy&gt; future = libraryClient.getIamPolicyCallable().futureCall(request);
+   *   // Do something
+   *   Policy response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable() {
+    return stub.getIamPolicyCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Sets the access control policy on a shelf resource. Replaces any
+   * existing policy.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder().build();
+   *   Policy response = libraryClient.setIamPolicy(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Policy setIamPolicy(SetIamPolicyRequest request) {
+    return setIamPolicyCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Sets the access control policy on a shelf resource. Replaces any
+   * existing policy.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder().build();
+   *   ApiFuture&lt;Policy&gt; future = libraryClient.setIamPolicyCallable().futureCall(request);
+   *   // Do something
+   *   Policy response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable() {
+    return stub.setIamPolicyCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns permissions that the caller has on the specified shelf resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   TestIamPermissionsRequest request = TestIamPermissionsRequest.newBuilder().build();
+   *   TestIamPermissionsResponse response = libraryClient.testIamPermissions(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final TestIamPermissionsResponse testIamPermissions(TestIamPermissionsRequest request) {
+    return testIamPermissionsCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns permissions that the caller has on the specified shelf resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   TestIamPermissionsRequest request = TestIamPermissionsRequest.newBuilder().build();
+   *   ApiFuture&lt;TestIamPermissionsResponse&gt; future = libraryClient.testIamPermissionsCallable().futureCall(request);
+   *   // Do something
+   *   TestIamPermissionsResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsCallable() {
+    return stub.testIamPermissionsCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * This method is not exposed in the GAPIC config. It should be generated.
    *
    * Sample code:
@@ -8820,6 +9004,11 @@ import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
@@ -9074,6 +9263,27 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
    */
   public UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).testOptionalRequiredFlatteningParamsSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getIamPolicy.
+   */
+  public UnaryCallSettings<GetIamPolicyRequest, Policy> getIamPolicySettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).getIamPolicySettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to setIamPolicy.
+   */
+  public UnaryCallSettings<SetIamPolicyRequest, Policy> setIamPolicySettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).setIamPolicySettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to testIamPermissions.
+   */
+  public UnaryCallSettings<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).testIamPermissionsSettings();
   }
 
   /**
@@ -9407,6 +9617,27 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return getStubSettingsBuilder().testOptionalRequiredFlatteningParamsSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getIamPolicy.
+     */
+    public UnaryCallSettings.Builder<GetIamPolicyRequest, Policy> getIamPolicySettings() {
+      return getStubSettingsBuilder().getIamPolicySettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to setIamPolicy.
+     */
+    public UnaryCallSettings.Builder<SetIamPolicyRequest, Policy> setIamPolicySettings() {
+      return getStubSettingsBuilder().setIamPolicySettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to testIamPermissions.
+     */
+    public UnaryCallSettings.Builder<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings() {
+      return getStubSettingsBuilder().testIamPermissionsSettings();
     }
 
     /**
@@ -10042,6 +10273,11 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.longrunning.stub.OperationsStub;
@@ -10220,6 +10456,11 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.GrpcOperationsStub;
 import com.google.protobuf.Any;
@@ -10457,6 +10698,27 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<GetIamPolicyRequest, Policy> getIamPolicyMethodDescriptor =
+      MethodDescriptor.<GetIamPolicyRequest, Policy>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/GetIamPolicy")
+          .setRequestMarshaller(ProtoUtils.marshaller(GetIamPolicyRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Policy.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<SetIamPolicyRequest, Policy> setIamPolicyMethodDescriptor =
+      MethodDescriptor.<SetIamPolicyRequest, Policy>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/SetIamPolicy")
+          .setRequestMarshaller(ProtoUtils.marshaller(SetIamPolicyRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Policy.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsMethodDescriptor =
+      MethodDescriptor.<TestIamPermissionsRequest, TestIamPermissionsResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/TestIamPermissions")
+          .setRequestMarshaller(ProtoUtils.marshaller(TestIamPermissionsRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(TestIamPermissionsResponse.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<ListShelvesRequest, Book> privateListShelvesMethodDescriptor =
       MethodDescriptor.<ListShelvesRequest, Book>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -10503,6 +10765,9 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
+  private final UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable;
+  private final UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable;
+  private final UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsCallable;
   private final UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable;
 
   private final GrpcStubCallableFactory callableFactory;
@@ -10812,6 +11077,45 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
+    GrpcCallSettings<GetIamPolicyRequest, Policy> getIamPolicyTransportSettings =
+        GrpcCallSettings.<GetIamPolicyRequest, Policy>newBuilder()
+            .setMethodDescriptor(getIamPolicyMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<GetIamPolicyRequest>() {
+                  @Override
+                  public Map<String, String> extract(GetIamPolicyRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("resource", String.valueOf(request.getResource()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<SetIamPolicyRequest, Policy> setIamPolicyTransportSettings =
+        GrpcCallSettings.<SetIamPolicyRequest, Policy>newBuilder()
+            .setMethodDescriptor(setIamPolicyMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<SetIamPolicyRequest>() {
+                  @Override
+                  public Map<String, String> extract(SetIamPolicyRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("resource", String.valueOf(request.getResource()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsTransportSettings =
+        GrpcCallSettings.<TestIamPermissionsRequest, TestIamPermissionsResponse>newBuilder()
+            .setMethodDescriptor(testIamPermissionsMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<TestIamPermissionsRequest>() {
+                  @Override
+                  public Map<String, String> extract(TestIamPermissionsRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("resource", String.valueOf(request.getResource()));
+                    return params.build();
+                  }
+                })
+            .build();
     GrpcCallSettings<ListShelvesRequest, Book> privateListShelvesTransportSettings =
         GrpcCallSettings.<ListShelvesRequest, Book>newBuilder()
             .setMethodDescriptor(privateListShelvesMethodDescriptor)
@@ -10853,6 +11157,9 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+    this.getIamPolicyCallable = callableFactory.createUnaryCallable(getIamPolicyTransportSettings,settings.getIamPolicySettings(), clientContext);
+    this.setIamPolicyCallable = callableFactory.createUnaryCallable(setIamPolicyTransportSettings,settings.setIamPolicySettings(), clientContext);
+    this.testIamPermissionsCallable = callableFactory.createUnaryCallable(testIamPermissionsTransportSettings,settings.testIamPermissionsSettings(), clientContext);
     this.privateListShelvesCallable = callableFactory.createUnaryCallable(privateListShelvesTransportSettings,settings.privateListShelvesSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
@@ -10999,6 +11306,18 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     return testOptionalRequiredFlatteningParamsCallable;
+  }
+
+  public UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable() {
+    return getIamPolicyCallable;
+  }
+
+  public UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable() {
+    return setIamPolicyCallable;
+  }
+
+  public UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsCallable() {
+    return testIamPermissionsCallable;
   }
 
   public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
@@ -11365,6 +11684,11 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
 import com.google.protobuf.Any;
@@ -11545,6 +11869,18 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
+  public UnaryCallable<GetIamPolicyRequest, Policy> getIamPolicyCallable() {
+    throw new UnsupportedOperationException("Not implemented: getIamPolicyCallable()");
+  }
+
+  public UnaryCallable<SetIamPolicyRequest, Policy> setIamPolicyCallable() {
+    throw new UnsupportedOperationException("Not implemented: setIamPolicyCallable()");
+  }
+
+  public UnaryCallable<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsCallable() {
+    throw new UnsupportedOperationException("Not implemented: testIamPermissionsCallable()");
+  }
+
   public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
     throw new UnsupportedOperationException("Not implemented: privateListShelvesCallable()");
   }
@@ -11659,6 +11995,11 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.LabelerGrpc;
@@ -11741,6 +12082,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+  private final UnaryCallSettings<GetIamPolicyRequest, Policy> getIamPolicySettings;
+  private final UnaryCallSettings<SetIamPolicyRequest, Policy> setIamPolicySettings;
+  private final UnaryCallSettings<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings;
   private final UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings;
 
   /**
@@ -11956,6 +12300,27 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
+   * Returns the object with the settings used for calls to getIamPolicy.
+   */
+  public UnaryCallSettings<GetIamPolicyRequest, Policy> getIamPolicySettings() {
+    return getIamPolicySettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to setIamPolicy.
+   */
+  public UnaryCallSettings<SetIamPolicyRequest, Policy> setIamPolicySettings() {
+    return setIamPolicySettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to testIamPermissions.
+   */
+  public UnaryCallSettings<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings() {
+    return testIamPermissionsSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to privateListShelves.
    */
   public UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings() {
@@ -12078,6 +12443,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
+    getIamPolicySettings = settingsBuilder.getIamPolicySettings().build();
+    setIamPolicySettings = settingsBuilder.setIamPolicySettings().build();
+    testIamPermissionsSettings = settingsBuilder.testIamPermissionsSettings().build();
     privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
 
@@ -12432,6 +12800,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+    private final UnaryCallSettings.Builder<GetIamPolicyRequest, Policy> getIamPolicySettings;
+    private final UnaryCallSettings.Builder<SetIamPolicyRequest, Policy> setIamPolicySettings;
+    private final UnaryCallSettings.Builder<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings;
     private final UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -12547,6 +12918,12 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      getIamPolicySettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      setIamPolicySettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      testIamPermissionsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       privateListShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
@@ -12573,6 +12950,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
+          getIamPolicySettings,
+          setIamPolicySettings,
+          testIamPermissionsSettings,
           privateListShelvesSettings
       );
 
@@ -12710,6 +13090,18 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry_1_codes"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("no_retry_1_params"));
 
+      builder.getIamPolicySettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
+
+      builder.setIamPolicySettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
+
+      builder.testIamPermissionsSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
+
       builder.privateListShelvesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
@@ -12790,6 +13182,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+      getIamPolicySettings = settings.getIamPolicySettings.toBuilder();
+      setIamPolicySettings = settings.setIamPolicySettings.toBuilder();
+      testIamPermissionsSettings = settings.testIamPermissionsSettings.toBuilder();
       privateListShelvesSettings = settings.privateListShelvesSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
@@ -12816,6 +13211,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
+          getIamPolicySettings,
+          setIamPolicySettings,
+          testIamPermissionsSettings,
           privateListShelvesSettings
       );
     }
@@ -13045,6 +13443,27 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return testOptionalRequiredFlatteningParamsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getIamPolicy.
+     */
+    public UnaryCallSettings.Builder<GetIamPolicyRequest, Policy> getIamPolicySettings() {
+      return getIamPolicySettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to setIamPolicy.
+     */
+    public UnaryCallSettings.Builder<SetIamPolicyRequest, Policy> setIamPolicySettings() {
+      return setIamPolicySettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to testIamPermissions.
+     */
+    public UnaryCallSettings.Builder<TestIamPermissionsRequest, TestIamPermissionsResponse> testIamPermissionsSettings() {
+      return testIamPermissionsSettings;
     }
 
     /**
@@ -15655,6 +16074,11 @@ package com.google.example.library.v1;
 import com.google.api.core.BetaApi;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.LibraryServiceGrpc.LibraryServiceImplBase;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
+import com.google.iam.v1.TestIamPermissionsRequest;
+import com.google.iam.v1.TestIamPermissionsResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
@@ -16123,6 +16547,51 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof Operation) {
       requests.add(request);
       responseObserver.onNext((Operation) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void getIamPolicy(GetIamPolicyRequest request,
+    StreamObserver<Policy> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Policy) {
+      requests.add(request);
+      responseObserver.onNext((Policy) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void setIamPolicy(SetIamPolicyRequest request,
+    StreamObserver<Policy> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Policy) {
+      requests.add(request);
+      responseObserver.onNext((Policy) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void testIamPermissions(TestIamPermissionsRequest request,
+    StreamObserver<TestIamPermissionsResponse> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof TestIamPermissionsResponse) {
+      requests.add(request);
+      responseObserver.onNext((TestIamPermissionsResponse) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

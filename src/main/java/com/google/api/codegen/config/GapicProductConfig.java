@@ -271,8 +271,6 @@ public abstract class GapicProductConfig implements ProductConfig {
               sourceProtos, configProto, defaultPackage);
     }
 
-    resourceNameConfigs.values().stream().forEach(System.out::println);
-
     if (resourceNameConfigs == null) {
       return null;
     }

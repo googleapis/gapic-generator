@@ -4833,6 +4833,7 @@ namespace Google.Example.Library.V1.Snippets
     using Google.Api.Gax;
     using Google.Api.Gax.Grpc;
     using Google.Api.Gax.ResourceNames;
+    using Google.Cloud.Iam.V1;
     using apis = Google.Example.Library.V1;
     using Google.LongRunning;
     using Google.Protobuf;
@@ -7628,6 +7629,87 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        /// <summary>Snippet for GetIamPolicyAsync</summary>
+        public async Task GetIamPolicyAsync_RequestObject()
+        {
+            // Snippet: GetIamPolicyAsync(GetIamPolicyRequest,CallSettings)
+            // Additional: GetIamPolicyAsync(GetIamPolicyRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetIamPolicyRequest request = new GetIamPolicyRequest();
+            // Make the request
+            Policy response = await libraryServiceClient.GetIamPolicyAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for GetIamPolicy</summary>
+        public void GetIamPolicy_RequestObject()
+        {
+            // Snippet: GetIamPolicy(GetIamPolicyRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetIamPolicyRequest request = new GetIamPolicyRequest();
+            // Make the request
+            Policy response = libraryServiceClient.GetIamPolicy(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for SetIamPolicyAsync</summary>
+        public async Task SetIamPolicyAsync_RequestObject()
+        {
+            // Snippet: SetIamPolicyAsync(SetIamPolicyRequest,CallSettings)
+            // Additional: SetIamPolicyAsync(SetIamPolicyRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            SetIamPolicyRequest request = new SetIamPolicyRequest();
+            // Make the request
+            Policy response = await libraryServiceClient.SetIamPolicyAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for SetIamPolicy</summary>
+        public void SetIamPolicy_RequestObject()
+        {
+            // Snippet: SetIamPolicy(SetIamPolicyRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            SetIamPolicyRequest request = new SetIamPolicyRequest();
+            // Make the request
+            Policy response = libraryServiceClient.SetIamPolicy(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for TestIamPermissionsAsync</summary>
+        public async Task TestIamPermissionsAsync_RequestObject()
+        {
+            // Snippet: TestIamPermissionsAsync(TestIamPermissionsRequest,CallSettings)
+            // Additional: TestIamPermissionsAsync(TestIamPermissionsRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            TestIamPermissionsRequest request = new TestIamPermissionsRequest();
+            // Make the request
+            TestIamPermissionsResponse response = await libraryServiceClient.TestIamPermissionsAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for TestIamPermissions</summary>
+        public void TestIamPermissions_RequestObject()
+        {
+            // Snippet: TestIamPermissions(TestIamPermissionsRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            TestIamPermissionsRequest request = new TestIamPermissionsRequest();
+            // Make the request
+            TestIamPermissionsResponse response = libraryServiceClient.TestIamPermissions(request);
+            // End snippet
+        }
+
         /// <summary>Snippet for PrivateListShelvesAsync</summary>
         public async Task PrivateListShelvesAsync_RequestObject()
         {
@@ -7767,6 +7849,7 @@ namespace Google.Example.Library.V1.Tests
     using Google.Api.Gax;
     using Google.Api.Gax.Grpc;
     using Google.Api.Gax.ResourceNames;
+    using Google.Cloud.Iam.V1;
     using Google.Cloud.Tagger.V1;
     using apis = Google.Example.Library.V1;
     using Google.LongRunning;
@@ -10382,6 +10465,130 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
+        public void GetIamPolicy()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            GetIamPolicyRequest request = new GetIamPolicyRequest();
+            Policy expectedResponse = new Policy
+            {
+                Version = 351608024,
+                Etag = ByteString.CopyFromUtf8("21"),
+            };
+            mockGrpcClient.Setup(x => x.GetIamPolicy(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Policy response = client.GetIamPolicy(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task GetIamPolicyAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            GetIamPolicyRequest request = new GetIamPolicyRequest();
+            Policy expectedResponse = new Policy
+            {
+                Version = 351608024,
+                Etag = ByteString.CopyFromUtf8("21"),
+            };
+            mockGrpcClient.Setup(x => x.GetIamPolicyAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Policy>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Policy response = await client.GetIamPolicyAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void SetIamPolicy()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            SetIamPolicyRequest request = new SetIamPolicyRequest();
+            Policy expectedResponse = new Policy
+            {
+                Version = 351608024,
+                Etag = ByteString.CopyFromUtf8("21"),
+            };
+            mockGrpcClient.Setup(x => x.SetIamPolicy(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Policy response = client.SetIamPolicy(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task SetIamPolicyAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            SetIamPolicyRequest request = new SetIamPolicyRequest();
+            Policy expectedResponse = new Policy
+            {
+                Version = 351608024,
+                Etag = ByteString.CopyFromUtf8("21"),
+            };
+            mockGrpcClient.Setup(x => x.SetIamPolicyAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Policy>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Policy response = await client.SetIamPolicyAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void TestIamPermissions()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            TestIamPermissionsRequest request = new TestIamPermissionsRequest();
+            TestIamPermissionsResponse expectedResponse = new TestIamPermissionsResponse();
+            mockGrpcClient.Setup(x => x.TestIamPermissions(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            TestIamPermissionsResponse response = client.TestIamPermissions(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task TestIamPermissionsAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            TestIamPermissionsRequest request = new TestIamPermissionsRequest();
+            TestIamPermissionsResponse expectedResponse = new TestIamPermissionsResponse();
+            mockGrpcClient.Setup(x => x.TestIamPermissionsAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<TestIamPermissionsResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            TestIamPermissionsResponse response = await client.TestIamPermissionsAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
         public void PrivateListShelves()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -10551,6 +10758,7 @@ namespace Google.Example.Library.V1.Tests
   <ItemGroup>
     <PackageReference Include="Google.Api.Gax.Grpc" Version="2.1.0" />
     <PackageReference Include="Grpc.Core" Version="1.6.1" />
+    <PackageReference Include="Google.Cloud.Iam.V1" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
@@ -10575,6 +10783,7 @@ namespace Google.Example.Library.V1.Tests
 using gax = Google.Api.Gax;
 using gaxgrpc = Google.Api.Gax.Grpc;
 using gaxres = Google.Api.Gax.ResourceNames;
+using iam = Google.Cloud.Iam.V1;
 using gctv = Google.Cloud.Tagger.V1;
 using lro = Google.LongRunning;
 using pb = Google.Protobuf;
@@ -10641,6 +10850,9 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
+            GetIamPolicySettings = existing.GetIamPolicySettings;
+            SetIamPolicySettings = existing.SetIamPolicySettings;
+            TestIamPermissionsSettings = existing.TestIamPermissionsSettings;
             PrivateListShelvesSettings = existing.PrivateListShelvesSettings;
             OnCopy(existing);
         }
@@ -11463,6 +11675,93 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public gaxgrpc::CallSettings TestOptionalRequiredFlatteningParamsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.GetIamPolicy</c> and <c>LibraryServiceClient.GetIamPolicyAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.GetIamPolicy</c> and
+        /// <c>LibraryServiceClient.GetIamPolicyAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings GetIamPolicySettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.SetIamPolicy</c> and <c>LibraryServiceClient.SetIamPolicyAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.SetIamPolicy</c> and
+        /// <c>LibraryServiceClient.SetIamPolicyAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings SetIamPolicySettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.TestIamPermissions</c> and <c>LibraryServiceClient.TestIamPermissionsAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.TestIamPermissions</c> and
+        /// <c>LibraryServiceClient.TestIamPermissionsAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings TestIamPermissionsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
             gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -20286,6 +20585,180 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Gets the access control policy for a shelf resource. Returns an empty
+        /// policy if a book exists but does not have a policy set.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::Policy> GetIamPolicyAsync(
+            iam::GetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the access control policy for a shelf resource. Returns an empty
+        /// policy if a book exists but does not have a policy set.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::Policy> GetIamPolicyAsync(
+            iam::GetIamPolicyRequest request,
+            st::CancellationToken cancellationToken) => GetIamPolicyAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Gets the access control policy for a shelf resource. Returns an empty
+        /// policy if a book exists but does not have a policy set.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual iam::Policy GetIamPolicy(
+            iam::GetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the access control policy on a shelf resource. Replaces any
+        /// existing policy.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::Policy> SetIamPolicyAsync(
+            iam::SetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Sets the access control policy on a shelf resource. Replaces any
+        /// existing policy.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::Policy> SetIamPolicyAsync(
+            iam::SetIamPolicyRequest request,
+            st::CancellationToken cancellationToken) => SetIamPolicyAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Sets the access control policy on a shelf resource. Replaces any
+        /// existing policy.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual iam::Policy SetIamPolicy(
+            iam::SetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns permissions that the caller has on the specified shelf resource.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::TestIamPermissionsResponse> TestIamPermissionsAsync(
+            iam::TestIamPermissionsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns permissions that the caller has on the specified shelf resource.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<iam::TestIamPermissionsResponse> TestIamPermissionsAsync(
+            iam::TestIamPermissionsRequest request,
+            st::CancellationToken cancellationToken) => TestIamPermissionsAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Returns permissions that the caller has on the specified shelf resource.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual iam::TestIamPermissionsResponse TestIamPermissions(
+            iam::TestIamPermissionsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
         /// This method is not exposed in the GAPIC config. It should be generated.
         /// </summary>
         /// <param name="request">
@@ -20374,6 +20847,9 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
+        private readonly gaxgrpc::ApiCall<iam::GetIamPolicyRequest, iam::Policy> _callGetIamPolicy;
+        private readonly gaxgrpc::ApiCall<iam::SetIamPolicyRequest, iam::Policy> _callSetIamPolicy;
+        private readonly gaxgrpc::ApiCall<iam::TestIamPermissionsRequest, iam::TestIamPermissionsResponse> _callTestIamPermissions;
         private readonly gaxgrpc::ApiCall<ListShelvesRequest, Book> _callPrivateListShelves;
 
         /// <summary>
@@ -20462,6 +20938,15 @@ namespace Google.Example.Library.V1
                 .WithGoogleRequestParam("name", request => request.Name);
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            _callGetIamPolicy = clientHelper.BuildApiCall<iam::GetIamPolicyRequest, iam::Policy>(
+                GrpcClient.GetIamPolicyAsync, GrpcClient.GetIamPolicy, effectiveSettings.GetIamPolicySettings)
+                .WithGoogleRequestParam("resource", request => request.Resource);
+            _callSetIamPolicy = clientHelper.BuildApiCall<iam::SetIamPolicyRequest, iam::Policy>(
+                GrpcClient.SetIamPolicyAsync, GrpcClient.SetIamPolicy, effectiveSettings.SetIamPolicySettings)
+                .WithGoogleRequestParam("resource", request => request.Resource);
+            _callTestIamPermissions = clientHelper.BuildApiCall<iam::TestIamPermissionsRequest, iam::TestIamPermissionsResponse>(
+                GrpcClient.TestIamPermissionsAsync, GrpcClient.TestIamPermissions, effectiveSettings.TestIamPermissionsSettings)
+                .WithGoogleRequestParam("resource", request => request.Resource);
             _callPrivateListShelves = clientHelper.BuildApiCall<ListShelvesRequest, Book>(
                 GrpcClient.PrivateListShelvesAsync, GrpcClient.PrivateListShelves, effectiveSettings.PrivateListShelvesSettings);
             Modify_ApiCall(ref _callCreateShelf);
@@ -20516,6 +21001,12 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_ApiCall(ref _callGetIamPolicy);
+            Modify_GetIamPolicyApiCall(ref _callGetIamPolicy);
+            Modify_ApiCall(ref _callSetIamPolicy);
+            Modify_SetIamPolicyApiCall(ref _callSetIamPolicy);
+            Modify_ApiCall(ref _callTestIamPermissions);
+            Modify_TestIamPermissionsApiCall(ref _callTestIamPermissions);
             Modify_ApiCall(ref _callPrivateListShelves);
             Modify_PrivateListShelvesApiCall(ref _callPrivateListShelves);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
@@ -20563,6 +21054,9 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
+        partial void Modify_GetIamPolicyApiCall(ref gaxgrpc::ApiCall<iam::GetIamPolicyRequest, iam::Policy> call);
+        partial void Modify_SetIamPolicyApiCall(ref gaxgrpc::ApiCall<iam::SetIamPolicyRequest, iam::Policy> call);
+        partial void Modify_TestIamPermissionsApiCall(ref gaxgrpc::ApiCall<iam::TestIamPermissionsRequest, iam::TestIamPermissionsResponse> call);
         partial void Modify_PrivateListShelvesApiCall(ref gaxgrpc::ApiCall<ListShelvesRequest, Book> call);
         partial void OnConstruction(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
@@ -20599,6 +21093,9 @@ namespace Google.Example.Library.V1
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_GetIamPolicyRequest(ref iam::GetIamPolicyRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_SetIamPolicyRequest(ref iam::SetIamPolicyRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_TestIamPermissionsRequest(ref iam::TestIamPermissionsRequest request, ref gaxgrpc::CallSettings settings);
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -21691,6 +22188,130 @@ namespace Google.Example.Library.V1
         {
             Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
             return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Gets the access control policy for a shelf resource. Returns an empty
+        /// policy if a book exists but does not have a policy set.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<iam::Policy> GetIamPolicyAsync(
+            iam::GetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_GetIamPolicyRequest(ref request, ref callSettings);
+            return _callGetIamPolicy.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Gets the access control policy for a shelf resource. Returns an empty
+        /// policy if a book exists but does not have a policy set.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override iam::Policy GetIamPolicy(
+            iam::GetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_GetIamPolicyRequest(ref request, ref callSettings);
+            return _callGetIamPolicy.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Sets the access control policy on a shelf resource. Replaces any
+        /// existing policy.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<iam::Policy> SetIamPolicyAsync(
+            iam::SetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_SetIamPolicyRequest(ref request, ref callSettings);
+            return _callSetIamPolicy.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Sets the access control policy on a shelf resource. Replaces any
+        /// existing policy.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override iam::Policy SetIamPolicy(
+            iam::SetIamPolicyRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_SetIamPolicyRequest(ref request, ref callSettings);
+            return _callSetIamPolicy.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Returns permissions that the caller has on the specified shelf resource.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<iam::TestIamPermissionsResponse> TestIamPermissionsAsync(
+            iam::TestIamPermissionsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_TestIamPermissionsRequest(ref request, ref callSettings);
+            return _callTestIamPermissions.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Returns permissions that the caller has on the specified shelf resource.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override iam::TestIamPermissionsResponse TestIamPermissions(
+            iam::TestIamPermissionsRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_TestIamPermissionsRequest(ref request, ref callSettings);
+            return _callTestIamPermissions.Sync(request, callSettings);
         }
 
         /// <summary>

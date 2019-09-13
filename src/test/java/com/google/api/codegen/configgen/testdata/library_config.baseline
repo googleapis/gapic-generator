@@ -43,6 +43,8 @@ interfaces:
     entity_name: book_shelf
   - name_pattern: bookShelves/{book_shelf}/books/{book}
     entity_name: book_2
+  - name_pattern: shelves/{shelf}
+    entity_name: shelf
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -655,6 +657,64 @@ interfaces:
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
       total_poll_timeout_millis: 300000
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: GetIamPolicy
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - resource
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - resource
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      resource: shelf
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: SetIamPolicy
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - policy
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - resource
+    - policy
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      resource: shelf
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: TestIamPermissions
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - resource
+        - permissions
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - resource
+    - permissions
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      resource: shelf
     # FIXME: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: TestOptionalRequiredFlatteningParams

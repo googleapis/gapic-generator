@@ -1161,6 +1161,173 @@ module Google
     end
   end
 end
+============== file: lib/library/v1/doc/google/iam/v1/iam_policy.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  module Iam
+    module V1
+      # Request message for `SetIamPolicy` method.
+      # @!attribute [rw] resource
+      #   @return [String]
+      #     REQUIRED: The resource for which the policy is being specified.
+      #     `resource` is usually specified as a path. For example, a Project
+      #     resource is specified as `projects/{project}`.
+      # @!attribute [rw] policy
+      #   @return [Google::Iam::V1::Policy]
+      #     REQUIRED: The complete policy to be applied to the `resource`. The size of
+      #     the policy is limited to a few 10s of KB. An empty policy is a
+      #     valid policy but certain Cloud Platform services (such as Projects)
+      #     might reject them.
+      class SetIamPolicyRequest; end
+
+      # Request message for `GetIamPolicy` method.
+      # @!attribute [rw] resource
+      #   @return [String]
+      #     REQUIRED: The resource for which the policy is being requested.
+      #     `resource` is usually specified as a path. For example, a Project
+      #     resource is specified as `projects/{project}`.
+      class GetIamPolicyRequest; end
+
+      # Request message for `TestIamPermissions` method.
+      # @!attribute [rw] resource
+      #   @return [String]
+      #     REQUIRED: The resource for which the policy detail is being requested.
+      #     `resource` is usually specified as a path. For example, a Project
+      #     resource is specified as `projects/{project}`.
+      # @!attribute [rw] permissions
+      #   @return [Array<String>]
+      #     The set of permissions to check for the `resource`. Permissions with
+      #     wildcards (such as '*' or 'storage.*') are not allowed. For more
+      #     information see
+      #     [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+      class TestIamPermissionsRequest; end
+
+      # Response message for `TestIamPermissions` method.
+      # @!attribute [rw] permissions
+      #   @return [Array<String>]
+      #     A subset of `TestPermissionsRequest.permissions` that the caller is
+      #     allowed.
+      class TestIamPermissionsResponse; end
+    end
+  end
+end
+============== file: lib/library/v1/doc/google/iam/v1/policy.rb ==============
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module Google
+  module Iam
+    module V1
+      # Defines an Identity and Access Management (IAM) policy. It is used to
+      # specify access control policies for Cloud Platform resources.
+      #
+      #
+      # A `Policy` consists of a list of `bindings`. A `Binding` binds a list of
+      # `members` to a `role`, where the members can be user accounts, Google groups,
+      # Google domains, and service accounts. A `role` is a named list of permissions
+      # defined by IAM.
+      #
+      # **Example**
+      #
+      #     {
+      #       "bindings": [
+      #         {
+      #           "role": "roles/owner",
+      #           "members": [
+      #             "user:mike@example.com",
+      #             "group:admins@example.com",
+      #             "domain:google.com",
+      #             "serviceAccount:my-other-app@appspot.gserviceaccount.com",
+      #           ]
+      #         },
+      #         {
+      #           "role": "roles/viewer",
+      #           "members": ["user:sean@example.com"]
+      #         }
+      #       ]
+      #     }
+      #
+      # For a description of IAM and its features, see the
+      # [IAM developer's guide](https://cloud.google.com/iam).
+      # @!attribute [rw] version
+      #   @return [Integer]
+      #     Version of the `Policy`. The default version is 0.
+      # @!attribute [rw] bindings
+      #   @return [Array<Google::Iam::V1::Binding>]
+      #     Associates a list of `members` to a `role`.
+      #     Multiple `bindings` must not be specified for the same `role`.
+      #     `bindings` with no members will result in an error.
+      # @!attribute [rw] etag
+      #   @return [String]
+      #     `etag` is used for optimistic concurrency control as a way to help
+      #     prevent simultaneous updates of a policy from overwriting each other.
+      #     It is strongly suggested that systems make use of the `etag` in the
+      #     read-modify-write cycle to perform policy updates in order to avoid race
+      #     conditions: An `etag` is returned in the response to `getIamPolicy`, and
+      #     systems are expected to put that etag in the request to `setIamPolicy` to
+      #     ensure that their change will be applied to the same version of the policy.
+      #
+      #     If no `etag` is provided in the call to `setIamPolicy`, then the existing
+      #     policy is overwritten blindly.
+      class Policy; end
+
+      # Associates `members` with a `role`.
+      # @!attribute [rw] role
+      #   @return [String]
+      #     Role that is assigned to `members`.
+      #     For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
+      #     Required
+      # @!attribute [rw] members
+      #   @return [Array<String>]
+      #     Specifies the identities requesting access for a Cloud Platform resource.
+      #     `members` can have the following values:
+      #
+      #     * `allUsers`: A special identifier that represents anyone who is
+      #       on the internet; with or without a Google account.
+      #
+      #     * `allAuthenticatedUsers`: A special identifier that represents anyone
+      #       who is authenticated with a Google account or a service account.
+      #
+      #     * `user:{emailid}`: An email address that represents a specific Google
+      #       account. For example, `alice@gmail.com` or `joe@example.com`.
+      #
+      #
+      #     * `serviceAccount:{emailid}`: An email address that represents a service
+      #       account. For example, `my-other-app@appspot.gserviceaccount.com`.
+      #
+      #     * `group:{emailid}`: An email address that represents a Google group.
+      #       For example, `admins@example.com`.
+      #
+      #     * `domain:{domain}`: A Google Apps domain name that represents all the
+      #       users of that domain. For example, `google.com` or `example.com`.
+      class Binding; end
+    end
+  end
+end
 ============== file: lib/library/v1/doc/google/longrunning/operations.rb ==============
 # Copyright 2019 Google LLC
 #
@@ -3367,6 +3534,30 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
+        @get_iam_policy = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_iam_policy),
+          defaults["get_iam_policy"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'resource' => request.resource}
+          end
+        )
+        @set_iam_policy = Google::Gax.create_api_call(
+          @library_service_stub.method(:set_iam_policy),
+          defaults["set_iam_policy"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'resource' => request.resource}
+          end
+        )
+        @test_iam_permissions = Google::Gax.create_api_call(
+          @library_service_stub.method(:test_iam_permissions),
+          defaults["test_iam_permissions"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'resource' => request.resource}
+          end
+        )
         @private_list_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:private_list_shelves),
           defaults["private_list_shelves"],
@@ -5096,6 +5287,117 @@ module Library
         @test_optional_required_flattening_params.call(req, options, &block)
       end
 
+      # Gets the access control policy for a shelf resource. Returns an empty
+      # policy if a book exists but does not have a policy set.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource for which the policy is being requested.
+      #   `resource` is usually specified as a path. For example, a Project
+      #   resource is specified as `projects/{project}`.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Iam::V1::Policy]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Iam::V1::Policy]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.get_iam_policy
+
+      def get_iam_policy \
+          resource: nil,
+          options: nil,
+          &block
+        req = {
+          resource: resource
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Iam::V1::GetIamPolicyRequest)
+        @get_iam_policy.call(req, options, &block)
+      end
+
+      # Sets the access control policy on a shelf resource. Replaces any
+      # existing policy.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource for which the policy is being specified.
+      #   `resource` is usually specified as a path. For example, a Project
+      #   resource is specified as `projects/{project}`.
+      # @param policy [Google::Iam::V1::Policy | Hash]
+      #   REQUIRED: The complete policy to be applied to the `resource`. The size of
+      #   the policy is limited to a few 10s of KB. An empty policy is a
+      #   valid policy but certain Cloud Platform services (such as Projects)
+      #   might reject them.
+      #   A hash of the same form as `Google::Iam::V1::Policy`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Iam::V1::Policy]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Iam::V1::Policy]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.set_iam_policy
+
+      def set_iam_policy \
+          resource: nil,
+          policy: nil,
+          options: nil,
+          &block
+        req = {
+          resource: resource,
+          policy: policy
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Iam::V1::SetIamPolicyRequest)
+        @set_iam_policy.call(req, options, &block)
+      end
+
+      # Returns permissions that the caller has on the specified shelf resource.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource for which the policy detail is being requested.
+      #   `resource` is usually specified as a path. For example, a Project
+      #   resource is specified as `projects/{project}`.
+      # @param permissions [Array<String>]
+      #   The set of permissions to check for the `resource`. Permissions with
+      #   wildcards (such as '*' or 'storage.*') are not allowed. For more
+      #   information see
+      #   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Iam::V1::TestIamPermissionsResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Iam::V1::TestIamPermissionsResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.test_iam_permissions
+
+      def test_iam_permissions \
+          resource: nil,
+          permissions: nil,
+          options: nil,
+          &block
+        req = {
+          resource: resource,
+          permissions: permissions
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Iam::V1::TestIamPermissionsRequest)
+        @test_iam_permissions.call(req, options, &block)
+      end
+
       # This method is not exposed in the GAPIC config. It should be generated.
       #
       # @param page_token [String]
@@ -5302,6 +5604,21 @@ end
           "retry_params_name": "default"
         },
         "TestOptionalRequiredFlatteningParams": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetIamPolicy": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SetIamPolicy": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "TestIamPermissions": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -5601,6 +5918,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "google-gax", "~> 1.3"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
+  gem.add_dependency "grpc-google-iam-v1", "~> 0.6.9"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "redcarpet", "~> 3.0"
@@ -9475,6 +9793,199 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_fixed64,
               required_map
             )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'get_iam_policy' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#get_iam_policy."
+
+    it 'invokes get_iam_policy without error' do
+      # Create expected grpc response
+      version = 351608024
+      etag = "21"
+      expected_response = { version: version, etag: etag }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Iam::V1::Policy)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_iam_policy, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_iam_policy")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.get_iam_policy
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_iam_policy do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes get_iam_policy with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_iam_policy, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("get_iam_policy")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.get_iam_policy
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'set_iam_policy' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#set_iam_policy."
+
+    it 'invokes set_iam_policy without error' do
+      # Create expected grpc response
+      version = 351608024
+      etag = "21"
+      expected_response = { version: version, etag: etag }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Iam::V1::Policy)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:set_iam_policy, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("set_iam_policy")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.set_iam_policy
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.set_iam_policy do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes set_iam_policy with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:set_iam_policy, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("set_iam_policy")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.set_iam_policy
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'test_iam_permissions' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#test_iam_permissions."
+
+    it 'invokes test_iam_permissions without error' do
+      # Create expected grpc response
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Iam::V1::TestIamPermissionsResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:test_iam_permissions, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("test_iam_permissions")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.test_iam_permissions
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.test_iam_permissions do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes test_iam_permissions with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:test_iam_permissions, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("test_iam_permissions")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.test_iam_permissions
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
