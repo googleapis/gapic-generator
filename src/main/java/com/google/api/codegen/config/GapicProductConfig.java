@@ -997,20 +997,17 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (singleResourceNameConfig == null) {
       return;
     }
-    if (singleResourceNameConfigsMap.containsKey(singleResourceNameConfig.getEntityId())) {
-      SingleResourceNameConfig otherConfig =
-          singleResourceNameConfigsMap.get(singleResourceNameConfig.getEntityId());
-      if (!singleResourceNameConfig.getNamePattern().equals(otherConfig.getNamePattern())) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Inconsistent collection configs across interfaces. Entity name: "
-                    + singleResourceNameConfig.getEntityId()));
-      }
-    } else {
-      String configKey = singleResourceNameConfig.getEntityId();
-      configKey = StringUtils.prependIfMissing(configKey, prefixForMap);
-      singleResourceNameConfigsMap.put(configKey, singleResourceNameConfig);
+    String configKey = singleResourceNameConfig.getEntityId();
+    configKey = StringUtils.prependIfMissing(configKey, prefixForMap);
+    SingleResourceNameConfig prevConfig =
+        singleResourceNameConfigsMap.put(configKey, singleResourceNameConfig);
+    if (prevConfig != null
+        && !singleResourceNameConfig.getNamePattern().equals(prevConfig.getNamePattern())) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Inconsistent collection configs across interfaces. Entity name: "
+                  + singleResourceNameConfig.getEntityId()));
     }
   }
 
@@ -1153,7 +1150,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         configProto
             .getCollectionsList()
             .stream()
-            .collect(HashMap::new, (map, config) -> map.put(config, null), HashMap::putAll);
+            .collect(
+                LinkedHashMap::new, (map, config) -> map.put(config, null), LinkedHashMap::putAll);
     configProto
         .getInterfacesList()
         .forEach(
