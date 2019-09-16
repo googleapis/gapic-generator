@@ -6331,18 +6331,21 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
-   *   BookFromArchive response = libraryClient.getBookFromArchive(name);
+   *   ProjectName parent = ProjectName.of("[PROJECT]");
+   *   BookFromArchive response = libraryClient.getBookFromArchive(name, parent);
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
+   * @param parent
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
+  public final BookFromArchive getBookFromArchive(ArchivedBookName name, ProjectName parent) {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setName(name == null ? null : name.toString())
+        .setParent(parent == null ? null : parent.toString())
         .build();
     return getBookFromArchive(request);
   }
@@ -6355,18 +6358,21 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
-   *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString());
+   *   ProjectName parent = ProjectName.of("[PROJECT]");
+   *   BookFromArchive response = libraryClient.getBookFromArchive(name.toString(), parent.toString());
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
+   * @param parent
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromArchive getBookFromArchive(String name) {
+  public final BookFromArchive getBookFromArchive(String name, String parent) {
 
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setName(name)
+        .setParent(parent)
         .build();
     return getBookFromArchive(request);
   }
@@ -6427,21 +6433,27 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
    *   BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-   *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name, altBookName);
+   *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   FolderName folder = FolderName.of("[FOLDER]");
+   *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name, altBookName, place, folder);
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
    * @param altBookName An alternate book name, used to test restricting flattened field to a
    * single resource name type in a oneof.
+   * @param place
+   * @param folder
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAnywhere(BookName name, BookName altBookName) {
+  public final BookFromAnywhere getBookFromAnywhere(BookName name, BookName altBookName, LocationName place, FolderName folder) {
 
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setName(name == null ? null : name.toString())
         .setAltBookName(altBookName == null ? null : altBookName.toString())
+        .setPlace(place == null ? null : place.toString())
+        .setFolder(folder == null ? null : folder.toString())
         .build();
     return getBookFromAnywhere(request);
   }
@@ -6455,21 +6467,27 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
    *   BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
-   *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name.toString(), altBookName.toString());
+   *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   FolderName folder = FolderName.of("[FOLDER]");
+   *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name.toString(), altBookName.toString(), place.toString(), folder.toString());
    * }
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
    * @param altBookName An alternate book name, used to test restricting flattened field to a
    * single resource name type in a oneof.
+   * @param place
+   * @param folder
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final BookFromAnywhere getBookFromAnywhere(String name, String altBookName) {
+  public final BookFromAnywhere getBookFromAnywhere(String name, String altBookName, String place, String folder) {
 
     GetBookFromAnywhereRequest request =
         GetBookFromAnywhereRequest.newBuilder()
         .setName(name)
         .setAltBookName(altBookName)
+        .setPlace(place)
+        .setFolder(folder)
         .build();
     return getBookFromAnywhere(request);
   }
@@ -10111,6 +10129,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.FolderName;
 import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
@@ -10128,8 +10147,10 @@ import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
@@ -10289,6 +10310,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.FolderName;
 import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
@@ -10306,8 +10328,10 @@ import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
@@ -11435,6 +11459,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.FolderName;
 import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
@@ -11451,8 +11476,10 @@ import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.SeriesUuid;
@@ -14522,9 +14549,10 @@ public class LibraryClientTest {
     mockLibraryService.addResponse(expectedResponse);
 
     ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+    ProjectName parent = ProjectName.of("[PROJECT]");
 
     BookFromArchive actualResponse =
-        client.getBookFromArchive(name);
+        client.getBookFromArchive(name, parent);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
@@ -14532,6 +14560,7 @@ public class LibraryClientTest {
     GetBookFromArchiveRequest actualRequest = (GetBookFromArchiveRequest)actualRequests.get(0);
 
     Assert.assertEquals(name, ArchivedBookName.parse(actualRequest.getName()));
+    Assert.assertEquals(parent, ProjectName.parse(actualRequest.getParent()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -14546,8 +14575,9 @@ public class LibraryClientTest {
 
     try {
       ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+      ProjectName parent = ProjectName.of("[PROJECT]");
 
-      client.getBookFromArchive(name);
+      client.getBookFromArchive(name, parent);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -14571,9 +14601,11 @@ public class LibraryClientTest {
 
     BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
     BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+    LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+    FolderName folder = FolderName.of("[FOLDER]");
 
     BookFromAnywhere actualResponse =
-        client.getBookFromAnywhere(name, altBookName);
+        client.getBookFromAnywhere(name, altBookName, place, folder);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
@@ -14582,6 +14614,8 @@ public class LibraryClientTest {
 
     Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(altBookName, BookNames.parse(actualRequest.getAltBookName()));
+    Assert.assertEquals(place, LocationName.parse(actualRequest.getPlace()));
+    Assert.assertEquals(folder, FolderName.parse(actualRequest.getFolder()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -14597,8 +14631,10 @@ public class LibraryClientTest {
     try {
       BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
       BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+      LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+      FolderName folder = FolderName.of("[FOLDER]");
 
-      client.getBookFromAnywhere(name, altBookName);
+      client.getBookFromAnywhere(name, altBookName, place, folder);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

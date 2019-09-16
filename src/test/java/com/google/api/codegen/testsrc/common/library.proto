@@ -158,13 +158,13 @@ service LibraryService {
     // The http binding on this field does not include the "**" path in order to
     // test the name conflict resolution in configgen.
     option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "name,parent";
   }
 
   // Gets a book from a shelf or archive.
   rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
-    option (google.api.method_signature) = "name,alt_book_name";
+    option (google.api.method_signature) = "name,alt_book_name,place,folder";
   }
 
   // Test proper OneOf-Any resource name mapping
