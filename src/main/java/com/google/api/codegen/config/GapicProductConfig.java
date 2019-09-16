@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.ResourceReference;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -29,6 +30,7 @@ import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.ConfigVersionValidator;
 import com.google.api.codegen.util.LicenseHeaderUtil;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.*;
 import com.google.auto.value.AutoValue;
@@ -237,16 +239,30 @@ public abstract class GapicProductConfig implements ProductConfig {
     ResourceNameMessageConfigs messageConfigs;
     if (protoParser.isProtoAnnotationsEnabled()) {
       Map<String, ResourceDescriptorConfig> descriptorConfigMap =
-          protoParser.getResourceDescriptorConfigMap(sourceProtos, diagCollector);
+          protoParser.getResourceDescriptorConfigMap(model.getFiles(), diagCollector);
 
-      Set<String> configsWithChildTypeReferences =
-          sourceProtos
+      List<ResourceReference> fieldsWithResourceRefs =
+          model
+              .getFiles()
               .stream()
               .flatMap(protoFile -> protoFile.getMessages().stream())
               .flatMap(messageType -> messageType.getFields().stream())
               .filter(protoParser::hasResourceReference)
-              .map(field -> protoParser.getResourceReference(field).getChildType())
-              .filter(type -> !Strings.isNullOrEmpty(type))
+              .map(protoParser::getResourceReference)
+              .collect(Collectors.toList());
+
+      Set<String> configsWithChildTypeReferences =
+          fieldsWithResourceRefs
+              .stream()
+              .map(ResourceReference::getChildType)
+              .filter(t -> !Strings.isNullOrEmpty(t))
+              .collect(Collectors.toSet());
+
+      Set<String> configsWithTypeReferences =
+          fieldsWithResourceRefs
+              .stream()
+              .map(ResourceReference::getType)
+              .filter(t -> !Strings.isNullOrEmpty(t))
               .collect(Collectors.toSet());
 
       resourceNameConfigs =
@@ -257,6 +273,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               packageProtoFile,
               language,
               descriptorConfigMap,
+              configsWithTypeReferences,
               configsWithChildTypeReferences);
 
       messageConfigs =
@@ -775,6 +792,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           @Nullable ProtoFile sampleProtoFile,
           TargetLanguage language,
           Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs,
+          Set<String> typesWithTypeReferences,
           Set<String> typesWithChildReferences) {
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
@@ -787,6 +805,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceDescriptorConfigs
         .values()
         .stream()
+        .filter(c -> typesWithTypeReferences.contains(c.getUnifiedResourceType()))
         .flatMap(
             r ->
                 r.buildResourceNameConfigs(diagCollector, singleResourceNameConfigsFromGapicConfig)
@@ -807,14 +826,16 @@ public abstract class GapicProductConfig implements ProductConfig {
     // pattern field has been removed. Therefore, throw an error if a single resource config is
     // found that does not exist in an annotation.
     for (String key : singleResourceNameConfigsFromGapicConfig.keySet()) {
-      if (!annotationResourceNameConfigs.containsKey(key)) {
+      String annotationsStyleKey = Name.from(key).toUpperCamel();
+      if (!annotationResourceNameConfigs.containsKey(annotationsStyleKey)) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
                 key));
       }
-      if (annotationResourceNameConfigs.get(key).getResourceNameType() != ResourceNameType.SINGLE) {
+      if (annotationResourceNameConfigs.get(annotationsStyleKey).getResourceNameType()
+          != ResourceNameType.SINGLE) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,

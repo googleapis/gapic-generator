@@ -125,14 +125,15 @@ public abstract class ResourceDescriptorConfig {
           .stream()
           .map(
               (String p) -> {
-                String entityId = nameMap.get(p).toUpperCamel();
-                if (configOverrides.containsKey(entityId)) {
-                  SingleResourceNameConfig overrideConfig = configOverrides.get(entityId);
+                String gapicConfigEntityId = nameMap.get(p).toLowerUnderscore();
+                if (configOverrides.containsKey(gapicConfigEntityId)) {
+                  SingleResourceNameConfig overrideConfig =
+                      configOverrides.get(gapicConfigEntityId);
                   return SingleResourceNameConfig.newBuilder()
                       .setNamePattern(p)
                       .setNameTemplate(PathTemplate.create(p))
                       .setAssignedProtoFile(protoFile)
-                      .setEntityId(entityId)
+                      .setEntityId(nameMap.get(p).toUpperCamel())
                       .setEntityName(overrideConfig.getEntityName())
                       .setCommonResourceName(overrideConfig.getCommonResourceName())
                       .build();
@@ -141,7 +142,7 @@ public abstract class ResourceDescriptorConfig {
                       .setNamePattern(p)
                       .setNameTemplate(PathTemplate.create(p))
                       .setAssignedProtoFile(protoFile)
-                      .setEntityId(entityId)
+                      .setEntityId(nameMap.get(p).toUpperCamel())
                       .setEntityName(nameMap.get(p))
                       .build();
                 }

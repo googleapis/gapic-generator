@@ -15,8 +15,9 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoTypeRef;
-import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.EscaperFactory;
@@ -246,9 +247,9 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
+      FieldConfig fieldConfig, TypeRef type, String typedResourceShortName) {
 
-    String longName = getResourceNamePackage(resourceNameConfig) + "." + typedResourceShortName;
+    String longName = getResourceNamePackage(fieldConfig) + "." + typedResourceShortName;
     TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 
     if (type.isMap()) {
@@ -262,8 +263,8 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     }
   }
 
-  private static String getResourceNamePackage(ResourceNameConfig resourceNameConfig) {
-    String commonResourceName = resourceNameConfig.getCommonResourceName();
+  private static String getResourceNamePackage(FieldConfig fieldConfig) {
+    String commonResourceName = fieldConfig.getResourceNameConfig().getCommonResourceName();
     if (commonResourceName != null) {
       // Common resource name is fully-qualified.
       int p = commonResourceName.lastIndexOf(".");
@@ -273,14 +274,23 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       return commonResourceName;
     }
 
-    ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
+    ResourceNameType resourceNameType = fieldConfig.getResourceNameConfig().getResourceNameType();
     switch (resourceNameType) {
       case ANY:
         return "com.google.api.resourcenames";
       case FIXED:
       case SINGLE:
       case ONEOF:
-        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
+        ProtoFile assignedProtoFile = fieldConfig.getResourceNameConfig().getAssignedProtoFile();
+        FieldModel fm = fieldConfig.getField();
+        if (fm instanceof ProtoField) {
+          ProtoFile fieldProtoFile = ((ProtoField) fm).getProtoField().getFile();
+          if (!assignedProtoFile.getFullName().equals(fieldProtoFile.getFullName())) {
+            assignedProtoFile = fieldProtoFile;
+          }
+        }
+
+        return getJavaPackage(assignedProtoFile);
       case NONE:
       default:
         throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
@@ -291,8 +301,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), typeRef, typedResourceShortName);
+    return getTypeNameForTypedResourceName(fieldConfig, typeRef, typedResourceShortName);
   }
 
   @Override
@@ -300,7 +309,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     TypeRef typeRef = ((ProtoTypeRef) fieldConfig.getField().getType()).getProtoType();
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), typeRef.makeOptional(), typedResourceShortName);
+        fieldConfig, typeRef.makeOptional(), typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {

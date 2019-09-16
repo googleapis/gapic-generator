@@ -4367,6 +4367,15 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}/books/{book}");
 
+  private static final PathTemplate FOLDER_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("folders/{folder}");
+
+  private static final PathTemplate LOCATION_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/locations/{location}");
+
+  private static final PathTemplate PROJECT_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}");
+
   private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
 
@@ -4410,6 +4419,43 @@ public class LibraryClient implements BackgroundResource {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "book_shelf", bookShelf,
         "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a folder resource.
+   *
+   * @deprecated Use the {@link FolderName} class instead.
+   */
+  @Deprecated
+  public static final String formatFolderName(String folder) {
+    return FOLDER_PATH_TEMPLATE.instantiate(
+        "folder", folder);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String formatLocationName(String project, String location) {
+    return LOCATION_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "location", location);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a project resource.
+   *
+   * @deprecated Use the {@link ProjectName} class instead.
+   */
+  @Deprecated
+  public static final String formatProjectName(String project) {
+    return PROJECT_PATH_TEMPLATE.instantiate(
+        "project", project);
   }
 
   /**
@@ -4501,6 +4547,50 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseBookFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book");
+  }
+
+  /**
+   * Parses the folder from the given fully-qualified path which
+   * represents a folder resource.
+   *
+   * @deprecated Use the {@link FolderName} class instead.
+   */
+  @Deprecated
+  public static final String parseFolderFromFolderName(String folderName) {
+    return FOLDER_PATH_TEMPLATE.parse(folderName).get("folder");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromLocationName(String locationName) {
+    return LOCATION_PATH_TEMPLATE.parse(locationName).get("project");
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which
+   * represents a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromLocationName(String locationName) {
+    return LOCATION_PATH_TEMPLATE.parse(locationName).get("location");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a project resource.
+   *
+   * @deprecated Use the {@link ProjectName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromProjectName(String projectName) {
+    return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
   }
 
   /**
@@ -6289,8 +6379,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ProjectName parent = ProjectName.of("[PROJECT]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
+   *     .setParent(parent.toString())
    *     .build();
    *   BookFromArchive response = libraryClient.getBookFromArchive(request);
    * }
@@ -6311,8 +6403,10 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ProjectName parent = ProjectName.of("[PROJECT]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(name.toString())
+   *     .setParent(parent.toString())
    *     .build();
    *   ApiFuture&lt;BookFromArchive&gt; future = libraryClient.getBookFromArchiveCallable().futureCall(request);
    *   // Do something
@@ -6389,9 +6483,13 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
    *   BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+   *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   FolderName folder = FolderName.of("[FOLDER]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
+   *     .setPlace(place.toString())
+   *     .setFolder(folder.toString())
    *     .build();
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(request);
    * }
@@ -6413,9 +6511,13 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
    *   BookName altBookName = ShelfBookName.of("[BOOK_SHELF]", "[BOOK]");
+   *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   FolderName folder = FolderName.of("[FOLDER]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .setAltBookName(altBookName.toString())
+   *     .setPlace(place.toString())
+   *     .setFolder(folder.toString())
    *     .build();
    *   ApiFuture&lt;BookFromAnywhere&gt; future = libraryClient.getBookFromAnywhereCallable().futureCall(request);
    *   // Do something

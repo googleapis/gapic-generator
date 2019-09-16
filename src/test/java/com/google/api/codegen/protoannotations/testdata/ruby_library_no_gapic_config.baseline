@@ -2355,6 +2355,8 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The name of the book to retrieve.
+        # @!attribute [rw] parent
+        #   @return [String]
         class GetBookFromArchiveRequest; end
 
         # Request message for LibraryService.GetBookFromAnywhere.
@@ -2365,6 +2367,10 @@ module Google
         #   @return [String]
         #     An alternate book name, used to test restricting flattened field to a
         #     single resource name type in a oneof.
+        # @!attribute [rw] place
+        #   @return [String]
+        # @!attribute [rw] folder
+        #   @return [String]
         class GetBookFromAnywhereRequest; end
 
         # Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
@@ -2858,6 +2864,24 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
+      FOLDER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "folders/{folder}"
+      )
+
+      private_constant :FOLDER_PATH_TEMPLATE
+
+      LOCATION_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/locations/{location}"
+      )
+
+      private_constant :LOCATION_PATH_TEMPLATE
+
+      PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}"
+      )
+
+      private_constant :PROJECT_PATH_TEMPLATE
+
       PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}/books/{book}"
       )
@@ -2900,6 +2924,35 @@ module Library
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
           :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified folder resource name string.
+      # @param folder [String]
+      # @return [String]
+      def self.folder_path folder
+        FOLDER_PATH_TEMPLATE.render(
+          :"folder" => folder
+        )
+      end
+
+      # Returns a fully-qualified location resource name string.
+      # @param project [String]
+      # @param location [String]
+      # @return [String]
+      def self.location_path project, location
+        LOCATION_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"location" => location
+        )
+      end
+
+      # Returns a fully-qualified project resource name string.
+      # @param project [String]
+      # @return [String]
+      def self.project_path project
+        PROJECT_PATH_TEMPLATE.render(
+          :"project" => project
         )
       end
 
@@ -3821,6 +3874,7 @@ module Library
       #
       # @param name [String]
       #   The name of the book to retrieve.
+      # @param parent [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3834,14 +3888,17 @@ module Library
       #
       #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
-      #   response = library_client.get_book_from_archive(formatted_name)
+      #   formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
+      #   response = library_client.get_book_from_archive(formatted_name, formatted_parent)
 
       def get_book_from_archive \
           name,
+          parent,
           options: nil,
           &block
         req = {
-          name: name
+          name: name,
+          parent: parent
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromArchiveRequest)
         @get_book_from_archive.call(req, options, &block)
@@ -3854,6 +3911,8 @@ module Library
       # @param alt_book_name [String]
       #   An alternate book name, used to test restricting flattened field to a
       #   single resource name type in a oneof.
+      # @param place [String]
+      # @param folder [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3868,16 +3927,22 @@ module Library
       #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
-      #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      #   formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
+      #   formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
+      #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name, formatted_place, formatted_folder)
 
       def get_book_from_anywhere \
           name,
           alt_book_name,
+          place,
+          folder,
           options: nil,
           &block
         req = {
           name: name,
-          alt_book_name: alt_book_name
+          alt_book_name: alt_book_name,
+          place: place,
+          folder: folder
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
         @get_book_from_anywhere.call(req, options, &block)
@@ -6710,6 +6775,7 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes get_book_from_archive without error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
+      formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -6728,6 +6794,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(formatted_parent, request.parent)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
@@ -6740,13 +6807,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.get_book_from_archive(formatted_name)
+          response = client.get_book_from_archive(formatted_name, formatted_parent)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_book_from_archive(formatted_name) do |response, operation|
+          client.get_book_from_archive(formatted_name, formatted_parent) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6758,11 +6825,13 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes get_book_from_archive with error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE]", "[BOOK]")
+      formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(formatted_parent, request.parent)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
@@ -6776,7 +6845,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.get_book_from_archive(formatted_name)
+            client.get_book_from_archive(formatted_name, formatted_parent)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -6793,6 +6862,8 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
+      formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
+      formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -6812,6 +6883,8 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
+        assert_equal(formatted_place, request.place)
+        assert_equal(formatted_folder, request.folder)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
@@ -6824,13 +6897,23 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+          response = client.get_book_from_anywhere(
+            formatted_name,
+            formatted_alt_book_name,
+            formatted_place,
+            formatted_folder
+          )
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name) do |response, operation|
+          client.get_book_from_anywhere(
+            formatted_name,
+            formatted_alt_book_name,
+            formatted_place,
+            formatted_folder
+          ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6843,12 +6926,16 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[BOOK_SHELF]", "[BOOK]")
+      formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
+      formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
+        assert_equal(formatted_place, request.place)
+        assert_equal(formatted_folder, request.folder)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
@@ -6862,7 +6949,12 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+            client.get_book_from_anywhere(
+              formatted_name,
+              formatted_alt_book_name,
+              formatted_place,
+              formatted_folder
+            )
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

@@ -6369,6 +6369,7 @@ namespace Google.Example.Library.V1.Snippets
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             // Make the request
             BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(request);
@@ -6385,6 +6386,7 @@ namespace Google.Example.Library.V1.Snippets
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             // Make the request
             BookFromArchive response = libraryServiceClient.GetBookFromArchive(request);
@@ -6432,6 +6434,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             // Make the request
             BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(request);
@@ -6449,6 +6453,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             // Make the request
             BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(request);
@@ -9274,6 +9280,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9301,6 +9308,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9389,6 +9397,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9417,6 +9427,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -22777,6 +22789,287 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Resource name for the 'folder' resource.
+    /// </summary>
+    public sealed partial class FolderName : gax::IResourceName, sys::IEquatable<FolderName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("folders/{folder}");
+
+        /// <summary>
+        /// Parses the given folder resource name in string form into a new
+        /// <see cref="FolderName"/> instance.
+        /// </summary>
+        /// <param name="folderName">The folder resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="FolderName"/> if successful.</returns>
+        public static FolderName Parse(string folderName)
+        {
+            gax::GaxPreconditions.CheckNotNull(folderName, nameof(folderName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(folderName);
+            return new FolderName(resourceName[0]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given folder resource name in string form into a new
+        /// <see cref="FolderName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="folderName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="folderName">The folder resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="FolderName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string folderName, out FolderName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(folderName, nameof(folderName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(folderName, out resourceName))
+            {
+                result = new FolderName(resourceName[0]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="FolderName"/>.</summary>
+        /// <param name="folderId">The <c>folder</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="FolderName"/>.</returns>
+        public static string Format(string folderId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(folderId, nameof(folderId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="FolderName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="folderId">The folder ID. Must not be <c>null</c>.</param>
+        public FolderName(string folderId)
+        {
+            FolderId = gax::GaxPreconditions.CheckNotNull(folderId, nameof(folderId));
+        }
+
+        /// <summary>
+        /// The folder ID. Never <c>null</c>.
+        /// </summary>
+        public string FolderId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(FolderId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as FolderName);
+
+        /// <inheritdoc />
+        public bool Equals(FolderName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(FolderName a, FolderName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(FolderName a, FolderName b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'location' resource.
+    /// </summary>
+    public sealed partial class LocationName : gax::IResourceName, sys::IEquatable<LocationName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/locations/{location}");
+
+        /// <summary>
+        /// Parses the given location resource name in string form into a new
+        /// <see cref="LocationName"/> instance.
+        /// </summary>
+        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="LocationName"/> if successful.</returns>
+        public static LocationName Parse(string locationName)
+        {
+            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(locationName);
+            return new LocationName(resourceName[0], resourceName[1]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given location resource name in string form into a new
+        /// <see cref="LocationName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="locationName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="LocationName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string locationName, out LocationName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(locationName, out resourceName))
+            {
+                result = new LocationName(resourceName[0], resourceName[1]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="LocationName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The <c>location</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="LocationName"/>.</returns>
+        public static string Format(string projectId, string locationId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)), gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="LocationName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The location ID. Must not be <c>null</c>.</param>
+        public LocationName(string projectId, string locationId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+            LocationId = gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <summary>
+        /// The location ID. Never <c>null</c>.
+        /// </summary>
+        public string LocationId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId, LocationId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as LocationName);
+
+        /// <inheritdoc />
+        public bool Equals(LocationName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(LocationName a, LocationName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(LocationName a, LocationName b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'project' resource.
+    /// </summary>
+    public sealed partial class ProjectName : gax::IResourceName, sys::IEquatable<ProjectName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}");
+
+        /// <summary>
+        /// Parses the given project resource name in string form into a new
+        /// <see cref="ProjectName"/> instance.
+        /// </summary>
+        /// <param name="projectName">The project resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="ProjectName"/> if successful.</returns>
+        public static ProjectName Parse(string projectName)
+        {
+            gax::GaxPreconditions.CheckNotNull(projectName, nameof(projectName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(projectName);
+            return new ProjectName(resourceName[0]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given project resource name in string form into a new
+        /// <see cref="ProjectName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="projectName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="projectName">The project resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="ProjectName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string projectName, out ProjectName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(projectName, nameof(projectName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(projectName, out resourceName))
+            {
+                result = new ProjectName(resourceName[0]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="ProjectName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="ProjectName"/>.</returns>
+        public static string Format(string projectId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="ProjectName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        public ProjectName(string projectId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as ProjectName);
+
+        /// <inheritdoc />
+        public bool Equals(ProjectName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(ProjectName a, ProjectName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(ProjectName a, ProjectName b) => !(a == b);
+    }
+
+    /// <summary>
     /// Resource name for the 'project_book' resource.
     /// </summary>
     public sealed partial class ProjectBookName : gax::IResourceName, sys::IEquatable<ProjectBookName>
@@ -23133,6 +23426,24 @@ namespace Google.Example.Library.V1
             set { AltBookName = value != null ? value.ToString() : ""; }
         }
 
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.LocationName"/>-typed view over the <see cref="Place"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.LocationName PlaceAsLocationName
+        {
+            get { return string.IsNullOrEmpty(Place) ? null : Google.Example.Library.V1.LocationName.Parse(Place); }
+            set { Place = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.FolderName"/>-typed view over the <see cref="Folder"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.FolderName FolderAsFolderName
+        {
+            get { return string.IsNullOrEmpty(Folder) ? null : Google.Example.Library.V1.FolderName.Parse(Folder); }
+            set { Folder = value != null ? value.ToString() : ""; }
+        }
+
     }
 
     public partial class GetBookFromArchiveRequest
@@ -23144,6 +23455,15 @@ namespace Google.Example.Library.V1
         {
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ArchivedBookName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.ProjectName"/>-typed view over the <see cref="Parent"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.ProjectName ParentAsProjectName
+        {
+            get { return string.IsNullOrEmpty(Parent) ? null : Google.Example.Library.V1.ProjectName.Parse(Parent); }
+            set { Parent = value != null ? value.ToString() : ""; }
         }
 
     }

@@ -835,6 +835,10 @@ message GetBookFromArchiveRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/ArchivedBook"];
+
+  string parent = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).child_type = "locations.googleapis.com/Location"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -849,6 +853,14 @@ message GetBookFromAnywhereRequest {
   string alt_book_name = 2 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/Book"];
+
+  string place = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "locations.googleapis.com/Location"];
+
+  string folder = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "cloudresourcemanager.googleapis.com/Folder"];
 }
 
 // Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
