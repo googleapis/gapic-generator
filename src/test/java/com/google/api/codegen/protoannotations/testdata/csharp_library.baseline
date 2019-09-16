@@ -6334,27 +6334,29 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetBookFromArchiveAsync</summary>
         public async Task GetBookFromArchiveAsync()
         {
-            // Snippet: GetBookFromArchiveAsync(ArchivedBookName,CallSettings)
-            // Additional: GetBookFromArchiveAsync(ArchivedBookName,CancellationToken)
+            // Snippet: GetBookFromArchiveAsync(ArchivedBookName,ProjectName,CallSettings)
+            // Additional: GetBookFromArchiveAsync(ArchivedBookName,ProjectName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
+            ProjectName parent = new ProjectName("[PROJECT]");
             // Make the request
-            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(name);
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(name, parent);
             // End snippet
         }
 
         /// <summary>Snippet for GetBookFromArchive</summary>
         public void GetBookFromArchive()
         {
-            // Snippet: GetBookFromArchive(ArchivedBookName,CallSettings)
+            // Snippet: GetBookFromArchive(ArchivedBookName,ProjectName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
+            ProjectName parent = new ProjectName("[PROJECT]");
             // Make the request
-            BookFromArchive response = libraryServiceClient.GetBookFromArchive(name);
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(name, parent);
             // End snippet
         }
 
@@ -6396,29 +6398,33 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetBookFromAnywhereAsync</summary>
         public async Task GetBookFromAnywhereAsync()
         {
-            // Snippet: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,CallSettings)
-            // Additional: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,CancellationToken)
+            // Snippet: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,LocationName,FolderName,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,LocationName,FolderName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
             // Make the request
-            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName);
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName, place, folder);
             // End snippet
         }
 
         /// <summary>Snippet for GetBookFromAnywhere</summary>
         public void GetBookFromAnywhere()
         {
-            // Snippet: GetBookFromAnywhere(BookNameOneof,BookNameOneof,CallSettings)
+            // Snippet: GetBookFromAnywhere(BookNameOneof,BookNameOneof,LocationName,FolderName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
             // Make the request
-            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName);
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName, place, folder);
             // End snippet
         }
 
@@ -9224,6 +9230,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9236,7 +9243,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            BookFromArchive response = client.GetBookFromArchive(name);
+            ProjectName parent = new ProjectName("[PROJECT]");
+            BookFromArchive response = client.GetBookFromArchive(name, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9252,6 +9260,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9264,7 +9273,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<BookFromArchive>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            BookFromArchive response = await client.GetBookFromArchiveAsync(name);
+            ProjectName parent = new ProjectName("[PROJECT]");
+            BookFromArchive response = await client.GetBookFromArchiveAsync(name, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9337,6 +9347,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9350,7 +9362,9 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName);
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
+            BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName, place, folder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9367,6 +9381,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9380,7 +9396,9 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName);
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
+            BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName, place, folder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -14808,6 +14826,9 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="parent">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -14816,10 +14837,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             ArchivedBookName name,
+            ProjectName parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchiveAsync(
                 new GetBookFromArchiveRequest
                 {
                     ArchivedBookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    ParentAsProjectName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14828,6 +14851,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -14837,8 +14863,10 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             ArchivedBookName name,
+            ProjectName parent,
             st::CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
+                parent,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -14846,6 +14874,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14855,10 +14886,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual BookFromArchive GetBookFromArchive(
             ArchivedBookName name,
+            ProjectName parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchive(
                 new GetBookFromArchiveRequest
                 {
                     ArchivedBookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    ParentAsProjectName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14867,6 +14900,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14876,10 +14912,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
+            string parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchiveAsync(
                 new GetBookFromArchiveRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14888,6 +14926,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -14897,8 +14938,10 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
+            string parent,
             st::CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
+                parent,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -14906,6 +14949,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14915,10 +14961,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual BookFromArchive GetBookFromArchive(
             string name,
+            string parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchive(
                 new GetBookFromArchiveRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14988,6 +15036,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -14997,11 +15051,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhereAsync(
                 new GetBookFromAnywhereRequest
                 {
                     BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     AltBookNameAsBookNameOneof = gax::GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName)),
+                    PlaceAsLocationName = gax::GaxPreconditions.CheckNotNull(place, nameof(place)),
+                    FolderAsFolderName = gax::GaxPreconditions.CheckNotNull(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15015,6 +15073,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
         /// </param>
@@ -15024,9 +15088,13 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             st::CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
                 name,
                 altBookName,
+                place,
+                folder,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -15039,6 +15107,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -15048,11 +15122,15 @@ namespace Google.Example.Library.V1
         public virtual BookFromAnywhere GetBookFromAnywhere(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhere(
                 new GetBookFromAnywhereRequest
                 {
                     BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     AltBookNameAsBookNameOneof = gax::GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName)),
+                    PlaceAsLocationName = gax::GaxPreconditions.CheckNotNull(place, nameof(place)),
+                    FolderAsFolderName = gax::GaxPreconditions.CheckNotNull(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15065,6 +15143,12 @@ namespace Google.Example.Library.V1
         /// <param name="altBookName">
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -15075,11 +15159,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
             string altBookName,
+            string place,
+            string folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhereAsync(
                 new GetBookFromAnywhereRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
                     AltBookName = gax::GaxPreconditions.CheckNotNullOrEmpty(altBookName, nameof(altBookName)),
+                    Place = gax::GaxPreconditions.CheckNotNullOrEmpty(place, nameof(place)),
+                    Folder = gax::GaxPreconditions.CheckNotNullOrEmpty(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15092,6 +15180,12 @@ namespace Google.Example.Library.V1
         /// <param name="altBookName">
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -15102,9 +15196,13 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
             string altBookName,
+            string place,
+            string folder,
             st::CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
                 name,
                 altBookName,
+                place,
+                folder,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -15117,6 +15215,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -15126,11 +15230,15 @@ namespace Google.Example.Library.V1
         public virtual BookFromAnywhere GetBookFromAnywhere(
             string name,
             string altBookName,
+            string place,
+            string folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhere(
                 new GetBookFromAnywhereRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
                     AltBookName = gax::GaxPreconditions.CheckNotNullOrEmpty(altBookName, nameof(altBookName)),
+                    Place = gax::GaxPreconditions.CheckNotNullOrEmpty(place, nameof(place)),
+                    Folder = gax::GaxPreconditions.CheckNotNullOrEmpty(folder, nameof(folder)),
                 },
                 callSettings);
 
