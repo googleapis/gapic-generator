@@ -282,14 +282,10 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       case SINGLE:
       case ONEOF:
         ProtoFile assignedProtoFile = fieldConfig.getResourceNameConfig().getAssignedProtoFile();
-        FieldModel fm = fieldConfig.getField();
-        if (fm instanceof ProtoField) {
-          ProtoFile fieldProtoFile = ((ProtoField) fm).getProtoField().getFile();
-          if (!assignedProtoFile.getFullName().equals(fieldProtoFile.getFullName())) {
-            assignedProtoFile = fieldProtoFile;
-          }
+        if (assignedProtoFile == null) {
+          FieldModel fm = fieldConfig.getField();
+          assignedProtoFile = ((ProtoField) fm).getProtoField().getFile();
         }
-
         return getJavaPackage(assignedProtoFile);
       case NONE:
       default:
