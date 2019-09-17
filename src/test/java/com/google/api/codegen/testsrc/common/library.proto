@@ -251,42 +251,58 @@ service LibraryService {
     };
   }
 
-  // Gets the access control policy for a shelf resource. Returns an empty
+  // Gets the access control policy for a shelf or a book. Returns an empty
   // policy if a book exists but does not have a policy set.
   rpc GetIamPolicy(google.iam.v1.GetIamPolicyRequest)
       returns (google.iam.v1.Policy) {
     option (google.api.http) = {
-      post: "/v2/{resource=shelves/*}:getIamPolicy"
+      // (-- the tree bindings here are used to test
+      //     1. referencing a single resource name defined by annotations
+      //     2. referencing one pattern of a multi-pattern resource name defined by annotations
+      //     3. referencing a single resource name without message bindings --)
+      post: "/v2/{resource=bookShelves/*}:getIamPolicy"
       body: "*"
       additional_bindings {
-        post: "/v2/{resource=shelves/*/books/*}:getIamPolicy"
+        post: "/v2/{resource=bookShelves/*/books/*}:getIamPolicy"
+        body: "*"
+      }
+      additional_bindings {
+        post: "/v2/{resource=projects/*/locations/*/books/*}:getIamPolicy"
         body: "*"
       }
     };
   }
 
-  // Sets the access control policy on a shelf resource. Replaces any
+  // Sets the access control policy on a shelf or a book. Replaces any
   // existing policy.
   rpc SetIamPolicy(google.iam.v1.SetIamPolicyRequest)
       returns (google.iam.v1.Policy) {
     option (google.api.http) = {
-      post: "/v2/{resource=shelves/*}:setIamPolicy"
+      post: "/v2/{resource=bookShelves/*}:setIamPolicy"
       body: "*"
       additional_bindings {
-        post: "/v2/{resource=shelves/*/books/*}:setIamPolicy"
+        post: "/v2/{resource=bookShelves/*/books/*}:setIamPolicy"
+        body: "*"
+      }
+      additional_bindings {
+        post: "/v2/{resource=projects/*/locations/*/books/*}:setIamPolicy"
         body: "*"
       }
     };
   }
 
-  // Returns permissions that the caller has on the specified shelf resource.
+  // Returns permissions that the caller has on the specified shelf or book.
   rpc TestIamPermissions(google.iam.v1.TestIamPermissionsRequest)
       returns (google.iam.v1.TestIamPermissionsResponse) {
     option (google.api.http) = {
-      post: "/v2/{resource=shelves/*}:testIamPermissions"
+      post: "/v2/{resource=bookShelves/*}:testIamPermissions"
       body: "*"
       additional_bindings {
-        post: "/v2/{resource=shelves/*/books/*}:testIamPermissions"
+        post: "/v2/{resource=bookShelves/*/books/*}:testIamPermissions"
+        body: "*"
+      }
+      additional_bindings {
+        post: "/v2/{resource=projects/*/locations/*/books/*}:testIamPermissions"
         body: "*"
       }
     };
