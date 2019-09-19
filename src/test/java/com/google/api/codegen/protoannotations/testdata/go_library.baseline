@@ -929,7 +929,7 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     return resp, nil
 }
 
-// GetIamPolicy gets the access control policy for a shelf resource. Returns an empty
+// GetIamPolicy gets the access control policy for a shelf or a book. Returns an empty
 // policy if a book exists but does not have a policy set.
 func (c *LibClient) GetIamPolicy(ctx context.Context, req *iampb.GetIamPolicyRequest, opts ...gax.CallOption) (*iampb.Policy, error) {
     md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", url.QueryEscape(req.GetResource())))
@@ -947,7 +947,7 @@ func (c *LibClient) GetIamPolicy(ctx context.Context, req *iampb.GetIamPolicyReq
     return resp, nil
 }
 
-// SetIamPolicy sets the access control policy on a shelf resource. Replaces any
+// SetIamPolicy sets the access control policy on a shelf or a book. Replaces any
 // existing policy.
 func (c *LibClient) SetIamPolicy(ctx context.Context, req *iampb.SetIamPolicyRequest, opts ...gax.CallOption) (*iampb.Policy, error) {
     md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", url.QueryEscape(req.GetResource())))
@@ -965,7 +965,7 @@ func (c *LibClient) SetIamPolicy(ctx context.Context, req *iampb.SetIamPolicyReq
     return resp, nil
 }
 
-// TestIamPermissions returns permissions that the caller has on the specified shelf resource.
+// TestIamPermissions returns permissions that the caller has on the specified shelf or book.
 func (c *LibClient) TestIamPermissions(ctx context.Context, req *iampb.TestIamPermissionsRequest, opts ...gax.CallOption) (*iampb.TestIamPermissionsResponse, error) {
     md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "resource", url.QueryEscape(req.GetResource())))
     ctx = insertMetadata(ctx, c.xGoogMetadata, md)

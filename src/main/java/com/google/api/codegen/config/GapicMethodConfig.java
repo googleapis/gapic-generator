@@ -194,7 +194,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableMap<String, String> fieldNamePatterns = getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
-
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
                 diagCollector,

@@ -2437,10 +2437,9 @@ class LibraryServiceGapicClient
     private static $archiveBookNameTemplate;
     private static $archivedBookNameTemplate;
     private static $bookNameTemplate;
-    private static $bookIamResourceNameTemplate;
+    private static $bookShelfNameTemplate;
     private static $projectBookNameTemplate;
     private static $shelfNameTemplate;
-    private static $shelfIamResourceNameTemplate;
     private static $pathTemplateMap;
 
     private $operationsClient;
@@ -2490,13 +2489,13 @@ class LibraryServiceGapicClient
         return self::$bookNameTemplate;
     }
 
-    private static function getBookIamResourceNameTemplate()
+    private static function getBookShelfNameTemplate()
     {
-        if (self::$bookIamResourceNameTemplate == null) {
-            self::$bookIamResourceNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
+        if (self::$bookShelfNameTemplate == null) {
+            self::$bookShelfNameTemplate = new PathTemplate('bookShelves/{book_shelf}');
         }
 
-        return self::$bookIamResourceNameTemplate;
+        return self::$bookShelfNameTemplate;
     }
 
     private static function getProjectBookNameTemplate()
@@ -2517,15 +2516,6 @@ class LibraryServiceGapicClient
         return self::$shelfNameTemplate;
     }
 
-    private static function getShelfIamResourceNameTemplate()
-    {
-        if (self::$shelfIamResourceNameTemplate == null) {
-            self::$shelfIamResourceNameTemplate = new PathTemplate('shelves/{shelf}');
-        }
-
-        return self::$shelfIamResourceNameTemplate;
-    }
-
 
     private static function getPathTemplateMap()
     {
@@ -2534,10 +2524,9 @@ class LibraryServiceGapicClient
                 'archiveBook' => self::getArchiveBookNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
-                'bookIamResource' => self::getBookIamResourceNameTemplate(),
+                'bookShelf' => self::getBookShelfNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
                 'shelf' => self::getShelfNameTemplate(),
-                'shelfIamResource' => self::getShelfIamResourceNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
@@ -2595,18 +2584,16 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
-     * a book_iam_resource resource.
+     * a book_shelf resource.
      *
-     * @param string $shelf
-     * @param string $book
-     * @return string The formatted book_iam_resource resource.
+     * @param string $bookShelf
+     * @return string The formatted book_shelf resource.
      * @experimental
      */
-    public static function bookIamResourceName($shelf, $book)
+    public static function bookShelfName($bookShelf)
     {
-        return self::getBookIamResourceNameTemplate()->render([
-            'shelf' => $shelf,
-            'book' => $book,
+        return self::getBookShelfNameTemplate()->render([
+            'book_shelf' => $bookShelf,
         ]);
     }
 
@@ -2643,31 +2630,15 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf_iam_resource resource.
-     *
-     * @param string $shelf
-     * @return string The formatted shelf_iam_resource resource.
-     * @experimental
-     */
-    public static function shelfIamResourceName($shelf)
-    {
-        return self::getShelfIamResourceNameTemplate()->render([
-            'shelf' => $shelf,
-        ]);
-    }
-
-    /**
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
      * - archiveBook: archives/{archive}/books/{book}
      * - archivedBook: archives/{archive}/books/{book}
      * - book: bookShelves/{book_shelf}/books/{book}
-     * - bookIamResource: shelves/{shelf}/books/{book}
+     * - bookShelf: bookShelves/{book_shelf}
      * - projectBook: projects/{project}/books/{book}
      * - shelf: shelves/{shelf_id}
-     * - shelfIamResource: shelves/{shelf}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
      * match one of the templates listed above. If no $template argument is provided, or if the
@@ -4835,7 +4806,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Gets the access control policy for a shelf resource. Returns an empty
+     * Gets the access control policy for a shelf or a book. Returns an empty
      * policy if a book exists but does not have a policy set.
      *
      * Sample code:
@@ -4889,7 +4860,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Sets the access control policy on a shelf resource. Replaces any
+     * Sets the access control policy on a shelf or a book. Replaces any
      * existing policy.
      *
      * Sample code:
@@ -4951,7 +4922,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Returns permissions that the caller has on the specified shelf resource.
+     * Returns permissions that the caller has on the specified shelf or book.
      *
      * Sample code:
      * ```
@@ -5896,15 +5867,8 @@ return [
             ],
             'GetIamPolicy' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:getIamPolicy',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:getIamPolicy',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:getIamPolicy',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [
@@ -5915,15 +5879,8 @@ return [
             ],
             'SetIamPolicy' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:setIamPolicy',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:setIamPolicy',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:setIamPolicy',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [
@@ -5934,15 +5891,8 @@ return [
             ],
             'TestIamPermissions' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:testIamPermissions',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:testIamPermissions',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:testIamPermissions',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [

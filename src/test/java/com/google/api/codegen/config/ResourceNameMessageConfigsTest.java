@@ -198,8 +198,8 @@ public class ResourceNameMessageConfigsTest {
     Mockito.doReturn(bookMessage).when(insertBook).getInputMessage();
     Mockito.doReturn(protoFile).when(bookMessage).getParent();
     Mockito.doReturn(ImmutableList.of(anInterface)).when(protoFile).getInterfaces();
+    Mockito.doReturn(ImmutableList.of()).when(anInterface).getMethods();
     Mockito.doReturn("library.LibraryService").when(anInterface).getFullName();
-    // Mockito.doReturn("Book").when(protoParser).getResourceReference(bookName);
   }
 
   @Test

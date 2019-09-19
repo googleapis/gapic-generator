@@ -111,8 +111,14 @@ public abstract class ResourceNameMessageConfigs {
         }
       }
     }
+    // It is safe to call ImmutableMap.Builder.putAll since IAM request messages shouldn't
+    // have google.api.resource_reference annotations.
+    builder.putAll(IamResources.createIamResourceNameMessageConfigs(protoFiles));
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
-    return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
+
+    ResourceNameMessageConfigs messageConfigs =
+        new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
+    return messageConfigs;
   }
 
   private static String getResourceDescriptorTypeForField(
@@ -245,21 +251,21 @@ public abstract class ResourceNameMessageConfigs {
     return getFieldResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
-  public String getFieldResourceName(String messageSimpleName, String fieldSimpleName) {
-    if (!fieldHasResourceName(messageSimpleName, fieldSimpleName)) {
+  public String getFieldResourceName(String messageFullName, String fieldSimpleName) {
+    if (!fieldHasResourceName(messageFullName, fieldSimpleName)) {
       throw new IllegalArgumentException(
           "Field "
               + fieldSimpleName
               + " of message "
-              + messageSimpleName
+              + messageFullName
               + " does not have a resource name.");
     }
-    return getResourceNameOrNullForField(messageSimpleName, fieldSimpleName);
+    return getResourceNameOrNullForField(messageFullName, fieldSimpleName);
   }
 
-  private String getResourceNameOrNullForField(String messageSimpleName, String fieldSimpleName) {
+  private String getResourceNameOrNullForField(String messageFullName, String fieldSimpleName) {
     ResourceNameMessageConfig messageResourceTypeConfig =
-        getResourceTypeConfigMap().get(messageSimpleName);
+        getResourceTypeConfigMap().get(messageFullName);
     if (messageResourceTypeConfig == null) {
       return null;
     }

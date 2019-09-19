@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ResourceDescriptor;
+import com.google.api.ClientProto;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
@@ -27,13 +27,16 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import java.util.Collections;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class ResourceDescriptorConfigsTest {
+public class IamResourcesTest {
   @Mock private static ProtoFile protoFile;
   @Mock private static Interface service;
   @Mock private static Method getIamPolicyMethod;
@@ -46,6 +49,9 @@ public class ResourceDescriptorConfigsTest {
   @Mock private static HttpAttribute setMethodAdditionalAttr;
   @Mock private static HttpAttribute testMethodAttr;
   @Mock private static HttpAttribute testMethodAdditionalAttr;
+
+  private static final Map<FieldDescriptor, Object> serviceExtensions =
+      ImmutableMap.of(ClientProto.defaultHost.getDescriptor(), "foo.googleapis.com");
 
   private ImmutableList<PathSegment> setMethodBookUri;
   private ImmutableList<PathSegment> getMethodBookUri;
@@ -62,6 +68,7 @@ public class ResourceDescriptorConfigsTest {
     when(service.getMethods())
         .thenReturn(
             ImmutableList.of(getIamPolicyMethod, setIamPolicyMethod, testIamPermissionsMethod));
+    when(service.getOptionFields()).thenReturn(serviceExtensions);
     when(getIamPolicyMethod.getSimpleName()).thenReturn("GetIamPolicy");
     when(setIamPolicyMethod.getSimpleName()).thenReturn("SetIamPolicy");
     when(testIamPermissionsMethod.getSimpleName()).thenReturn("TestIamPermissions");
@@ -96,15 +103,12 @@ public class ResourceDescriptorConfigsTest {
     when(setMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
     when(testMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
 
-    Map<String, ResourceDescriptorConfig> configs =
-        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
-            protoFile, service, "foo.googleapis.com");
-    assertThat(configs.size()).isEqualTo(1);
-    ResourceDescriptorConfig config = configs.get("foo.googleapis.com/Shelf");
+    ResourceDescriptorConfig config =
+        IamResources.createIamResourceDescriptor(Collections.singletonList(protoFile));
+    assertThat(config).isNotNull();
     assertThat(config.getUnifiedResourceType()).isEqualTo("foo.googleapis.com/Shelf");
     assertThat(config.getPatterns()).containsExactly("shelves/{shelf}");
     assertThat(config.getNameField()).isEqualTo("resource");
-    assertThat(config.getHistory()).isEqualTo(ResourceDescriptor.History.FUTURE_MULTI_PATTERN);
     assertThat(config.getAssignedProtoFile()).isEqualTo(protoFile);
   }
 
@@ -117,18 +121,57 @@ public class ResourceDescriptorConfigsTest {
     when(testMethodAttr.getAdditionalBindings())
         .thenReturn(ImmutableList.of(testMethodAdditionalAttr));
 
-    Map<String, ResourceDescriptorConfig> configs =
-        ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
-            protoFile, service, "foo.googleapis.com");
-    assertThat(configs.size()).isEqualTo(1);
+    ResourceDescriptorConfig config =
+        IamResources.createIamResourceDescriptor(Collections.singletonList(protoFile));
 
-    ResourceDescriptorConfig config = configs.get("foo.googleapis.com/IamResource");
     assertThat(config.getUnifiedResourceType()).isEqualTo("foo.googleapis.com/IamResource");
     assertThat(config.getPatterns())
         .containsExactly("shelves/{shelf}/books/{book}", "shelves/{shelf}");
     assertThat(config.getNameField()).isEqualTo("resource");
-    assertThat(config.getHistory()).isEqualTo(ResourceDescriptor.History.FUTURE_MULTI_PATTERN);
     assertThat(config.getAssignedProtoFile()).isEqualTo(protoFile);
+  }
+
+  @Test
+  public void testCreateIamResourceNameMessageConfigs() {
+    when(getMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
+    when(setMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
+    when(testMethodAttr.getAdditionalBindings()).thenReturn(ImmutableList.of());
+    Map<String, ResourceNameMessageConfig> configs =
+        IamResources.createIamResourceNameMessageConfigs(Collections.singletonList(protoFile));
+    assertThat(configs.size()).isEqualTo(3);
+
+    Map<String, String> fieldEntityMap =
+        configs.get("google.iam.v1.GetIamPolicyRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "Shelf");
+
+    fieldEntityMap = configs.get("google.iam.v1.SetIamPolicyRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "Shelf");
+
+    fieldEntityMap = configs.get("google.iam.v1.TestIamPermissionsRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "Shelf");
+  }
+
+  @Test
+  public void testCreateIamResourceNameMessageConfigsWithAdditionalBindings() {
+    when(getMethodAttr.getAdditionalBindings())
+        .thenReturn(ImmutableList.of(getMethodAdditionalAttr));
+    when(setMethodAttr.getAdditionalBindings())
+        .thenReturn(ImmutableList.of(setMethodAdditionalAttr));
+    when(testMethodAttr.getAdditionalBindings())
+        .thenReturn(ImmutableList.of(testMethodAdditionalAttr));
+    Map<String, ResourceNameMessageConfig> configs =
+        IamResources.createIamResourceNameMessageConfigs(Collections.singletonList(protoFile));
+    assertThat(configs.size()).isEqualTo(3);
+
+    Map<String, String> fieldEntityMap =
+        configs.get("google.iam.v1.GetIamPolicyRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
+
+    fieldEntityMap = configs.get("google.iam.v1.SetIamPolicyRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
+
+    fieldEntityMap = configs.get("google.iam.v1.TestIamPermissionsRequest").fieldEntityMap();
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
   }
 
   private static ImmutableList<PathSegment> createSegments(Method method, Resource type) {

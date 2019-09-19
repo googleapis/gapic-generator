@@ -4372,17 +4372,14 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}/books/{book}");
 
-  private static final PathTemplate BOOK_IAM_RESOURCE_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+  private static final PathTemplate BOOK_SHELF_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}");
 
   private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
-
-  private static final PathTemplate SHELF_IAM_RESOURCE_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -4425,15 +4422,14 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Formats a string containing the fully-qualified path to represent
-   * a book_iam_resource resource.
+   * a book_shelf resource.
    *
-   * @deprecated Use the {@link BookIamResourceName} class instead.
+   * @deprecated Use the {@link BookShelfName} class instead.
    */
   @Deprecated
-  public static final String formatBookIamResourceName(String shelf, String book) {
-    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.instantiate(
-        "shelf", shelf,
-        "book", book);
+  public static final String formatBookShelfName(String bookShelf) {
+    return BOOK_SHELF_PATH_TEMPLATE.instantiate(
+        "book_shelf", bookShelf);
   }
 
   /**
@@ -4459,18 +4455,6 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a shelf_iam_resource resource.
-   *
-   * @deprecated Use the {@link ShelfIamResourceName} class instead.
-   */
-  @Deprecated
-  public static final String formatShelfIamResourceName(String shelf) {
-    return SHELF_IAM_RESOURCE_PATH_TEMPLATE.instantiate(
-        "shelf", shelf);
   }
 
   /**
@@ -4540,25 +4524,14 @@ public class LibraryClient implements BackgroundResource {
   }
 
   /**
-   * Parses the shelf from the given fully-qualified path which
-   * represents a book_iam_resource resource.
+   * Parses the book_shelf from the given fully-qualified path which
+   * represents a book_shelf resource.
    *
-   * @deprecated Use the {@link BookIamResourceName} class instead.
+   * @deprecated Use the {@link BookShelfName} class instead.
    */
   @Deprecated
-  public static final String parseShelfFromBookIamResourceName(String bookIamResourceName) {
-    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.parse(bookIamResourceName).get("shelf");
-  }
-
-  /**
-   * Parses the book from the given fully-qualified path which
-   * represents a book_iam_resource resource.
-   *
-   * @deprecated Use the {@link BookIamResourceName} class instead.
-   */
-  @Deprecated
-  public static final String parseBookFromBookIamResourceName(String bookIamResourceName) {
-    return BOOK_IAM_RESOURCE_PATH_TEMPLATE.parse(bookIamResourceName).get("book");
+  public static final String parseBookShelfFromBookShelfName(String bookShelfName) {
+    return BOOK_SHELF_PATH_TEMPLATE.parse(bookShelfName).get("book_shelf");
   }
 
   /**
@@ -4592,17 +4565,6 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseShelfIdFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf_id");
-  }
-
-  /**
-   * Parses the shelf from the given fully-qualified path which
-   * represents a shelf_iam_resource resource.
-   *
-   * @deprecated Use the {@link ShelfIamResourceName} class instead.
-   */
-  @Deprecated
-  public static final String parseShelfFromShelfIamResourceName(String shelfIamResourceName) {
-    return SHELF_IAM_RESOURCE_PATH_TEMPLATE.parse(shelfIamResourceName).get("shelf");
   }
 
   /**
@@ -8336,7 +8298,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Gets the access control policy for a shelf resource. Returns an empty
+   * Gets the access control policy for a shelf or a book. Returns an empty
    * policy if a book exists but does not have a policy set.
    *
    * Sample code:
@@ -8356,7 +8318,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Gets the access control policy for a shelf resource. Returns an empty
+   * Gets the access control policy for a shelf or a book. Returns an empty
    * policy if a book exists but does not have a policy set.
    *
    * Sample code:
@@ -8375,7 +8337,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Sets the access control policy on a shelf resource. Replaces any
+   * Sets the access control policy on a shelf or a book. Replaces any
    * existing policy.
    *
    * Sample code:
@@ -8395,7 +8357,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Sets the access control policy on a shelf resource. Replaces any
+   * Sets the access control policy on a shelf or a book. Replaces any
    * existing policy.
    *
    * Sample code:
@@ -8414,7 +8376,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Returns permissions that the caller has on the specified shelf resource.
+   * Returns permissions that the caller has on the specified shelf or book.
    *
    * Sample code:
    * <pre><code>
@@ -8433,7 +8395,7 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Returns permissions that the caller has on the specified shelf resource.
+   * Returns permissions that the caller has on the specified shelf or book.
    *
    * Sample code:
    * <pre><code>

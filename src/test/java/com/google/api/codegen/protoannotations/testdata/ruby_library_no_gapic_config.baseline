@@ -3025,11 +3025,11 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
-      BOOK_IAM_RESOURCE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
+      BOOK_SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "bookShelves/{book_shelf}"
       )
 
-      private_constant :BOOK_IAM_RESOURCE_PATH_TEMPLATE
+      private_constant :BOOK_SHELF_PATH_TEMPLATE
 
       PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}/books/{book}"
@@ -3042,12 +3042,6 @@ module Library
       )
 
       private_constant :SHELF_PATH_TEMPLATE
-
-      SHELF_IAM_RESOURCE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}"
-      )
-
-      private_constant :SHELF_IAM_RESOURCE_PATH_TEMPLATE
 
       # Returns a fully-qualified archive_book resource name string.
       # @param archive [String]
@@ -3082,14 +3076,12 @@ module Library
         )
       end
 
-      # Returns a fully-qualified book_iam_resource resource name string.
-      # @param shelf [String]
-      # @param book [String]
+      # Returns a fully-qualified book_shelf resource name string.
+      # @param book_shelf [String]
       # @return [String]
-      def self.book_iam_resource_path shelf, book
-        BOOK_IAM_RESOURCE_PATH_TEMPLATE.render(
-          :"shelf" => shelf,
-          :"book" => book
+      def self.book_shelf_path book_shelf
+        BOOK_SHELF_PATH_TEMPLATE.render(
+          :"book_shelf" => book_shelf
         )
       end
 
@@ -3110,15 +3102,6 @@ module Library
       def self.shelf_path shelf_id
         SHELF_PATH_TEMPLATE.render(
           :"shelf_id" => shelf_id
-        )
-      end
-
-      # Returns a fully-qualified shelf_iam_resource resource name string.
-      # @param shelf [String]
-      # @return [String]
-      def self.shelf_iam_resource_path shelf
-        SHELF_IAM_RESOURCE_PATH_TEMPLATE.render(
-          :"shelf" => shelf
         )
       end
 
@@ -4566,7 +4549,7 @@ module Library
         operation
       end
 
-      # Gets the access control policy for a shelf resource. Returns an empty
+      # Gets the access control policy for a shelf or a book. Returns an empty
       # policy if a book exists but does not have a policy set.
       #
       # @param resource [String]
@@ -4598,7 +4581,7 @@ module Library
         @get_iam_policy.call(req, options, &block)
       end
 
-      # Sets the access control policy on a shelf resource. Replaces any
+      # Sets the access control policy on a shelf or a book. Replaces any
       # existing policy.
       #
       # @param resource [String]
@@ -4639,7 +4622,7 @@ module Library
         @set_iam_policy.call(req, options, &block)
       end
 
-      # Returns permissions that the caller has on the specified shelf resource.
+      # Returns permissions that the caller has on the specified shelf or book.
       #
       # @param resource [String]
       #   REQUIRED: The resource for which the policy detail is being requested.

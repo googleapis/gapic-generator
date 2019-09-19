@@ -5248,17 +5248,14 @@ class LibraryServiceClient {
       bookPathTemplate: new gaxModule.PathTemplate(
         'bookShelves/{book_shelf}/books/{book}'
       ),
-      bookIamResourcePathTemplate: new gaxModule.PathTemplate(
-        'shelves/{shelf}/books/{book}'
+      bookShelfPathTemplate: new gaxModule.PathTemplate(
+        'bookShelves/{book_shelf}'
       ),
       projectBookPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/books/{book}'
       ),
       shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf_id}'
-      ),
-      shelfIamResourcePathTemplate: new gaxModule.PathTemplate(
-        'shelves/{shelf}'
       ),
     };
 
@@ -7815,7 +7812,7 @@ class LibraryServiceClient {
   }
 
   /**
-   * Gets the access control policy for a shelf resource. Returns an empty
+   * Gets the access control policy for a shelf or a book. Returns an empty
    * policy if a book exists but does not have a policy set.
    *
    * @param {Object} request
@@ -7871,7 +7868,7 @@ class LibraryServiceClient {
   }
 
   /**
-   * Sets the access control policy on a shelf resource. Replaces any
+   * Sets the access control policy on a shelf or a book. Replaces any
    * existing policy.
    *
    * @param {Object} request
@@ -7934,7 +7931,7 @@ class LibraryServiceClient {
   }
 
   /**
-   * Returns permissions that the caller has on the specified shelf resource.
+   * Returns permissions that the caller has on the specified shelf or book.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -8090,16 +8087,14 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified book_iam_resource resource name string.
+   * Return a fully-qualified book_shelf resource name string.
    *
-   * @param {String} shelf
-   * @param {String} book
+   * @param {String} bookShelf
    * @returns {String}
    */
-  bookIamResourcePath(shelf, book) {
-    return this._pathTemplates.bookIamResourcePathTemplate.render({
-      shelf: shelf,
-      book: book,
+  bookShelfPath(bookShelf) {
+    return this._pathTemplates.bookShelfPathTemplate.render({
+      book_shelf: bookShelf,
     });
   }
 
@@ -8126,18 +8121,6 @@ class LibraryServiceClient {
   shelfPath(shelfId) {
     return this._pathTemplates.shelfPathTemplate.render({
       shelf_id: shelfId,
-    });
-  }
-
-  /**
-   * Return a fully-qualified shelf_iam_resource resource name string.
-   *
-   * @param {String} shelf
-   * @returns {String}
-   */
-  shelfIamResourcePath(shelf) {
-    return this._pathTemplates.shelfIamResourcePathTemplate.render({
-      shelf: shelf,
     });
   }
 
@@ -8220,29 +8203,16 @@ class LibraryServiceClient {
   }
 
   /**
-   * Parse the bookIamResourceName from a book_iam_resource resource.
+   * Parse the bookShelfName from a book_shelf resource.
    *
-   * @param {String} bookIamResourceName
-   *   A fully-qualified path representing a book_iam_resource resources.
-   * @returns {String} - A string representing the shelf.
+   * @param {String} bookShelfName
+   *   A fully-qualified path representing a book_shelf resources.
+   * @returns {String} - A string representing the book_shelf.
    */
-  matchShelfFromBookIamResourceName(bookIamResourceName) {
-    return this._pathTemplates.bookIamResourcePathTemplate
-      .match(bookIamResourceName)
-      .shelf;
-  }
-
-  /**
-   * Parse the bookIamResourceName from a book_iam_resource resource.
-   *
-   * @param {String} bookIamResourceName
-   *   A fully-qualified path representing a book_iam_resource resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromBookIamResourceName(bookIamResourceName) {
-    return this._pathTemplates.bookIamResourcePathTemplate
-      .match(bookIamResourceName)
-      .book;
+  matchBookShelfFromBookShelfName(bookShelfName) {
+    return this._pathTemplates.bookShelfPathTemplate
+      .match(bookShelfName)
+      .book_shelf;
   }
 
   /**
@@ -8282,19 +8252,6 @@ class LibraryServiceClient {
     return this._pathTemplates.shelfPathTemplate
       .match(shelfName)
       .shelf_id;
-  }
-
-  /**
-   * Parse the shelfIamResourceName from a shelf_iam_resource resource.
-   *
-   * @param {String} shelfIamResourceName
-   *   A fully-qualified path representing a shelf_iam_resource resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromShelfIamResourceName(shelfIamResourceName) {
-    return this._pathTemplates.shelfIamResourcePathTemplate
-      .match(shelfIamResourceName)
-      .shelf;
   }
 }
 

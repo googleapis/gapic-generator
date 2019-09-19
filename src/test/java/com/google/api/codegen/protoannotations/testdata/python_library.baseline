@@ -1175,12 +1175,11 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
-    def book_iam_resource_path(cls, shelf, book):
-        """Return a fully-qualified book_iam_resource string."""
+    def book_shelf_path(cls, book_shelf):
+        """Return a fully-qualified book_shelf string."""
         return google.api_core.path_template.expand(
-            'shelves/{shelf}/books/{book}',
-            shelf=shelf,
-            book=book,
+            'bookShelves/{book_shelf}',
+            book_shelf=book_shelf,
         )
 
     @classmethod
@@ -1198,14 +1197,6 @@ class LibraryServiceClient(object):
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}',
             shelf_id=shelf_id,
-        )
-
-    @classmethod
-    def shelf_iam_resource_path(cls, shelf):
-        """Return a fully-qualified shelf_iam_resource string."""
-        return google.api_core.path_template.expand(
-            'shelves/{shelf}',
-            shelf=shelf,
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
@@ -3959,7 +3950,7 @@ class LibraryServiceClient(object):
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
         """
-        Gets the access control policy for a shelf resource. Returns an empty
+        Gets the access control policy for a shelf or a book. Returns an empty
         policy if a book exists but does not have a policy set.
 
         Example:
@@ -4025,7 +4016,7 @@ class LibraryServiceClient(object):
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
         """
-        Sets the access control policy on a shelf resource. Replaces any
+        Sets the access control policy on a shelf or a book. Replaces any
         existing policy.
 
         Example:
@@ -4099,7 +4090,7 @@ class LibraryServiceClient(object):
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
         """
-        Returns permissions that the caller has on the specified shelf resource.
+        Returns permissions that the caller has on the specified shelf or book.
 
         Example:
             >>> from google.cloud.example import library_v1
@@ -5200,7 +5191,7 @@ class LibraryServiceGrpcTransport(object):
     def get_iam_policy(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.get_iam_policy`.
 
-        Gets the access control policy for a shelf resource. Returns an empty
+        Gets the access control policy for a shelf or a book. Returns an empty
         policy if a book exists but does not have a policy set.
 
         Returns:
@@ -5214,7 +5205,7 @@ class LibraryServiceGrpcTransport(object):
     def set_iam_policy(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.set_iam_policy`.
 
-        Sets the access control policy on a shelf resource. Replaces any
+        Sets the access control policy on a shelf or a book. Replaces any
         existing policy.
 
         Returns:
@@ -5228,7 +5219,7 @@ class LibraryServiceGrpcTransport(object):
     def test_iam_permissions(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.test_iam_permissions`.
 
-        Returns permissions that the caller has on the specified shelf resource.
+        Returns permissions that the caller has on the specified shelf or book.
 
         Returns:
             Callable: A callable which accepts the appropriate

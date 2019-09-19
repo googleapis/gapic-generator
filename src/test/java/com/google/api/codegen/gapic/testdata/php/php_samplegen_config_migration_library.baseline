@@ -4188,7 +4188,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Gets the access control policy for a shelf resource. Returns an empty
+     * Gets the access control policy for a shelf or a book. Returns an empty
      * policy if a book exists but does not have a policy set.
      *
      * Sample code:
@@ -4242,7 +4242,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Sets the access control policy on a shelf resource. Replaces any
+     * Sets the access control policy on a shelf or a book. Replaces any
      * existing policy.
      *
      * Sample code:
@@ -4304,7 +4304,7 @@ class LibraryServiceGapicClient
     }
 
     /**
-     * Returns permissions that the caller has on the specified shelf resource.
+     * Returns permissions that the caller has on the specified shelf or book.
      *
      * Sample code:
      * ```
@@ -5329,15 +5329,8 @@ return [
             ],
             'GetIamPolicy' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:getIamPolicy',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:getIamPolicy',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:getIamPolicy',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [
@@ -5348,15 +5341,8 @@ return [
             ],
             'SetIamPolicy' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:setIamPolicy',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:setIamPolicy',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:setIamPolicy',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [
@@ -5367,15 +5353,8 @@ return [
             ],
             'TestIamPermissions' => [
                 'method' => 'post',
-                'uriTemplate' => '/v2/{resource=shelves/*}:testIamPermissions',
+                'uriTemplate' => '/v2/{resource=bookShelves/*}:testIamPermissions',
                 'body' => '*',
-                'additionalBindings' => [
-                    [
-                        'method' => 'post',
-                        'uriTemplate' => '/v2/{resource=shelves/*/books/*}:testIamPermissions',
-                        'body' => '*',
-                    ],
-                ],
                 'placeholders' => [
                     'resource' => [
                         'getters' => [

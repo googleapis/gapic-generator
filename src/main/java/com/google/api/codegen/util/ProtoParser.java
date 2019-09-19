@@ -22,8 +22,8 @@ import com.google.api.HttpRule;
 import com.google.api.ResourceDescriptor;
 import com.google.api.ResourceProto;
 import com.google.api.ResourceReference;
+import com.google.api.codegen.config.IamResources;
 import com.google.api.codegen.config.ResourceDescriptorConfig;
-import com.google.api.codegen.config.ResourceDescriptorConfigs;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -205,13 +205,12 @@ public class ProtoParser {
           resourceDescriptors.put(config.getUnifiedResourceType(), config);
         }
       }
-
-      for (Interface service : protoFile.getInterfaces()) {
-        resourceDescriptors.putAll(
-            ResourceDescriptorConfigs.createResourceNameDescriptorsFromIamMethods(
-                protoFile, service, getServiceAddress(service)));
-      }
     }
+    ResourceDescriptorConfig iamResource = IamResources.createIamResourceDescriptor(protoFiles);
+    if (iamResource != null) {
+      resourceDescriptors.put(iamResource.getUnifiedResourceType(), iamResource);
+    }
+
     return ImmutableMap.<String, ResourceDescriptorConfig>builder()
         .putAll(resourceDescriptors)
         .build();

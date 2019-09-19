@@ -256,20 +256,9 @@ service LibraryService {
   rpc GetIamPolicy(google.iam.v1.GetIamPolicyRequest)
       returns (google.iam.v1.Policy) {
     option (google.api.http) = {
-      // (-- the tree bindings here are used to test
-      //     1. referencing a single resource name defined by annotations
-      //     2. referencing one pattern of a multi-pattern resource name defined by annotations
-      //     3. referencing a single resource name without message bindings --)
+      // (-- test the case where the http mapping references a single resource name --)
       post: "/v2/{resource=bookShelves/*}:getIamPolicy"
       body: "*"
-      additional_bindings {
-        post: "/v2/{resource=bookShelves/*/books/*}:getIamPolicy"
-        body: "*"
-      }
-      additional_bindings {
-        post: "/v2/{resource=projects/*/locations/*/books/*}:getIamPolicy"
-        body: "*"
-      }
     };
   }
 
@@ -280,14 +269,6 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v2/{resource=bookShelves/*}:setIamPolicy"
       body: "*"
-      additional_bindings {
-        post: "/v2/{resource=bookShelves/*/books/*}:setIamPolicy"
-        body: "*"
-      }
-      additional_bindings {
-        post: "/v2/{resource=projects/*/locations/*/books/*}:setIamPolicy"
-        body: "*"
-      }
     };
   }
 
@@ -297,14 +278,6 @@ service LibraryService {
     option (google.api.http) = {
       post: "/v2/{resource=bookShelves/*}:testIamPermissions"
       body: "*"
-      additional_bindings {
-        post: "/v2/{resource=bookShelves/*/books/*}:testIamPermissions"
-        body: "*"
-      }
-      additional_bindings {
-        post: "/v2/{resource=projects/*/locations/*/books/*}:testIamPermissions"
-        body: "*"
-      }
     };
   }
 
