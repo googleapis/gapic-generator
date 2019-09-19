@@ -198,7 +198,29 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
-            "another_service"));
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            null,
+            "multiple_services_pkg2.yaml",
+            "multiple_services",
+            "google.cloud.example.v1.foo",
+            "com.google.example.library.v1.foo",
+            null,
+            null,
+            null,
+            "multiple_services_v2"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.RUBY,
+            null,
+            "multiple_services_pkg2.yaml",
+            "multiple_services",
+            "google.cloud.example.v1.foo",
+            "Google::Example::V1::Foo",
+            null,
+            null,
+            null,
+            "multiple_services_v2"));
   }
 
   @Test

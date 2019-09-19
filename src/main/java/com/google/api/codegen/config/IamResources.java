@@ -122,6 +122,9 @@ public class IamResources {
       String unifiedTypeName = config.getUnifiedResourceType();
       int indexOfSlash = unifiedTypeName.indexOf("/");
       String entityName = config.getUnifiedResourceType().substring(indexOfSlash + 1);
+      if (config.getPatterns().size() > 1) {
+        entityName += "Oneof";
+      }
 
       // The resource field in IAM request messages is always called resource
       ImmutableMap<String, String> fieldEntityMap = ImmutableMap.of("resource", entityName);

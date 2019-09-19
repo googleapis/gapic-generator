@@ -164,7 +164,15 @@ public abstract class ResourceDescriptorConfig {
   List<ResourceNameConfig> buildResourceNameConfigs(
       DiagCollector diagCollector, Map<String, SingleResourceNameConfig> configOverrides) {
     Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
-    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns(), unqualifiedTypeName);
+
+    // This is to make containeranalysis backward compatible.
+    // containeranalysis has a multi-pattern resource name called `IamResource`, and it's two
+    // single-pattern resource names are `Note` and `Occurrence`.
+    // Without setting the suffix to an empty string, these two single-pattern resource names
+    // will be `NoteIamResource` and `OccurrenceIamResource`.
+    Name suffix =
+        getUnqualifiedTypeName().equals("IamResource") ? Name.anyLower() : unqualifiedTypeName;
+    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns(), suffix);
     for (String key : entityNameMap.keySet()) {
       if (key.equals(getSinglePattern())) {
         entityNameMap.put(key, unqualifiedTypeName);

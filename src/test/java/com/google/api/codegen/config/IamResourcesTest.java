@@ -165,13 +165,13 @@ public class IamResourcesTest {
 
     Map<String, String> fieldEntityMap =
         configs.get("google.iam.v1.GetIamPolicyRequest").fieldEntityMap();
-    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResourceOneof");
 
     fieldEntityMap = configs.get("google.iam.v1.SetIamPolicyRequest").fieldEntityMap();
-    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResourceOneof");
 
     fieldEntityMap = configs.get("google.iam.v1.TestIamPermissionsRequest").fieldEntityMap();
-    assertThat(fieldEntityMap).containsExactly("resource", "IamResource");
+    assertThat(fieldEntityMap).containsExactly("resource", "IamResourceOneof");
   }
 
   private static ImmutableList<PathSegment> createSegments(Method method, Resource type) {

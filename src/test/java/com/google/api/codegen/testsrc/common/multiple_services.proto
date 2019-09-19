@@ -6,6 +6,8 @@ package google.cloud.example.v1.foo;
 
 import "different_submodule.proto";
 import "google/api/annotations.proto";
+import "google/iam/v1/policy.proto";
+import "google/iam/v1/iam_policy.proto";
 import "google/protobuf/empty.proto";
 import "other_shared_type.proto";
 
@@ -17,6 +19,50 @@ service IncrementerService {
   // Increment.
   rpc Increment(IncrementRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/me:increment" body: "*" };
+  }
+
+  // Gets the access control policy for a shelf or a book. Returns an empty
+  // policy if a book exists but does not have a policy set.
+  rpc GetIamPolicy(google.iam.v1.GetIamPolicyRequest)
+      returns (google.iam.v1.Policy) {
+    option (google.api.http) = {
+      // (-- test the case where the http mapping references multiple single resource names --)
+      post: "/v2/{resource=projects/*/locations/*/incrementers/*}:getIamPolicy"
+      body: "*"
+      additional_bindings: {
+      	post: "/v2/{resource=projects/*/locations/*/decrementers/*}:getIamPolicy"
+      	body: "*"
+      };
+    };
+  }
+
+  // Sets the access control policy on a shelf or a book. Replaces any
+  // existing policy.
+  rpc SetIamPolicy(google.iam.v1.SetIamPolicyRequest)
+      returns (google.iam.v1.Policy) {
+    option (google.api.http) = {
+      // (-- test the case where the http mapping references multiple single resource names --)
+      post: "/v2/{resource=projects/*/locations/*/incrementers/*}:setIamPolicy"
+      body: "*"
+      additional_bindings: {
+      	post: "/v2/{resource=projects/*/locations/*/decrementers/*}:setIamPolicy"
+      	body: "*"
+      };
+    };
+  }
+
+  // Returns permissions that the caller has on the specified shelf or book.
+  rpc TestIamPermissions(google.iam.v1.TestIamPermissionsRequest)
+      returns (google.iam.v1.TestIamPermissionsResponse) {
+    option (google.api.http) = {
+      // (-- test the case where the http mapping references multiple single resource names --)
+      post: "/v2/{resource=projects/*/locations/*/incrementers/*}:testIamPermissions"
+      body: "*"
+      additional_bindings: {
+      	post: "/v2/{resource=projects/*/locations/*/decrementers/*}:testIamPermissions"
+      	body: "*"
+      };
+    };
   }
 
 }
