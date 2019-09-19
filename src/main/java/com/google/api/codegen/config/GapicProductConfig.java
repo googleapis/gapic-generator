@@ -826,6 +826,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     // pattern field has been removed. Therefore, throw an error if a single resource config is
     // found that does not exist in an annotation.
     for (String key : singleResourceNameConfigsFromGapicConfig.keySet()) {
+      // Annotations specify resource names in UpperCamelCase, while gapic.yaml does it in
+      // lower_snake_case. We need to ensure that both names are in same format before comparing one
+      // to another.
       String annotationsStyleKey = Name.from(key).toUpperCamel();
       if (!annotationResourceNameConfigs.containsKey(annotationsStyleKey)) {
         diagCollector.addDiag(
