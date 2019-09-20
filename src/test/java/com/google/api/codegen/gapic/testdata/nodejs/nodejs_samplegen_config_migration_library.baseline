@@ -577,7 +577,7 @@ sampleStreamBooks();
 // sample-metadata:
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: node samples/v1/publish_series_request_pi_version.js [--shelf_name Math] [--edition 123]
+//   usage: node samples/v1/publish_series_request_pi_version.js [--shelf_name "[Math]"] [--edition 123]
 
 'use strict';
 
@@ -593,7 +593,7 @@ const library = require('@google-cloud/library').v1;
  */
 function samplePublishSeries(shelfName, edition) {
   const client = new library.LibraryServiceClient();
-  // const shelfName = 'Math';
+  // const shelfName = '[Math]';
   // const edition = 123;
   const shelf = {
     name: shelfName,
@@ -641,7 +641,7 @@ function samplePublishSeries(shelfName, edition) {
 
 const argv = require(`yargs`)
   .option('shelf_name', {
-    default: 'Math',
+    default: '[Math]',
     string: true
   })
   .option('edition', {

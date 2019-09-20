@@ -5694,7 +5694,7 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Pi version
 #   description: Testing <@calling forms>
-#   usage: python3 samples/v1/publish_series_request_pi_version.py [--shelf_name Math] [--edition 123]
+#   usage: python3 samples/v1/publish_series_request_pi_version.py [--shelf_name "[Math]"] [--edition 123]
 
 # [START canonical]
 from google.cloud.example import library_v1
@@ -5710,7 +5710,7 @@ def sample_publish_series(shelf_name, edition):
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf_name = 'Math'
+  # shelf_name = '[Math]'
   # edition = 123
   shelf = {'name': shelf_name}
   books = []
@@ -5742,7 +5742,7 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf_name', type=str, default='Math')
+  parser.add_argument('--shelf_name', type=str, default='[Math]')
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
