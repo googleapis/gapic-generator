@@ -270,7 +270,7 @@ public class FieldStructureParser {
       return scanner.tokenStr() + scanner.input().substring(scanner.pos());
     }
 
-    // There can't be nothing on the RHS of '='
+    // There can't be anything on the RHS of '='
     if (token == Scanner.EOF) {
       throw new IllegalStateException("unexpected EOF when parsing values");
     }
