@@ -36,5 +36,6 @@ public interface ResourceNameConfig {
    * Returns the proto file to which the resource name config has been assigned. This is required to
    * ensure that a consistent namespace can be calculated for the resource name.
    */
+  @Nullable
   ProtoFile getAssignedProtoFile();
 }

@@ -6334,27 +6334,29 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetBookFromArchiveAsync</summary>
         public async Task GetBookFromArchiveAsync()
         {
-            // Snippet: GetBookFromArchiveAsync(ArchivedBookName,CallSettings)
-            // Additional: GetBookFromArchiveAsync(ArchivedBookName,CancellationToken)
+            // Snippet: GetBookFromArchiveAsync(ArchivedBookName,ProjectName,CallSettings)
+            // Additional: GetBookFromArchiveAsync(ArchivedBookName,ProjectName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
+            ProjectName parent = new ProjectName("[PROJECT]");
             // Make the request
-            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(name);
+            BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(name, parent);
             // End snippet
         }
 
         /// <summary>Snippet for GetBookFromArchive</summary>
         public void GetBookFromArchive()
         {
-            // Snippet: GetBookFromArchive(ArchivedBookName,CallSettings)
+            // Snippet: GetBookFromArchive(ArchivedBookName,ProjectName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
+            ProjectName parent = new ProjectName("[PROJECT]");
             // Make the request
-            BookFromArchive response = libraryServiceClient.GetBookFromArchive(name);
+            BookFromArchive response = libraryServiceClient.GetBookFromArchive(name, parent);
             // End snippet
         }
 
@@ -6369,6 +6371,7 @@ namespace Google.Example.Library.V1.Snippets
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             // Make the request
             BookFromArchive response = await libraryServiceClient.GetBookFromArchiveAsync(request);
@@ -6385,6 +6388,7 @@ namespace Google.Example.Library.V1.Snippets
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             // Make the request
             BookFromArchive response = libraryServiceClient.GetBookFromArchive(request);
@@ -6394,29 +6398,33 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for GetBookFromAnywhereAsync</summary>
         public async Task GetBookFromAnywhereAsync()
         {
-            // Snippet: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,CallSettings)
-            // Additional: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,CancellationToken)
+            // Snippet: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,LocationName,FolderName,CallSettings)
+            // Additional: GetBookFromAnywhereAsync(BookNameOneof,BookNameOneof,LocationName,FolderName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
             // Make the request
-            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName);
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(name, altBookName, place, folder);
             // End snippet
         }
 
         /// <summary>Snippet for GetBookFromAnywhere</summary>
         public void GetBookFromAnywhere()
         {
-            // Snippet: GetBookFromAnywhere(BookNameOneof,BookNameOneof,CallSettings)
+            // Snippet: GetBookFromAnywhere(BookNameOneof,BookNameOneof,LocationName,FolderName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
             // Make the request
-            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName);
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(name, altBookName, place, folder);
             // End snippet
         }
 
@@ -6432,6 +6440,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             // Make the request
             BookFromAnywhere response = await libraryServiceClient.GetBookFromAnywhereAsync(request);
@@ -6449,6 +6459,8 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             // Make the request
             BookFromAnywhere response = libraryServiceClient.GetBookFromAnywhere(request);
@@ -9218,6 +9230,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9230,7 +9243,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            BookFromArchive response = client.GetBookFromArchive(name);
+            ProjectName parent = new ProjectName("[PROJECT]");
+            BookFromArchive response = client.GetBookFromArchive(name, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9246,6 +9260,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9258,7 +9273,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<BookFromArchive>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchivedBookName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            BookFromArchive response = await client.GetBookFromArchiveAsync(name);
+            ProjectName parent = new ProjectName("[PROJECT]");
+            BookFromArchive response = await client.GetBookFromArchiveAsync(name, parent);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9274,6 +9290,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9301,6 +9318,7 @@ namespace Google.Example.Library.V1.Tests
             GetBookFromArchiveRequest request = new GetBookFromArchiveRequest
             {
                 ArchivedBookName = new ArchivedBookName("[ARCHIVE]", "[BOOK]"),
+                ParentAsProjectName = new ProjectName("[PROJECT]"),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -9329,6 +9347,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9342,7 +9362,9 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName);
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
+            BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName, place, folder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9359,6 +9381,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9372,7 +9396,9 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookNameOneof name = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
             BookNameOneof altBookName = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]"));
-            BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName);
+            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
+            FolderName folder = new FolderName("[FOLDER]");
+            BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName, place, folder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9389,6 +9415,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -9417,6 +9445,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
+                FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -14796,6 +14826,9 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to retrieve.
         /// </param>
+        /// <param name="parent">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -14804,10 +14837,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             ArchivedBookName name,
+            ProjectName parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchiveAsync(
                 new GetBookFromArchiveRequest
                 {
                     ArchivedBookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    ParentAsProjectName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14816,6 +14851,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -14825,8 +14863,10 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             ArchivedBookName name,
+            ProjectName parent,
             st::CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
+                parent,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -14834,6 +14874,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14843,10 +14886,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual BookFromArchive GetBookFromArchive(
             ArchivedBookName name,
+            ProjectName parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchive(
                 new GetBookFromArchiveRequest
                 {
                     ArchivedBookName = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    ParentAsProjectName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14855,6 +14900,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14864,10 +14912,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
+            string parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchiveAsync(
                 new GetBookFromArchiveRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14876,6 +14926,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -14885,8 +14938,10 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<BookFromArchive> GetBookFromArchiveAsync(
             string name,
+            string parent,
             st::CancellationToken cancellationToken) => GetBookFromArchiveAsync(
                 name,
+                parent,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -14894,6 +14949,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="parent">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -14903,10 +14961,12 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual BookFromArchive GetBookFromArchive(
             string name,
+            string parent,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromArchive(
                 new GetBookFromArchiveRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                 },
                 callSettings);
 
@@ -14976,6 +15036,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -14985,11 +15051,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhereAsync(
                 new GetBookFromAnywhereRequest
                 {
                     BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     AltBookNameAsBookNameOneof = gax::GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName)),
+                    PlaceAsLocationName = gax::GaxPreconditions.CheckNotNull(place, nameof(place)),
+                    FolderAsFolderName = gax::GaxPreconditions.CheckNotNull(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15003,6 +15073,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
         /// </param>
@@ -15012,9 +15088,13 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             st::CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
                 name,
                 altBookName,
+                place,
+                folder,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -15027,6 +15107,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -15036,11 +15122,15 @@ namespace Google.Example.Library.V1
         public virtual BookFromAnywhere GetBookFromAnywhere(
             BookNameOneof name,
             BookNameOneof altBookName,
+            LocationName place,
+            FolderName folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhere(
                 new GetBookFromAnywhereRequest
                 {
                     BookNameOneof = gax::GaxPreconditions.CheckNotNull(name, nameof(name)),
                     AltBookNameAsBookNameOneof = gax::GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName)),
+                    PlaceAsLocationName = gax::GaxPreconditions.CheckNotNull(place, nameof(place)),
+                    FolderAsFolderName = gax::GaxPreconditions.CheckNotNull(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15053,6 +15143,12 @@ namespace Google.Example.Library.V1
         /// <param name="altBookName">
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
         /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
@@ -15063,11 +15159,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
             string altBookName,
+            string place,
+            string folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhereAsync(
                 new GetBookFromAnywhereRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
                     AltBookName = gax::GaxPreconditions.CheckNotNullOrEmpty(altBookName, nameof(altBookName)),
+                    Place = gax::GaxPreconditions.CheckNotNullOrEmpty(place, nameof(place)),
+                    Folder = gax::GaxPreconditions.CheckNotNullOrEmpty(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -15080,6 +15180,12 @@ namespace Google.Example.Library.V1
         /// <param name="altBookName">
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
+        /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
         /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
@@ -15090,9 +15196,13 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<BookFromAnywhere> GetBookFromAnywhereAsync(
             string name,
             string altBookName,
+            string place,
+            string folder,
             st::CancellationToken cancellationToken) => GetBookFromAnywhereAsync(
                 name,
                 altBookName,
+                place,
+                folder,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -15105,6 +15215,12 @@ namespace Google.Example.Library.V1
         /// An alternate book name, used to test restricting flattened field to a
         /// single resource name type in a oneof.
         /// </param>
+        /// <param name="place">
+        ///
+        /// </param>
+        /// <param name="folder">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -15114,11 +15230,15 @@ namespace Google.Example.Library.V1
         public virtual BookFromAnywhere GetBookFromAnywhere(
             string name,
             string altBookName,
+            string place,
+            string folder,
             gaxgrpc::CallSettings callSettings = null) => GetBookFromAnywhere(
                 new GetBookFromAnywhereRequest
                 {
                     Name = gax::GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
                     AltBookName = gax::GaxPreconditions.CheckNotNullOrEmpty(altBookName, nameof(altBookName)),
+                    Place = gax::GaxPreconditions.CheckNotNullOrEmpty(place, nameof(place)),
+                    Folder = gax::GaxPreconditions.CheckNotNullOrEmpty(folder, nameof(folder)),
                 },
                 callSettings);
 
@@ -22777,6 +22897,287 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Resource name for the 'folder' resource.
+    /// </summary>
+    public sealed partial class FolderName : gax::IResourceName, sys::IEquatable<FolderName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("folders/{folder}");
+
+        /// <summary>
+        /// Parses the given folder resource name in string form into a new
+        /// <see cref="FolderName"/> instance.
+        /// </summary>
+        /// <param name="folderName">The folder resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="FolderName"/> if successful.</returns>
+        public static FolderName Parse(string folderName)
+        {
+            gax::GaxPreconditions.CheckNotNull(folderName, nameof(folderName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(folderName);
+            return new FolderName(resourceName[0]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given folder resource name in string form into a new
+        /// <see cref="FolderName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="folderName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="folderName">The folder resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="FolderName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string folderName, out FolderName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(folderName, nameof(folderName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(folderName, out resourceName))
+            {
+                result = new FolderName(resourceName[0]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="FolderName"/>.</summary>
+        /// <param name="folderId">The <c>folder</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="FolderName"/>.</returns>
+        public static string Format(string folderId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(folderId, nameof(folderId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="FolderName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="folderId">The folder ID. Must not be <c>null</c>.</param>
+        public FolderName(string folderId)
+        {
+            FolderId = gax::GaxPreconditions.CheckNotNull(folderId, nameof(folderId));
+        }
+
+        /// <summary>
+        /// The folder ID. Never <c>null</c>.
+        /// </summary>
+        public string FolderId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(FolderId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as FolderName);
+
+        /// <inheritdoc />
+        public bool Equals(FolderName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(FolderName a, FolderName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(FolderName a, FolderName b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'location' resource.
+    /// </summary>
+    public sealed partial class LocationName : gax::IResourceName, sys::IEquatable<LocationName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/locations/{location}");
+
+        /// <summary>
+        /// Parses the given location resource name in string form into a new
+        /// <see cref="LocationName"/> instance.
+        /// </summary>
+        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="LocationName"/> if successful.</returns>
+        public static LocationName Parse(string locationName)
+        {
+            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(locationName);
+            return new LocationName(resourceName[0], resourceName[1]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given location resource name in string form into a new
+        /// <see cref="LocationName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="locationName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="locationName">The location resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="LocationName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string locationName, out LocationName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(locationName, nameof(locationName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(locationName, out resourceName))
+            {
+                result = new LocationName(resourceName[0], resourceName[1]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="LocationName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The <c>location</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="LocationName"/>.</returns>
+        public static string Format(string projectId, string locationId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)), gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="LocationName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The location ID. Must not be <c>null</c>.</param>
+        public LocationName(string projectId, string locationId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+            LocationId = gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <summary>
+        /// The location ID. Never <c>null</c>.
+        /// </summary>
+        public string LocationId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId, LocationId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as LocationName);
+
+        /// <inheritdoc />
+        public bool Equals(LocationName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(LocationName a, LocationName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(LocationName a, LocationName b) => !(a == b);
+    }
+
+    /// <summary>
+    /// Resource name for the 'project' resource.
+    /// </summary>
+    public sealed partial class ProjectName : gax::IResourceName, sys::IEquatable<ProjectName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}");
+
+        /// <summary>
+        /// Parses the given project resource name in string form into a new
+        /// <see cref="ProjectName"/> instance.
+        /// </summary>
+        /// <param name="projectName">The project resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="ProjectName"/> if successful.</returns>
+        public static ProjectName Parse(string projectName)
+        {
+            gax::GaxPreconditions.CheckNotNull(projectName, nameof(projectName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(projectName);
+            return new ProjectName(resourceName[0]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given project resource name in string form into a new
+        /// <see cref="ProjectName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="projectName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="projectName">The project resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="ProjectName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string projectName, out ProjectName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(projectName, nameof(projectName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(projectName, out resourceName))
+            {
+                result = new ProjectName(resourceName[0]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="ProjectName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="ProjectName"/>.</returns>
+        public static string Format(string projectId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="ProjectName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        public ProjectName(string projectId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as ProjectName);
+
+        /// <inheritdoc />
+        public bool Equals(ProjectName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(ProjectName a, ProjectName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(ProjectName a, ProjectName b) => !(a == b);
+    }
+
+    /// <summary>
     /// Resource name for the 'project_book' resource.
     /// </summary>
     public sealed partial class ProjectBookName : gax::IResourceName, sys::IEquatable<ProjectBookName>
@@ -23133,6 +23534,24 @@ namespace Google.Example.Library.V1
             set { AltBookName = value != null ? value.ToString() : ""; }
         }
 
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.LocationName"/>-typed view over the <see cref="Place"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.LocationName PlaceAsLocationName
+        {
+            get { return string.IsNullOrEmpty(Place) ? null : Google.Example.Library.V1.LocationName.Parse(Place); }
+            set { Place = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.FolderName"/>-typed view over the <see cref="Folder"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.FolderName FolderAsFolderName
+        {
+            get { return string.IsNullOrEmpty(Folder) ? null : Google.Example.Library.V1.FolderName.Parse(Folder); }
+            set { Folder = value != null ? value.ToString() : ""; }
+        }
+
     }
 
     public partial class GetBookFromArchiveRequest
@@ -23144,6 +23563,15 @@ namespace Google.Example.Library.V1
         {
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ArchivedBookName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.ProjectName"/>-typed view over the <see cref="Parent"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.ProjectName ParentAsProjectName
+        {
+            get { return string.IsNullOrEmpty(Parent) ? null : Google.Example.Library.V1.ProjectName.Parse(Parent); }
+            set { Parent = value != null ? value.ToString() : ""; }
         }
 
     }
