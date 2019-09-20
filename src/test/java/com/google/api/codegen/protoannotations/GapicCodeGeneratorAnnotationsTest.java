@@ -88,6 +88,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
@@ -99,6 +100,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
@@ -110,6 +112,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
@@ -121,6 +124,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_grpc_service_config.json",
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
@@ -132,6 +136,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
@@ -143,6 +148,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.GO,
@@ -154,6 +160,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
@@ -165,6 +172,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
@@ -176,6 +184,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
@@ -187,6 +196,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_grpc_service_config.json",
             null,
             null,
+            "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
@@ -198,6 +208,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            "common_resources",
             "another_service"));
   }
 

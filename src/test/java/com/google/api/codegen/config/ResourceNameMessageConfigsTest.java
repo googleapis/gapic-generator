@@ -155,12 +155,12 @@ public class ResourceNameMessageConfigsTest {
             .build();
     configProtoV2 =
         ConfigProto.newBuilder()
-            .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
-            .addCollections(CollectionConfigProto.newBuilder().setEntityName("ArchivedBook"))
+            .addCollections(CollectionConfigProto.newBuilder().setEntityName("shelf"))
+            .addCollections(CollectionConfigProto.newBuilder().setEntityName("archived_book"))
             .addInterfaces(
                 InterfaceConfigProto.newBuilder()
-                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("Shelf"))
-                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("Book")))
+                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("shelf"))
+                    .addCollections(CollectionConfigProto.newBuilder().setEntityName("book")))
             .build();
 
     Mockito.when(shelfName.getParent()).thenReturn(shelfMessage);
@@ -281,6 +281,7 @@ public class ResourceNameMessageConfigsTest {
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
+            resourceDescriptorConfigMap.keySet(),
             ImmutableSet.of());
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
@@ -373,6 +374,7 @@ public class ResourceNameMessageConfigsTest {
             protoFile,
             TargetLanguage.CSHARP,
             resourceDescriptorConfigMap,
+            resourceDescriptorConfigMap.keySet(),
             ImmutableSet.of());
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 

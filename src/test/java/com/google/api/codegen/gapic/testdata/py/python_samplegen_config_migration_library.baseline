@@ -2325,6 +2325,7 @@ class LibraryServiceClient(object):
     def get_book_from_archive(
             self,
             name,
+            parent=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2342,6 +2343,7 @@ class LibraryServiceClient(object):
 
         Args:
             name (str): The name of the book to retrieve.
+            parent (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
                 be retried using a default configuration.
@@ -2372,6 +2374,7 @@ class LibraryServiceClient(object):
 
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
+            parent=parent,
         )
         if metadata is None:
             metadata = []
@@ -2390,6 +2393,8 @@ class LibraryServiceClient(object):
             self,
             name,
             alt_book_name,
+            place=None,
+            folder=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2410,6 +2415,8 @@ class LibraryServiceClient(object):
             name (str): The name of the book to retrieve.
             alt_book_name (str): An alternate book name, used to test restricting flattened field to a
                 single resource name type in a oneof.
+            place (str)
+            folder (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
                 be retried using a default configuration.
@@ -2441,6 +2448,8 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name,
+            place=place,
+            folder=folder,
         )
         if metadata is None:
             metadata = []
