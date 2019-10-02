@@ -149,6 +149,9 @@ public class ProtoParser {
   }
 
   @Nullable
+  public List<ResourceDescriptor> getFileLevelResourceDescriptors()
+
+  @Nullable
   public ResourceReference getResourceReference(Field element) {
     return getProtoExtension(element, ResourceProto.resourceReference);
   }
@@ -182,6 +185,9 @@ public class ProtoParser {
 
       // Maps base names to ResourceDescriptors.
       Map<String, ResourceDescriptor> localDefs = new LinkedHashMap<>();
+
+      // Get Resource[Set] definitions from file-level annotations.
+      for ()
 
       // Get Resource[Set] definitions from fields in message types.
       for (MessageType message : protoFile.getMessages()) {
