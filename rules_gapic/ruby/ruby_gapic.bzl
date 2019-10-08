@@ -110,7 +110,7 @@ _ruby_gapic_postprocessed_srcjar = rule(
     },
 )
 
-def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
+def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -120,6 +120,7 @@ def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         service_yaml = service_yaml,
         artifact_type = "LEGACY_GAPIC_AND_PACKAGE",
         language = "ruby",
+        package = package,
         **kwargs
     )
 
@@ -129,7 +130,7 @@ def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         **kwargs
     )
 
-def ruby_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs):
+def ruby_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     ruby_gapic_srcjar(
@@ -137,6 +138,7 @@ def ruby_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs)
         src = src,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
+        package = package,
         **kwargs
     )
 

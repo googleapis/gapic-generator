@@ -13,32 +13,28 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load(
-    ":java_gapic_pkg_deps_resolution.bzl",
-    "construct_dep_strings",
-    "construct_gradle_assembly_includes_subs",
-    "construct_gradle_build_deps_subs",
-    "get_dynamic_subsitution_func",
-    "is_proto_dependency",
-    "is_source_dependency",
-)
 load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
+load("@com_google_api_gax_java_properties//:dependencies.properties.bzl", "PROPERTIES")
+
+def _wrapPropertyNamesInBraces(properties):
+    wrappedProperties = {}
+    for k, v in properties.items():
+        wrappedProperties["{{%s}}" % k] = v
+    return wrappedProperties
+
+_PROPERTIES = _wrapPropertyNamesInBraces(PROPERTIES)
 
 def _java_gapic_build_configs_pkg_impl(ctx):
     expanded_templates = []
-    deps_struct = construct_dep_strings(
-        ctx.attr.deps,
-        ctx.attr.test_deps,
-        ctx.attr.artifact_group_overrides,
-    )
     paths = construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
-    for template in ctx.attr.templates.items():
-        substitutions = dict(ctx.attr.static_substitutions)
-        dynamic_subs_func_name = ctx.attr.dynamic_substitutions.get(template[0])
-        if dynamic_subs_func_name:
-            dynamic_subs_func = get_dynamic_subsitution_func(dynamic_subs_func_name)
-            substitutions.update(dynamic_subs_func(deps_struct))
 
+    substitutions = dict(ctx.attr.static_substitutions)
+    substitutions["{{extra_deps}}"] = _construct_extra_deps({
+        "compile": ctx.attr.deps,
+        "testCompile": ctx.attr.test_deps,
+    }, substitutions)
+
+    for template in ctx.attr.templates.items():
         expanded_template = ctx.actions.declare_file(
             "%s/%s" % (paths.package_dir_sibling_basename, template[1]),
             sibling = paths.package_dir_sibling_parent,
@@ -88,10 +84,8 @@ java_gapic_build_configs_pkg = rule(
         "deps": attr.label_list(mandatory = True),
         "test_deps": attr.label_list(mandatory = False, allow_empty = True),
         "package_dir": attr.string(mandatory = False),
-        "artifact_group_overrides": attr.string_dict(mandatory = False, allow_empty = True, default = {}),
         "templates": attr.label_keyed_string_dict(mandatory = False, allow_files = True),
         "static_substitutions": attr.string_dict(mandatory = False, allow_empty = True, default = {}),
-        "dynamic_substitutions": attr.label_keyed_string_dict(mandatory = False, allow_files = True),
     },
     outputs = {"pkg": "%{name}.tar.gz"},
     implementation = _java_gapic_build_configs_pkg_impl,
@@ -101,14 +95,14 @@ def _java_gapic_srcs_pkg_impl(ctx):
     srcs = []
     proto_srcs = []
     for src_dep in ctx.attr.deps:
-        if is_source_dependency(src_dep):
+        if _is_source_dependency(src_dep):
             srcs.extend(src_dep[JavaInfo].source_jars)
-        if is_proto_dependency(src_dep):
+        if _is_proto_dependency(src_dep):
             proto_srcs.extend(src_dep[ProtoInfo].check_deps_sources.to_list())
 
     test_srcs = []
     for test_src_dep in ctx.attr.test_deps:
-        if is_source_dependency(test_src_dep):
+        if _is_source_dependency(test_src_dep):
             test_srcs.extend(test_src_dep[JavaInfo].source_jars)
 
     paths = construct_package_dir_paths(ctx.attr.package_dir, ctx.outputs.pkg, ctx.label.name)
@@ -161,84 +155,118 @@ java_gapic_srcs_pkg = rule(
     implementation = _java_gapic_srcs_pkg_impl,
 )
 
-def java_gapic_proto_gradle_pkg(
+def java_gapic_assembly_gradle_pkg(
         name,
         deps,
-        group,
-        version,
-        test_deps = None,
-        visibility = None,
-        classifier = ""):
-    _java_gapic_gradle_pkg(
+        client_test_deps = [],
+        **kwargs):
+    proto_target = "proto-%s" % name
+    proto_target_dep = []
+    grpc_target = "grpc-%s" % name
+    grpc_target_dep = []
+    client_target = "gapic-%s" % name
+    client_target_dep = []
+
+    client_deps = []
+    client_test_deps = []
+    grpc_deps = []
+    proto_deps = []
+
+    processed_deps = {} #there is no proper Set in Starlark
+    for dep in deps:
+        if dep.endswith("_java_gapic"):
+            _put_dep_in_a_bucket(dep, client_deps, processed_deps)
+            _put_dep_in_a_bucket("%s_test" % dep, client_test_deps, processed_deps)
+            _put_dep_in_a_bucket("%s_resource_name" % dep, proto_deps, processed_deps)
+        elif dep.endswith("_java_grpc"):
+            _put_dep_in_a_bucket(dep, grpc_deps, processed_deps)
+        else:
+            _put_dep_in_a_bucket(dep, proto_deps, processed_deps)
+
+    if proto_deps:
+        _java_gapic_gradle_pkg(
+            name = proto_target,
+            template_label = Label("//rules_gapic/java:resources/gradle/proto.gradle.tmpl"),
+            deps = proto_deps,
+            **kwargs
+        )
+        proto_target_dep = [":%s" % proto_target]
+
+    if grpc_deps:
+        _java_gapic_gradle_pkg(
+            name = grpc_target,
+            template_label = Label("//rules_gapic/java:resources/gradle/grpc.gradle.tmpl"),
+            deps = proto_target_dep + grpc_deps,
+            **kwargs
+        )
+        grpc_target_dep = ["%s" % grpc_target]
+
+    if client_deps:
+        _java_gapic_gradle_pkg(
+            name = client_target,
+            template_label = Label("//rules_gapic/java:resources/gradle/client.gradle.tmpl"),
+            deps = proto_target_dep + client_deps,
+            test_deps = grpc_target_dep + client_test_deps,
+            **kwargs
+        )
+        client_target_dep = ["%s" % client_target]
+
+    _java_gapic_assembly_gradle_pkg(
         name = name,
-        pkg_type = "proto",
-        # TODO: the output of `java_gapic_assembly_gradle_pkg` is broken now
-        #  (because of missing the maven artifacts for the Bazel dependencies
-        #  we now depend on (gax, grpc). Fix this.
-        deps = deps + [
-            # "@com_google_protobuf_protobuf_java//jar",
-        ],
-        test_deps = test_deps,
-        visibility = visibility,
-        group = group,
-        version = version,
-        classifier = classifier,
+        deps = proto_target_dep + grpc_target_dep + client_target_dep,
     )
 
-def java_gapic_grpc_gradle_pkg(
+def _java_gapic_gradle_pkg(
         name,
-        group,
-        version,
+        template_label,
         deps,
         test_deps = None,
-        visibility = None,
-        classifier = ""):
-    _java_gapic_gradle_pkg(
-        name = name,
-        pkg_type = "grpc",
-        deps = deps + [
-            # "@io_grpc_grpc_protobuf//jar",
-            # "@io_grpc_grpc_stub//jar",
-        ],
-        test_deps = test_deps,
-        visibility = visibility,
-        group = group,
-        version = version,
-        classifier = classifier,
-    )
+        project_deps = None,
+        test_project_deps = None,
+        **kwargs):
+    resource_target_name = "%s-resources" % name
 
-def java_gapic_client_gradle_pkg(
-        name,
-        group,
-        version,
-        deps,
-        test_deps = None,
-        visibility = None,
-        classifier = ""):
-    _java_gapic_gradle_pkg(
-        name = name,
-        pkg_type = "client",
+    static_substitutions = dict(_PROPERTIES)
+    static_substitutions["{{name}}"] = name
+
+    java_gapic_build_configs_pkg(
+        name = resource_target_name,
         deps = deps,
         test_deps = test_deps,
-        visibility = visibility,
-        group = group,
-        version = version,
-        classifier = classifier,
+        package_dir = name,
+        templates = {
+            template_label: "build.gradle",
+        },
+        static_substitutions = static_substitutions,
     )
 
-def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
+    srcs_pkg_target_name = "%s-srcs_pkg" % name
+    java_gapic_srcs_pkg(
+        name = srcs_pkg_target_name,
+        deps = deps,
+        test_deps = test_deps,
+        package_dir = name,
+        **kwargs
+    )
+
+    pkg_tar(
+        name = name,
+        extension = "tar.gz",
+        deps = [
+            resource_target_name,
+            srcs_pkg_target_name,
+        ],
+        **kwargs
+    )
+
+def _java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
     resource_target_name = "%s-resources" % name
-    settings_tmpl_label = Label("//rules_gapic/java:resources/gradle/settings.gradle.tmpl")
-    build_tmpl_label = Label("//rules_gapic/java:resources/gradle/assembly.gradle.tmpl")
     java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,
         templates = {
-            build_tmpl_label: "build.gradle",
-            settings_tmpl_label: "settings.gradle",
-        },
-        dynamic_substitutions = {
-            settings_tmpl_label: "construct_gradle_assembly_includes_subs",
+            Label("//rules_gapic/java:resources/gradle/assembly.gradle.tmpl"): "build.gradle",
+            Label("//rules_gapic/java:resources/gradle/settings.gradle.tmpl"): "settings.gradle",
         },
     )
 
@@ -253,107 +281,53 @@ def java_gapic_assembly_gradle_raw_pkg(name, deps, visibility = None):
         visibility = visibility,
     )
 
-def java_gapic_assembly_gradle_pkg(
-        name,
-        client_group,
-        version,
-        client_deps,
-        client_test_deps,
-        grpc_group = None,
-        proto_deps = None,
-        grpc_deps = None,
-        visibility = None):
-    proto_target = "proto-%s" % name
-    proto_target_dep = []
-    grpc_target = "grpc-%s" % name
-    grpc_target_dep = []
-    client_target = "gapic-%s" % name
+def _construct_extra_deps(scope_to_deps, versions_map):
+    label_name_to_maven_artifact = {
+        "iam_policy_proto": "maven.com_google_api_grpc_proto_google_iam_v1",
+        "iam_java_proto": "maven.com_google_api_grpc_proto_google_iam_v1",
+        "iam_java_grpc": "maven.com_google_api_grpc_grpc_google_iam_v1",
+        "iam_policy_java_grpc": "maven.com_google_api_grpc_grpc_google_iam_v1",
+    }
+    extra_deps = {}
+    for scope, deps in scope_to_deps.items():
+        for dep in deps:
+            pkg_dependency = _get_gapic_pkg_dependency_name(dep)
+            print(pkg_dependency)
+            if pkg_dependency:
+                key = "{{%s}}" % pkg_dependency
+                if not extra_deps.get(key):
+                    extra_deps[key] = "%s project(':%s')" % (scope, pkg_dependency)
+            elif _is_java_dependency(dep):
+                for f in dep[JavaInfo].transitive_deps.to_list():
+                    maven_artifact = label_name_to_maven_artifact.get(f.owner.name)
+                    if not maven_artifact:
+                        continue
+                    key = "{{%s}}" % maven_artifact
+                    if not extra_deps.get(key):
+                        extra_deps[key] = "%s '%s'" % (scope, versions_map[key])
 
-    if proto_deps:
-        java_gapic_proto_gradle_pkg(
-            name = proto_target,
-            deps = proto_deps,
-            group = grpc_group,
-            version = version,
-        )
-        proto_target_dep = [":%s" % proto_target]
+    return "\n  ".join(extra_deps.values())
 
-    if grpc_deps:
-        java_gapic_grpc_gradle_pkg(
-            name = grpc_target,
-            deps = proto_target_dep + grpc_deps,
-            group = grpc_group,
-            version = version,
-        )
-        grpc_target_dep = ["%s" % grpc_target]
+def _put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
+    if processed_deps.get(dep):
+        return
+    dep_bucket.append(dep)
+    processed_deps[dep] = True
 
-    java_gapic_client_gradle_pkg(
-        name = client_target,
-        deps = proto_target_dep + client_deps,
-        test_deps = grpc_target_dep + client_test_deps,
-        group = client_group,
-        version = version,
-    )
+def _is_java_dependency(dep):
+    return JavaInfo in dep
 
-    java_gapic_assembly_gradle_raw_pkg(
-        name = name,
-        deps = proto_target_dep + grpc_target_dep + [":%s" % client_target],
-    )
+def _is_source_dependency(dep):
+    return _is_java_dependency(dep) and hasattr(dep[JavaInfo], "source_jars") and dep.label.package != "jar"
 
-#
-# Private helper functions
-#
+def _is_proto_dependency(dep):
+    return ProtoInfo in dep
 
-def _java_gapic_gradle_pkg(
-        name,
-        pkg_type,
-        deps,
-        pkg_deps = [],
-        visibility = None,
-        test_deps = None,
-        group = "",
-        version = "",
-        classifier = None):
-    resource_target_name = "%s-resources" % name
-    template_label = Label("//rules_gapic/java:resources/gradle/%s.gradle.tmpl" % pkg_type)
-    java_gapic_build_configs_pkg(
-        name = resource_target_name,
-        deps = deps,
-        test_deps = test_deps,
-        package_dir = name,
-        artifact_group_overrides = {
-            "javax.annotation-api": "javax.annotation",
-            "google-http-client": "com.google.http-client",
-            "google-http-client-jackson2": "com.google.http-client",
-        },
-        templates = {
-            template_label: "build.gradle",
-        },
-        static_substitutions = {
-            "{{name}}": name,
-            "{{group}}": group,
-            "{{version}}": version,
-        },
-        dynamic_substitutions = {
-            template_label: "construct_gradle_build_deps_subs",
-        },
-    )
-
-    srcs_pkg_target_name = "%s-srcs_pkg" % name
-    java_gapic_srcs_pkg(
-        name = srcs_pkg_target_name,
-        deps = deps,
-        test_deps = test_deps,
-        package_dir = name,
-        visibility = visibility,
-    )
-
-    pkg_tar(
-        name = name,
-        extension = "tar.gz",
-        deps = [
-            resource_target_name,
-            srcs_pkg_target_name,
-        ] + pkg_deps,
-        visibility = visibility,
-    )
+def _get_gapic_pkg_dependency_name(dep):
+    files_list = dep.files.to_list()
+    if not files_list or len(files_list) != 1:
+        return None
+    for ext in (".tar.gz", ".gz", ".tgz"):
+        if files_list[0].basename.endswith(ext):
+            return files_list[0].basename[:-len(ext)]
+    return None
