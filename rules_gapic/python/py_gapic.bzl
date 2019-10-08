@@ -109,6 +109,7 @@ def py_gapic_srcjar(
         src,
         gapic_yaml,
         service_yaml,
+        package,
         **kwargs):
     """Generates the Python GAPIC client, performing Python-specific
     postprocessing on the generated client.
@@ -122,6 +123,7 @@ def py_gapic_srcjar(
         service_yaml = service_yaml,
         artifact_type = "GAPIC_CODE",
         language = "python",
+        package = package,
         **kwargs
     )
 
@@ -136,6 +138,7 @@ def py_gapic_library(
         src,
         gapic_yaml,
         service_yaml,
+        package = None,
         deps = [],
         **kwargs):
     """Generates the Python GAPIC client into a Python library for the main src
@@ -148,6 +151,7 @@ def py_gapic_library(
         src = src,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
+        package = package,
         **kwargs
     )
 

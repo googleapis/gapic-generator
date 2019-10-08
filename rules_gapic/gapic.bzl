@@ -35,6 +35,7 @@ def _gapic_srcjar_impl(ctx):
         else:
             _set_args(attr.src, "--descriptor_set=", arguments, inputs)
         _set_args(attr.gapic_yaml, "--gapic_yaml=", arguments, inputs)
+        _set_args(attr.package, "--package=", arguments)
         _set_args(attr.language, "--language=", arguments, required = True)
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
