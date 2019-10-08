@@ -174,11 +174,11 @@ def java_gapic_assembly_gradle_pkg(
 
     processed_deps = {} #there is no proper Set in Starlark
     for dep in deps:
-        if _ends_with(dep, "_java_gapic"):
+        if dep.endswith("_java_gapic"):
             _put_dep_in_a_bucket(dep, client_deps, processed_deps)
             _put_dep_in_a_bucket("%s_test" % dep, client_test_deps, processed_deps)
             _put_dep_in_a_bucket("%s_resource_name" % dep, proto_deps, processed_deps)
-        elif _ends_with(dep, "_java_grpc"):
+        elif dep.endswith("_java_grpc"):
             _put_dep_in_a_bucket(dep, grpc_deps, processed_deps)
         else:
             _put_dep_in_a_bucket(dep, proto_deps, processed_deps)
@@ -228,7 +228,6 @@ def _java_gapic_gradle_pkg(
 
     static_substitutions = dict(_PROPERTIES)
     static_substitutions["{{name}}"] = name
-    #    static_substitutions.update(extra_substitutions)
 
     java_gapic_build_configs_pkg(
         name = resource_target_name,
@@ -292,30 +291,22 @@ def _construct_extra_deps(scope_to_deps, versions_map):
     extra_deps = {}
     for scope, deps in scope_to_deps.items():
         for dep in deps:
-            if _is_java_dependency(dep):
+            pkg_dependency = _get_gapic_pkg_dependency_name(dep)
+            print(pkg_dependency)
+            if pkg_dependency:
+                key = "{{%s}}" % pkg_dependency
+                if not extra_deps.get(key):
+                    extra_deps[key] = "%s project(':%s')" % (scope, pkg_dependency)
+            elif _is_java_dependency(dep):
                 for f in dep[JavaInfo].transitive_deps.to_list():
                     maven_artifact = label_name_to_maven_artifact.get(f.owner.name)
-                    if maven_artifact:
-                        key = "{{%s}}" % maven_artifact
-                        if not extra_deps.get(key):
-                            extra_deps[key] = "%s '%s'" % (scope, versions_map[key])
-            elif _is_gapic_pkg_dependency(dep):
-                dep_file = dep.files.to_list()[0]
-                dep_name = dep_file.basename
-                for ext in (".tar.gz", ".gz", ".tgz"):
-                    if dep_name.endswith(ext):
-                        dep_name = dep_name[:-len(ext)]
-                        break
-                key = "{{%s}}" % dep_name
-                if not extra_deps.get(key):
-                    extra_deps[key] = "%s project(':%s')" % (scope, dep_name)
+                    if not maven_artifact:
+                        continue
+                    key = "{{%s}}" % maven_artifact
+                    if not extra_deps.get(key):
+                        extra_deps[key] = "%s '%s'" % (scope, versions_map[key])
 
     return "\n  ".join(extra_deps.values())
-
-def _ends_with(s, sub_s):
-    len_s = len(s)
-    len_sub_s = len(sub_s)
-    return len_s >= len_sub_s and s.rfind(sub_s, len_s - len_sub_s) >= 0
 
 def _put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
     if processed_deps.get(dep):
@@ -332,8 +323,11 @@ def _is_source_dependency(dep):
 def _is_proto_dependency(dep):
     return ProtoInfo in dep
 
-def _is_gapic_pkg_dependency(dep):
+def _get_gapic_pkg_dependency_name(dep):
     files_list = dep.files.to_list()
     if not files_list or len(files_list) != 1:
-        return False
-    return files_list[0].extension in (".tar.gz", "gz", "tgz")
+        return None
+    for ext in (".tar.gz", ".gz", ".tgz"):
+        if files_list[0].basename.endswith(ext):
+            return files_list[0].basename[:-len(ext)]
+    return None
