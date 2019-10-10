@@ -2554,10 +2554,66 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   ResourceName resource = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+   *   String tag = "";
+   *   AddTagResponse response = libraryServiceClient.addTag(resource, tag);
+   * }
+   * </code></pre>
+   *
+   * @param resource REQUIRED: The resource which the tag is being added to.
+   * In the form "shelves/{shelf_id}/books/{book_id}".
+   * @param tag REQUIRED: The tag to add.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AddTagResponse addTag(ResourceName resource, String tag) {
+
+    AddTagRequest request =
+        AddTagRequest.newBuilder()
+        .setResource(resource == null ? null : resource.toString())
+        .setTag(tag)
+        .build();
+    return addTag(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds a tag to the book. This RPC is a mixin.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ResourceName resource = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+   *   String tag = "";
+   *   AddTagResponse response = libraryServiceClient.addTag(resource.toString(), tag);
+   * }
+   * </code></pre>
+   *
+   * @param resource REQUIRED: The resource which the tag is being added to.
+   * In the form "shelves/{shelf_id}/books/{book_id}".
+   * @param tag REQUIRED: The tag to add.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AddTagResponse addTag(String resource, String tag) {
+
+    AddTagRequest request =
+        AddTagRequest.newBuilder()
+        .setResource(resource)
+        .setTag(tag)
+        .build();
+    return addTag(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds a tag to the book. This RPC is a mixin.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ResourceName resource = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(resource.toString())
    *     .setTag(tag)
    *     .build();
    *   AddTagResponse response = libraryServiceClient.addTag(request);
@@ -2578,10 +2634,10 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String resource = "";
+   *   ResourceName resource = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
-   *     .setResource(resource)
+   *     .setResource(resource.toString())
    *     .setTag(tag)
    *     .build();
    *   ApiFuture&lt;AddTagResponse&gt; future = libraryServiceClient.addTagCallable().futureCall(request);
@@ -8788,6 +8844,8 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
+import com.google.tagger.v1.TaggerProto.AddTagRequest;
+import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -10108,6 +10166,48 @@ public class LibraryServiceClientTest {
       List<String> formattedShelves = new ArrayList<>();
 
       client.findRelatedBooks(formattedNames, formattedShelves);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void addTagTest() {
+    AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ResourceName resource = com.google.tagger.v1.ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+    String tag = "tag114586";
+
+    AddTagResponse actualResponse =
+        client.addTag(resource, tag);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    AddTagRequest actualRequest = (AddTagRequest)actualRequests.get(0);
+
+    Assert.assertEquals(Objects.toString(resource), Objects.toString(actualRequest.getResource()));
+    Assert.assertEquals(tag, actualRequest.getTag());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void addTagExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ResourceName resource = com.google.tagger.v1.ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+      String tag = "tag114586";
+
+      client.addTag(resource, tag);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
