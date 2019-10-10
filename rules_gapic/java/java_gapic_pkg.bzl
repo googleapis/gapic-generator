@@ -283,6 +283,7 @@ def _java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
 
 def _construct_extra_deps(scope_to_deps, versions_map):
     label_name_to_maven_artifact = {
+        "policy_proto": "maven.com_google_api_grpc_proto_google_iam_v1",
         "iam_policy_proto": "maven.com_google_api_grpc_proto_google_iam_v1",
         "iam_java_proto": "maven.com_google_api_grpc_proto_google_iam_v1",
         "iam_java_grpc": "maven.com_google_api_grpc_grpc_google_iam_v1",
@@ -292,7 +293,6 @@ def _construct_extra_deps(scope_to_deps, versions_map):
     for scope, deps in scope_to_deps.items():
         for dep in deps:
             pkg_dependency = _get_gapic_pkg_dependency_name(dep)
-            print(pkg_dependency)
             if pkg_dependency:
                 key = "{{%s}}" % pkg_dependency
                 if not extra_deps.get(key):
