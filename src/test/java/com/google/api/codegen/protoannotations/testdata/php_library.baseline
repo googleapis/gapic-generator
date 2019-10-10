@@ -4197,9 +4197,9 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $resource = '';
+     *     $formattedResource = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
      *     $label = '';
-     *     $response = $libraryServiceClient->addLabel($resource, $label);
+     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -7878,10 +7878,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
-        $response = $client->addLabel($resource, $label);
+        $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7891,7 +7891,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getResource();
 
-        $this->assertProtobufEquals($resource, $actualValue);
+        $this->assertProtobufEquals($formattedResource, $actualValue);
         $actualValue = $actualRequestObject->getLabel();
 
         $this->assertProtobufEquals($label, $actualValue);
@@ -7922,11 +7922,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         try {
-            $client->addLabel($resource, $label);
+            $client->addLabel($formattedResource, $label);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

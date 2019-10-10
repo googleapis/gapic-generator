@@ -278,7 +278,11 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       messageConfigs =
           ResourceNameMessageConfigs.createFromAnnotations(
-              diagCollector, model.getFiles(), protoParser, descriptorConfigMap);
+              diagCollector,
+              model.getFiles(),
+              resourceNameConfigs,
+              protoParser,
+              descriptorConfigMap);
     } else {
       resourceNameConfigs =
           createResourceNameConfigsFromGapicConfigOnly(

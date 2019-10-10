@@ -52,6 +52,7 @@ public abstract class ResourceNameMessageConfigs {
   static ResourceNameMessageConfigs createFromAnnotations(
       DiagCollector diagCollector,
       List<ProtoFile> protoFiles,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser parser,
       Map<String, ResourceDescriptorConfig> descriptorConfigMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
@@ -77,6 +78,7 @@ public abstract class ResourceNameMessageConfigs {
                   message,
                   resourceField);
           if (Strings.isNullOrEmpty(entityName)) continue;
+          if (!resourceNameConfigs.containsKey(entityName)) continue;
           fieldEntityMapBuilder.put(resourceField.getSimpleName(), entityName);
         }
 
