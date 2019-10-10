@@ -77,8 +77,12 @@ public abstract class ResourceNameMessageConfigs {
                   resourceDescriptor.getType(),
                   message,
                   resourceField);
-          if (Strings.isNullOrEmpty(entityName)) continue;
-          if (!resourceNameConfigs.containsKey(entityName)) continue;
+          if (Strings.isNullOrEmpty(entityName)) {
+            continue;
+          }
+          if (!resourceNameConfigs.containsKey(entityName)) {
+            continue;
+          }
           fieldEntityMapBuilder.put(resourceField.getSimpleName(), entityName);
         }
 
