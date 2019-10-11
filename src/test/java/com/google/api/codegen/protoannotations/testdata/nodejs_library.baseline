@@ -2980,6 +2980,9 @@ const CreateBookRequest = {
  *
  *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
  *
+ * @property {string} publisher
+ *   The publisher of the series.
+ *
  * @typedef PublishSeriesRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -5053,6 +5056,9 @@ class LibraryServiceClient {
       projectBookPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/books/{book}'
       ),
+      publisherPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/publishers/{publisher}'
+      ),
       shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf_id}'
       ),
@@ -5741,6 +5747,8 @@ class LibraryServiceClient {
    *   The edition of the series
    * @param {boolean} [request.reviewCopy]
    *   If the book is in a pre-publish state
+   * @param {string} [request.publisher]
+   *   The publisher of the series.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
@@ -7768,6 +7776,22 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified publisher resource name string.
+   *
+   * @param {String} project
+   * @param {String} location
+   * @param {String} publisher
+   * @returns {String}
+   */
+  publisherPath(project, location, publisher) {
+    return this._pathTemplates.publisherPathTemplate.render({
+      project: project,
+      location: location,
+      publisher: publisher,
+    });
+  }
+
+  /**
    * Return a fully-qualified shelf resource name string.
    *
    * @param {String} shelfId
@@ -7933,6 +7957,45 @@ class LibraryServiceClient {
     return this._pathTemplates.projectBookPathTemplate
       .match(projectBookName)
       .book;
+  }
+
+  /**
+   * Parse the publisherName from a publisher resource.
+   *
+   * @param {String} publisherName
+   *   A fully-qualified path representing a publisher resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromPublisherName(publisherName) {
+    return this._pathTemplates.publisherPathTemplate
+      .match(publisherName)
+      .project;
+  }
+
+  /**
+   * Parse the publisherName from a publisher resource.
+   *
+   * @param {String} publisherName
+   *   A fully-qualified path representing a publisher resources.
+   * @returns {String} - A string representing the location.
+   */
+  matchLocationFromPublisherName(publisherName) {
+    return this._pathTemplates.publisherPathTemplate
+      .match(publisherName)
+      .location;
+  }
+
+  /**
+   * Parse the publisherName from a publisher resource.
+   *
+   * @param {String} publisherName
+   *   A fully-qualified path representing a publisher resources.
+   * @returns {String} - A string representing the publisher.
+   */
+  matchPublisherFromPublisherName(publisherName) {
+    return this._pathTemplates.publisherPathTemplate
+      .match(publisherName)
+      .publisher;
   }
 
   /**
