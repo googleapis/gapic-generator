@@ -28,6 +28,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
@@ -210,9 +211,18 @@ public class ResourceNameMessageConfigsTest {
         .getResourceReference(shelfName);
     Mockito.doReturn(true).when(protoParser).hasResourceReference(shelfName);
 
+    // For testing purposes, we don't care about the actual config; we just need an entry in the map
+    ResourceNameConfig dummyConfig =
+        SingleResourceNameConfig.newBuilder()
+            .setNamePattern("")
+            .setEntityId("")
+            .setEntityName(Name.from("entity"))
+            .build();
+    Map<String, ResourceNameConfig> resourceNameConfigs =
+        ImmutableMap.of("Book", dummyConfig, "Shelf", dummyConfig);
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
-            null, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
+            null, sourceProtoFiles, resourceNameConfigs, protoParser, resourceDescriptorConfigMap);
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
@@ -361,9 +371,6 @@ public class ResourceNameMessageConfigsTest {
             .build();
 
     DiagCollector diagCollector = new BoundedDiagCollector();
-    ResourceNameMessageConfigs messageConfigs =
-        ResourceNameMessageConfigs.createFromAnnotations(
-            diagCollector, sourceProtoFiles, protoParser, resourceDescriptorConfigMap);
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
@@ -377,6 +384,13 @@ public class ResourceNameMessageConfigsTest {
             resourceDescriptorConfigMap.keySet(),
             ImmutableSet.of());
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
+    ResourceNameMessageConfigs messageConfigs =
+        ResourceNameMessageConfigs.createFromAnnotations(
+            diagCollector,
+            sourceProtoFiles,
+            resourceNameConfigs,
+            protoParser,
+            resourceDescriptorConfigMap);
 
     List<FlatteningConfig> flatteningConfigs =
         new ArrayList<>(

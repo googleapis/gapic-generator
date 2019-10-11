@@ -114,7 +114,7 @@ _php_gapic_postprocessed_srcjar = rule(
     },
 )
 
-def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
+def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -124,6 +124,7 @@ def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         service_yaml = service_yaml,
         artifact_type = "GAPIC_CODE",
         language = "php",
+        package = package,
         **kwargs
     )
 
@@ -133,7 +134,7 @@ def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, **kwargs):
         **kwargs
     )
 
-def php_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs):
+def php_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     php_gapic_srcjar(
@@ -141,6 +142,7 @@ def php_gapic_library(name, src, gapic_yaml, service_yaml, deps = [], **kwargs):
         src = src,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
+        package = package,
         **kwargs
     )
 

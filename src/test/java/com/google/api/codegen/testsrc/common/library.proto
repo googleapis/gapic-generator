@@ -230,6 +230,7 @@ service LibraryService {
   // Adds a tag to the book. This RPC is a mixin.
   rpc AddTag(google.tagger.v1.AddTagRequest) returns (google.tagger.v1.AddTagResponse) {
     option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
+    option (google.api.method_signature) = "resource,tag";
   }
 
   // AddLabel intentionally left out to test the reroute_to_grpc_interface feature

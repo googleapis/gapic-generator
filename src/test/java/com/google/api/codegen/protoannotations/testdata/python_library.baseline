@@ -3038,8 +3038,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `resource`:
-            >>> resource = ''
+            >>> resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -7974,7 +7973,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = 'resource-341064690'
+        resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -7994,7 +7993,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = 'resource-341064690'
+        resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
         label = 'label102727412'
 
         with pytest.raises(CustomException):

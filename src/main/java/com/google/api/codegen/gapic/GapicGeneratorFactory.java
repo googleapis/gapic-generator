@@ -226,6 +226,8 @@ public class GapicGeneratorFactory {
             generators.add(newJavaGenerator.apply(new JavaGapicSamplesTransformer()));
             generators.add(
                 newJavaGenerator.apply(new JavaGapicSamplesPackageTransformer(packageConfig)));
+            generators.add(
+                newJavaGenerator.apply(JavaGapicSamplesTransformer.createManifestTransformer()));
           }
         }
 
