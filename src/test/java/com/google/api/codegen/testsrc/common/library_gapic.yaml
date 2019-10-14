@@ -41,6 +41,12 @@ collections:
     entity_name: deleted_book
   - name_pattern: projects/{project}/books/{book}
     entity_name: project_book
+  - name_pattern: projects/{project}
+    entity_name: project
+  - name_pattern: projects/{project}/locations/{location}
+    entity_name: location
+  - name_pattern: folders/{folder}
+    entity_name: folder
 collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
@@ -48,6 +54,10 @@ collection_oneofs:
     - archived_book
     - deleted_book
     - project_book
+  - oneof_name: location_parent_oneof
+    collection_names:
+      - project
+      - location
 interfaces:
 - name: google.example.library.v1.MyProto
   retry_codes_def:
@@ -585,13 +595,16 @@ interfaces:
       groups:
       - parameters:
         - name
+        - parent
     required_fields:
       - name
+      - parent
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
     field_name_patterns:
       name: archived_book
+      parent: location_parent_oneof
     surface_treatments:
       - include_languages:
           - go
@@ -602,15 +615,21 @@ interfaces:
       - parameters:
         - name
         - alt_book_name
+        - place
+        - folder
     required_fields:
       - name
       - alt_book_name
+      - place
+      - folder
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
     field_name_patterns:
       name: book_oneof
       alt_book_name: book
+      place: location
+      folder: folder
   - name: GetBookFromAbsolutelyAnywhere
     flattening:
       groups:
@@ -1319,10 +1338,13 @@ resource_name_generation:
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book
+    parent: location_parent_oneof
 - message_name: GetBookFromAnywhereRequest
   field_entity_map:
     name: book_oneof
     alt_book_name: book_oneof
+    place: location
+    folder: folder
 - message_name: GetBookFromAbsolutelyAnywhereRequest
   field_entity_map:
     name: "*"

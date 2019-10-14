@@ -35,6 +35,7 @@ def _gapic_srcjar_impl(ctx):
         else:
             _set_args(attr.src, "--descriptor_set=", arguments, inputs)
         _set_args(attr.gapic_yaml, "--gapic_yaml=", arguments, inputs)
+        _set_args(attr.package, "--package=", arguments)
         _set_args(attr.language, "--language=", arguments, required = True)
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
@@ -83,6 +84,15 @@ gapic_srcjar = rule(
     implementation = _gapic_srcjar_impl,
 )
 
+_ProtoInfo = provider(
+    fields = [
+        "direct_sources",
+        "check_deps_sources",
+        "transitive_imports",
+        "transitive_descriptor_sets",
+    ],
+)
+
 def _proto_custom_library_impl(ctx):
     cur_package = ctx.label.package
 
@@ -91,13 +101,11 @@ def _proto_custom_library_impl(ctx):
     check_dep_sources_list = []
 
     for dep in ctx.attr.deps:
-        src = dep[ProtoInfo].check_deps_sources
+        prov = ProtoInfo if ProtoInfo in dep else _ProtoInfo
+        src = dep[prov].check_deps_sources
         srcs_list.append(src)
-
-        # This is needed to properly support `go_proto_library`
-        if cur_package == dep.label.package:
-            check_dep_sources_list.append(src)
-        imports_list.append(dep[ProtoInfo].transitive_imports)
+        check_dep_sources_list.append(src)
+        imports_list.append(dep[prov].transitive_imports)
 
     srcs = depset(direct = [], transitive = srcs_list)
     imports = depset(direct = [], transitive = imports_list)
@@ -166,18 +174,18 @@ def _proto_custom_library_impl(ctx):
     #   - check_deps_sources
     #   - transitive_imports
     #   - transitive_descriptor_sets
-    return struct(
-        proto = struct(
+    return [
+        _ProtoInfo(
             direct_sources = check_dep_sources,
             check_deps_sources = check_dep_sources,
             transitive_imports = imports,
             transitive_descriptor_sets = depset(direct = [output]),
         ),
-    )
+    ]
 
 proto_custom_library = rule(
     attrs = {
-        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
+        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [[ProtoInfo], [_ProtoInfo]]),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
         "plugin_file_args": attr.label_keyed_string_dict(
             mandatory = False,

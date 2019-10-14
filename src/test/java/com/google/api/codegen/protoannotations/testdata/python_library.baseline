@@ -637,7 +637,7 @@ intersphinx_mapping = {
     'google-gax': ('https://gax-python.readthedocs.io/en/latest/', None),
     'google.api_core': ('https://googleapis.dev/python/google-api-core/latest', None),
     'grpc': ('https://grpc.io/grpc/python/', None),
-    'requests': ('https://2.python-requests.org/en/master/', None),
+    'requests': ('https://requests.kennethreitz.org/en/master/', None),
     'fastavro': ('https://fastavro.readthedocs.io/en/stable/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
 }
@@ -1170,6 +1170,31 @@ class LibraryServiceClient(object):
             'bookShelves/{book_shelf}/books/{book}',
             book_shelf=book_shelf,
             book=book,
+        )
+
+    @classmethod
+    def folder_path(cls, folder):
+        """Return a fully-qualified folder string."""
+        return google.api_core.path_template.expand(
+            'folders/{folder}',
+            folder=folder,
+        )
+
+    @classmethod
+    def location_path(cls, project, location):
+        """Return a fully-qualified location string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}/locations/{location}',
+            project=project,
+            location=location,
+        )
+
+    @classmethod
+    def project_path(cls, project):
+        """Return a fully-qualified project string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}',
+            project=project,
         )
 
     @classmethod
@@ -2335,6 +2360,7 @@ class LibraryServiceClient(object):
     def get_book_from_archive(
             self,
             name,
+            parent,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2347,11 +2373,13 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+            >>> parent = client.project_path('[PROJECT]')
             >>>
-            >>> response = client.get_book_from_archive(name)
+            >>> response = client.get_book_from_archive(name, parent)
 
         Args:
             name (str): The name of the book to retrieve.
+            parent (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
                 be retried using a default configuration.
@@ -2382,6 +2410,7 @@ class LibraryServiceClient(object):
 
         request = library_pb2.GetBookFromArchiveRequest(
             name=name,
+            parent=parent,
         )
         if metadata is None:
             metadata = []
@@ -2400,6 +2429,8 @@ class LibraryServiceClient(object):
             self,
             name,
             alt_book_name,
+            place,
+            folder,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2413,13 +2444,17 @@ class LibraryServiceClient(object):
             >>>
             >>> name = client.book_path('[BOOK_SHELF]', '[BOOK]')
             >>> alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+            >>> place = client.location_path('[PROJECT]', '[LOCATION]')
+            >>> folder = client.folder_path('[FOLDER]')
             >>>
-            >>> response = client.get_book_from_anywhere(name, alt_book_name)
+            >>> response = client.get_book_from_anywhere(name, alt_book_name, place, folder)
 
         Args:
             name (str): The name of the book to retrieve.
             alt_book_name (str): An alternate book name, used to test restricting flattened field to a
                 single resource name type in a oneof.
+            place (str)
+            folder (str)
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
                 be retried using a default configuration.
@@ -2451,6 +2486,8 @@ class LibraryServiceClient(object):
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name,
+            place=place,
+            folder=folder,
         )
         if metadata is None:
             metadata = []
@@ -2988,8 +3025,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> # TODO: Initialize `resource`:
-            >>> resource = ''
+            >>> resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -7492,12 +7528,13 @@ class TestLibraryServiceClient(object):
 
         # Setup Request
         name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+        parent = client.project_path('[PROJECT]')
 
-        response = client.get_book_from_archive(name)
+        response = client.get_book_from_archive(name, parent)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
+        expected_request = library_pb2.GetBookFromArchiveRequest(name=name, parent=parent)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -7511,9 +7548,10 @@ class TestLibraryServiceClient(object):
 
         # Setup request
         name = client.archived_book_path('[ARCHIVE]', '[BOOK]')
+        parent = client.project_path('[PROJECT]')
 
         with pytest.raises(CustomException):
-            client.get_book_from_archive(name)
+            client.get_book_from_archive(name, parent)
 
     def test_get_book_from_anywhere(self):
         # Setup Expected Response
@@ -7534,12 +7572,14 @@ class TestLibraryServiceClient(object):
         # Setup Request
         name = client.book_path('[BOOK_SHELF]', '[BOOK]')
         alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        place = client.location_path('[PROJECT]', '[LOCATION]')
+        folder = client.folder_path('[FOLDER]')
 
-        response = client.get_book_from_anywhere(name, alt_book_name)
+        response = client.get_book_from_anywhere(name, alt_book_name, place, folder)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name)
+        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name, place=place, folder=folder)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -7554,9 +7594,11 @@ class TestLibraryServiceClient(object):
         # Setup request
         name = client.book_path('[BOOK_SHELF]', '[BOOK]')
         alt_book_name = client.book_path('[BOOK_SHELF]', '[BOOK]')
+        place = client.location_path('[PROJECT]', '[LOCATION]')
+        folder = client.folder_path('[FOLDER]')
 
         with pytest.raises(CustomException):
-            client.get_book_from_anywhere(name, alt_book_name)
+            client.get_book_from_anywhere(name, alt_book_name, place, folder)
 
     def test_get_book_from_absolutely_anywhere(self):
         # Setup Expected Response
@@ -7918,7 +7960,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = 'resource-341064690'
+        resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -7938,7 +7980,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = 'resource-341064690'
+        resource = client.book_path('[BOOK_SHELF]', '[BOOK]')
         label = 'label102727412'
 
         with pytest.raises(CustomException):

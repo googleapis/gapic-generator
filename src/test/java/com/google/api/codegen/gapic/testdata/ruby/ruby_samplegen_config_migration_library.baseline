@@ -2475,6 +2475,8 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The name of the book to retrieve.
+        # @!attribute [rw] parent
+        #   @return [String]
         class GetBookFromArchiveRequest; end
 
         # Request message for LibraryService.GetBookFromAnywhere.
@@ -2485,6 +2487,10 @@ module Google
         #   @return [String]
         #     An alternate book name, used to test restricting flattened field to a
         #     single resource name type in a oneof.
+        # @!attribute [rw] place
+        #   @return [String]
+        # @!attribute [rw] folder
+        #   @return [String]
         class GetBookFromAnywhereRequest; end
 
         # Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
@@ -3969,6 +3975,7 @@ module Library
       #
       # @param name [String]
       #   The name of the book to retrieve.
+      # @param parent [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3986,10 +3993,12 @@ module Library
 
       def get_book_from_archive \
           name,
+          parent: nil,
           options: nil,
           &block
         req = {
-          name: name
+          name: name,
+          parent: parent
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromArchiveRequest)
         @get_book_from_archive.call(req, options, &block)
@@ -4002,6 +4011,8 @@ module Library
       # @param alt_book_name [String]
       #   An alternate book name, used to test restricting flattened field to a
       #   single resource name type in a oneof.
+      # @param place [String]
+      # @param folder [String]
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -4021,11 +4032,15 @@ module Library
       def get_book_from_anywhere \
           name,
           alt_book_name,
+          place: nil,
+          folder: nil,
           options: nil,
           &block
         req = {
           name: name,
-          alt_book_name: alt_book_name
+          alt_book_name: alt_book_name,
+          place: place,
+          folder: folder
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
         @get_book_from_anywhere.call(req, options, &block)
@@ -6150,7 +6165,7 @@ end
 # sample-metadata
 #   title: Pi version
 #   description: Testing <@calling forms>
-#   bundle exec ruby samples/v1/publish_series_request_pi_version.rb [--shelf_name Math] [--edition 123]
+#   bundle exec ruby samples/v1/publish_series_request_pi_version.rb [--shelf_name "[Math]"] [--edition 123]
 
 require "library"
 
@@ -6164,7 +6179,7 @@ def sample_publish_series shelf_name, edition
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf_name = "Math"
+  # shelf_name = "[Math]"
   # edition = 123
   shelf = { name: shelf_name }
   books = []
@@ -6198,7 +6213,7 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf_name = "Math"
+  shelf_name = "[Math]"
   edition = 123
 
   ARGV.options do |opts|

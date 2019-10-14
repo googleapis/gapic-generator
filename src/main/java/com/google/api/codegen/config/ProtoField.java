@@ -44,7 +44,7 @@ public class ProtoField implements FieldModel {
     this.protoTypeRef = ProtoTypeRef.create(protoField.getType());
   }
 
-  Field getProtoField() {
+  public Field getProtoField() {
     return protoField;
   }
 

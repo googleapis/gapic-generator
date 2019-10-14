@@ -467,6 +467,8 @@ public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
 
 package com.google.example.examples.library.v1;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -477,6 +479,8 @@ public class EmptyResponseTypeWithResponseHandling {
   /*
    * Please include the following imports to run this sample.
    *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.GetBigBookMetadata;
    * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
@@ -530,6 +534,8 @@ public class EmptyResponseTypeWithResponseHandling {
 
 package com.google.example.examples.library.v1;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -540,6 +546,8 @@ public class EmptyResponseTypeWithoutResponseHandling {
   /*
    * Please include the following imports to run this sample.
    *
+   * import com.google.api.gax.longrunning.OperationFuture;
+   * import com.google.example.library.v1.GetBigBookMetadata;
    * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
@@ -727,7 +735,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -739,7 +749,9 @@ public class Hopper {
   /*
    * Please include the following imports to run this sample.
    *
+   * import com.google.api.gax.longrunning.OperationFuture;
    * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBigBookMetadata;
    * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
@@ -819,7 +831,7 @@ public class Hopper {
 // sample-metadata:
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestPiVersion [--args='[--shelf_name Math] [--edition 123]']
+//   usage: gradle run -PmainClass=com.google.example.examples.library.v1.PublishSeriesRequestPiVersion [--args='[--shelf_name "[Math]"] [--edition 123]']
 
 package com.google.example.examples.library.v1;
 
@@ -859,7 +871,7 @@ public class PublishSeriesRequestPiVersion {
    */
   public static void samplePublishSeries(String shelfName, int edition) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelfName = "Math";
+      // shelfName = "[Math]";
       // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
@@ -916,7 +928,7 @@ public class PublishSeriesRequestPiVersion {
           .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    String shelfName = cl.getOptionValue("shelf_name", "Math");
+    String shelfName = cl.getOptionValue("shelf_name", "[Math]");
     int edition =
         cl.getOptionValue("edition") != null
             ? Integer.parseInt(cl.getOptionValue("edition"))
@@ -1841,7 +1853,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.ShelfBookName;
@@ -1851,7 +1865,9 @@ public class ThisTagShouldBeTheNameOfTheFile {
   /*
    * Please include the following imports to run this sample.
    *
+   * import com.google.api.gax.longrunning.OperationFuture;
    * import com.google.example.library.v1.Book;
+   * import com.google.example.library.v1.GetBigBookMetadata;
    * import com.google.example.library.v1.GetBookRequest;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.ShelfBookName;
@@ -2018,6 +2034,138 @@ public class Turing {
     sampleDiscussBook(imageFileName, stage);
   }
 }
+============== file: samples/src/main/java/com/google/example/examples/library/v1/library-example.java.20190801.120000.manifest.yaml ==============
+---
+type: manifest/samples
+schema_version: 3
+java: &java
+  environment: java
+  bin: mvn exec:java
+  base_path: samples/src/main/java/com/google/example/examples/library/v1
+  package: com.google.example.examples.library.v1
+  invocation: {bin} -Dexec.mainClass={class} -Dexec.args='@args'
+samples:
+- <<: *java
+  sample: "sample_get_shelf"
+  path: "{base_path}/SampleGetShelf.java"
+  class: {package}.SampleGetShelf
+  region_tag: "sample_get_shelf"
+- <<: *java
+  sample: "test_setting_up_empty_objects_in_request"
+  path: "{base_path}/TestSettingUpEmptyObjectsInRequest.java"
+  class: {package}.TestSettingUpEmptyObjectsInRequest
+  region_tag: "test_setting_up_empty_objects_in_request"
+- <<: *java
+  sample: "test_default_calling_form_for_paging"
+  path: "{base_path}/TestDefaultCallingFormForPaging.java"
+  class: {package}.TestDefaultCallingFormForPaging
+  region_tag: "test_default_calling_form_for_paging"
+- <<: *java
+  sample: "delete_shelf_request_empty_response_type_with_response_handling"
+  path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithResponseHandling.java"
+  class: {package}.DeleteShelfRequestEmptyResponseTypeWithResponseHandling
+  region_tag: "sample"
+- <<: *java
+  sample: "delete_shelf_request_empty_response_type_without_response_handling"
+  path: "{base_path}/DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling.java"
+  class: {package}.DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling
+  region_tag: "sample"
+- <<: *java
+  sample: "testing_map"
+  path: "{base_path}/TestingMap.java"
+  class: {package}.TestingMap
+  region_tag: "testing_map"
+- <<: *java
+  sample: "publish_series_request_pi_version"
+  path: "{base_path}/PublishSeriesRequestPiVersion.java"
+  class: {package}.PublishSeriesRequestPiVersion
+  region_tag: "canonical"
+- <<: *java
+  sample: "publish_series_request_second_edition"
+  path: "{base_path}/PublishSeriesRequestSecondEdition.java"
+  class: {package}.PublishSeriesRequestSecondEdition
+  region_tag: "canonical"
+- <<: *java
+  sample: "publish_series_test_request_object_field_comments"
+  path: "{base_path}/PublishSeriesTestRequestObjectFieldComments.java"
+  class: {package}.PublishSeriesTestRequestObjectFieldComments
+  region_tag: "publish_series_test_request_object_field_comments"
+- <<: *java
+  sample: "publish_series_test_write_to_file"
+  path: "{base_path}/PublishSeriesTestWriteToFile.java"
+  class: {package}.PublishSeriesTestWriteToFile
+  region_tag: "publish_series_test_write_to_file"
+- <<: *java
+  sample: "get_book_request_test_on_success_map"
+  path: "{base_path}/GetBookRequestTestOnSuccessMap.java"
+  class: {package}.GetBookRequestTestOnSuccessMap
+  region_tag: "sample"
+- <<: *java
+  sample: "test_resource_name_oneof"
+  path: "{base_path}/TestResourceNameOneof.java"
+  class: {package}.TestResourceNameOneof
+  region_tag: "test_resource_name_oneof"
+- <<: *java
+  sample: "test_resource_name_oneof_2"
+  path: "{base_path}/TestResourceNameOneof2.java"
+  class: {package}.TestResourceNameOneof2
+  region_tag: "test_resource_name_oneof_2"
+- <<: *java
+  sample: "babbage"
+  path: "{base_path}/Babbage.java"
+  class: {package}.Babbage
+  region_tag: "babbage"
+- <<: *java
+  sample: "turing"
+  path: "{base_path}/Turing.java"
+  class: {package}.Turing
+  region_tag: "turing"
+- <<: *java
+  sample: "sample_monolog_about_book"
+  path: "{base_path}/SampleMonologAboutBook.java"
+  class: {package}.SampleMonologAboutBook
+  region_tag: "sample_monolog_about_book"
+- <<: *java
+  sample: "babble_about_book_1"
+  path: "{base_path}/BabbleAboutBook1.java"
+  class: {package}.BabbleAboutBook1
+  region_tag: "babble_about_book_1"
+- <<: *java
+  sample: "babble_about_book_2"
+  path: "{base_path}/BabbleAboutBook2.java"
+  class: {package}.BabbleAboutBook2
+  region_tag: "babble_about_book_2"
+- <<: *java
+  sample: "find_related_books_odyssey"
+  path: "{base_path}/FindRelatedBooksOdyssey.java"
+  class: {package}.FindRelatedBooksOdyssey
+  region_tag: "find_related_books_odyssey"
+- <<: *java
+  sample: "hopper"
+  path: "{base_path}/Hopper.java"
+  class: {package}.Hopper
+  region_tag: "hopper"
+- <<: *java
+  sample: "this_tag_should_be_the_name_of_the_file"
+  path: "{base_path}/ThisTagShouldBeTheNameOfTheFile.java"
+  class: {package}.ThisTagShouldBeTheNameOfTheFile
+  region_tag: "this_tag_should_be_the_name_of_the_file"
+- <<: *java
+  sample: "empty_response_type_with_response_handling"
+  path: "{base_path}/EmptyResponseTypeWithResponseHandling.java"
+  class: {package}.EmptyResponseTypeWithResponseHandling
+  region_tag: "empty_response_type_with_response_handling"
+- <<: *java
+  sample: "empty_response_type_without_response_handling"
+  path: "{base_path}/EmptyResponseTypeWithoutResponseHandling.java"
+  class: {package}.EmptyResponseTypeWithoutResponseHandling
+  region_tag: "empty_response_type_without_response_handling"
+- <<: *java
+  sample: "test_float_and_int64"
+  path: "{base_path}/TestFloatAndInt64.java"
+  class: {package}.TestFloatAndInt64
+  region_tag: "test_float_and_int64"
+
 ============== file: src/main/java/com/google/example/library/v1/LibraryClient.java ==============
 /*
  * Copyright 2019 Google LLC

@@ -2432,6 +2432,9 @@ class LibraryServiceGapicClient
     private static $archiveBookNameTemplate;
     private static $archivedBookNameTemplate;
     private static $bookNameTemplate;
+    private static $folderNameTemplate;
+    private static $locationNameTemplate;
+    private static $projectNameTemplate;
     private static $projectBookNameTemplate;
     private static $shelfNameTemplate;
     private static $pathTemplateMap;
@@ -2483,6 +2486,33 @@ class LibraryServiceGapicClient
         return self::$bookNameTemplate;
     }
 
+    private static function getFolderNameTemplate()
+    {
+        if (self::$folderNameTemplate == null) {
+            self::$folderNameTemplate = new PathTemplate('folders/{folder}');
+        }
+
+        return self::$folderNameTemplate;
+    }
+
+    private static function getLocationNameTemplate()
+    {
+        if (self::$locationNameTemplate == null) {
+            self::$locationNameTemplate = new PathTemplate('projects/{project}/locations/{location}');
+        }
+
+        return self::$locationNameTemplate;
+    }
+
+    private static function getProjectNameTemplate()
+    {
+        if (self::$projectNameTemplate == null) {
+            self::$projectNameTemplate = new PathTemplate('projects/{project}');
+        }
+
+        return self::$projectNameTemplate;
+    }
+
     private static function getProjectBookNameTemplate()
     {
         if (self::$projectBookNameTemplate == null) {
@@ -2509,6 +2539,9 @@ class LibraryServiceGapicClient
                 'archiveBook' => self::getArchiveBookNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
+                'folder' => self::getFolderNameTemplate(),
+                'location' => self::getLocationNameTemplate(),
+                'project' => self::getProjectNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
                 'shelf' => self::getShelfNameTemplate(),
             ];
@@ -2568,6 +2601,53 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a folder resource.
+     *
+     * @param string $folder
+     * @return string The formatted folder resource.
+     * @experimental
+     */
+    public static function folderName($folder)
+    {
+        return self::getFolderNameTemplate()->render([
+            'folder' => $folder,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a location resource.
+     *
+     * @param string $project
+     * @param string $location
+     * @return string The formatted location resource.
+     * @experimental
+     */
+    public static function locationName($project, $location)
+    {
+        return self::getLocationNameTemplate()->render([
+            'project' => $project,
+            'location' => $location,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a project resource.
+     *
+     * @param string $project
+     * @return string The formatted project resource.
+     * @experimental
+     */
+    public static function projectName($project)
+    {
+        return self::getProjectNameTemplate()->render([
+            'project' => $project,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a project_book resource.
      *
      * @param string $project
@@ -2605,6 +2685,9 @@ class LibraryServiceGapicClient
      * - archiveBook: archives/{archive}/books/{book}
      * - archivedBook: archives/{archive}/books/{book}
      * - book: bookShelves/{book_shelf}/books/{book}
+     * - folder: folders/{folder}
+     * - location: projects/{project}/locations/{location}
+     * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
      * - shelf: shelves/{shelf_id}
      *
@@ -3555,13 +3638,15 @@ class LibraryServiceGapicClient
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
      *     $formattedName = $libraryServiceClient->archivedBookName('[ARCHIVE]', '[BOOK]');
-     *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
+     *     $formattedParent = $libraryServiceClient->projectName('[PROJECT]');
+     *     $response = $libraryServiceClient->getBookFromArchive($formattedName, $formattedParent);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
+     * @param string $parent
      * @param array $optionalArgs {
      *     Optional.
      *     @type RetrySettings|array $retrySettings
@@ -3576,10 +3661,11 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromArchive($name, array $optionalArgs = [])
+    public function getBookFromArchive($name, $parent, array $optionalArgs = [])
     {
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
+        $request->setParent($parent);
 
         $requestParams = new RequestParamsHeaderDescriptor([
           'name' => $request->getName(),
@@ -3605,7 +3691,9 @@ class LibraryServiceGapicClient
      * try {
      *     $formattedName = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
      *     $formattedAltBookName = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
-     *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
+     *     $formattedPlace = $libraryServiceClient->locationName('[PROJECT]', '[LOCATION]');
+     *     $formattedFolder = $libraryServiceClient->folderName('[FOLDER]');
+     *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName, $formattedPlace, $formattedFolder);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -3614,6 +3702,8 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param string $altBookName An alternate book name, used to test restricting flattened field to a
      * single resource name type in a oneof.
+     * @param string $place
+     * @param string $folder
      * @param array $optionalArgs {
      *     Optional.
      *     @type RetrySettings|array $retrySettings
@@ -3628,11 +3718,13 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function getBookFromAnywhere($name, $altBookName, array $optionalArgs = [])
+    public function getBookFromAnywhere($name, $altBookName, $place, $folder, array $optionalArgs = [])
     {
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
         $request->setAltBookName($altBookName);
+        $request->setPlace($place);
+        $request->setFolder($folder);
 
         $requestParams = new RequestParamsHeaderDescriptor([
           'name' => $request->getName(),
@@ -4105,9 +4197,9 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $resource = '';
+     *     $formattedResource = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
      *     $label = '';
-     *     $response = $libraryServiceClient->addLabel($resource, $label);
+     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -7066,8 +7158,9 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedName = $client->archivedBookName('[ARCHIVE]', '[BOOK]');
+        $formattedParent = $client->projectName('[PROJECT]');
 
-        $response = $client->getBookFromArchive($formattedName);
+        $response = $client->getBookFromArchive($formattedName, $formattedParent);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7078,6 +7171,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getName();
 
         $this->assertProtobufEquals($formattedName, $actualValue);
+        $actualValue = $actualRequestObject->getParent();
+
+        $this->assertProtobufEquals($formattedParent, $actualValue);
 
         $this->assertTrue($transport->isExhausted());
     }
@@ -7106,9 +7202,10 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedName = $client->archivedBookName('[ARCHIVE]', '[BOOK]');
+        $formattedParent = $client->projectName('[PROJECT]');
 
         try {
-            $client->getBookFromArchive($formattedName);
+            $client->getBookFromArchive($formattedName, $formattedParent);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -7146,8 +7243,10 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $formattedName = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $formattedAltBookName = $client->bookName('[BOOK_SHELF]', '[BOOK]');
+        $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
+        $formattedFolder = $client->folderName('[FOLDER]');
 
-        $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+        $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName, $formattedPlace, $formattedFolder);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7161,6 +7260,12 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getAltBookName();
 
         $this->assertProtobufEquals($formattedAltBookName, $actualValue);
+        $actualValue = $actualRequestObject->getPlace();
+
+        $this->assertProtobufEquals($formattedPlace, $actualValue);
+        $actualValue = $actualRequestObject->getFolder();
+
+        $this->assertProtobufEquals($formattedFolder, $actualValue);
 
         $this->assertTrue($transport->isExhausted());
     }
@@ -7190,9 +7295,11 @@ class LibraryServiceClientTest extends GeneratedTest
         // Mock request
         $formattedName = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $formattedAltBookName = $client->bookName('[BOOK_SHELF]', '[BOOK]');
+        $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
+        $formattedFolder = $client->folderName('[FOLDER]');
 
         try {
-            $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+            $client->getBookFromAnywhere($formattedName, $formattedAltBookName, $formattedPlace, $formattedFolder);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
@@ -7796,10 +7903,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
-        $response = $client->addLabel($resource, $label);
+        $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7809,7 +7916,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getResource();
 
-        $this->assertProtobufEquals($resource, $actualValue);
+        $this->assertProtobufEquals($formattedResource, $actualValue);
         $actualValue = $actualRequestObject->getLabel();
 
         $this->assertProtobufEquals($label, $actualValue);
@@ -7840,11 +7947,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         try {
-            $client->addLabel($resource, $label);
+            $client->addLabel($formattedResource, $label);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

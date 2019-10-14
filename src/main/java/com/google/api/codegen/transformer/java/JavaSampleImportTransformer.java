@@ -78,13 +78,11 @@ public class JavaSampleImportTransformer extends StandardSampleImportTransformer
         typeTable.saveNicknameFor(SERVER_STREAM);
         typeTable.getAndSaveNicknameFor(namer.getGenericAwareResponseTypeName(context));
         break;
-      case LongRunningCallable:
-        typeTable.saveNicknameFor(OPERATION_FUTURE);
-        saveResponseTypeNameForLongRunningMethod(context);
-        saveMetadataTypeNameForLongRunningMethod(context);
-        break;
       case LongRunningFlattenedAsync:
       case LongRunningRequestAsync:
+      case LongRunningCallable:
+        typeTable.saveNicknameFor(OPERATION_FUTURE);
+        saveMetadataTypeNameForLongRunningMethod(context);
         saveResponseTypeNameForLongRunningMethod(context);
         break;
     }

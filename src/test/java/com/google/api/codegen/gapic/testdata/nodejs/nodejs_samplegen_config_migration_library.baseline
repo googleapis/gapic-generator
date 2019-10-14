@@ -577,7 +577,7 @@ sampleStreamBooks();
 // sample-metadata:
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: node samples/v1/publish_series_request_pi_version.js [--shelf_name Math] [--edition 123]
+//   usage: node samples/v1/publish_series_request_pi_version.js [--shelf_name "[Math]"] [--edition 123]
 
 'use strict';
 
@@ -593,7 +593,7 @@ const library = require('@google-cloud/library').v1;
  */
 function samplePublishSeries(shelfName, edition) {
   const client = new library.LibraryServiceClient();
-  // const shelfName = 'Math';
+  // const shelfName = '[Math]';
   // const edition = 123;
   const shelf = {
     name: shelfName,
@@ -641,7 +641,7 @@ function samplePublishSeries(shelfName, edition) {
 
 const argv = require(`yargs`)
   .option('shelf_name', {
-    default: 'Math',
+    default: '[Math]',
     string: true
   })
   .option('edition', {
@@ -2494,6 +2494,8 @@ const Comment = {
  * @property {string} name
  *   The name of the book to retrieve.
  *
+ * @property {string} parent
+ *
  * @typedef GetBookFromArchiveRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromArchiveRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -2511,6 +2513,10 @@ const GetBookFromArchiveRequest = {
  * @property {string} altBookName
  *   An alternate book name, used to test restricting flattened field to a
  *   single resource name type in a oneof.
+ *
+ * @property {string} place
+ *
+ * @property {string} folder
  *
  * @typedef GetBookFromAnywhereRequest
  * @memberof google.example.library.v1
@@ -5639,6 +5645,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
+   * @param {string} [request.parent]
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
@@ -5695,6 +5702,8 @@ class LibraryServiceClient {
    * @param {string} request.altBookName
    *   An alternate book name, used to test restricting flattened field to a
    *   single resource name type in a oneof.
+   * @param {string} [request.place]
+   * @param {string} [request.folder]
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.

@@ -40,11 +40,11 @@ public class JavaSampleMetadataNamer implements SampleMetadataNamer {
   }
 
   public String getBin() {
-    return "gradle run";
+    return "mvn exec:java";
   }
 
   public String getInvocation() {
-    return "{bin} -PmainClass={class} --args='@args'";
+    return "{bin} -Dexec.mainClass={class} -Dexec.args='@args'";
   }
 
   public String getSamplePath(String uniqueSampleId) {

@@ -88,7 +88,7 @@ public class GapicConfigProducerTest {
         CodegenTestUtil.readModel(
             locator,
             tempDir,
-            new String[] {"library.proto", "another_service.proto"},
+            new String[] {"library.proto", "common_resources.proto", "another_service.proto"},
             new String[] {"library.yaml"});
 
     ServiceConfig serviceConfig =
