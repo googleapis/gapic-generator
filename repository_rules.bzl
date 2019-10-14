@@ -26,7 +26,7 @@ def _com_google_api_codegen_properties_impl(ctx):
         p = prop.strip()
         if len(p) <= 0 or p.startswith("#"):
             continue
-        key_value = p.split("=", maxsplit = 1)
+        key_value = p.split("=", 1)
         props_as_map[key_value[0]] = key_value[1]
 
     props_name = ctx.attr.file.name
