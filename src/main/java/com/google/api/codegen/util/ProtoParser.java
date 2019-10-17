@@ -50,7 +50,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -152,7 +151,7 @@ public class ProtoParser {
     return getProtoExtension(element, ResourceProto.resource);
   }
 
-  public List<ResourceDescriptor> getFileLevelResourceDescriptors(ProtoFile protoFile) {
+  private List<ResourceDescriptor> getFileLevelResourceDescriptors(ProtoFile protoFile) {
     return MoreObjects.firstNonNull(
         getProtoExtension(protoFile, ResourceProto.resourceDefinition), Collections.emptyList());
   }
@@ -194,29 +193,16 @@ public class ProtoParser {
       List<ResourceDescriptor> resourceDescriptors = new ArrayList<>();
 
       // Get Resource[Set] definitions from file-level annotations.
-      resourceDescriptors.addAll(getFileLevelResourceDescriptors(protoFile));
+      for (ResourceDescriptor definition : getFileLevelResourceDescriptors(protoFile)) {
+        collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
+      }
 
       // Get Resource[Set] definitions from fields in message types.
-      protoFile
-          .getMessages()
-          .stream()
-          .map(m -> getResourceDescriptor(m))
-          .filter(Objects::nonNull)
-          .forEach(r -> resourceDescriptors.add(r));
-
-      for (ResourceDescriptor definition : resourceDescriptors) {
-        if (localDefs.put(definition.getType(), definition) != null) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "Multiple ResourceDescriptor defintions with the type"
-                      + " %s are defined in proto file %s. Values for type must be unique.",
-                  definition.getType(),
-                  protoFile.getFullName()));
-          continue;
+      for (MessageType message : protoFile.getMessages()) {
+        ResourceDescriptor definition = getResourceDescriptor(message);
+        if (definition != null) {
+          collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
         }
-        ResourceDescriptorConfig config = ResourceDescriptorConfig.from(definition, protoFile);
-        mapBuilder.put(config.getUnifiedResourceType(), config);
       }
     }
     return mapBuilder.build();
@@ -302,5 +288,25 @@ public class ProtoParser {
     ClientProto.registerAllExtensions(extensionRegistry);
     ResourceProto.registerAllExtensions(extensionRegistry);
     FieldBehaviorProto.registerAllExtensions(extensionRegistry);
+  }
+
+  private void collectResourceDescriptor(
+      DiagCollector diagCollector,
+      Map<String, ResourceDescriptor> definitions,
+      ImmutableMap.Builder<String, ResourceDescriptorConfig> configs,
+      ResourceDescriptor definition,
+      ProtoFile protoFile) {
+    if (definitions.put(definition.getType(), definition) != null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Multiple ResourceDescriptor defintions with the type"
+                  + " %s are defined in proto file %s. Values for type must be unique.",
+              definition.getType(),
+              protoFile.getFullName()));
+      return;
+    }
+    ResourceDescriptorConfig config = ResourceDescriptorConfig.from(definition, protoFile);
+    configs.put(config.getUnifiedResourceType(), config);
   }
 }
