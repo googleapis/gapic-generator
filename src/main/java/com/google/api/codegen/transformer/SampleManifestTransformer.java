@@ -20,12 +20,13 @@ import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.SampleContext;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.SampleManifestView;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -117,11 +118,18 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     }
     fileName.append(serviceName);
     fileName.append(".");
+
+    // Trying to find API version from the proto package name. If unsuccessful, ignore.
+    for (String segment : Splitter.on('.').split(productConfig.getPackageName())) {
+      if (VersionMatcher.isVersion(segment)) {
+        fileName.append(segment);
+        fileName.append(".");
+        break;
+      }
+    }
+
     fileName.append(metadataNamer.getEnvironment());
-    fileName.append(".");
-    fileName.append(
-        new SimpleDateFormat("yyyyMMdd.hhmmss").format(productConfig.getGenerationTimestamp()));
-    fileName.append(".manifest.yaml");
+    fileName.append(".yaml");
     return Paths.get(pathMapper.getOutputPath(null, productConfig), fileName.toString()).toString();
   }
 }

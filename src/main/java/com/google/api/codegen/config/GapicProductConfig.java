@@ -131,25 +131,6 @@ public abstract class GapicProductConfig implements ProductConfig {
         getGenerationTimestamp());
   }
 
-  public GapicProductConfig withGenerationTimestamp(Date timestamp) {
-    return new AutoValue_GapicProductConfig(
-        getInterfaceConfigMap(),
-        getPackageName(),
-        getDomainLayerLocation(),
-        getReleaseLevel(),
-        getResourceNameMessageConfigs(),
-        getCopyrightLines(),
-        getLicenseLines(),
-        getResourceNameConfigs(),
-        getProtoParser(),
-        getTransportProtocol(),
-        getDefaultResourceNameFieldConfigMap(),
-        getConfigSchemaVersion(),
-        enableStringFormattingFunctionsOverride(),
-        getSampleConfigTable(),
-        timestamp);
-  }
-
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
