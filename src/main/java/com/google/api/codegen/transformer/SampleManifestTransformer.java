@@ -25,7 +25,6 @@ import com.google.api.codegen.viewmodel.metadata.SampleManifestView;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -118,10 +117,6 @@ public class SampleManifestTransformer implements ModelToViewTransformer<ProtoAp
     fileName.append(serviceName);
     fileName.append(".");
     fileName.append(metadataNamer.getEnvironment());
-    fileName.append(".");
-    fileName.append(
-        new SimpleDateFormat("yyyyMMdd.hhmmss").format(productConfig.getGenerationTimestamp()));
-    fileName.append(".manifest.yaml");
     return Paths.get(pathMapper.getOutputPath(null, productConfig), fileName.toString()).toString();
   }
 }
