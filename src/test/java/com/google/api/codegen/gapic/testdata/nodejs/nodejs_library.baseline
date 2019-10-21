@@ -2979,6 +2979,9 @@ const CreateBookRequest = {
  *
  *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
  *
+ * @property {string} publisher
+ *   The publisher of the series.
+ *
  * @typedef PublishSeriesRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -3248,6 +3251,8 @@ const Comment = {
  * @property {string} name
  *   The name of the book to retrieve.
  *
+ * @property {string} parent
+ *
  * @typedef GetBookFromArchiveRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.GetBookFromArchiveRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -3265,6 +3270,10 @@ const GetBookFromArchiveRequest = {
  * @property {string} altBookName
  *   An alternate book name, used to test restricting flattened field to a
  *   single resource name type in a oneof.
+ *
+ * @property {string} place
+ *
+ * @property {string} folder
  *
  * @typedef GetBookFromAnywhereRequest
  * @memberof google.example.library.v1
@@ -5031,6 +5040,12 @@ class LibraryServiceClient {
       bookPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf_id}/books/{book_id}'
       ),
+      folderPathTemplate: new gaxModule.PathTemplate(
+        'folders/{folder}'
+      ),
+      locationPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}'
+      ),
       projectPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}'
       ),
@@ -5725,6 +5740,8 @@ class LibraryServiceClient {
    *   The edition of the series
    * @param {boolean} [request.reviewCopy]
    *   If the book is in a pre-publish state
+   * @param {string} [request.publisher]
+   *   The publisher of the series.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
@@ -6396,6 +6413,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
+   * @param {string} request.parent
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
@@ -6416,7 +6434,12 @@ class LibraryServiceClient {
    * });
    *
    * const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
-   * client.getBookFromArchive({name: formattedName})
+   * const formattedParent = client.projectPath('[PROJECT]');
+   * const request = {
+   *   name: formattedName,
+   *   parent: formattedParent,
+   * };
+   * client.getBookFromArchive(request)
    *   .then(responses => {
    *     const response = responses[0];
    *     // doThingsWith(response)
@@ -6452,6 +6475,8 @@ class LibraryServiceClient {
    * @param {string} request.altBookName
    *   An alternate book name, used to test restricting flattened field to a
    *   single resource name type in a oneof.
+   * @param {string} request.place
+   * @param {string} request.folder
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
@@ -6473,9 +6498,13 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * const formattedPlace = client.locationPath('[PROJECT]', '[LOCATION]');
+   * const formattedFolder = client.folderPath('[FOLDER]');
    * const request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
+   *   place: formattedPlace,
+   *   folder: formattedFolder,
    * };
    * client.getBookFromAnywhere(request)
    *   .then(responses => {
@@ -7671,6 +7700,32 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified folder resource name string.
+   *
+   * @param {String} folder
+   * @returns {String}
+   */
+  folderPath(folder) {
+    return this._pathTemplates.folderPathTemplate.render({
+      folder: folder,
+    });
+  }
+
+  /**
+   * Return a fully-qualified location resource name string.
+   *
+   * @param {String} project
+   * @param {String} location
+   * @returns {String}
+   */
+  locationPath(project, location) {
+    return this._pathTemplates.locationPathTemplate.render({
+      project: project,
+      location: location,
+    });
+  }
+
+  /**
    * Return a fully-qualified project resource name string.
    *
    * @param {String} project
@@ -7758,6 +7813,45 @@ class LibraryServiceClient {
     return this._pathTemplates.bookPathTemplate
       .match(bookName)
       .book_id;
+  }
+
+  /**
+   * Parse the folderName from a folder resource.
+   *
+   * @param {String} folderName
+   *   A fully-qualified path representing a folder resources.
+   * @returns {String} - A string representing the folder.
+   */
+  matchFolderFromFolderName(folderName) {
+    return this._pathTemplates.folderPathTemplate
+      .match(folderName)
+      .folder;
+  }
+
+  /**
+   * Parse the locationName from a location resource.
+   *
+   * @param {String} locationName
+   *   A fully-qualified path representing a location resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromLocationName(locationName) {
+    return this._pathTemplates.locationPathTemplate
+      .match(locationName)
+      .project;
+  }
+
+  /**
+   * Parse the locationName from a location resource.
+   *
+   * @param {String} locationName
+   *   A fully-qualified path representing a location resources.
+   * @returns {String} - A string representing the location.
+   */
+  matchLocationFromLocationName(locationName) {
+    return this._pathTemplates.locationPathTemplate
+      .match(locationName)
+      .location;
   }
 
   /**
@@ -8006,6 +8100,7 @@ module.exports = LibraryServiceClient;
   "../../protos/library.proto",
   "../../protos/tagger.proto"
 ]
+
 ============== file: src/v1/my_proto_client.js ==============
 // Copyright 2019 Google LLC
 //
@@ -8374,6 +8469,7 @@ module.exports = MyProtoClient;
 [
   "../../protos/another_service.proto"
 ]
+
 ============== file: test/gapic-v1.js ==============
 // Copyright 2019 Google LLC
 //
@@ -9335,8 +9431,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const formattedParent = client.projectPath('[PROJECT]');
       const request = {
         name: formattedName,
+        parent: formattedParent,
       };
 
       // Mock response
@@ -9372,8 +9470,10 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
+      const formattedParent = client.projectPath('[PROJECT]');
       const request = {
         name: formattedName,
+        parent: formattedParent,
       };
 
       // Mock Grpc layer
@@ -9402,9 +9502,13 @@ describe('LibraryServiceClient', () => {
       // Mock request
       const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedPlace = client.locationPath('[PROJECT]', '[LOCATION]');
+      const formattedFolder = client.folderPath('[FOLDER]');
       const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
+        place: formattedPlace,
+        folder: formattedFolder,
       };
 
       // Mock response
@@ -9441,9 +9545,13 @@ describe('LibraryServiceClient', () => {
       // Mock request
       const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       const formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      const formattedPlace = client.locationPath('[PROJECT]', '[LOCATION]');
+      const formattedFolder = client.folderPath('[FOLDER]');
       const request = {
         name: formattedName,
         altBookName: formattedAltBookName,
+        place: formattedPlace,
+        folder: formattedFolder,
       };
 
       // Mock Grpc layer
@@ -10564,11 +10672,25 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
 }
 
 ============== file: webpack.config.js ==============
+// Copyright 2019 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 module.exports = {
     entry: './src/browser.js',
     output: {
-      library: "@google-cloud/library",
-      filename: "./@google-cloud/library.js"
+      library: "library",
+      filename: "./library.js"
     },
     node: {
       child_process: 'empty',

@@ -13,8 +13,9 @@
 # limitations under the License.
 
 load("//rules_gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
+load("@com_google_api_gax_java_properties//:dependencies.properties.bzl", "PROPERTIES")
 
-def _java_gapic_srcjar_impl(ctx):
+def _java_gapic_postprocessed_srcjar_impl(ctx):
     gapic_srcjar = ctx.file.gapic_srcjar
     output_main = ctx.outputs.main
     output_test = ctx.outputs.test
@@ -53,7 +54,7 @@ def _java_gapic_srcjar_impl(ctx):
         outputs = [output_main, output_test],
     )
 
-java_gapic_srcjar = rule(
+_java_gapic_postprocessed_srcjar = rule(
     attrs = {
         "gapic_srcjar": attr.label(mandatory = True, allow_single_file = True),
         "formatter": attr.label(
@@ -66,10 +67,37 @@ java_gapic_srcjar = rule(
         "main": "%{name}.srcjar",
         "test": "%{name}-test.srcjar",
     },
-    implementation = _java_gapic_srcjar_impl,
+    implementation = _java_gapic_postprocessed_srcjar_impl,
 )
 
-def java_resource_name_proto_library(name, deps, gapic_yaml, visibility = None):
+def java_gapic_srcjar(
+        name,
+        src,
+        gapic_yaml,
+        service_yaml,
+        artifact_type,
+        package,
+        **kwargs):
+    raw_srcjar_name = "%s_raw" % name
+
+    gapic_srcjar(
+        name = raw_srcjar_name,
+        src = src,
+        gapic_yaml = gapic_yaml,
+        service_yaml = service_yaml,
+        artifact_type = artifact_type,
+        language = "java",
+        package = package,
+        **kwargs
+    )
+
+    _java_gapic_postprocessed_srcjar(
+        name = name,
+        gapic_srcjar = ":%s" % raw_srcjar_name,
+        **kwargs
+    )
+
+def java_resource_name_proto_library(name, deps, gapic_yaml, **kwargs):
     srcjar_target_name = "%s_srcjar" % name
     srcjar_output_suffix = ".srcjar"
 
@@ -80,6 +108,7 @@ def java_resource_name_proto_library(name, deps, gapic_yaml, visibility = None):
         plugin_file_args = {gapic_yaml: ""},
         output_type = "resourcename",
         output_suffix = srcjar_output_suffix,
+        **kwargs
     )
 
     native.java_library(
@@ -89,50 +118,7 @@ def java_resource_name_proto_library(name, deps, gapic_yaml, visibility = None):
             "@com_google_api_api_common//jar",
             "@com_google_guava_guava//jar",
         ],
-        visibility = visibility,
-    )
-
-def java_gapic_library_raw(
-        name,
-        src,
-        gapic_yaml,
-        service_yaml,
-        deps,
-        test_deps,
-        artifact_type,
-        visibility):
-    srcjar_target_name = "%s_srcjar" % name
-    srcjar_raw_target_name = "%s_srcjar_raw" % srcjar_target_name
-    test_library_target_name = "%s_test" % name
-
-    gapic_srcjar(
-        name = srcjar_raw_target_name,
-        src = src,
-        gapic_yaml = gapic_yaml,
-        service_yaml = service_yaml,
-        visibility = visibility,
-        artifact_type = artifact_type,
-        language = "java",
-    )
-
-    java_gapic_srcjar(
-        name = srcjar_target_name,
-        gapic_srcjar = srcjar_raw_target_name,
-        visibility = visibility,
-    )
-
-    native.java_library(
-        name = name,
-        srcs = [":%s.srcjar" % srcjar_target_name],
-        deps = deps,
-        visibility = visibility,
-    )
-
-    native.java_library(
-        name = test_library_target_name,
-        srcs = [":%s-test.srcjar" % srcjar_target_name],
-        deps = [":%s" % name] + deps + test_deps,
-        visibility = visibility,
+        **kwargs
     )
 
 def java_gapic_library(
@@ -140,76 +126,141 @@ def java_gapic_library(
         src,
         gapic_yaml,
         service_yaml,
+        package = None,
+        gen_resource_name = True,
         deps = [],
         test_deps = [],
-        visibility = None):
-    java_gapic_library_raw(
-        name = name,
+        **kwargs):
+
+    srcjar_name = "%s_srcjar" % name
+    java_gapic_srcjar(
+        name = srcjar_name,
         src = src,
-        deps = deps + [
-            "@com_google_protobuf//:protobuf_java",
-            "@com_google_api_api_common//jar",
-            "@com_google_api_gax_java//gax:gax",
-            "@com_google_api_gax_java//gax-grpc:gax_grpc",
-            "@com_google_guava_guava//jar",
-            "@io_grpc_grpc_java//core:core",
-            "@io_grpc_grpc_java//protobuf:protobuf",
-            "@com_google_code_findbugs_jsr305//jar",
-            "@org_threeten_threetenbp//jar",
-            "@io_opencensus_opencensus_api//jar",
-            "@com_google_auth_google_auth_library_credentials//jar",
-            "@com_google_auth_google_auth_library_oauth2_http//jar",
-            "@com_google_http_client_google_http_client//jar",
-        ],
-        test_deps = test_deps + [
-            "@com_google_api_gax_java//gax-grpc:gax_grpc_testlib",
-            "@com_google_api_gax_java//gax:gax_testlib",
-            "@com_google_code_gson_gson//jar",
-            "@io_grpc_grpc_java//auth:auth",
-            "@io_grpc_grpc_netty_shaded//jar",
-            "@io_grpc_grpc_java//stub:stub",
-            "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
-            "@junit_junit//jar",
-        ],
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         artifact_type = "GAPIC_CODE",
-        visibility = visibility,
+        package = package,
+        **kwargs
+    )
+
+    resource_name_dep = []
+    if gen_resource_name:
+        resource_name_name = "%s_resource_name" % name
+        resource_name_dep = ["%s" % resource_name_name]
+        java_resource_name_proto_library(
+            name = resource_name_name,
+            gapic_yaml = gapic_yaml,
+            deps = [src],
+        )
+
+    actual_deps = deps + resource_name_dep + [
+        "@com_google_googleapis//google/longrunning:longrunning_java_proto",
+        "@com_google_protobuf//:protobuf_java",
+        "@com_google_api_api_common//jar",
+        "@com_google_api_gax_java//gax:gax",
+        "@com_google_api_gax_java//gax-grpc:gax_grpc",
+        "@com_google_guava_guava//jar",
+        "@io_grpc_grpc_java//core:core",
+        "@io_grpc_grpc_java//protobuf:protobuf",
+        "@com_google_code_findbugs_jsr305//jar",
+        "@org_threeten_threetenbp//jar",
+        "@io_opencensus_opencensus_api//jar",
+        "@com_google_auth_google_auth_library_credentials//jar",
+        "@com_google_auth_google_auth_library_oauth2_http//jar",
+        "@com_google_http_client_google_http_client//jar",
+    ]
+
+    native.java_library(
+        name = name,
+        srcs = [":%s.srcjar" % srcjar_name],
+        deps = actual_deps,
+        **kwargs
+    )
+
+    actual_test_deps = test_deps + [
+        "@com_google_api_gax_java//gax-grpc:gax_grpc_testlib",
+        "@com_google_api_gax_java//gax:gax_testlib",
+        "@com_google_code_gson_gson//jar",
+        "@io_grpc_grpc_java//auth:auth",
+        "@io_grpc_grpc_netty_shaded//jar",
+        "@io_grpc_grpc_java//stub:stub",
+        "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
+        "@junit_junit//jar",
+    ]
+
+    native.java_library(
+        name = "%s_test" % name,
+        srcs = [":%s-test.srcjar" % srcjar_name],
+        deps = [":%s" % name] + actual_deps + actual_test_deps,
+        **kwargs
     )
 
 def java_discogapic_library(
         name,
         src,
         gapic_yaml,
+        service_yaml,
         deps = [],
         test_deps = [],
-        visibility = None):
-    java_gapic_library_raw(
-        name = name,
+        **kwargs):
+    srcjar_name = "%s_srcjar" % name
+
+    java_gapic_srcjar(
+        name = srcjar_name,
         src = src,
-        deps = deps + [
-            "@com_google_protobuf//:protobuf_java",
-            "@com_google_api_api_common//jar",
-            "@com_google_api_gax_java//gax:gax",
-            "@com_google_api_gax_java//gax-httpjson:gax_httpjson",
-            "@com_google_guava_guava//jar",
-            "@com_google_code_findbugs_jsr305//jar",
-            "@org_threeten_threetenbp//jar",
-            "@io_opencensus_opencensus_api//jar",
-            "@com_google_auth_google_auth_library_credentials//jar",
-            "@com_google_auth_google_auth_library_oauth2_http//jar",
-            "@com_google_http_client_google_http_client//jar",
-        ],
-        test_deps = test_deps + [
-            "@com_google_api_gax_java//gax-httpjson:gax_httpjson_testlib",
-            "@com_google_http_client_google_http_client_jackson2//jar",
-            "@com_fasterxml_jackson_core_jackson_core//jar",
-            "@com_google_api_gax_java//gax:gax_testlib",
-            "@com_google_code_gson_gson//jar",
-            "@junit_junit//jar",
-        ],
         gapic_yaml = gapic_yaml,
-        service_yaml = None,
-        artifact_type = "DISCOGAPIC_CODE",
-        visibility = visibility,
+        service_yaml = service_yaml,
+        artifact_type = "GAPIC_CODE",
+        **kwargs
+    )
+
+    actual_deps = deps + [
+        "@com_google_protobuf//:protobuf_java",
+        "@com_google_api_api_common//jar",
+        "@com_google_api_gax_java//gax:gax",
+        "@com_google_api_gax_java//gax-httpjson:gax_httpjson",
+        "@com_google_guava_guava//jar",
+        "@com_google_code_findbugs_jsr305//jar",
+        "@org_threeten_threetenbp//jar",
+        "@io_opencensus_opencensus_api//jar",
+        "@com_google_auth_google_auth_library_credentials//jar",
+        "@com_google_auth_google_auth_library_oauth2_http//jar",
+        "@com_google_http_client_google_http_client//jar",
+    ]
+
+    native.java_library(
+        name = name,
+        srcs = [":%s.srcjar" % srcjar_name],
+        deps = actual_deps,
+        **kwargs
+    )
+
+    actual_test_deps = test_deps + [
+        "@com_google_api_gax_java//gax-httpjson:gax_httpjson_testlib",
+        "@com_google_http_client_google_http_client_jackson2//jar",
+        "@com_fasterxml_jackson_core_jackson_core//jar",
+        "@com_google_api_gax_java//gax:gax_testlib",
+        "@com_google_code_gson_gson//jar",
+        "@junit_junit//jar",
+    ]
+
+    native.java_library(
+        name = "%s_test" % name,
+        srcs = [":%s-test.srcjar" % srcjar_name],
+        deps = [":%s" % name] + actual_deps + actual_test_deps,
+        **kwargs
+    )
+
+def java_gapic_test(name, runtime_deps, test_classes, **kwargs):
+    for test_class in test_classes:
+        native.java_test(
+            name = test_class,
+            test_class = test_class,
+            runtime_deps = runtime_deps,
+            **kwargs
+        )
+    native.test_suite(
+        name = name,
+        tests = test_classes,
+        **kwargs
     )

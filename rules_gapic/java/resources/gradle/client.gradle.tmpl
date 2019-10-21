@@ -7,8 +7,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'GAPIC library for {{name}}'
-group = '{{group}}'
-version = '{{version}}'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -21,7 +21,13 @@ compileJava.options.encoding = 'UTF-8'
 javadoc.options.encoding = 'UTF-8'
 
 dependencies {
-  {{dependencies}}
+  compile 'com.google.api:gax:{{version.gax}}'
+  testCompile 'com.google.api:gax:{{version.gax}}:testlib'
+  compile 'com.google.api:gax-grpc:{{version.gax_grpc}}'
+  testCompile 'com.google.api:gax-grpc:{{version.gax_grpc}}:testlib'
+  testCompile 'io.grpc:grpc-netty-shaded:{{version.io_grpc}}'
+  testCompile '{{maven.junit_junit}}'
+  {{extra_deps}}
 }
 
 task smokeTest(type: Test) {

@@ -27,6 +27,11 @@ option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
+option (google.api.resource_definition) = {
+  type: "library.googleapis.com/Publisher",
+  pattern: "projects/{project}/locations/{location}/publishers/{publisher}"
+};
+
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
 // resource model:
@@ -106,7 +111,7 @@ service LibraryService {
         body: "*"
       }
     };
-    option (google.api.method_signature) = "shelf,books,edition,series_uuid";
+    option (google.api.method_signature) = "shelf,books,edition,series_uuid,publisher";
   }
 
   // Gets a book.
@@ -158,13 +163,13 @@ service LibraryService {
     // The http binding on this field does not include the "**" path in order to
     // test the name conflict resolution in configgen.
     option (google.api.http) = { get: "/v1/{name=archives/*/books/*}"};
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "name,parent";
   }
 
   // Gets a book from a shelf or archive.
   rpc GetBookFromAnywhere(GetBookFromAnywhereRequest) returns (BookFromAnywhere) {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
-    option (google.api.method_signature) = "name,alt_book_name";
+    option (google.api.method_signature) = "name,alt_book_name,place,folder";
   }
 
   // Test proper OneOf-Any resource name mapping
@@ -225,6 +230,7 @@ service LibraryService {
   // Adds a tag to the book. This RPC is a mixin.
   rpc AddTag(google.tagger.v1.AddTagRequest) returns (google.tagger.v1.AddTagResponse) {
     option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
+    option (google.api.method_signature) = "resource,tag";
   }
 
   // AddLabel intentionally left out to test the reroute_to_grpc_interface feature
@@ -670,6 +676,10 @@ message PublishSeriesRequest {
   // Uniquely identifies the series to the publishing house.
   SeriesUuid series_uuid = 5 [
     (google.api.field_behavior) = REQUIRED];
+
+  // The publisher of the series.
+  string publisher = 6 [
+    (google.api.resource_reference).type = "library.googleapis.com/Publisher"];
 }
 
 message SeriesUuid {
@@ -835,6 +845,10 @@ message GetBookFromArchiveRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/ArchivedBook"];
+
+  string parent = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).child_type = "locations.googleapis.com/Location"];
 }
 
 // Request message for LibraryService.GetBookFromAnywhere.
@@ -849,6 +863,14 @@ message GetBookFromAnywhereRequest {
   string alt_book_name = 2 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/Book"];
+
+  string place = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "locations.googleapis.com/Location"];
+
+  string folder = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "cloudresourcemanager.googleapis.com/Folder"];
 }
 
 // Request message for LibraryService.GetBookFromAbsolutelyAnywhere.

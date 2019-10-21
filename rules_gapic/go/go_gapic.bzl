@@ -76,7 +76,7 @@ _go_gapic_postprocessed_srcjar = go_rule(
     },
 )
 
-def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, visibility = None):
+def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -84,15 +84,16 @@ def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, visibility = None):
         src = src,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
-        visibility = visibility,
         artifact_type = "GAPIC_CODE",
         language = "go",
+        package = package,
+        **kwargs
     )
 
     _go_gapic_postprocessed_srcjar(
         name = name,
         gapic_srcjar = ":%s" % raw_srcjar_name,
-        visibility = visibility,
+        **kwargs
     )
 
 def go_gapic_library(
@@ -101,8 +102,9 @@ def go_gapic_library(
         gapic_yaml,
         service_yaml,
         importpath,
+        package = None,
         deps = [],
-        visibility = None):
+        **kwargs):
     srcjar_name = "%s_srcjar" % name
     # TODO: make smoke_tests compilable (remove /internal/ dependency from generated code)
     # Smoke_test_library_name = "%s_smoke_test" % name
@@ -112,7 +114,8 @@ def go_gapic_library(
         src = src,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
-        visibility = visibility,
+        package = package,
+        **kwargs
     )
 
     actual_deps = deps + [
@@ -139,6 +142,7 @@ def go_gapic_library(
         name = main_dir,
         srcjar = main_file,
         extension = ".go",
+        **kwargs
     )
 
     go_library(
@@ -146,6 +150,7 @@ def go_gapic_library(
         srcs = [":%s" % main_dir],
         deps = actual_deps,
         importpath = importpath,
+        **kwargs
     )
 
     test_file = ":%s-test.srcjar" % srcjar_name
@@ -155,6 +160,7 @@ def go_gapic_library(
         name = test_dir,
         srcjar = test_file,
         extension = ".go",
+        **kwargs
     )
 
     #Turn on if we choose to compile/run smoke tests

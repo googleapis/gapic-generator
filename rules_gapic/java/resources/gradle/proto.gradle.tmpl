@@ -7,8 +7,8 @@ buildscript {
 apply plugin: 'java'
 
 description = 'PROTO library for {{name}}'
-group = '{{group}}'
-version = '{{version}}'
+group = 'com.google.api.grpc'
+version = '0.0.0-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -18,7 +18,10 @@ repositories {
 }
 
 dependencies {
-  {{dependencies}}
+  compile 'com.google.protobuf:protobuf-java:{{version.com_google_protobuf}}'
+  compile '{{maven.com_google_api_api_common}}'
+  compile '{{maven.com_google_api_grpc_proto_google_common_protos}}'
+  {{extra_deps}}
 }
 
 sourceSets {

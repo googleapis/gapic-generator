@@ -36,7 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
@@ -178,17 +177,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
 
     ImmutableSet.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableSet.builder();
-    if (protoParser.isProtoAnnotationsEnabled()) {
-      resourceNameConfigs
-          .values()
-          .stream()
-          .filter(
-              r ->
-                  r.getResourceNameType() == ResourceNameType.SINGLE
-                      && Objects.equals(r.getAssignedProtoFile(), apiInterface.getFile()))
-          .map(r -> (SingleResourceNameConfig) r)
-          .forEach(resourcesBuilder::add);
-    } else {
+    if (!protoParser.isProtoAnnotationsEnabled()) {
       for (CollectionConfigProto collectionConfigProto :
           interfaceConfigProto.getCollectionsList()) {
         String entityName = collectionConfigProto.getEntityName();

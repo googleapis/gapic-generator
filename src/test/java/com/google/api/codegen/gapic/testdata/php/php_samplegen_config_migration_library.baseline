@@ -720,7 +720,7 @@ sampleStreamBooks();
 // sample-metadata
 //   title: Pi version
 //   description: Testing <@calling forms>
-//   usage: php samples/V1/PublishSeriesRequestPiVersion.php [--shelf_name Math] [--edition 123]
+//   usage: php samples/V1/PublishSeriesRequestPiVersion.php [--shelf_name "[Math]"] [--edition 123]
 // [START canonical]
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -739,7 +739,7 @@ function samplePublishSeries($shelfName, $edition)
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    // $shelfName = 'Math';
+    // $shelfName = '[Math]';
     // $edition = 123;
     $shelf = new Shelf();
     $shelf->setName($shelfName);
@@ -780,7 +780,7 @@ $opts = [
 ];
 
 $defaultOptions = [
-    'shelf_name' => 'Math',
+    'shelf_name' => '[Math]',
     'edition' => 123,
 ];
 
@@ -2456,6 +2456,8 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
+     *     @type string $publisher
+     *          The publisher of the series.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -2479,6 +2481,9 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['publisher'])) {
+            $request->setPublisher($optionalArgs['publisher']);
         }
 
         $requestParams = new RequestParamsHeaderDescriptor([
@@ -2943,6 +2948,7 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $parent
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -2959,6 +2965,9 @@ class LibraryServiceGapicClient
     {
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
+        if (isset($optionalArgs['parent'])) {
+            $request->setParent($optionalArgs['parent']);
+        }
 
         $requestParams = new RequestParamsHeaderDescriptor([
           'name' => $request->getName(),
@@ -2995,6 +3004,8 @@ class LibraryServiceGapicClient
      * single resource name type in a oneof.
      * @param array $optionalArgs {
      *     Optional.
+     *     @type string $place
+     *     @type string $folder
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -3012,6 +3023,12 @@ class LibraryServiceGapicClient
         $request = new GetBookFromAnywhereRequest();
         $request->setName($name);
         $request->setAltBookName($altBookName);
+        if (isset($optionalArgs['place'])) {
+            $request->setPlace($optionalArgs['place']);
+        }
+        if (isset($optionalArgs['folder'])) {
+            $request->setFolder($optionalArgs['folder']);
+        }
 
         $requestParams = new RequestParamsHeaderDescriptor([
           'name' => $request->getName(),
