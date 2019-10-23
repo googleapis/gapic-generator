@@ -8002,6 +8002,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(filter, request.filter)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)
@@ -8034,6 +8035,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(filter, request.filter)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)
