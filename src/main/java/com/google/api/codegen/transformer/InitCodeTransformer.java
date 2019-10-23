@@ -163,22 +163,12 @@ public class InitCodeTransformer {
   /** Generates assert views for the test of the tested method and its fields. */
   List<ClientTestAssertView> generateRequestAssertViews(
       MethodContext methodContext, InitCodeContext initContext) {
-    InitCodeNode rootNode =
-        InitCodeNode.createTree(
-            InitCodeContext.newBuilder()
-                .initObjectType(methodContext.getMethodModel().getInputType())
-                .initFields(initContext.initFields())
-                .initValueConfigMap(createCollectionMap(methodContext))
-                .suggestedName(Name.from("request"))
-                .fieldConfigMap(initContext.fieldConfigMap())
-                .build());
-
+    InitCodeNode rootNode = InitCodeNode.createTree(initContext.cloneWithEmptySymbolTable());
     List<ClientTestAssertView> assertViews = new ArrayList<>();
     SurfaceNamer namer = methodContext.getNamer();
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
       FieldConfig fieldConfig = fieldItemTree.getFieldConfig();
-
       String getterMethod =
           namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), fieldConfig);
 

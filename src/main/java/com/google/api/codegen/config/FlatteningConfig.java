@@ -249,7 +249,6 @@ public abstract class FlatteningConfig {
     Set<String> oneofNames = new HashSet<>();
 
     for (String parameter : flattenedParams) {
-
       ProtoField parameterField = method.getInputField(parameter);
       if (parameterField == null) {
         diagCollector.addDiag(
