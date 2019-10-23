@@ -169,6 +169,7 @@ public class InitCodeTransformer {
     // Add request fields checking
     for (InitCodeNode fieldItemTree : rootNode.getChildren().values()) {
       FieldConfig fieldConfig = fieldItemTree.getFieldConfig();
+
       String getterMethod =
           namer.getFieldGetFunctionName(methodContext.getFeatureConfig(), fieldConfig);
 
