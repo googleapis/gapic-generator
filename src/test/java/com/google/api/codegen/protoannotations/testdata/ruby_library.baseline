@@ -2326,6 +2326,9 @@ module Google
         # @!attribute [rw] series_uuid
         #   @return [Google::Example::Library::V1::SeriesUuid]
         #     Uniquely identifies the series to the publishing house.
+        # @!attribute [rw] publisher
+        #   @return [String]
+        #     The publisher of the series.
         class PublishSeriesRequest; end
 
         # @!attribute [rw] series_bytes
@@ -3028,6 +3031,12 @@ module Library
 
       private_constant :PROJECT_BOOK_PATH_TEMPLATE
 
+      PUBLISHER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/locations/{location}/publishers/{publisher}"
+      )
+
+      private_constant :PUBLISHER_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf_id}"
       )
@@ -3104,6 +3113,19 @@ module Library
         PROJECT_BOOK_PATH_TEMPLATE.render(
           :"project" => project,
           :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified publisher resource name string.
+      # @param project [String]
+      # @param location [String]
+      # @param publisher [String]
+      # @return [String]
+      def self.publisher_path project, location, publisher
+        PUBLISHER_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"location" => location,
+          :"publisher" => publisher
         )
       end
 
@@ -3688,6 +3710,8 @@ module Library
       #   The edition of the series
       # @param review_copy [true, false]
       #   If the book is in a pre-publish state
+      # @param publisher [String]
+      #   The publisher of the series.
       # @param options [Google::Gax::CallOptions]
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
@@ -3716,6 +3740,7 @@ module Library
           series_uuid,
           edition: nil,
           review_copy: nil,
+          publisher: nil,
           options: nil,
           &block
         req = {
@@ -3723,7 +3748,8 @@ module Library
           books: books,
           series_uuid: series_uuid,
           edition: edition,
-          review_copy: review_copy
+          review_copy: review_copy,
+          publisher: publisher
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::PublishSeriesRequest)
         @publish_series.call(req, options, &block)
@@ -7995,6 +8021,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(filter, request.filter)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)
@@ -8027,6 +8054,7 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
+        assert_equal(filter, request.filter)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:list_books, mock_method)

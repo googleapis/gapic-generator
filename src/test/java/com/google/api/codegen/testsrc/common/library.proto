@@ -27,6 +27,11 @@ option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
+option (google.api.resource_definition) = {
+  type: "library.googleapis.com/Publisher",
+  pattern: "projects/{project}/locations/{location}/publishers/{publisher}"
+};
+
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
 // resource model:
@@ -106,7 +111,7 @@ service LibraryService {
         body: "*"
       }
     };
-    option (google.api.method_signature) = "shelf,books,edition,series_uuid";
+    option (google.api.method_signature) = "shelf,books,edition,series_uuid,publisher";
   }
 
   // Gets a book.
@@ -671,6 +676,10 @@ message PublishSeriesRequest {
   // Uniquely identifies the series to the publishing house.
   SeriesUuid series_uuid = 5 [
     (google.api.field_behavior) = REQUIRED];
+
+  // The publisher of the series.
+  string publisher = 6 [
+    (google.api.resource_reference).type = "library.googleapis.com/Publisher"];
 }
 
 message SeriesUuid {

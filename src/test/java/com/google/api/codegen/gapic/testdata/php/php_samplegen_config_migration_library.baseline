@@ -2456,6 +2456,8 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
+     *     @type string $publisher
+     *          The publisher of the series.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -2479,6 +2481,9 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['publisher'])) {
+            $request->setPublisher($optionalArgs['publisher']);
         }
 
         $requestParams = new RequestParamsHeaderDescriptor([
@@ -6067,6 +6072,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getName();
 
         $this->assertProtobufEquals($formattedName, $actualValue);
+        $actualValue = $actualRequestObject->getFilter();
+
+        $this->assertProtobufEquals($filter, $actualValue);
         $this->assertTrue($transport->isExhausted());
     }
 

@@ -44,9 +44,9 @@
 @snippet standaloneSample(apiMethod, sample)
 
   @if apiMethod.hasApiVersion
-    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
+    const {{@apiMethod.apiClassName}} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
   @else
-    const {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
+    const {{@apiMethod.apiClassName}} = require('{@apiMethod.packageName}');
   @end
 
   @let imports = {@importList(sample.sampleImports.appImports)}
@@ -63,7 +63,7 @@
   @else
     function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
   @end
-    const client = new {@apiMethod.localPackageName}.{@apiMethod.apiClassName}();
+    const client = new {@apiMethod.apiClassName}();
     @switch sample.callingForm
     @case "Request"
       @if apiMethod.hasReturnValue

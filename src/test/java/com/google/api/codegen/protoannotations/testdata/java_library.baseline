@@ -2849,6 +2849,7 @@ import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -2862,6 +2863,7 @@ public class PublishSeriesFlattenedPiVersion {
    * import com.google.example.library.v1.Book;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.PublisherName;
    * import com.google.example.library.v1.SeriesUuid;
    * import com.google.example.library.v1.Shelf;
    * import java.util.ArrayList;
@@ -2886,7 +2888,8 @@ public class PublishSeriesFlattenedPiVersion {
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
-      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher.toString());
       // % % % output handling % % % %
       // fourScoreAndSevenYears ago
       //
@@ -2963,6 +2966,7 @@ package com.google.example.examples.library.v1;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -2976,6 +2980,7 @@ public class PublishSeriesFlattenedSecondEdition {
    * import com.google.example.library.v1.Book;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.PublisherName;
    * import com.google.example.library.v1.SeriesUuid;
    * import com.google.example.library.v1.Shelf;
    * import java.util.ArrayList;
@@ -2989,7 +2994,8 @@ public class PublishSeriesFlattenedSecondEdition {
       List<Book> books = new ArrayList<>();
       int edition = 2;
       SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+      PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher.toString());
       System.out.println(response);
     } catch (Exception exception) {
       System.err.println("Failed to create the client due to: " + exception);
@@ -4415,6 +4421,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
 
+  private static final PathTemplate PUBLISHER_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/locations/{location}/publishers/{publisher}");
+
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
@@ -4505,6 +4514,20 @@ public class LibraryClient implements BackgroundResource {
     return PROJECT_BOOK_PATH_TEMPLATE.instantiate(
         "project", project,
         "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String formatPublisherName(String project, String location, String publisher) {
+    return PUBLISHER_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "location", location,
+        "publisher", publisher);
   }
 
   /**
@@ -4649,6 +4672,39 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseBookFromProjectBookName(String projectBookName) {
     return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("book");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("project");
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("location");
+  }
+
+  /**
+   * Parses the publisher from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parsePublisherFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("publisher");
   }
 
   /**
@@ -5409,7 +5465,8 @@ public class LibraryClient implements BackgroundResource {
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
-   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid);
+   *   PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher);
    * }
    * </code></pre>
    *
@@ -5417,9 +5474,10 @@ public class LibraryClient implements BackgroundResource {
    * @param books The books to publish in the series.
    * @param edition The edition of the series
    * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @param publisher The publisher of the series.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid, PublisherName publisher) {
 
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
@@ -5427,6 +5485,46 @@ public class LibraryClient implements BackgroundResource {
         .addAllBooks(books)
         .setEdition(edition)
         .setSeriesUuid(seriesUuid)
+        .setPublisher(publisher == null ? null : publisher.toString())
+        .build();
+    return publishSeries(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   int edition = 0;
+   *   String seriesString = "foobar";
+   *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
+   *     .setSeriesString(seriesString)
+   *     .build();
+   *   PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher.toString());
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   * @param seriesUuid Uniquely identifies the series to the publishing house.
+   * @param publisher The publisher of the series.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid, String publisher) {
+
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setEdition(edition)
+        .setSeriesUuid(seriesUuid)
+        .setPublisher(publisher)
         .build();
     return publishSeries(request);
   }
@@ -10189,6 +10287,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
@@ -10370,6 +10469,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
@@ -11518,6 +11618,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.ShelfName;
@@ -14074,9 +14175,10 @@ public class LibraryClientTest {
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
+    PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
 
     PublishSeriesResponse actualResponse =
-        client.publishSeries(shelf, books, edition, seriesUuid);
+        client.publishSeries(shelf, books, edition, seriesUuid, publisher);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
@@ -14087,6 +14189,7 @@ public class LibraryClientTest {
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
+    Assert.assertEquals(publisher, PublisherName.parse(actualRequest.getPublisher()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -14107,8 +14210,9 @@ public class LibraryClientTest {
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
 
-      client.publishSeries(shelf, books, edition, seriesUuid);
+      client.publishSeries(shelf, books, edition, seriesUuid, publisher);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
