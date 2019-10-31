@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionLanguageOverridesProto;
+import com.google.api.codegen.DeprecatedCollectionConfigProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.Name;
 import com.google.api.pathtemplate.PathTemplate;
@@ -82,6 +83,23 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     return builder.build();
   }
 
+  @Nullable
+  public static SingleResourceNameConfig createDeprecatedSingleResourceName(
+      DiagCollector diagCollector,
+      DeprecatedCollectionConfigProto deprecatedResource,
+      @Nullable ProtoFile file,
+      TargetLanguage language) {
+    CollectionConfigProto resourceV1 =
+        CollectionConfigProto.newBuilder()
+            .setEntityName(deprecatedResource.getEntityName())
+            .setNamePattern(deprecatedResource.getPattern())
+            .build();
+    return createSingleResourceName(diagCollector, resourceV1, file, language)
+        .toBuilder()
+        .setDeprecated(true)
+        .build();
+  }
+
   /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 
@@ -110,8 +128,11 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     return ResourceNameType.SINGLE;
   }
 
+  /** Whether the resource name will be removed in the annotation world. */
+  public abstract boolean getDeprecated();
+
   public static SingleResourceNameConfig.Builder newBuilder() {
-    return new AutoValue_SingleResourceNameConfig.Builder();
+    return new AutoValue_SingleResourceNameConfig.Builder().setDeprecated(false);
   }
 
   public String getUnqualifiedEntityId() {
@@ -133,6 +154,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
     public abstract Builder setCommonResourceName(String val);
 
     public abstract Builder setAssignedProtoFile(ProtoFile val);
+
+    public abstract Builder setDeprecated(boolean val);
 
     public abstract SingleResourceNameConfig build();
   }

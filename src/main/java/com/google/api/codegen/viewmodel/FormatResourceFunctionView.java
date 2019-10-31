@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FormatResourceFunctionView {
@@ -32,6 +33,10 @@ public abstract class FormatResourceFunctionView {
   public abstract String pathTemplateGetterName();
 
   public abstract String pattern();
+
+  /** This resource name will be removed in the micro-generator/proto annotation world. */
+  @Nullable
+  public abstract String deprecationMessage();
 
   public static Builder newBuilder() {
     return new AutoValue_FormatResourceFunctionView.Builder();
@@ -52,6 +57,8 @@ public abstract class FormatResourceFunctionView {
     public abstract Builder pathTemplateGetterName(String val);
 
     public abstract Builder pattern(String val);
+
+    public abstract Builder deprecationMessage(String val);
 
     public abstract FormatResourceFunctionView build();
   }
