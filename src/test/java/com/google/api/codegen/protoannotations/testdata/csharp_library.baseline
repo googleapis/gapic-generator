@@ -3112,7 +3112,8 @@ namespace Google.Example.Library.V1.Samples
             {
                 SeriesString = "xyz3141592654",
             };
-            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid, publisher);
             // % % % output handling % % % %
             // fourScoreAndSevenYears ago
             //
@@ -3203,7 +3204,8 @@ namespace Google.Example.Library.V1.Samples
             IEnumerable<Book> books = new List<Book>();
             uint edition = 2;
             SeriesUuid seriesUuid = new SeriesUuid();
-            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid, publisher);
             Console.WriteLine(response);
         }
     }
@@ -3444,7 +3446,8 @@ namespace Google.Example.Library.V1.Samples
             {
                 SeriesString = "xyz3141592654",
             };
-            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid, publisher);
             // % % % output handling % % % %
             // fourScoreAndSevenYears ago
             //
@@ -3534,7 +3537,8 @@ namespace Google.Example.Library.V1.Samples
             IEnumerable<Book> books = new List<Book>();
             uint edition = 2;
             SeriesUuid seriesUuid = new SeriesUuid();
-            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid, publisher);
             Console.WriteLine(response);
         }
     }
@@ -5427,8 +5431,8 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for PublishSeriesAsync</summary>
         public async Task PublishSeriesAsync()
         {
-            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
-            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CancellationToken)
+            // Snippet: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,PublisherName,CallSettings)
+            // Additional: PublishSeriesAsync(Shelf,IEnumerable<Book>,uint?,SeriesUuid,PublisherName,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
@@ -5439,15 +5443,16 @@ namespace Google.Example.Library.V1.Snippets
             {
                 SeriesString = "foobar",
             };
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             // Make the request
-            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            PublishSeriesResponse response = await libraryServiceClient.PublishSeriesAsync(shelf, books, edition, seriesUuid, publisher);
             // End snippet
         }
 
         /// <summary>Snippet for PublishSeries</summary>
         public void PublishSeries()
         {
-            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint?,SeriesUuid,CallSettings)
+            // Snippet: PublishSeries(Shelf,IEnumerable<Book>,uint?,SeriesUuid,PublisherName,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
@@ -5458,8 +5463,9 @@ namespace Google.Example.Library.V1.Snippets
             {
                 SeriesString = "foobar",
             };
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             // Make the request
-            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid);
+            PublishSeriesResponse response = libraryServiceClient.PublishSeries(shelf, books, edition, seriesUuid, publisher);
             // End snippet
         }
 
@@ -6911,7 +6917,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddLabelRequest request = new AddLabelRequest
             {
-                Resource = "",
+                ResourceAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 Label = "",
             };
             // Make the request
@@ -6928,7 +6934,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddLabelRequest request = new AddLabelRequest
             {
-                Resource = "",
+                ResourceAsBookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
                 Label = "",
             };
             // Make the request
@@ -8460,6 +8466,7 @@ namespace Google.Example.Library.V1.Tests
                 {
                     SeriesString = "foobar",
                 },
+                PublisherAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
@@ -8478,7 +8485,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 SeriesString = "foobar",
             };
-            PublishSeriesResponse response = client.PublishSeries(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = client.PublishSeries(shelf, books, edition, seriesUuid, publisher);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -8500,6 +8508,7 @@ namespace Google.Example.Library.V1.Tests
                 {
                     SeriesString = "foobar",
                 },
+                PublisherAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
             };
             PublishSeriesResponse expectedResponse = new PublishSeriesResponse
             {
@@ -8518,7 +8527,8 @@ namespace Google.Example.Library.V1.Tests
             {
                 SeriesString = "foobar",
             };
-            PublishSeriesResponse response = await client.PublishSeriesAsync(shelf, books, edition, seriesUuid);
+            PublisherName publisher = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            PublishSeriesResponse response = await client.PublishSeriesAsync(shelf, books, edition, seriesUuid, publisher);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -13066,6 +13076,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -13077,6 +13090,7 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            PublisherName publisher,
             gaxgrpc::CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
@@ -13084,6 +13098,7 @@ namespace Google.Example.Library.V1
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    PublisherAsPublisherName = publisher, // Optional
                 },
                 callSettings);
 
@@ -13102,6 +13117,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
         /// <param name="cancellationToken">
         /// A <see cref="st::CancellationToken"/> to use for this RPC.
         /// </param>
@@ -13113,11 +13131,13 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            PublisherName publisher,
             st::CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
                 books,
                 edition,
                 seriesUuid,
+                publisher,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -13135,6 +13155,9 @@ namespace Google.Example.Library.V1
         /// <param name="seriesUuid">
         /// Uniquely identifies the series to the publishing house.
         /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -13146,6 +13169,7 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<Book> books,
             uint? edition,
             SeriesUuid seriesUuid,
+            PublisherName publisher,
             gaxgrpc::CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
@@ -13153,6 +13177,127 @@ namespace Google.Example.Library.V1
                     Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
                     Edition = edition ?? 0, // Optional
                     SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    PublisherAsPublisherName = publisher, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<PublishSeriesResponse> PublishSeriesAsync(
+            Shelf shelf,
+            scg::IEnumerable<Book> books,
+            uint? edition,
+            SeriesUuid seriesUuid,
+            string publisher,
+            gaxgrpc::CallSettings callSettings = null) => PublishSeriesAsync(
+                new PublishSeriesRequest
+                {
+                    Shelf = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
+                    Edition = edition ?? 0, // Optional
+                    SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    Publisher = publisher ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<PublishSeriesResponse> PublishSeriesAsync(
+            Shelf shelf,
+            scg::IEnumerable<Book> books,
+            uint? edition,
+            SeriesUuid seriesUuid,
+            string publisher,
+            st::CancellationToken cancellationToken) => PublishSeriesAsync(
+                shelf,
+                books,
+                edition,
+                seriesUuid,
+                publisher,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">
+        /// The shelf in which the series is created.
+        /// </param>
+        /// <param name="books">
+        /// The books to publish in the series.
+        /// </param>
+        /// <param name="edition">
+        /// The edition of the series
+        /// </param>
+        /// <param name="seriesUuid">
+        /// Uniquely identifies the series to the publishing house.
+        /// </param>
+        /// <param name="publisher">
+        /// The publisher of the series.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual PublishSeriesResponse PublishSeries(
+            Shelf shelf,
+            scg::IEnumerable<Book> books,
+            uint? edition,
+            SeriesUuid seriesUuid,
+            string publisher,
+            gaxgrpc::CallSettings callSettings = null) => PublishSeries(
+                new PublishSeriesRequest
+                {
+                    Shelf = gax::GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Books = { gax::GaxPreconditions.CheckNotNull(books, nameof(books)) },
+                    Edition = edition ?? 0, // Optional
+                    SeriesUuid = gax::GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
+                    Publisher = publisher ?? "", // Optional
                 },
                 callSettings);
 
@@ -23277,6 +23422,113 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Resource name for the 'publisher' resource.
+    /// </summary>
+    public sealed partial class PublisherName : gax::IResourceName, sys::IEquatable<PublisherName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/locations/{location}/publishers/{publisher}");
+
+        /// <summary>
+        /// Parses the given publisher resource name in string form into a new
+        /// <see cref="PublisherName"/> instance.
+        /// </summary>
+        /// <param name="publisherName">The publisher resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="PublisherName"/> if successful.</returns>
+        public static PublisherName Parse(string publisherName)
+        {
+            gax::GaxPreconditions.CheckNotNull(publisherName, nameof(publisherName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(publisherName);
+            return new PublisherName(resourceName[0], resourceName[1], resourceName[2]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given publisher resource name in string form into a new
+        /// <see cref="PublisherName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="publisherName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="publisherName">The publisher resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="PublisherName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string publisherName, out PublisherName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(publisherName, nameof(publisherName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(publisherName, out resourceName))
+            {
+                result = new PublisherName(resourceName[0], resourceName[1], resourceName[2]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="PublisherName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The <c>location</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="publisherId">The <c>publisher</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="PublisherName"/>.</returns>
+        public static string Format(string projectId, string locationId, string publisherId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)), gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId)), gax::GaxPreconditions.CheckNotNull(publisherId, nameof(publisherId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="PublisherName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The location ID. Must not be <c>null</c>.</param>
+        /// <param name="publisherId">The publisher ID. Must not be <c>null</c>.</param>
+        public PublisherName(string projectId, string locationId, string publisherId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+            LocationId = gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId));
+            PublisherId = gax::GaxPreconditions.CheckNotNull(publisherId, nameof(publisherId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <summary>
+        /// The location ID. Never <c>null</c>.
+        /// </summary>
+        public string LocationId { get; }
+
+        /// <summary>
+        /// The publisher ID. Never <c>null</c>.
+        /// </summary>
+        public string PublisherId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId, LocationId, PublisherId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as PublisherName);
+
+        /// <inheritdoc />
+        public bool Equals(PublisherName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(PublisherName a, PublisherName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(PublisherName a, PublisherName b) => !(a == b);
+    }
+
+    /// <summary>
     /// Resource name for the 'shelf' resource.
     /// </summary>
     public sealed partial class ShelfName : gax::IResourceName, sys::IEquatable<ShelfName>
@@ -23679,6 +23931,19 @@ namespace Google.Example.Library.V1
         {
             get { return string.IsNullOrEmpty(OtherShelfName) ? null : Google.Example.Library.V1.ShelfName.Parse(OtherShelfName); }
             set { OtherShelfName = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class PublishSeriesRequest
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.PublisherName"/>-typed view over the <see cref="Publisher"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.PublisherName PublisherAsPublisherName
+        {
+            get { return string.IsNullOrEmpty(Publisher) ? null : Google.Example.Library.V1.PublisherName.Parse(Publisher); }
+            set { Publisher = value != null ? value.ToString() : ""; }
         }
 
     }

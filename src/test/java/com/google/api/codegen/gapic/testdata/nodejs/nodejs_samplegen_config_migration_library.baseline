@@ -94,11 +94,11 @@ This is a generated README.md placeholder. Put your own documentation here.
 
 // [START babble_about_book_1]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test response handling for methods that return empty */
 function sampleBabbleAboutBook() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const stream = client.babbleAboutBook((err, response) => {
     if (err) {
       console.error(err);
@@ -142,11 +142,11 @@ sampleBabbleAboutBook();
 
 // [START babble_about_book_2]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test default response handling is turned off for methods that return empty */
 function sampleBabbleAboutBook() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const stream = client.babbleAboutBook((err, response) => {
     if (err) {
       console.error(err);
@@ -188,11 +188,11 @@ sampleBabbleAboutBook();
 
 // [START sample]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test response handling for methods that return empty */
 function sampleDeleteShelf() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.shelfPath('[SHELF_ID]');
   client.deleteShelf({name: formattedName}).catch(err => {
     console.error(err);
@@ -231,11 +231,11 @@ sampleDeleteShelf();
 
 // [START sample]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test default response handling is turned off for methods that return empty */
 function sampleDeleteShelf() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.shelfPath('[SHELF_ID]');
   client.deleteShelf({name: formattedName}).catch(err => {
     console.error(err);
@@ -272,11 +272,11 @@ sampleDeleteShelf();
 
 // [START empty_response_type_with_response_handling]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test response handling for methods that return empty */
 async function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
 
   // Create a job whose results you can either wait for now, or get later
@@ -319,11 +319,11 @@ sampleGetBigNothing().catch(console.error);
 
 // [START empty_response_type_without_response_handling]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test default response handling is turned off for methods that return empty */
 async function sampleGetBigNothing() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
 
   // Create a job whose results you can either wait for now, or get later
@@ -364,11 +364,11 @@ sampleGetBigNothing().catch(console.error);
 
 // [START find_related_books_odyssey]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Testing calling forms */
 function sampleFindRelatedBooks() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // Iterate over all elements.
   const namesElement = 'Odyssey';
   const names = [namesElement];
@@ -423,10 +423,10 @@ sampleFindRelatedBooks();
 
 // [START sample]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 function sampleGetBook() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
   client.getBook({name: formattedName})
     .then(responses => {
@@ -472,11 +472,11 @@ sampleGetBook();
 
 // [START hopper]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Testing calling forms */
 async function sampleGetBigBook(shelf) {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // const shelf = 'Novel\\"`\b\t\n\r';
   const formattedName = client.bookPath(shelf, 'War and Peace');
 
@@ -542,11 +542,11 @@ sampleGetBigBook(argv.shelf).catch(console.error);
 
 // [START lovelace]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Testing calling forms */
 function sampleStreamBooks() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const name = 'BASIC';
     client.streamBooks({name: name}).on('data', response => {
       console.log(response);
@@ -583,7 +583,7 @@ sampleStreamBooks();
 
 // [START canonical]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /**
  * Testing <@calling forms>
@@ -592,7 +592,7 @@ const library = require('@google-cloud/library').v1;
  * @param edition {number} The edition of the series.
  */
 function samplePublishSeries(shelfName, edition) {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // const shelfName = '[Math]';
   // const edition = 123;
   const shelf = {
@@ -677,11 +677,11 @@ samplePublishSeries(argv.shelf_name, argv.edition);
 
 // [START canonical]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Testing calling forms */
 function samplePublishSeries() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const shelf = {};
   const books = [];
   const seriesUuid = {};
@@ -732,12 +732,12 @@ samplePublishSeries();
 
 // [START publish_series_test_request_object_field_comments]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 const fs = require('fs');
 /** Test request object field comments */
 function samplePublishSeries() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
 
   // Comment on a resource name
   const formattedName = client.shelfPath('math');
@@ -813,13 +813,13 @@ samplePublishSeries();
 
 // [START publish_series_test_write_to_file]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 const util = require('util');
 const fs = require('fs');
 /** Testing write fields to files. */
 function samplePublishSeries() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const shelf = {};
   const books = [];
   const seriesUuid = {};
@@ -872,11 +872,11 @@ samplePublishSeries();
 
 // [START sample_get_shelf]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test default calling forms for unary methods. */
 function sampleGetShelf() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.shelfPath('my-shelf');
   const options = '';
   const request = {
@@ -923,11 +923,11 @@ sampleGetShelf();
 
 // [START sample_monolog_about_book]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Testing calling forms */
 function sampleMonologAboutBook() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const stream = client.monologAboutBook((err, response) => {
     if (err) {
       console.error(err);
@@ -973,11 +973,11 @@ sampleMonologAboutBook();
 
 // [START test_default_calling_form_for_paging]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test default calling form for paging methods. */
 function sampleListShelves() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // Iterate over all elements.
   client.listShelves({})
     .then(responses => {
@@ -1020,10 +1020,10 @@ sampleListShelves();
 
 // [START test_float_and_int64]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 function sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong) {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // const paramFloat = 1.2345;
   // const paramLong = 67890;
   const requiredSingularInt32 = 0;
@@ -1134,10 +1134,10 @@ sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
 
 // [START test_resource_name_oneof]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 function sampleGetBookFromAbsolutelyAnywhere() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.archivedBookPath('The archive to search for the book', 'The ID of the book');
   client.getBookFromAbsolutelyAnywhere({name: formattedName})
     .then(responses => {
@@ -1178,10 +1178,10 @@ sampleGetBookFromAbsolutelyAnywhere();
 
 // [START test_resource_name_oneof_2]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 function sampleGetBookFromAbsolutelyAnywhere() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.bookPath('The Shelf to search for the book', 'The ID of the book');
   client.getBookFromAbsolutelyAnywhere({name: formattedName})
     .then(responses => {
@@ -1223,11 +1223,11 @@ sampleGetBookFromAbsolutelyAnywhere();
 
 // [START test_setting_up_empty_objects_in_request]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** Test setting up empty objects in the request objects. */
 function sampleGetShelf() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.shelfPath('my-shelf');
   const options = '';
 
@@ -1280,11 +1280,11 @@ sampleGetShelf();
 
 // [START testing_map]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /** testing maps in request fields */
 function sampleCreateBook() {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const formattedName = client.shelfPath('my_shelf');
   const mapStringValueItem = 'my_string_value';
   const mapStringValue = {1 : mapStringValueItem};
@@ -1341,7 +1341,7 @@ sampleCreateBook();
 
 // [START this_tag_should_be_the_name_of_the_file]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 /**
  * Testing resource name overlap
@@ -1351,7 +1351,7 @@ const library = require('@google-cloud/library').v1;
  * @param bigBookName {string} The name of the book.
  */
 async function sampleGetBigBook(shelf, bigBookName) {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
   const formattedName = client.bookPath(shelf, bigBookName);
@@ -1406,12 +1406,12 @@ sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
 
 // [START turing]
 
-const library = require('@google-cloud/library').v1;
+const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
 const fs = require('fs');
 /** Testing calling forms */
 function sampleDiscussBook(imageFileName, stage) {
-  const client = new library.LibraryServiceClient();
+  const client = new LibraryServiceClient();
   const stream = client.discussBook().on('data', response => {
     console.log(response);
   });
@@ -2224,6 +2224,9 @@ const CreateBookRequest = {
  *   Uniquely identifies the series to the publishing house.
  *
  *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
+ *
+ * @property {string} publisher
+ *   The publisher of the series.
  *
  * @typedef PublishSeriesRequest
  * @memberof google.example.library.v1
@@ -4974,6 +4977,8 @@ class LibraryServiceClient {
    *   The edition of the series
    * @param {boolean} [request.reviewCopy]
    *   If the book is in a pre-publish state
+   * @param {string} [request.publisher]
+   *   The publisher of the series.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.

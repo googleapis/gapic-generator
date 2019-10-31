@@ -2436,6 +2436,7 @@ class LibraryServiceGapicClient
     private static $locationNameTemplate;
     private static $projectNameTemplate;
     private static $projectBookNameTemplate;
+    private static $publisherNameTemplate;
     private static $shelfNameTemplate;
     private static $pathTemplateMap;
 
@@ -2522,6 +2523,15 @@ class LibraryServiceGapicClient
         return self::$projectBookNameTemplate;
     }
 
+    private static function getPublisherNameTemplate()
+    {
+        if (self::$publisherNameTemplate == null) {
+            self::$publisherNameTemplate = new PathTemplate('projects/{project}/locations/{location}/publishers/{publisher}');
+        }
+
+        return self::$publisherNameTemplate;
+    }
+
     private static function getShelfNameTemplate()
     {
         if (self::$shelfNameTemplate == null) {
@@ -2543,6 +2553,7 @@ class LibraryServiceGapicClient
                 'location' => self::getLocationNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
+                'publisher' => self::getPublisherNameTemplate(),
                 'shelf' => self::getShelfNameTemplate(),
             ];
         }
@@ -2665,6 +2676,25 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a publisher resource.
+     *
+     * @param string $project
+     * @param string $location
+     * @param string $publisher
+     * @return string The formatted publisher resource.
+     * @experimental
+     */
+    public static function publisherName($project, $location, $publisher)
+    {
+        return self::getPublisherNameTemplate()->render([
+            'project' => $project,
+            'location' => $location,
+            'publisher' => $publisher,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a shelf resource.
      *
      * @param string $shelfId
@@ -2689,6 +2719,7 @@ class LibraryServiceGapicClient
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
+     * - publisher: projects/{project}/locations/{location}/publishers/{publisher}
      * - shelf: shelves/{shelf_id}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
@@ -3160,6 +3191,8 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
+     *     @type string $publisher
+     *          The publisher of the series.
      *     @type RetrySettings|array $retrySettings
      *          Retry settings to use for this call. Can be a
      *          {@see Google\ApiCore\RetrySettings} object, or an associative array
@@ -3183,6 +3216,9 @@ class LibraryServiceGapicClient
         }
         if (isset($optionalArgs['reviewCopy'])) {
             $request->setReviewCopy($optionalArgs['reviewCopy']);
+        }
+        if (isset($optionalArgs['publisher'])) {
+            $request->setPublisher($optionalArgs['publisher']);
         }
 
         $requestParams = new RequestParamsHeaderDescriptor([
@@ -4197,9 +4233,9 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $resource = '';
+     *     $formattedResource = $libraryServiceClient->bookName('[BOOK_SHELF]', '[BOOK]');
      *     $label = '';
-     *     $response = $libraryServiceClient->addLabel($resource, $label);
+     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
      *     $libraryServiceClient->close();
      * }
@@ -6669,6 +6705,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getName();
 
         $this->assertProtobufEquals($formattedName, $actualValue);
+        $actualValue = $actualRequestObject->getFilter();
+
+        $this->assertProtobufEquals($filter, $actualValue);
         $this->assertTrue($transport->isExhausted());
     }
 
@@ -7878,10 +7917,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
-        $response = $client->addLabel($resource, $label);
+        $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -7891,7 +7930,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getResource();
 
-        $this->assertProtobufEquals($resource, $actualValue);
+        $this->assertProtobufEquals($formattedResource, $actualValue);
         $actualValue = $actualRequestObject->getLabel();
 
         $this->assertProtobufEquals($label, $actualValue);
@@ -7922,11 +7961,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $resource = 'resource-341064690';
+        $formattedResource = $client->bookName('[BOOK_SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         try {
-            $client->addLabel($resource, $label);
+            $client->addLabel($formattedResource, $label);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
