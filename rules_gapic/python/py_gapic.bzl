@@ -33,13 +33,20 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     script = """
     unzip -q {gapic_srcjar} -d {output_dir_path}
     {formatter} -q {output_dir_path}
+
     pushd {output_dir_path}
     zip -q -r {output_dir_name}-pkg.srcjar nox.py setup.py setup.cfg docs MANIFEST.in README.rst LICENSE
     rm -rf nox.py setup.py docs
     zip -q -r {output_dir_name}-test.srcjar tests/unit
     rm -rf tests/unit
-    zip -q -r {output_dir_name}-smoke-test.srcjar tests/system
-    rm -rf tests/system
+    if [ -d "tests/system" ]; then
+        zip -q -r {output_dir_name}-smoke-test.srcjar tests/system
+        rm -rf tests/system
+    else
+        touch empty_file
+        zip -q -r {output_dir_name}-smoke-test.srcjar empty_file
+        zip -d {output_dir_name}-smoke-test.srcjar empty_file
+    fi
     zip -q -r {output_dir_name}.srcjar . -i \*.py
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
@@ -145,10 +152,16 @@ def py_gapic_library(
     and the tests.
     """
     srcjar_name = "%s_srcjar" % name
+    converted_src_name = "%s_desc" % name;
+
+    _py_desc_converter(
+        name = converted_src_name,
+        src = src,
+    )
 
     py_gapic_srcjar(
         name = srcjar_name,
-        src = src,
+        src = ":%s" % converted_src_name,
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
@@ -180,20 +193,38 @@ def py_gapic_library(
         extension = ".py",
     )
 
-    smoke_test_file = ":%s-smoke-test.srcjar" % srcjar_name
-    smoke_test_dir = "%s_smoke_test" % srcjar_name
-
-    unzipped_srcjar(
-        name = smoke_test_dir,
-        srcjar = smoke_test_file,
-        extension = ".py",
+    native.py_library(
+        name = "%s_test" % name,
+        srcs = [":%s" % test_dir],
+        deps = [":%s" % name] + deps,
+        **kwargs
     )
 
-    pkg_file = ":%s-pkg.srcjar" % srcjar_name
-    pkg_dir = "%s_pkg" % srcjar_name
+def _py_desc_converter_impl(ctx):
+    src = ctx.file.src
+    output = ctx.outputs.output
 
-    unzipped_srcjar(
-        name = pkg_dir,
-        srcjar = pkg_file,
-        extension = ".py",
+    ctx.actions.run(
+        inputs = [src],
+        outputs = [output],
+        executable = ctx.executable._desc_converter,
+        arguments = [src.path, output.path],
     )
+
+_py_desc_converter = rule(
+    implementation = _py_desc_converter_impl,
+    attrs = {
+        "src": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "_desc_converter": attr.label(
+            default = Label("@protoc_docs_plugin//:docs_desc_converter"),
+            executable = True,
+            cfg = "host",
+        ),
+    },
+    outputs = {
+        "output": "%{name}-set.proto.bin",
+    },
+)

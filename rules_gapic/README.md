@@ -2,7 +2,7 @@
 
 ### Requirements
 
-- Bazel version `0.25.0+`.
+- Bazel version `1.0.0`.
 - Linux (may work on other platforms, but this haven't been tested).
 - `gcc`, `make`, `autoconf`, `unzip` tools
 
@@ -37,6 +37,7 @@ The rules will call `gapic-generator` and do all the necessary pre- and post- ge
 #### Python
 1. **`py_gapic_srcjar`** - Python **macro**, which first calls `gapic_srcjar` to generate the source code. Then, it calls an internal rule, which does all the Python-specific postprocessing of the code. This postprocessing includes formatting the code and splitting the code into main and test `.srcjar` archives (a zip format).
 2. **`py_gapic_library`** - Python **macro**, which first calls `py_gapic_srcjar` to generate and post process the gapic library. Then, it calls the native `py_library` rule to build the generated code. It declares directories. Finally, it unpacks the sources for the main and test into those directories, so that they can be consumed by `py_library` and `py_test` (which do not accept `.srcjar` files as an input).
+3. **`py_gapic_assembly_pkg`** - Python **macro** which accepts the previously built `py_gapic_library` (including the `-test.srcjar` and `-smoke-test.srcjar`), `py_proto_library` and `py_grpc_library` artifacts and packages them into an idiomatic (for Python) package which is ready for opensourcing and is independent from Bazel.
 
 #### PHP
 1. **`php_proto_library`** - PHP **macro**, which generates php protobuf stubs by calling protobuf compiler with `--php_out` parameter.

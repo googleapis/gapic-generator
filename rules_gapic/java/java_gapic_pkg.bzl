@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
+load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths", "put_dep_in_a_bucket")
 load("@com_google_api_gax_java_properties//:dependencies.properties.bzl", "PROPERTIES")
 
 def _wrapPropertyNamesInBraces(properties):
@@ -158,7 +158,6 @@ java_gapic_srcs_pkg = rule(
 def java_gapic_assembly_gradle_pkg(
         name,
         deps,
-        client_test_deps = [],
         **kwargs):
     proto_target = "proto-%s" % name
     proto_target_dep = []
@@ -175,13 +174,13 @@ def java_gapic_assembly_gradle_pkg(
     processed_deps = {} #there is no proper Set in Starlark
     for dep in deps:
         if dep.endswith("_java_gapic"):
-            _put_dep_in_a_bucket(dep, client_deps, processed_deps)
-            _put_dep_in_a_bucket("%s_test" % dep, client_test_deps, processed_deps)
-            _put_dep_in_a_bucket("%s_resource_name" % dep, proto_deps, processed_deps)
+            put_dep_in_a_bucket(dep, client_deps, processed_deps)
+            put_dep_in_a_bucket("%s_test" % dep, client_test_deps, processed_deps)
+            put_dep_in_a_bucket("%s_resource_name" % dep, proto_deps, processed_deps)
         elif dep.endswith("_java_grpc"):
-            _put_dep_in_a_bucket(dep, grpc_deps, processed_deps)
+            put_dep_in_a_bucket(dep, grpc_deps, processed_deps)
         else:
-            _put_dep_in_a_bucket(dep, proto_deps, processed_deps)
+            put_dep_in_a_bucket(dep, proto_deps, processed_deps)
 
     if proto_deps:
         _java_gapic_gradle_pkg(
@@ -307,12 +306,6 @@ def _construct_extra_deps(scope_to_deps, versions_map):
                         extra_deps[key] = "%s '%s'" % (scope, versions_map[key])
 
     return "\n  ".join(extra_deps.values())
-
-def _put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
-    if processed_deps.get(dep):
-        return
-    dep_bucket.append(dep)
-    processed_deps[dep] = True
 
 def _is_java_dependency(dep):
     return JavaInfo in dep
