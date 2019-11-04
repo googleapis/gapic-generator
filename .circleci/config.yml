@@ -111,11 +111,13 @@ anchor_test_ruby_client: &anchor_test_ruby_client
   command: |
     if [ -e ${RUBY_GEN_DIR}/google-cloud-${TEST_API} ]
     then
+      echo "Testing ${TEST_API} in the ${LANGUAGE} language"
       cd ${RUBY_GEN_DIR}/google-cloud-${TEST_API}
       bundle update
       bundle exec rake test
     else
-      echo "Ruby ${TEST_API} library was not generated."
+      echo "Ruby ${TEST_API} library was not generated for ${LANGUAGE} at ${RUBY_GEN_DIR}."
+      ls -la ${RUBY_GEN_DIR}
       exit 1
     fi
   when: always
@@ -133,6 +135,10 @@ anchor_run_ruby: &anchor_run_ruby
     - attach_workspace:
         # Use the workspace created in generate-clients
         at: workspace
+    - run:
+        name: Prepare environment # The environment set for this job does not seem to propagate
+        command: |
+          echo 'export RUBY_GEN_DIR="/tmp/workspace/gapic-generator/artman-genfiles/ruby/google-cloud-ruby/"' >> $BASH_ENV
     - run:
         <<: *anchor_run_decrypt
     - run:

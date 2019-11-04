@@ -30,3 +30,9 @@ def construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
         package_dir_sibling_parent = out_pkg,
         package_dir_sibling_basename = label_name,
     )
+
+def put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
+    if processed_deps.get(dep):
+        return
+    dep_bucket.append(dep)
+    processed_deps[dep] = True

@@ -145,8 +145,8 @@ def _proto_custom_library_impl(ctx):
     arguments = \
         ctx.attr.extra_args + \
         calculated_args + \
-        ["-I{0}={1}".format(_path_ignoring_repository(imp), imp.path) for imp in imports.to_list()] + \
-        [_path_ignoring_repository(src) for src in srcs.to_list()]
+        ["-I{0}={1}".format(path_ignoring_repository(imp), imp.path) for imp in imports.to_list()] + \
+        [path_ignoring_repository(src) for src in srcs.to_list()]
 
     inputs = depset(transitive = [srcs, imports, depset(direct = extra_inputs)])
     ctx.actions.run(
@@ -248,13 +248,95 @@ unzipped_srcjar = rule(
     },
 )
 
-#
-# Private helper functions
-#
-def _path_ignoring_repository(f):
+def moved_proto_library(
+        name,
+        srcs,
+        import_prefix = None,
+        strip_import_prefix = None,
+        deps = []):
+    srcs_name = "%s_srcs" % name
+
+    actual_strip_import_prefix = strip_import_prefix
+    if not actual_strip_import_prefix:
+        actual_strip_import_prefix = native.package_name()
+
+    actual_import_prefix = import_prefix
+    if not actual_import_prefix:
+        actual_import_prefix = _calculate_import_prefix(actual_strip_import_prefix)
+
+    replaced_import_proto_srcs(
+        name = srcs_name,
+        import_prefix = actual_import_prefix,
+        strip_import_prefix = actual_strip_import_prefix,
+        deps = srcs,
+    )
+
+    native.proto_library(
+        name = name,
+        srcs = [":%s" % srcs_name],
+        deps = deps,
+        import_prefix = actual_import_prefix,
+        strip_import_prefix = srcs_name,
+    )
+
+def _replaced_import_proto_srcs_impl(ctx):
+    for dep in ctx.attr.deps:
+        dep_srcs = dep[ProtoInfo].check_deps_sources.to_list()
+
+    strip_import_prefixes = {}
+    outs = []
+
+    for dep in ctx.attr.deps:
+        srcs = dep[ProtoInfo].check_deps_sources.to_list()
+        for src in srcs:
+            out = ctx.actions.declare_file(
+                "%s/%s" % (ctx.label.name, src.basename),
+                sibling = src,
+            )
+            outs.append(out)
+            ctx.actions.expand_template(
+                template = src,
+                output = out,
+                substitutions = {ctx.attr.strip_import_prefix: ctx.attr.import_prefix},
+            )
+
+    return [DefaultInfo(files = depset(direct = outs))]
+
+replaced_import_proto_srcs = rule(
+    attrs = {
+        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [ProtoInfo]),
+        "import_prefix": attr.string(mandatory = True),
+        "strip_import_prefix": attr.string(mandatory = True),
+    },
+    implementation = _replaced_import_proto_srcs_impl,
+)
+
+def path_ignoring_repository(f):
     virtual_imports = "/_virtual_imports/"
     if virtual_imports in f.path:
         return f.path.split(virtual_imports)[1].split("/", 1)[1]
     if f.owner.workspace_root:
         return f.path[f.path.find(f.owner.workspace_root) + len(f.owner.workspace_root) + 1:]
     return f.short_path
+
+#
+# Private helper functions
+#
+def _calculate_import_prefix(strip_import_prefix):
+    tokens = strip_import_prefix.split("/")
+    new_tokens = [tokens[0]]
+    tokens_len = len(tokens)
+    for i in range(1, tokens_len):
+        t = tokens[i]
+        # This logic is executed only if import_prefix is not specified by
+        # a user explicitly (so there is no enforced coupling to google cloud
+        # domain, it serves only as a convenient default value).
+        if i == 1 and tokens[0] == "google" and t != "cloud":
+            new_tokens.append("cloud")
+        if len(t) > 2 and t[0] == "v" and t[1].isdigit() and i == tokens_len - 1:
+            last_index = len(new_tokens) - 1
+            new_tokens[last_index] = "%s_%s" % (new_tokens[last_index], t)
+        else:
+            new_tokens.append(t)
+    new_tokens.append("proto")
+    return "/".join(new_tokens)

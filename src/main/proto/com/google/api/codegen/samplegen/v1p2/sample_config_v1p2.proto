@@ -86,6 +86,15 @@ message SampleSpecProto {
   // Definition of how to handle the RPC response, specified as an
   // ordered list of statements.
   repeated ResponseStatementProto response = 9;
+
+  // A list of the types samples to generate from this
+  // configuration. The elements can be any of "standalone" and
+  // "incode/XXX", where XXX is an arbitrary run of alphanumeric
+  // characters (these are used to lexicographically sort multiple
+  // in-code samples for the same RPC when including them in the
+  // library source code). If not specified or empty, defaults to
+  // ["standalone"]
+  repeated string sample_type = 10;
 }
 
 message RequestFieldProto {
