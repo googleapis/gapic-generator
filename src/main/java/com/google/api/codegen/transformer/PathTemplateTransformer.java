@@ -225,6 +225,7 @@ public class PathTemplateTransformer {
               .pathTemplateGetterName(
                   namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern())
+              .isResourceNameDeprecated(resourceNameConfig.getDeprecated())
               .deprecationMessage(namer.getResourceNameDeprecationMessage(resourceNameConfig));
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : resourceNameConfig.getNameTemplate().vars()) {

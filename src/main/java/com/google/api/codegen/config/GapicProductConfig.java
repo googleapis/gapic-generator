@@ -18,7 +18,6 @@ import com.google.api.ResourceReference;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.DeprecatedCollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.MethodConfigProto;
@@ -834,7 +833,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
     }
 
-    mergeDeprecatedResources(annotationResourceNameConfigs, configProto, sampleProtoFile, language);
     // TODO(andrealin): Remove this once explicit fixed resource names are gone-zos.
     ImmutableMap<String, FixedResourceNameConfig> finalFixedResourceNameConfigs =
         createFixedResourceNamesFromGapicConfigOnly(diagCollector, allCollectionConfigProtos);
@@ -960,21 +958,6 @@ public abstract class GapicProductConfig implements ProductConfig {
                   resourceNameConfig.getEntityId()));
         }
       }
-    }
-  }
-
-  private static void mergeDeprecatedResources(
-      Map<String, ResourceNameConfig> singleResources,
-      ConfigProto configProto,
-      ProtoFile protoFile,
-      TargetLanguage targetLanguage) {
-    for (DeprecatedCollectionConfigProto deprecatedResource :
-        configProto.getDeprecatedCollectionsList()) {
-      String resourceEntityName = deprecatedResource.getEntityName();
-      ResourceNameConfig singleResource = singleResources.get(resourceEntityName);
-      singleResources.put(
-          resourceEntityName,
-          ((SingleResourceNameConfig) singleResource).toBuilder().setDeprecated(true).build());
     }
   }
 

@@ -15,11 +15,13 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
+import com.google.api.codegen.DeprecatedCollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -193,6 +195,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
         }
         resourcesBuilder.add((SingleResourceNameConfig) resourceName);
       }
+    } else {
+      addDeprecatedResources(diagCollector, resourcesBuilder, interfaceConfigProto, language);
     }
     ImmutableSet<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
@@ -285,6 +289,25 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return ImmutableMap.copyOf(methodConfigMapBuilder);
+    }
+  }
+
+  /** Add deprecated resource definitions into singleResources. */
+  private static void addDeprecatedResources(
+      DiagCollector diagCollector,
+      ImmutableSet.Builder<SingleResourceNameConfig> singleResources,
+      InterfaceConfigProto interfaceConfigProto,
+      TargetLanguage targetLanguage) {
+    for (DeprecatedCollectionConfigProto deprecatedResource :
+        interfaceConfigProto.getDeprecatedCollectionsList()) {
+      // Entity names of resource names parsed from proto annotations are in upper camel case.
+      String upperCamelEntityName =
+          Name.anyLower(deprecatedResource.getEntityName()).toUpperCamel();
+      // We don't care about assigned proto file for deprecated resource names
+      ResourceNameConfig deprecatedResourceConfig =
+          SingleResourceNameConfig.createDeprecatedSingleResourceName(
+              diagCollector, deprecatedResource, null, targetLanguage);
+      singleResources.add((SingleResourceNameConfig) deprecatedResourceConfig);
     }
   }
 

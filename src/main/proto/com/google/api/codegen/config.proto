@@ -103,14 +103,6 @@ message ConfigProto {
   // semver specification. Currently, the only valid value is "1.0.0" and "2.0.0"
   // Those following "2.0.0" should also follow the config_v2.proto schema.
   string config_schema_version = 21;
-
-  // A list of configurations for deprecated resource collections.
-  //
-  // This field is introduced to avoid breaking changes in client surface and 
-  // make the migration to proto annoations smoother. The generator will continue
-  // to generate resource name classes or helper functions for these resources,
-  // and mark the as deprecated.
-  repeated DeprecatedCollectionConfigProto deprecated_collections = 23;
 }
 
 message LanguageSettingsProto {
@@ -169,6 +161,14 @@ message InterfaceConfigProto {
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;
 
+  // A list of configurations for deprecated resource collections.
+  //
+  // This field is introduced to avoid breaking changes in client surface and 
+  // make the migration to proto annoations smoother. The generator will continue
+  // to generate resource name classes or helper functions for these resources,
+  // and mark the as deprecated.
+  repeated DeprecatedCollectionConfigProto deprecated_collections = 11;
+
   // A list of method configurations.
   repeated MethodConfigProto methods = 20;
 
@@ -213,7 +213,7 @@ message CollectionConfigProto {
 
 message DeprecatedCollectionConfigProto {
   // The pattern of the deprecated resource name.
-  string pattern = 1;
+  string name_pattern = 1;
   
   // The entity name of the deprecated resource name.
   string entity_name = 2;

@@ -3007,6 +3007,12 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
+      BOOK_FROM_ARCHIVE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive}/books/{book}"
+      )
+
+      private_constant :BOOK_FROM_ARCHIVE_PATH_TEMPLATE
+
       FOLDER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "folders/{folder}"
       )
@@ -3072,6 +3078,17 @@ module Library
       def self.book_path book_shelf, book
         BOOK_PATH_TEMPLATE.render(
           :"book_shelf" => book_shelf,
+          :"book" => book
+        )
+      end
+
+      # Returns a fully-qualified book_from_archive resource name string.
+      # @param archive [String]
+      # @param book [String]
+      # @return [String]
+      def self.book_from_archive_path archive, book
+        BOOK_FROM_ARCHIVE_PATH_TEMPLATE.render(
+          :"archive" => archive,
           :"book" => book
         )
       end

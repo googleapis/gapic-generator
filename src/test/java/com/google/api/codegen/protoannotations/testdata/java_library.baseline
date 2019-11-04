@@ -4409,6 +4409,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("bookShelves/{book_shelf}/books/{book}");
 
+  private static final PathTemplate BOOK_FROM_ARCHIVE_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
+
   private static final PathTemplate FOLDER_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("folders/{folder}");
 
@@ -4463,6 +4466,19 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfBookName(String bookShelf, String book) {
     return SHELF_BOOK_PATH_TEMPLATE.instantiate(
         "book_shelf", bookShelf,
+        "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a book_from_archive resource.
+   *
+   * @deprecated Use the {@link BookFromArchiveName} class instead.
+   */
+  @Deprecated
+  public static final String formatBookFromArchiveName(String archive, String book) {
+    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.instantiate(
+        "archive", archive,
         "book", book);
   }
 
@@ -4606,6 +4622,28 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseBookFromShelfBookName(String shelfBookName) {
     return SHELF_BOOK_PATH_TEMPLATE.parse(shelfBookName).get("book");
+  }
+
+  /**
+   * Parses the archive from the given fully-qualified path which
+   * represents a book_from_archive resource.
+   *
+   * @deprecated Use the {@link BookFromArchiveName} class instead.
+   */
+  @Deprecated
+  public static final String parseArchiveFromBookFromArchiveName(String bookFromArchiveName) {
+    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.parse(bookFromArchiveName).get("archive");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book_from_archive resource.
+   *
+   * @deprecated Use the {@link BookFromArchiveName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromBookFromArchiveName(String bookFromArchiveName) {
+    return BOOK_FROM_ARCHIVE_PATH_TEMPLATE.parse(bookFromArchiveName).get("book");
   }
 
   /**
