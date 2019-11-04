@@ -225,8 +225,7 @@ public class PathTemplateTransformer {
               .pathTemplateGetterName(
                   namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern())
-              .isResourceNameDeprecated(resourceNameConfig.getDeprecated())
-              .deprecationMessage(namer.getResourceNameDeprecationMessage(resourceNameConfig));
+              .isResourceNameDeprecated(resourceNameConfig.getDeprecated());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =
@@ -265,6 +264,7 @@ public class PathTemplateTransformer {
                     namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
                 .entityNameTypeName(namer.getResourceTypeName(resourceNameConfig))
                 .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
+                .isResourceNameDeprecated(resourceNameConfig.getDeprecated())
                 .outputResourceId(var);
         functions.add(function.build());
       }

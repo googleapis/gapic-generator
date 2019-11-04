@@ -92,6 +92,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
 
     // Entity names of resource names parsed from proto annotations are in upper camel case.
     String upperCamelEntityName = Name.anyLower(deprecatedResource.getEntityName()).toUpperCamel();
+
+    // Reconstruct a CollectionConfigProto as specified in gapic config v1
     CollectionConfigProto resourceV1 =
         CollectionConfigProto.newBuilder()
             .setEntityName(upperCamelEntityName)
@@ -99,6 +101,8 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
             .build();
     SingleResourceNameConfig resourceConfigV1 =
         createSingleResourceName(diagCollector, resourceV1, file, language);
+
+    // If a SingleResourceNameConfig is created, mark it as deprecated too.
     return resourceConfigV1 == null
         ? null
         : resourceConfigV1.toBuilder().setDeprecated(true).build();

@@ -257,10 +257,6 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
-  public String getResourceNameDeprecationMessage(SingleResourceNameConfig resourceNameConfig) {
-    return "warnings.warn(\"resource name helper functions are deprecated\", DeprecationWarning, stacklevel=1)";
-  }
-
   @Override
   public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(

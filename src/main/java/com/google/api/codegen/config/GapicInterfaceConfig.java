@@ -21,7 +21,6 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ProtoParser;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -300,14 +299,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       TargetLanguage targetLanguage) {
     for (DeprecatedCollectionConfigProto deprecatedResource :
         interfaceConfigProto.getDeprecatedCollectionsList()) {
-      // Entity names of resource names parsed from proto annotations are in upper camel case.
-      String upperCamelEntityName =
-          Name.anyLower(deprecatedResource.getEntityName()).toUpperCamel();
-      // We don't care about assigned proto file for deprecated resource names
-      ResourceNameConfig deprecatedResourceConfig =
+      // We can safely assign null here; wedon't care about assigned proto file
+      // for deprecated resource names
+      SingleResourceNameConfig deprecatedResourceConfig =
           SingleResourceNameConfig.createDeprecatedSingleResourceName(
               diagCollector, deprecatedResource, null, targetLanguage);
-      singleResources.add((SingleResourceNameConfig) deprecatedResourceConfig);
+      singleResources.add(deprecatedResourceConfig);
     }
   }
 

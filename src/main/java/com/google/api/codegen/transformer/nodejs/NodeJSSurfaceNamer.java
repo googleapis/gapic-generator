@@ -192,13 +192,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getResourceNameDeprecationMessage(SingleResourceNameConfig resourceNameConfig) {
-    return resourceNameConfig.getDeprecated()
-        ? "@deprecated this helper function will be deleted in the next major version."
-        : "";
-  }
-
-  @Override
   public String getClientConfigPath(InterfaceConfig interfaceConfig) {
     return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
         .join("client_config")

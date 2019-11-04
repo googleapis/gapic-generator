@@ -1226,10 +1226,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
         Name.from("format").join(resourceNameConfig.getEntityName()).join("name"));
   }
 
-  public String getResourceNameDeprecationMessage(SingleResourceNameConfig resourceNameConfig) {
-    return getNotImplementedString("SurfaceNamer.getResourceNameDeprecationMessage");
-  }
-
   /**
    * The function name to parse a variable from the string representing the entity for the given
    * collection.

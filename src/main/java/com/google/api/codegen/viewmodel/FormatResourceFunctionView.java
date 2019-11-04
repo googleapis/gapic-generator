@@ -16,7 +16,6 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FormatResourceFunctionView {
@@ -34,11 +33,8 @@ public abstract class FormatResourceFunctionView {
 
   public abstract String pattern();
 
-  /** True iff This resource name will cease to exist in the proto annotation world. */
+  /** True iff this resource name will cease to exist in the proto annotation world. */
   public abstract boolean isResourceNameDeprecated();
-
-  @Nullable
-  public abstract String deprecationMessage();
 
   public static Builder newBuilder() {
     return new AutoValue_FormatResourceFunctionView.Builder().isResourceNameDeprecated(false);
@@ -61,8 +57,6 @@ public abstract class FormatResourceFunctionView {
     public abstract Builder pattern(String val);
 
     public abstract Builder isResourceNameDeprecated(boolean val);
-
-    public abstract Builder deprecationMessage(String val);
 
     public abstract FormatResourceFunctionView build();
   }
