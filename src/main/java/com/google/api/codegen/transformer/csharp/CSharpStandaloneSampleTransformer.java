@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceContext;
 import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -29,6 +30,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.csharp.CSharpAliasMode;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.SampleEntryPointView;
 import com.google.common.collect.ImmutableMap;
 import java.util.function.Function;
 
@@ -36,6 +38,7 @@ import java.util.function.Function;
 public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTransformer {
 
   private static final String STANDALONE_SAMPLE_TEMPLATE_FILENAME = "csharp/standalone_sample.snip";
+  private static final String PROGRAM_TEMPLATE_FILENAME = "csharp/gapic_samples_program.snip";
   private static final ImmutableMap<CallingForm, ClientMethodType>
       CALLING_FORM_CLIENT_METHOD_TYPE_MAP =
           ImmutableMap.<CallingForm, ClientMethodType>builder()
@@ -113,6 +116,21 @@ public class CSharpStandaloneSampleTransformer extends StaticLangGapicSamplesTra
   @Override
   protected ClientMethodType fromCallingForm(CallingForm callingForm) {
     return CALLING_FORM_CLIENT_METHOD_TYPE_MAP.get(callingForm);
+  }
+
+  @Override
+  protected SampleEntryPointView generateSampleEntryPoint(InterfaceContext interfaceContext) {
+    SampleEntryPointView.Builder entryPoint = SampleEntryPointView.newBuilder();
+    String sampleDirectory =
+        pathMapper.getOutputPath(
+            interfaceContext.getInterfaceModel().getFullName(),
+            interfaceContext.getProductConfig());
+    String outputPath =
+        new StringBuilder().append(sampleDirectory).append("/Program.cs").toString();
+    entryPoint.outputPath(outputPath);
+    entryPoint.templateFileName(PROGRAM_TEMPLATE_FILENAME);
+    entryPoint.fileHeader(fileHeaderTransformer.generateFileHeader(interfaceContext));
+    return entryPoint.build();
   }
 
   public SampleManifestTransformer createManifestTransformer() {

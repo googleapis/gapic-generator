@@ -30,6 +30,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.MethodSampleView;
+import com.google.api.codegen.viewmodel.SampleEntryPointView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangSampleClassView;
@@ -44,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
 /**
  * A base transformer to generate standalone samples for each method in the GAPIC surface generated
@@ -96,13 +98,23 @@ public abstract class StaticLangGapicSamplesTransformer
     ImmutableTable<String, String, ImmutableList<SampleConfig>> sampleConfigTable =
         productConfig.getSampleConfigTable();
 
+    List<ViewModel> sampleFiles;
+
     // We don't have sample configs. Continue to use gapic config.
     if (sampleConfigTable.isEmpty()) {
-      return generateSamplesFromGapicConfigs(interfaceContexts, productConfig, namer);
+      sampleFiles = generateSamplesFromGapicConfigs(interfaceContexts, productConfig, namer);
+    } else {
+      // Generate samples using sample configs.
+      sampleFiles = generateSamplesFromSampleConfigs(interfaceContexts, productConfig);
+    }
+    if (!interfaceContexts.isEmpty() && !sampleFiles.isEmpty()) {
+      ViewModel entryPoint = generateSampleEntryPoint(interfaceContexts.get(0));
+      if (entryPoint != null) {
+        sampleFiles.add(entryPoint);
+      }
     }
 
-    // Generate samples using sample configs.
-    return generateSamplesFromSampleConfigs(interfaceContexts, productConfig);
+    return ImmutableList.copyOf(sampleFiles);
   }
 
   @Override
@@ -204,7 +216,7 @@ public abstract class StaticLangGapicSamplesTransformer
             .flatMap(method -> method.samples().stream())
             .collect(ImmutableList.toImmutableList());
     SampleFileRegistry registry = new SampleFileRegistry(namer, allSamples);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+    List<ViewModel> sampleFileViews = new ArrayList<>();
     for (InterfaceContext context : interfaceContexts) {
       List<StaticLangApiMethodView> methods = apiMethodTransformer.generateApiMethods(context);
       for (StaticLangApiMethodView method : methods) {
@@ -220,14 +232,14 @@ public abstract class StaticLangGapicSamplesTransformer
         }
       }
     }
-    return sampleFileViews.build();
+    return sampleFileViews;
   }
 
   private List<ViewModel> generateSamplesFromSampleConfigs(
       List<InterfaceContext> interfaceContexts, GapicProductConfig productConfig) {
     SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
     List<SampleContext> sampleContexts = getSampleContexts(interfaceContexts, productConfig);
-    ImmutableList.Builder<ViewModel> sampleFileViews = ImmutableList.builder();
+    List<ViewModel> sampleFileViews = new ArrayList<>();
     for (SampleContext sampleContext : sampleContexts) {
       StaticLangApiMethodView methodView =
           apiMethodTransformer.generateApiMethod(sampleContext.methodContext(), sampleContext);
@@ -241,7 +253,7 @@ public abstract class StaticLangGapicSamplesTransformer
           newSampleFileView(
               productConfig, interfaceContext, className, fileName, methodView, methodSampleView));
     }
-    return sampleFileViews.build();
+    return sampleFileViews;
   }
 
   private StaticLangFileView newSampleFileView(
@@ -283,4 +295,10 @@ public abstract class StaticLangGapicSamplesTransformer
   }
 
   protected abstract ClientMethodType fromCallingForm(CallingForm callingForm);
+
+  /** Generates entry point file for the sample package. Used in C# only for now. */
+  @Nullable
+  protected SampleEntryPointView generateSampleEntryPoint(InterfaceContext interfaceContext) {
+    return null;
+  }
 }
