@@ -759,10 +759,14 @@ public class Hopper {
    * import java.util.Map;
    */
 
+  public static void sampleGetBigBook() {
+    String shelf = "Novel\\\"`\b\t\n\r";
+    sampleGetBigBook(shelf);
+  }
+
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelf = "Novel\\\"`\b\t\n\r";
       ShelfBookName name = ShelfBookName.of(shelf, "War and Peace");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -863,6 +867,12 @@ public class PublishSeriesRequestPiVersion {
    * import java.util.List;
    */
 
+  public static void samplePublishSeries() {
+    String shelfName = "[Math]";
+    int edition = 123;
+    samplePublishSeries(shelfName, edition);
+  }
+
   /**
    * Testing &lt;{@literal @}calling forms&gt;
    *
@@ -871,8 +881,6 @@ public class PublishSeriesRequestPiVersion {
    */
   public static void samplePublishSeries(String shelfName, int edition) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelfName = "[Math]";
-      // edition = 123;
       Shelf shelf = Shelf.newBuilder()
         .setName(shelfName)
         .build();
@@ -1457,10 +1465,14 @@ public class TestFloatAndInt64 {
    * import java.util.Map;
    */
 
+  public static void sampleTestOptionalRequiredFlatteningParams() {
+    float paramFloat = 1.2345F;
+    long paramLong = 67890L;
+    sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong);
+  }
+
   public static void sampleTestOptionalRequiredFlatteningParams(float paramFloat, long paramLong) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // paramFloat = 1.2345F;
-      // paramLong = 67890L;
       int requiredSingularInt32 = 0;
       double requiredSingularDouble = 0.0;
       boolean requiredSingularBool = false;
@@ -1873,6 +1885,12 @@ public class ThisTagShouldBeTheNameOfTheFile {
    * import com.google.example.library.v1.ShelfBookName;
    */
 
+  public static void sampleGetBigBook() {
+    String shelf = "Novel";
+    String bigBookName = "War and Peace";
+    sampleGetBigBook(shelf, bigBookName);
+  }
+
   /**
    * Testing resource name overlap
    *
@@ -1882,8 +1900,6 @@ public class ThisTagShouldBeTheNameOfTheFile {
    */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      // shelf = "Novel";
-      // bigBookName = "War and Peace";
       ShelfBookName name = ShelfBookName.of(shelf, bigBookName);
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
@@ -1975,14 +1991,18 @@ public class Turing {
    * import java.nio.file.Paths;
    */
 
+  public static void sampleDiscussBook() {
+    String imageFileName = "image_file.jpg";
+    Comment.Stage stage = Comment.Stage.DRAFT;
+    sampleDiscussBook(imageFileName, stage);
+  }
+
   /** Testing calling forms */
   public static void sampleDiscussBook(String imageFileName, Comment.Stage stage) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
-      // imageFileName = "image_file.jpg";
-      // stage = Comment.Stage.DRAFT;
       ShelfBookName name = ShelfBookName.of("[SHELF_ID]", "[BOOK_ID]");
       Path path = Paths.get("comment_file");
       byte[] data = Files.readAllBytes(path);

@@ -38,6 +38,13 @@
         {@commentedImportList(sample.sampleImports.appImports)}
 
       @end
+      @if sample.sampleInitCode.argDefaultLines
+        public static void {@sample.sampleFunctionName}() {
+          {@initCodeLines(@sample.sampleInitCode.argDefaultLines)}
+          {@sample.sampleFunctionName}({@commaSeparatedArgs(sample.sampleInitCode.argDefaultParams)});
+        }
+
+      @end
       @if not(sample.sampleFunctionDoc.isEmpty)
         {@processDoc(sample.sampleFunctionDoc)}
       @end
