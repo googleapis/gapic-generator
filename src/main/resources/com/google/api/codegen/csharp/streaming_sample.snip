@@ -34,7 +34,7 @@
         while (!done)
         {
             // Initialize a request
-            {@standaloneSampleInitCode(sample.sampleInitCode)}
+            {@topLevelInitCode(sample.sampleInitCode)}
             // Stream a request to the server
             await duplexStream.WriteAsync(request);
             
@@ -53,7 +53,7 @@
     {@asyncSampleFunction(sample)}
     {
         {@asyncClient(apiMethod)}
-        {@standaloneSampleInitCode(sample.sampleInitCode)}
+        {@topLevelInitCode(sample.sampleInitCode)}
         
         {@serverStreamingMethodCall(apiMethod, sample)}
         await responseStream.ForEachAsync(item =>
