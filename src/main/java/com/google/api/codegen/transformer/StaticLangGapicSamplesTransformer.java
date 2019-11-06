@@ -100,8 +100,8 @@ public abstract class StaticLangGapicSamplesTransformer
 
     List<ViewModel> sampleFiles;
 
-    // We don't have sample configs. Continue to use gapic config.
     if (sampleConfigTable.isEmpty()) {
+      // We don't have sample configs. Continue to use gapic config.
       sampleFiles = generateSamplesFromGapicConfigs(interfaceContexts, productConfig, namer);
     } else {
       // Generate samples using sample configs.
