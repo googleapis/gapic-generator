@@ -1,28 +1,14 @@
 @extends "java/common.snip"
 
 @snippet initCode(initCodeSpec)
-  @if initCodeSpec.argDefaultLines
-    @join line : util.pretty(argDefaultLines(initCodeSpec.argDefaultLines))
-      // {@line}
-    @end
-
-
-  @end
   {@initCodeLinesWithDescriptions(initCodeSpec.lines)}
 @end
 
-@private initCodeLines(lines)
+@snippet initCodeLines(lines)
   @join line : lines
     {@initCodeLine(TRUE, line)}
   @end
 @end
-
-@private argDefaultLines(lines)
-  @join line : lines
-    {@initCodeLine(FALSE, line)}
-  @end
-@end
-
 
 @private initCodeLinesWithDescriptions(lines)
   @join line : lines
