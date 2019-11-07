@@ -2432,6 +2432,7 @@ class LibraryServiceGapicClient
     private static $archiveBookNameTemplate;
     private static $archivedBookNameTemplate;
     private static $bookNameTemplate;
+    private static $bookFromArchiveNameTemplate;
     private static $folderNameTemplate;
     private static $locationNameTemplate;
     private static $projectNameTemplate;
@@ -2485,6 +2486,15 @@ class LibraryServiceGapicClient
         }
 
         return self::$bookNameTemplate;
+    }
+
+    private static function getBookFromArchiveNameTemplate()
+    {
+        if (self::$bookFromArchiveNameTemplate == null) {
+            self::$bookFromArchiveNameTemplate = new PathTemplate('archives/{archive}/books/{book}');
+        }
+
+        return self::$bookFromArchiveNameTemplate;
     }
 
     private static function getFolderNameTemplate()
@@ -2549,6 +2559,7 @@ class LibraryServiceGapicClient
                 'archiveBook' => self::getArchiveBookNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
+                'bookFromArchive' => self::getBookFromArchiveNameTemplate(),
                 'folder' => self::getFolderNameTemplate(),
                 'location' => self::getLocationNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
@@ -2606,6 +2617,23 @@ class LibraryServiceGapicClient
     {
         return self::getBookNameTemplate()->render([
             'book_shelf' => $bookShelf,
+            'book' => $book,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a book_from_archive resource.
+     *
+     * @param string $archive
+     * @param string $book
+     * @return string The formatted book_from_archive resource.
+     * @experimental
+     */
+    public static function bookFromArchiveName($archive, $book)
+    {
+        return self::getBookFromArchiveNameTemplate()->render([
+            'archive' => $archive,
             'book' => $book,
         ]);
     }
@@ -2715,6 +2743,7 @@ class LibraryServiceGapicClient
      * - archiveBook: archives/{archive}/books/{book}
      * - archivedBook: archives/{archive}/books/{book}
      * - book: bookShelves/{book_shelf}/books/{book}
+     * - bookFromArchive: archives/{archive}/books/{book}
      * - folder: folders/{folder}
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}

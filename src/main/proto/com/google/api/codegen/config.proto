@@ -161,6 +161,14 @@ message InterfaceConfigProto {
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;
 
+  // A list of configurations for deprecated resource collections.
+  //
+  // This field is introduced to avoid breaking changes in client surface and 
+  // make the migration to proto annoations smoother. The generator will continue
+  // to generate resource name classes or helper functions for these resources,
+  // and mark the as deprecated.
+  repeated DeprecatedCollectionConfigProto deprecated_collections = 11;
+
   // A list of method configurations.
   repeated MethodConfigProto methods = 20;
 
@@ -202,6 +210,15 @@ message CollectionConfigProto {
 
   repeated CollectionLanguageOverridesProto language_overrides = 3;
 }
+
+message DeprecatedCollectionConfigProto {
+  // The pattern of the deprecated resource name.
+  string name_pattern = 1;
+  
+  // The entity name of the deprecated resource name.
+  string entity_name = 2;
+}
+
 
 message CollectionLanguageOverridesProto {
   // The language of the generated code.
