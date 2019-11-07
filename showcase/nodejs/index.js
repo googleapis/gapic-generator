@@ -50,6 +50,7 @@ function runTest(client, opts) {
     testChat(client);
   }
   testPagedExpand(client);
+  testPagedExpandStream(client);
   testWait(client);
 }
 
@@ -94,6 +95,28 @@ function testPagedExpand(client) {
     };
     const [response] = await client.pagedExpand(request);
     const result = response.map(r => r.content);
+    assert.deepStrictEqual(words, result);
+  });
+}
+
+function testPagedExpandStream(client) {
+  it('pagedExpand with streaming', async () => {
+    const words = ['I', 'did', 'not', 'even', 'know', 'it', 'works'];
+    const request = {
+      content: words.join(' '),
+      pageSize: 2,
+    };
+    const result = await new Promise((resolve, reject) => {
+      const stream = client.pagedExpandStream(request);
+      const result = [];
+      stream.on('data', response => {
+        result.push(response.content);
+      });
+      stream.on('end', () => {
+        resolve(result);
+      });
+      stream.on('error', reject);
+    });
     assert.deepStrictEqual(words, result);
   });
 }
