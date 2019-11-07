@@ -73,7 +73,7 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
 
     return [
         DefaultInfo(
-            files = depset(direct = outputs)
+            files = depset(direct = outputs),
         ),
         GapicInfo(
             main = output_main,
@@ -99,10 +99,10 @@ _py_gapic_postprocessed_srcjar = rule(
         ),
     },
     outputs = {
-      "main": "%{name}.srcjar",
-      "test": "%{name}-test.srcjar",
-      "smoke_test": "%{name}-smoke-test.srcjar",
-      "pkg": "%{name}-pkg.srcjar",
+        "main": "%{name}.srcjar",
+        "test": "%{name}-test.srcjar",
+        "smoke_test": "%{name}-smoke-test.srcjar",
+        "pkg": "%{name}-pkg.srcjar",
     },
     doc = """Runs Python-specific post-processing for the generated GAPIC
     client.
@@ -117,6 +117,7 @@ def py_gapic_srcjar(
         gapic_yaml,
         service_yaml,
         package,
+        grpc_service_config = None,
         **kwargs):
     """Generates the Python GAPIC client, performing Python-specific
     postprocessing on the generated client.
@@ -131,6 +132,7 @@ def py_gapic_srcjar(
         artifact_type = "GAPIC_CODE",
         language = "python",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -147,12 +149,13 @@ def py_gapic_library(
         service_yaml,
         package = None,
         deps = [],
+        grpc_service_config = None,
         **kwargs):
     """Generates the Python GAPIC client into a Python library for the main src
     and the tests.
     """
     srcjar_name = "%s_srcjar" % name
-    converted_src_name = "%s_desc" % name;
+    converted_src_name = "%s_desc" % name
 
     _py_desc_converter(
         name = converted_src_name,
@@ -165,6 +168,7 @@ def py_gapic_library(
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 

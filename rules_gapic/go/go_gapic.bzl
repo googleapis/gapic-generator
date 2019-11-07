@@ -76,7 +76,7 @@ _go_gapic_postprocessed_srcjar = go_rule(
     },
 )
 
-def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
+def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, grpc_service_config = None, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -87,6 +87,7 @@ def go_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         artifact_type = "GAPIC_CODE",
         language = "go",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -104,6 +105,7 @@ def go_gapic_library(
         importpath,
         package = None,
         deps = [],
+        grpc_service_config = None,
         **kwargs):
     srcjar_name = "%s_srcjar" % name
     # TODO: make smoke_tests compilable (remove /internal/ dependency from generated code)
@@ -115,6 +117,7 @@ def go_gapic_library(
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 

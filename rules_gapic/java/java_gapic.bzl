@@ -77,6 +77,7 @@ def java_gapic_srcjar(
         service_yaml,
         artifact_type,
         package,
+        grpc_service_config = None,
         **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
@@ -88,6 +89,7 @@ def java_gapic_srcjar(
         artifact_type = artifact_type,
         language = "java",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -128,10 +130,10 @@ def java_gapic_library(
         service_yaml,
         package = None,
         gen_resource_name = True,
+        grpc_service_config = None,
         deps = [],
         test_deps = [],
         **kwargs):
-
     srcjar_name = "%s_srcjar" % name
     java_gapic_srcjar(
         name = srcjar_name,
@@ -140,6 +142,7 @@ def java_gapic_library(
         service_yaml = service_yaml,
         artifact_type = "GAPIC_CODE",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
