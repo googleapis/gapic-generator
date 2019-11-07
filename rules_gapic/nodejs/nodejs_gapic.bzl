@@ -74,7 +74,7 @@ _nodejs_gapic_postprocessed_srcjar = rule(
     },
 )
 
-def nodejs_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
+def nodejs_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, grpc_service_config = None, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -85,6 +85,7 @@ def nodejs_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         artifact_type = "GAPIC_CODE",
         language = "nodejs",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -94,7 +95,7 @@ def nodejs_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         **kwargs
     )
 
-def nodejs_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], **kwargs):
+def nodejs_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], grpc_service_config = None, **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     nodejs_gapic_srcjar(
@@ -103,6 +104,7 @@ def nodejs_gapic_library(name, src, gapic_yaml, service_yaml, package = None, de
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
