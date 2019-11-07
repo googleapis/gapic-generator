@@ -215,12 +215,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     DiagCollector diagCollector = model.getDiagReporter().getDiagCollector();
 
     ProtoFile packageProtoFile = sourceProtos.isEmpty() ? null : sourceProtos.get(0);
-
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs;
     ResourceNameMessageConfigs messageConfigs;
     if (protoParser.isProtoAnnotationsEnabled()) {
       Map<String, ResourceDescriptorConfig> descriptorConfigMap =
-          protoParser.getResourceDescriptorConfigMap(model.getFiles(), diagCollector);
+          protoParser.getResourceDescriptorConfigMap(
+              model.getFiles(), diagCollector, packageProtoFile);
 
       List<ResourceReference> fieldsWithResourceRefs =
           model

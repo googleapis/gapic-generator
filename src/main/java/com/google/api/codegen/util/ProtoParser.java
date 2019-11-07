@@ -178,9 +178,13 @@ public class ProtoParser {
     return getMethodAnnotation(method, AnnotationsProto.http);
   }
 
-  /** Return a Map of Unified Resource Types to a ResourceDescriptorConfig object. */
+  /**
+   * Return a Map of Unified Resource Types to a ResourceDescriptorConfig object. Note it is not
+   * always correct to use the file where the resource is defined to generate the package of the
+   * resource name classes. We should use one of the API's source protos.
+   */
   public Map<String, ResourceDescriptorConfig> getResourceDescriptorConfigMap(
-      List<ProtoFile> protoFiles, DiagCollector diagCollector) {
+      List<ProtoFile> protoFiles, DiagCollector diagCollector, ProtoFile fileForPackageGeneration) {
     ImmutableMap.Builder<String, ResourceDescriptorConfig> mapBuilder = ImmutableMap.builder();
 
     // Maps base names to ResourceDescriptors. Used to check redeclarations.
@@ -194,14 +198,16 @@ public class ProtoParser {
 
       // Get Resource[Set] definitions from file-level annotations.
       for (ResourceDescriptor definition : getFileLevelResourceDescriptors(protoFile)) {
-        collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
+        collectResourceDescriptor(
+            diagCollector, localDefs, mapBuilder, definition, fileForPackageGeneration);
       }
 
       // Get Resource[Set] definitions from fields in message types.
       for (MessageType message : protoFile.getMessages()) {
         ResourceDescriptor definition = getResourceDescriptor(message);
         if (definition != null) {
-          collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
+          collectResourceDescriptor(
+              diagCollector, localDefs, mapBuilder, definition, fileForPackageGeneration);
         }
       }
     }

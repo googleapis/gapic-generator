@@ -135,6 +135,7 @@ public abstract class ResourceDescriptorConfig {
                       .setEntityId(nameMap.get(p).toUpperCamel())
                       .setEntityName(overrideConfig.getEntityName())
                       .setCommonResourceName(overrideConfig.getCommonResourceName())
+                      .setAssignedProtoFile(protoFile)
                       .build();
                 } else {
                   return SingleResourceNameConfig.newBuilder()
@@ -142,6 +143,7 @@ public abstract class ResourceDescriptorConfig {
                       .setNameTemplate(PathTemplate.create(p))
                       .setEntityId(nameMap.get(p).toUpperCamel())
                       .setEntityName(nameMap.get(p))
+                      .setAssignedProtoFile(protoFile)
                       .build();
                 }
               })
