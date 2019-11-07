@@ -61,6 +61,14 @@ interfaces:
         language_overrides:
           - language: java
             entity_name: shelf_book
+    deprecated_collections:
+    # Test generating a deprecated resource name that has the same entity name
+    # as a non-deprecated one
+    - entity_name: project_book
+      name_pattern: "projects/{project}/books/{book}"
+    # Test generating a deprecated resource name with a unique entity name
+    - entity_name: book_from_archive
+      name_pattern: "archives/{archive}/books/{book}"
     smoke_test:
       method: UpdateBook
       init_fields:

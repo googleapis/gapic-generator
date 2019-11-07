@@ -29,6 +29,7 @@ def ruby_proto_library(name, deps, **kwargs):
 
 def ruby_grpc_library(name, srcs, deps, **kwargs):
     srcjar_target_name = name
+
     # `deps` is not used now but may be used if ruby_grpc_library ever tries to "compile" its output
     proto_custom_library(
         name = srcjar_target_name,
@@ -106,11 +107,11 @@ _ruby_gapic_postprocessed_srcjar = rule(
         "main": "%{name}.srcjar",
         "test": "%{name}-test.srcjar",
         "smoke_test": "%{name}-smoke-test.srcjar",
-        "pkg": "%{name}-pkg.srcjar"
+        "pkg": "%{name}-pkg.srcjar",
     },
 )
 
-def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
+def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, grpc_service_config = None, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -121,6 +122,7 @@ def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         artifact_type = "LEGACY_GAPIC_AND_PACKAGE",
         language = "ruby",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -130,7 +132,7 @@ def ruby_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         **kwargs
     )
 
-def ruby_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], **kwargs):
+def ruby_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], grpc_service_config = None, **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     ruby_gapic_srcjar(
@@ -139,6 +141,7 @@ def ruby_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 

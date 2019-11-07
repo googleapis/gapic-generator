@@ -32,8 +32,11 @@ public abstract class ParseResourceFunctionView {
 
   public abstract String outputResourceId();
 
+  /** True iff this resource name will cease to exist in the proto annotation world. */
+  public abstract boolean isResourceNameDeprecated();
+
   public static Builder newBuilder() {
-    return new AutoValue_ParseResourceFunctionView.Builder();
+    return new AutoValue_ParseResourceFunctionView.Builder().isResourceNameDeprecated(false);
   }
 
   @AutoValue.Builder
@@ -51,6 +54,8 @@ public abstract class ParseResourceFunctionView {
     public abstract Builder entityNameTypeName(String val);
 
     public abstract Builder outputResourceId(String val);
+
+    public abstract Builder isResourceNameDeprecated(boolean val);
 
     public abstract ParseResourceFunctionView build();
   }

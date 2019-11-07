@@ -5044,6 +5044,9 @@ class LibraryServiceClient {
       bookPathTemplate: new gaxModule.PathTemplate(
         'bookShelves/{book_shelf}/books/{book}'
       ),
+      bookFromArchivePathTemplate: new gaxModule.PathTemplate(
+        'archives/{archive}/books/{book}'
+      ),
       folderPathTemplate: new gaxModule.PathTemplate(
         'folders/{folder}'
       ),
@@ -7724,6 +7727,21 @@ class LibraryServiceClient {
   }
 
   /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
+   * Return a fully-qualified book_from_archive resource name string.
+   *
+   * @param {String} archive
+   * @param {String} book
+   * @returns {String}
+   */
+  bookFromArchivePath(archive, book) {
+    return this._pathTemplates.bookFromArchivePathTemplate.render({
+      archive: archive,
+      book: book,
+    });
+  }
+
+  /**
    * Return a fully-qualified folder resource name string.
    *
    * @param {String} folder
@@ -7762,6 +7780,7 @@ class LibraryServiceClient {
   }
 
   /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Return a fully-qualified project_book resource name string.
    *
    * @param {String} project
@@ -7882,6 +7901,34 @@ class LibraryServiceClient {
   }
 
   /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
+   * Parse the bookFromArchiveName from a book_from_archive resource.
+   *
+   * @param {String} bookFromArchiveName
+   *   A fully-qualified path representing a book_from_archive resources.
+   * @returns {String} - A string representing the archive.
+   */
+  matchArchiveFromBookFromArchiveName(bookFromArchiveName) {
+    return this._pathTemplates.bookFromArchivePathTemplate
+      .match(bookFromArchiveName)
+      .archive;
+  }
+
+  /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
+   * Parse the bookFromArchiveName from a book_from_archive resource.
+   *
+   * @param {String} bookFromArchiveName
+   *   A fully-qualified path representing a book_from_archive resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromBookFromArchiveName(bookFromArchiveName) {
+    return this._pathTemplates.bookFromArchivePathTemplate
+      .match(bookFromArchiveName)
+      .book;
+  }
+
+  /**
    * Parse the folderName from a folder resource.
    *
    * @param {String} folderName
@@ -7934,6 +7981,7 @@ class LibraryServiceClient {
   }
 
   /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the projectBookName from a project_book resource.
    *
    * @param {String} projectBookName
@@ -7947,6 +7995,7 @@ class LibraryServiceClient {
   }
 
   /**
+   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the projectBookName from a project_book resource.
    *
    * @param {String} projectBookName

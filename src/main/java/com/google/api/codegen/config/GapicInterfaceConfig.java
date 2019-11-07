@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
+import com.google.api.codegen.DeprecatedCollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
@@ -193,6 +194,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
         }
         resourcesBuilder.add((SingleResourceNameConfig) resourceName);
       }
+    } else {
+      addDeprecatedResources(diagCollector, resourcesBuilder, interfaceConfigProto, language);
     }
     ImmutableSet<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
@@ -285,6 +288,23 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return ImmutableMap.copyOf(methodConfigMapBuilder);
+    }
+  }
+
+  /** Add deprecated resource definitions into singleResources. */
+  private static void addDeprecatedResources(
+      DiagCollector diagCollector,
+      ImmutableSet.Builder<SingleResourceNameConfig> singleResources,
+      InterfaceConfigProto interfaceConfigProto,
+      TargetLanguage targetLanguage) {
+    for (DeprecatedCollectionConfigProto deprecatedResource :
+        interfaceConfigProto.getDeprecatedCollectionsList()) {
+      // We can safely assign null here; wedon't care about assigned proto file
+      // for deprecated resource names
+      SingleResourceNameConfig deprecatedResourceConfig =
+          SingleResourceNameConfig.createDeprecatedSingleResourceName(
+              diagCollector, deprecatedResource, null, targetLanguage);
+      singleResources.add(deprecatedResourceConfig);
     }
   }
 

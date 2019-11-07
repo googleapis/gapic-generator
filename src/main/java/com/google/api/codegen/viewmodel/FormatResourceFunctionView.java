@@ -33,8 +33,11 @@ public abstract class FormatResourceFunctionView {
 
   public abstract String pattern();
 
+  /** True iff this resource name will cease to exist in the proto annotation world. */
+  public abstract boolean isResourceNameDeprecated();
+
   public static Builder newBuilder() {
-    return new AutoValue_FormatResourceFunctionView.Builder();
+    return new AutoValue_FormatResourceFunctionView.Builder().isResourceNameDeprecated(false);
   }
 
   @AutoValue.Builder
@@ -52,6 +55,8 @@ public abstract class FormatResourceFunctionView {
     public abstract Builder pathTemplateGetterName(String val);
 
     public abstract Builder pattern(String val);
+
+    public abstract Builder isResourceNameDeprecated(boolean val);
 
     public abstract FormatResourceFunctionView build();
   }

@@ -29,6 +29,7 @@ def php_proto_library(name, deps, **kwargs):
 
 def php_grpc_library(name, srcs, deps, **kwargs):
     srcjar_target_name = name
+
     # `deps` is not used now but may be used if php_grpc_library ever tries to "compile" its output
     proto_custom_library(
         name = srcjar_target_name,
@@ -99,14 +100,14 @@ _php_gapic_postprocessed_srcjar = rule(
         "code_sniffer": attr.label(
             default = Label("@php_code_sniffer//file"),
             allow_single_file = True,
-            cfg = "host"
+            cfg = "host",
         ),
         "php": attr.label(
             default = Label("@php//:bin/php"),
             allow_single_file = True,
             executable = True,
-            cfg = "host"
-        )
+            cfg = "host",
+        ),
     },
     outputs = {
         "main": "%{name}.srcjar",
@@ -114,7 +115,7 @@ _php_gapic_postprocessed_srcjar = rule(
     },
 )
 
-def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
+def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, grpc_service_config = None, **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
     gapic_srcjar(
@@ -125,6 +126,7 @@ def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         artifact_type = "GAPIC_CODE",
         language = "php",
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
@@ -134,7 +136,7 @@ def php_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, **kwargs):
         **kwargs
     )
 
-def php_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], **kwargs):
+def php_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], grpc_service_config = None, **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     php_gapic_srcjar(
@@ -143,6 +145,7 @@ def php_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps 
         gapic_yaml = gapic_yaml,
         service_yaml = service_yaml,
         package = package,
+        grpc_service_config = grpc_service_config,
         **kwargs
     )
 
