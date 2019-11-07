@@ -129,7 +129,15 @@ def csharp_gapic_srcjar(name, src, gapic_yaml, service_yaml, package, grpc_servi
         **kwargs
     )
 
-def csharp_gapic_library(name, src, gapic_yaml, service_yaml, package = None, deps = [], grpc_service_config = None, **kwargs):
+def csharp_gapic_library(
+        name,
+        src,
+        gapic_yaml,
+        service_yaml,
+        package = None,
+        deps = [],
+        grpc_service_config = None,
+        **kwargs):
     srcjar_name = "%s_srcjar" % name
 
     csharp_gapic_srcjar(
