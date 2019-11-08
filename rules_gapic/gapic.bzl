@@ -333,7 +333,7 @@ def _calculate_import_prefix(strip_import_prefix):
         # domain, it serves only as a convenient default value).
         if i == 1 and tokens[0] == "google" and t != "cloud":
             new_tokens.append("cloud")
-        if len(t) > 2 and t[0] == "v" and t[1].isdigit() and i == tokens_len - 1:
+        if len(t) >= 2 and t[0] == "v" and t[1].isdigit() and i == tokens_len - 1:
             last_index = len(new_tokens) - 1
             new_tokens[last_index] = "%s_%s" % (new_tokens[last_index], t)
         else:
