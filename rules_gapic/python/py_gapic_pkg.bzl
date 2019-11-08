@@ -93,6 +93,7 @@ def py_gapic_assembly_pkg(name, deps, **kwargs):
         if dep.endswith("_py_gapic"):
             put_dep_in_a_bucket("%s_test" % dep, actual_deps, processed_deps)
             put_dep_in_a_bucket("%s_srcjar-test.srcjar" % dep, actual_deps, processed_deps)
+            put_dep_in_a_bucket("%s_srcjar-smoke-test.srcjar" % dep, actual_deps, processed_deps)
             put_dep_in_a_bucket("%s_srcjar-pkg.srcjar" % dep, actual_deps, processed_deps)
 
     _py_gapic_src_pkg(
