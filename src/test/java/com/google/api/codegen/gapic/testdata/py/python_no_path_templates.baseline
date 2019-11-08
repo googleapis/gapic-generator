@@ -284,61 +284,6 @@ Next Steps
 
 .. _Google Fake API Product documentation:  https://cloud.google.com/library
 .. _repository’s main README: https://github.com/googleapis/google-cloud-python/blob/master/README.rst
-============== file: docs/_static/custom.css ==============
-div#python2-eol {
-	border-color: red;
-	border-width: medium;
-} 
-============== file: docs/_templates/layout.html ==============
-{% extends "!layout.html" %}
-{%- block content %}
-{%- if theme_fixed_sidebar|lower == 'true' %}
-  <div class="document">
-    {{ sidebar() }}
-    {%- block document %}
-      <div class="documentwrapper">
-      {%- if render_sidebar %}
-        <div class="bodywrapper">
-      {%- endif %}
-
-          {%- block relbar_top %}
-            {%- if theme_show_relbar_top|tobool %}
-              <div class="related top">
-                &nbsp;
-                {{- rellink_markup () }}
-              </div>
-            {%- endif %}
-          {% endblock %}
-
-          <div class="body" role="main">
-          	<div class="admonition" id="python2-eol"> 
-          	 On January 1, 2020 this library will no longer support Python 2 on the latest released version. 
-          	 Previously released library versions will continue to be available. For more information please
-          	 visit <a href="https://cloud.google.com/python/docs/python2-sunset/">Python 2 support on Google Cloud</a>.
-          	</div>
-            {% block body %} {% endblock %}
-          </div>
-
-          {%- block relbar_bottom %}
-            {%- if theme_show_relbar_bottom|tobool %}
-              <div class="related bottom">
-                &nbsp;
-                {{- rellink_markup () }}
-              </div>
-            {%- endif %}
-          {% endblock %}
-
-      {%- if render_sidebar %}
-        </div>
-      {%- endif %}
-      </div>
-    {%- endblock %}
-    <div class="clearer"></div>
-  </div>
-{%- else %}
-{{ super() }}
-{%- endif %}
-{%- endblock %}
 ============== file: docs/conf.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -506,7 +451,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = []
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

@@ -83,8 +83,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
           .put("py/README.rst.snip", "README.rst")
           .put("py/docs/conf.py.snip", "docs/conf.py")
           .put("py/docs/index.rst.snip", "docs/index.rst")
-          .put("py/docs/_static/custom.css.snip", "docs/_static/custom.css")
-          .put("py/docs/_templates/layout.html.snip", "docs/_templates/layout.html")
           .build();
   private static final String INIT_TEMPLATE_FILE = "py/__init__.py.snip";
   private static final String NAMESPACE_INIT_TEMPLATE_FILE = "py/namespace__init__.py.snip";
