@@ -18,7 +18,7 @@
       @join mockService : xapiTest.testClass.mockServices
         {@mockService.varName} = new {@mockService.className}();
       @end
-      serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.testClass.mockServices)}));
+      serviceHelper = new MockServiceHelper(UUID.randomUUID().toString(), Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.testClass.mockServices)}));
       serviceHelper.start();
     }
 

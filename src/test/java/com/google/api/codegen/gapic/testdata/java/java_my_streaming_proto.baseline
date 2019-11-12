@@ -1338,6 +1338,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -1356,7 +1357,7 @@ public class MyStreamingServiceClientTest {
   @BeforeClass
   public static void startStaticServer() {
     mockMyStreamingService = new MockMyStreamingService();
-    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockMyStreamingService));
+    serviceHelper = new MockServiceHelper(UUID.randomUUID().toString(), Arrays.<MockGrpcService>asList(mockMyStreamingService));
     serviceHelper.start();
   }
 

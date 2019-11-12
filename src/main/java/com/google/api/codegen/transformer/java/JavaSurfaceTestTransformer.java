@@ -418,6 +418,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         typeTable.saveNicknameFor("java.util.ArrayList");
         typeTable.saveNicknameFor("java.util.Objects");
         typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
+        typeTable.saveNicknameFor("java.util.UUID");
         typeTable.saveNicknameFor("org.junit.Before");
         break;
       case HTTP:
