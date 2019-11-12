@@ -19,6 +19,8 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.MethodContext;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
@@ -57,6 +59,7 @@ import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
@@ -771,6 +774,12 @@ public class InitCodeTransformer {
         // TODO(michaelbausor): handle case where there are no other resource names at all...
         singleResourceNameConfig =
             Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
+        MethodModel methodModel = context.getMethodModel();
+        if (methodModel instanceof ProtoMethodModel) {
+          ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
+          singleResourceNameConfig =
+              singleResourceNameConfig.toBuilder().setAssignedProtoFile(protoFile).build();
+        }
         FieldConfig anyResourceNameFieldConfig =
             fieldConfig.withResourceNameConfig(singleResourceNameConfig);
         return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item)
