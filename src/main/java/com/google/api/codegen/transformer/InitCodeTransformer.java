@@ -775,9 +775,11 @@ public class InitCodeTransformer {
         singleResourceNameConfig =
             Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
         MethodModel methodModel = context.getMethodModel();
-        ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
-        singleResourceNameConfig =
-            singleResourceNameConfig.toBuilder().setAssignedProtoFile(protoFile).build();
+        if (methodModel instanceof ProtoMethodModel) {
+          ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
+          singleResourceNameConfig =
+              singleResourceNameConfig.toBuilder().setAssignedProtoFile(protoFile).build();
+        }
         FieldConfig anyResourceNameFieldConfig =
             fieldConfig.withResourceNameConfig(singleResourceNameConfig);
         return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item)
