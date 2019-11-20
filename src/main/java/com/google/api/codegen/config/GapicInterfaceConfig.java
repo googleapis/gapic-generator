@@ -299,7 +299,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       TargetLanguage targetLanguage) {
     for (DeprecatedCollectionConfigProto deprecatedResource :
         interfaceConfigProto.getDeprecatedCollectionsList()) {
-      // We can safely assign null here; wedon't care about assigned proto file
+      // We can safely assign null here; we don't care about assigned proto file
       // for deprecated resource names
       SingleResourceNameConfig deprecatedResourceConfig =
           SingleResourceNameConfig.createDeprecatedSingleResourceName(
