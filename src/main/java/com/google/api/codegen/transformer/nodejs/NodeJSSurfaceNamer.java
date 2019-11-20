@@ -655,6 +655,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean usesAsyncAwaitPattern(CallingForm form) {
-    return form == CallingForm.LongRunningPromiseAwait;
+    return true;
   }
 }

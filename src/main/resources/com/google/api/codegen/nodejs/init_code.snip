@@ -1,13 +1,6 @@
 @extends "nodejs/common.snip"
 
 @snippet initCode(apiMethod, init)
-  @if init.argDefaultLines
-    @join line : util.pretty(initCodeLines(init.argDefaultLines))
-      // {@line}
-    @end
-
-
-  @end
   {@initCodeLinesWithDescriptions(init.lines)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
@@ -119,6 +112,8 @@
     @case "0"
     @case "1"
     @default
+
+      // Construct request
       const request = {
         @join fieldSetting : init.fieldSettings on BREAK
           {@fieldSetting.fieldName}: {@fieldSetting.identifier},

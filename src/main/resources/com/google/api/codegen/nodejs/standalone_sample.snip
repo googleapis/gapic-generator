@@ -20,18 +20,31 @@
 
       'use strict';
 
-      // [START {@sample.regionTag}]
-      {@standaloneSample(apiMethod, sample)}
-      // [END {@sample.regionTag}]
+      function main({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
+        // [START {@sample.regionTag}]
+        @if not(sample.sampleInitCode.argDefaultParams.isEmpty)
+          /**
+          * TODO(developer): Uncomment these variables before running the sample.
+          */
+          @join param : @sample.sampleInitCode.argDefaultParams
+            // const {@param.identifier} = {@renderInitValue(param.initValue)};
+          @end
+        @end
 
+        {@standaloneSample(apiMethod, sample)}
+        // [END {@sample.regionTag}]
+      }
+
+      // ...
+      // OLD BELOW HERE FOR REFERENCE and REFACTORING :)
       @if sample.sampleInitCode.argDefaultParams
         {@processCliArguments(sample)}
 
       @end
       @if sample.callingForm == "LongRunningPromiseAwait"
-        {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)}).catch(console.error);
+        main({@argvArgs(sample.sampleInitCode.argDefaultParams)}).catch(console.error);
       @else
-       {@sample.sampleFunctionName}({@argvArgs(sample.sampleInitCode.argDefaultParams)});
+        main({@argvArgs(sample.sampleInitCode.argDefaultParams)});
       @end
     @end
   @end
@@ -41,7 +54,9 @@
 #
 # FIXME: Replace the following function calls with calls to functions that emit full standalone samples. These stubs have been adapted from method_sample.snip
 @snippet standaloneSample(apiMethod, sample)
-
+  # Hard coded for 'Google Cloud' – looking for a data view way of accessing
+  # the API name sucg as 'Google Cloud Language API'
+  // Imports the client library
   @if apiMethod.hasApiVersion
     const {{@apiMethod.apiClassName}} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion};
   @else
@@ -54,15 +69,10 @@
     @end
 
   @end
-  @if not(sample.sampleFunctionDoc.isEmpty)
-    {@processDoc(sample.sampleFunctionDoc)}
-  @end
-  @if sample.usesAsyncAwaitPattern
-    async function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
-  @else
-    function {@sample.sampleFunctionName}({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
-  @end
-    const client = new {@apiMethod.apiClassName}();
+  // Instantiates a client
+  const {@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+
+  async function {@sample.sampleFunctionName}() {
     @switch sample.callingForm
     @case "Request"
       @if apiMethod.hasReturnValue
@@ -93,6 +103,7 @@
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
   }
+  {@sample.sampleFunctionName}();
 
 @end
 
@@ -140,7 +151,7 @@
 
 @private formalArgs(sampleArgs)
   @join param : sampleArgs on ", "
-    {@param.identifier}
+    {@param.identifier} = {@renderInitValue(param.initValue)}
   @end
 @end
 
@@ -152,18 +163,16 @@
 
 @private methodCallSampleCodeWithReturnValue(apiMethod, sample)
   {@initCode(apiMethod, sample.sampleInitCode)}
+
+  // Run request
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
-    .then(responses => {
-      const response = responses[0];
-      {@processResponse(sample)}
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  {@processResponse(sample)}
 @end
 
 @private methodCallSampleCodeWithoutReturnValue(apiMethod, sample)
   {@initCode(apiMethod, sample.sampleInitCode)}
+
+  // Run request
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
     console.error(err);
   });
@@ -192,10 +201,10 @@
     }
     if (nextRequest) {
       // Fetch the next page.
-      return client.{@apiMethod.name}(nextRequest, options).then(callback);
+      return {@apiMethod.apiVariableName}.{@apiMethod.name}(nextRequest, options).then(callback);
     }
   }
-  client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod, sample.sampleInitCode)}options)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod, sample.sampleInitCode)}options)
     .then(callback)
     .catch(err => {
       console.error(err);
@@ -221,7 +230,7 @@
 @end
 
 @snippet bidiStreamingSampleCode(apiMethod, sample)
-    const stream = client.{@apiMethod.name}().on('data', response => {
+    const stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().on('data', response => {
       {@processResponse(sample)}
     });
     {@initCode(apiMethod, sample.sampleInitCode)}
@@ -229,7 +238,7 @@
 @end
 
 @snippet clientStreamingSampleCode(apiMethod, sample)
-    const stream = client.{@apiMethod.name}((err, response) => {
+    const stream = {@apiMethod.apiVariableName}.{@apiMethod.name}((err, response) => {
       if (err) {
         console.error(err);
         return;
@@ -314,16 +323,16 @@
 @end
 
 @private methodCallSampleCode(apiMethod, init)
-    client.{@apiMethod.name}(\
+    {@apiMethod.apiVariableName}.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod, init)})
 @end
 
 @private methodCallSampleCodePrefix(apiMethod, init)
   @if sampleMethodCallArgList(apiMethod, init)
-    client.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod, init)})
+    const [response] = {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod, init)});
   @else
-    client.{@apiMethod.name}()
+    const [response] = {@apiMethod.apiVariableName}.{@apiMethod.name}();
   @end
 @end
 
