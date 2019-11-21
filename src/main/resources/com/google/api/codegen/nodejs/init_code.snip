@@ -1,6 +1,13 @@
 @extends "nodejs/common.snip"
 
-@snippet initCode(apiMethod, init)
+# isStandalone used to toggle small bits of behavior.
+# initCode always called with ""     from method_sample.snip
+# initCode always called with "true" from standalone_sample.snip
+@snippet initCode(apiMethod, init, isStandalone)
+  # XXX TODO – Pass isStandalone so it gets down to initLineSimple and into
+  #            renderInitValue so that, instead of using `client` in the case
+  #            of FormattedInitValueView, instead we'll use the
+  #            initValue.apiVariableName (which will be fooServiceClient)
   {@initCodeLinesWithDescriptions(init.lines)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
@@ -101,7 +108,11 @@
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
+    // TODO update this to work differently for standalone vs incode
+    // incode (method_sample)
     client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    // standalone (standalone_sample)
+    {@initValue.apiVariableName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
   @default
     $unhandledCase: {@initValue.type}$
   @end
