@@ -40,6 +40,9 @@ import java.util.*;
 @AutoValue
 public abstract class ResourceNameMessageConfigs {
 
+  /**
+   * Get a map from fully qualified message names to resource name configs of its fields.
+   */
   abstract ImmutableMap<String, ResourceNameMessageConfig> getResourceTypeConfigMap();
 
   /**
@@ -61,8 +64,15 @@ public abstract class ResourceNameMessageConfigs {
       for (MessageType message : protoFile.getMessages()) {
         ImmutableMap.Builder<String, String> fieldEntityMapBuilder = ImmutableMap.builder();
 
-        String resourceFieldName = null;
+        // Handle resource definitions.
         ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
+        if (resourceDescriptor != null) {
+          fieldEntityMapBuilder.put(getFieldEntityMapForResourceDefinition(message, resourceDescriptor));
+        }
+
+        // Handle resource references.
+
+
         if (resourceDescriptor != null) {
           resourceFieldName = resourceDescriptor.getNameField();
           if (Strings.isNullOrEmpty(resourceFieldName)) {
@@ -119,6 +129,46 @@ public abstract class ResourceNameMessageConfigs {
     }
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
+  }
+
+  private Map.Entry<String, String> getFieldEntityMapForResourceDefinition(
+      ResourceDescriptor resourceDescriptor,
+      MessageType message) {
+    String resourceFieldName = resourceDescriptor.getNameField();
+    if (resourceFieldName.isEmpty()) {
+      resourceFieldName = "name";
+    }
+    String entityName = resourceDescriptor.getDerivedEntityName();
+    return new AbstractMap.SimpleEntry<>(resourceFieldName, entityName);
+  }
+
+  private Map<String, String> getFieldEntityMapForResourceReference(
+      ProtoParser parser,
+      MessageType message,
+      Map<String, ResourceNameConfig> resourceNameConfigs) {
+    for (Field field : message.getFields()) {
+      ResourceReference reference = parser.getResourceReference(field);
+      if (reference == null) {
+        continue;
+      }
+      String childType = reference.getChildType();
+      String type = reference.getType();
+
+      Preconditions.checkArgument(
+          childType.isEmpty() || type.isEmpty(),
+          "One and only one of child_type and type should be set: %s",
+          field);
+      Preconditions.checkArgument(
+          !childType.isEmpty() && !type.isEmpty(),
+          "One and only one of child_type and type should be set: %s",
+          field);
+
+      if (childType != null) {
+        ResourceDescriptor parentResource = resourceNameConfigs.
+      }
+
+      String type = reference.getType();
+
   }
 
   private static String getResourceDescriptorTypeForField(
