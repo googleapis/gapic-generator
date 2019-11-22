@@ -44,7 +44,8 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line, "")}
+      # Standalone samples do not use this snippet, so use "method" sample.
+      {@initLineSimple(line, "method")}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -54,7 +55,7 @@
 @end
 
 @private initLineReadFile(line)
-  const {@line.identifier} = fs.readFileSync({@renderInitValue(line.fileName)}).toString('base64');
+  const {@line.identifier} = fs.readFileSync({@renderInitValue(line.fileName, "standalone")}).toString('base64');
 @end
 
 @private initLineStructure(line)
