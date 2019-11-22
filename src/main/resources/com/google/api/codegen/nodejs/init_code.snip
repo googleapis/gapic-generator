@@ -8,13 +8,14 @@
   #            renderInitValue so that, instead of using `client` in the case
   #            of FormattedInitValueView, instead we'll use the
   #            initValue.apiVariableName (which will be fooServiceClient)
-  {@initCodeLinesWithDescriptions(init.lines)}
+  {@initCodeLinesWithDescriptions(init.lines, isStandalone)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
   @end
 @end
 
-@private initCodeLinesWithDescriptions(lines)
+# TODO Switch `isStandalone` to `sampleType` with values `method` and `standalone`
+@private initCodeLinesWithDescriptions(lines, isStandalone)
   @join line : lines
     @if line.descriptions
 
@@ -29,7 +30,7 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line)}
+      {@initLineSimple(line, isStandalone)}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -38,6 +39,7 @@
   @end
 @end
 
+# Code Lines (without descriptions) only called from test.snip
 @snippet initCodeLines(lines)
   @join line : lines
     @switch line.lineType.toString
@@ -48,7 +50,7 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line)}
+      {@initLineSimple(line, "")}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -99,20 +101,20 @@
   @end
 @end
 
-@private initLineSimple(line)
-  const {@line.identifier} = {@renderInitValue(line.initValue)};
+@private initLineSimple(line, isStandalone)
+  const {@line.identifier} = {@renderInitValue(line.initValue, isStandalone)};
 @end
 
-@snippet renderInitValue(initValue)
+@snippet renderInitValue(initValue, isStandalone)
   @switch initValue.type
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
-    // TODO update this to work differently for standalone vs incode
-    // incode (method_sample)
-    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
-    // standalone (standalone_sample)
-    {@initValue.apiVariableName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @if isStandalone
+      {@initValue.apiVariableName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @else
+      client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @end
   @default
     $unhandledCase: {@initValue.type}$
   @end

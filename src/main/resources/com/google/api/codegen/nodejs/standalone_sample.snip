@@ -27,7 +27,7 @@
           * TODO(developer): Uncomment these variables before running the sample.
           */
           @join param : @sample.sampleInitCode.argDefaultParams
-            // const {@param.identifier} = {@renderInitValue(param.initValue)};
+            // const {@param.identifier} = {@renderInitValue(param.initValue, "true")};
           @end
         @end
 
@@ -133,7 +133,7 @@
   const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .option('{@param.cliFlagName}', {
-        default: {@renderInitValue(param.initValue)},
+        default: {@renderInitValue(param.initValue, "true")},
         @if param.isEnum
           string: true
         @else
@@ -146,7 +146,7 @@
 
 @private formalArgs(sampleArgs)
   @join param : sampleArgs on ", "
-    {@param.identifier} = {@renderInitValue(param.initValue)}
+    {@param.identifier} = {@renderInitValue(param.initValue, "true")}
   @end
 @end
 
@@ -209,7 +209,6 @@
     });
 @end
 
-# TODO - make this async/await :)
 @private methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)
   @if initCode(apiMethod, sample.sampleInitCode, "true")
     {@initCode(apiMethod, sample.sampleInitCode, "true")}
