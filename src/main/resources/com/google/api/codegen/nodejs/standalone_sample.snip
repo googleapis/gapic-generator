@@ -21,18 +21,22 @@
       'use strict';
 
       function main({@formalArgs(sample.sampleInitCode.argDefaultParams)}) {
-        // [START {@sample.regionTag}]
+        @if sample.regionTag
+          // [START {@sample.regionTag}]
+        @end
         @if not(sample.sampleInitCode.argDefaultParams.isEmpty)
           /**
           * TODO(developer): Uncomment these variables before running the sample.
           */
           @join param : @sample.sampleInitCode.argDefaultParams
-            // const {@param.identifier} = {@renderInitValue(param.initValue, "true")};
+            // const {@param.identifier} = {@renderInitValue(param.initValue, "standalone")};
           @end
         @end
 
         {@standaloneSample(apiMethod, sample)}
-        // [END {@sample.regionTag}]
+        @if sample.regionTag
+          // [END {@sample.regionTag}]
+        @end
       }
 
       @if sample.sampleInitCode.argDefaultParams
@@ -85,7 +89,7 @@
     @case "RequestStreamingClient"
       {@clientStreamingSampleCode(apiMethod, sample)}
     @case "RequestStreamingServer"
-      {@initCode(apiMethod, sample.sampleInitCode, "true")}
+      {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
         {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
           {@processResponse(sample)}
         });
@@ -133,7 +137,7 @@
   const argv = require(`yargs`)
     @join param : sample.sampleInitCode.argDefaultParams
       .option('{@param.cliFlagName}', {
-        default: {@renderInitValue(param.initValue, "true")},
+        default: {@renderInitValue(param.initValue, "standalone")},
         @if param.isEnum
           string: true
         @else
@@ -146,7 +150,7 @@
 
 @private formalArgs(sampleArgs)
   @join param : sampleArgs on ", "
-    {@param.identifier} = {@renderInitValue(param.initValue, "true")}
+    {@param.identifier} = {@renderInitValue(param.initValue, "standalone")}
   @end
 @end
 
@@ -157,7 +161,7 @@
 @end
 
 @private methodCallSampleCodeWithReturnValue(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Run request
   const [response] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
@@ -167,7 +171,7 @@
 
 # TODO – verify still works post-refactoring
 @private methodCallSampleCodeWithoutReturnValue(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Run request
   const [response] = {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
@@ -181,8 +185,8 @@
 # NOTE: This is never called for standalone Node.js samples, but used for incode.
 @private methodCallSampleCodeForPagedResponse(apiMethod, sample)
   // Or obtain the paged response.
-  @if initCode(apiMethod, sample.sampleInitCode, "true")
-    {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  @if initCode(apiMethod, sample.sampleInitCode, "standalone")
+    {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   @end
 
@@ -210,8 +214,8 @@
 @end
 
 @private methodCallSampleCodeForPagedResponseIterative(apiMethod, sample)
-  @if initCode(apiMethod, sample.sampleInitCode, "true")
-    {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  @if initCode(apiMethod, sample.sampleInitCode, "standalone")
+    {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   @end
 
@@ -228,7 +232,7 @@
     const stream = {@apiMethod.apiVariableName}.{@apiMethod.name}().on('data', response => {
       {@processResponse(sample)}
     });
-    {@initCode(apiMethod, sample.sampleInitCode, "true")}
+    {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
@@ -242,13 +246,13 @@
         {@processResponse(sample)}
       @end
     });
-    {@initCode(apiMethod, sample.sampleInitCode, "true")}
+    {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
 # TODO – make sure this still works
 @private methodCallSampleCodeLongrunningEventEmitter(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Handle the operation using the event emitter pattern.
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
@@ -281,7 +285,7 @@
 
 # TODO – make sure this still works
 @private methodCallSampleCodeLongrunningPromise(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Handle the operation using the promise pattern.
   {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
@@ -307,7 +311,7 @@
 
 # TODO – make sure this still works
 @private methodCallSampleCodeLongRunningPromiseAwait(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "true")}
+  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Start long-running operation. You can wait for now or get results later.
   const [operation] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)};

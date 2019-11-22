@@ -53,7 +53,7 @@
   @case "RequestStreamingClient"
     {@clientStreamingSampleCode(apiMethod, sample.sampleInitCode, additionalCallback)}
   @case "RequestStreamingServer"
-    {@initCode(apiMethod, sample.sampleInitCode, "")}
+    {@initCode(apiMethod, sample.sampleInitCode, "method")}
     {@methodCallSampleCode(apiMethod, sample.sampleInitCode)}.on('data', response => {
       @if additionalCallback
         console.log(response);
@@ -78,7 +78,7 @@
 @end
 
 @snippet sampleCodePageStreaming(apiMethod, init, additionalCallback)
-    {@initCode(apiMethod, init, "")}
+    {@initCode(apiMethod, init, "method")}
     client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod, init)})
       @if additionalCallback
         .on('data', element => {
@@ -112,7 +112,7 @@
         // doThingsWith(response)
       @end
     });
-    {@initCode(apiMethod, init, "")}
+    {@initCode(apiMethod, init, "method")}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
@@ -125,7 +125,7 @@
         // doThingsWith(response)
       @end
     });
-    {@initCode(apiMethod, init, "")}
+    {@initCode(apiMethod, init, "method")}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
@@ -137,7 +137,7 @@
 @private optionalArrayMethodSampleCode(apiMethod, init, additionalCallback)
     @switch apiMethod.grpcStreamingType.toString
     @case "ServerStreaming"
-      {@initCode(apiMethod, init, "")}
+      {@initCode(apiMethod, init, "method")}
       {@methodCallSampleCode(apiMethod, init)}.on('data', response => {
         @if additionalCallback
           console.log(response);
@@ -179,8 +179,8 @@
 
 @snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, init, additionalCallback)
   // Iterate over all elements.
-  @if initCode(apiMethod, init, "")
-    {@initCode(apiMethod, init, "")}
+  @if initCode(apiMethod, init, "method")
+    {@initCode(apiMethod, init, "method")}
 
   @end
   {@methodCallSampleCodePrefix(apiMethod, init)}
@@ -200,8 +200,8 @@
 @snippet methodCallSampleCodeForPagedResponse(apiMethod, init, additionalCallback)
     // Or obtain the paged response.
     # TODO(landrito) figure out how to remove this repetition for method samples.
-    @if initCode(apiMethod, init, "")
-      {@initCode(apiMethod, init, "")}
+    @if initCode(apiMethod, init, "method")
+      {@initCode(apiMethod, init, "method")}
 
     @end
 
@@ -240,7 +240,7 @@
 @end
 
 @snippet methodCallSampleCodeWithReturnValue(apiMethod, init, additionalCallback)
-  {@initCode(apiMethod, init, "")}
+  {@initCode(apiMethod, init, "method")}
   {@methodCallSampleCodePrefix(apiMethod, init)}
     .then(responses => {
       const response = responses[0];
@@ -261,7 +261,7 @@
 @end
 
 @snippet methodCallSampleCodeLongrunningPromise(apiMethod, init, additionalCallback)
-  {@initCode(apiMethod, init, "false")}
+  {@initCode(apiMethod, init, "method")}
 
   // Handle the operation using the promise pattern.
   {@methodCallSampleCodePrefix(apiMethod, init)}
@@ -290,7 +290,7 @@
 @end
 
 @private methodCallSampleCodeLongrunningPromiseAwait(apiMethod, init, additionalCallback)
-  {@initCode(apiMethod, init, "false")}
+  {@initCode(apiMethod, init, "method")}
 
   // Handle the operation using the await pattern.
   const [operation] = await {@methodCallSampleCodePrefix(apiMethod, init)};
@@ -299,7 +299,7 @@
 @end
 
 @snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, init, additionalCallback)
-  {@initCode(apiMethod, init, "false")}
+  {@initCode(apiMethod, init, "method")}
 
   // Handle the operation using the event emitter pattern.
   {@methodCallSampleCodePrefix(apiMethod, init)}
@@ -335,7 +335,7 @@
 @end
 
 @snippet methodCallSampleCodeWithoutReturnValue(apiMethod, init, additionalCallback)
-    {@initCode(apiMethod, init, "false")}
+    {@initCode(apiMethod, init, "method")}
     @if additionalCallback
       {@methodCallSampleCodePrefix(apiMethod, init)}
         .then(console.log)

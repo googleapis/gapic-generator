@@ -1,21 +1,15 @@
 @extends "nodejs/common.snip"
 
-# isStandalone used to toggle small bits of behavior.
-# initCode always called with ""     from method_sample.snip
-# initCode always called with "true" from standalone_sample.snip
-@snippet initCode(apiMethod, init, isStandalone)
-  # XXX TODO – Pass isStandalone so it gets down to initLineSimple and into
-  #            renderInitValue so that, instead of using `client` in the case
-  #            of FormattedInitValueView, instead we'll use the
-  #            initValue.apiVariableName (which will be fooServiceClient)
-  {@initCodeLinesWithDescriptions(init.lines, isStandalone)}
+# Options for sampleType are: "standalone" or "method"
+# See standalone_sample.snip and method_sample.snip
+@snippet initCode(apiMethod, init, sampleType)
+  {@initCodeLinesWithDescriptions(init.lines, sampleType)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
   @end
 @end
 
-# TODO Switch `isStandalone` to `sampleType` with values `method` and `standalone`
-@private initCodeLinesWithDescriptions(lines, isStandalone)
+@private initCodeLinesWithDescriptions(lines, sampleType)
   @join line : lines
     @if line.descriptions
 
@@ -30,7 +24,7 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line, isStandalone)}
+      {@initLineSimple(line, sampleType)}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -101,18 +95,19 @@
   @end
 @end
 
-@private initLineSimple(line, isStandalone)
-  const {@line.identifier} = {@renderInitValue(line.initValue, isStandalone)};
+@private initLineSimple(line, sampleType)
+  const {@line.identifier} = {@renderInitValue(line.initValue, sampleType)};
 @end
 
-@snippet renderInitValue(initValue, isStandalone)
+@snippet renderInitValue(initValue, sampleType)
   @switch initValue.type
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
-    @if isStandalone
+    @if sampleType == "standalone"
       {@initValue.apiVariableName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @else
+      # method samples hardcode variable name for service object as `client`
       client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @end
   @default
