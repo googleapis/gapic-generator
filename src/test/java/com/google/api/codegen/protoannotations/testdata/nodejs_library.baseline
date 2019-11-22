@@ -92,33 +92,36 @@ This is a generated README.md placeholder. Put your own documentation here.
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test response handling for methods that return empty */
-function sampleBabbleAboutBook() {
-  const client = new LibraryServiceClient();
-  const stream = client.babbleAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    // No one replied
-    console.log(`No one replied.`);
-  });
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const request = {
-    name: formattedName,
-  };
-  // Write request objects.
-  stream.write(request);
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleBabbleAboutBook() {
+    const stream = libraryServiceClient.babbleAboutBook((err, response) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      // No one replied
+      console.log(`No one replied.`);
+    });
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const request = {
+      name: formattedName,
+    };
+    // Write request objects.
+    stream.write(request);
+  }
+  sampleBabbleAboutBook();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleBabbleAboutBook();
+main();
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -143,31 +146,34 @@ sampleBabbleAboutBook();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default response handling is turned off for methods that return empty */
-function sampleBabbleAboutBook() {
-  const client = new LibraryServiceClient();
-  const stream = client.babbleAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-  });
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const request = {
-    name: formattedName,
-  };
-  // Write request objects.
-  stream.write(request);
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleBabbleAboutBook() {
+    const stream = libraryServiceClient.babbleAboutBook((err, response) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const request = {
+      name: formattedName,
+    };
+    // Write request objects.
+    stream.write(request);
+  }
+  sampleBabbleAboutBook();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleBabbleAboutBook();
+main();
 ============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -192,25 +198,29 @@ sampleBabbleAboutBook();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test response handling for methods that return empty */
-function sampleDeleteShelf() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.shelfPath('[SHELF_ID]');
-  client.deleteShelf({name: formattedName}).catch(err => {
-    console.error(err);
-  });
-  // Shelf deleted
-  console.log(`Shelf deleted.`);
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleDeleteShelf() {
+    const formattedName = libraryServiceClient.shelfPath('[SHELF_ID]');
+
+    // Run request
+    const [response] = await libraryServiceClient.deleteShelf({name: formattedName});
+
+    // Shelf deleted
+    console.log(`Shelf deleted.`);
+  }
+  sampleDeleteShelf();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleDeleteShelf();
+main();
 ============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -235,23 +245,28 @@ sampleDeleteShelf();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default response handling is turned off for methods that return empty */
-function sampleDeleteShelf() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.shelfPath('[SHELF_ID]');
-  client.deleteShelf({name: formattedName}).catch(err => {
-    console.error(err);
-  });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleDeleteShelf() {
+    const formattedName = libraryServiceClient.shelfPath('[SHELF_ID]');
+
+    // Run request
+    const [response] = await libraryServiceClient.deleteShelf({name: formattedName});
+
+
+  }
+  sampleDeleteShelf();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleDeleteShelf();
+main();
 ============== file: samples/v1/find_related_books_request_async_paged_all_odyssey.js ==============
 // Copyright 2019 Google LLC
 //
@@ -276,40 +291,41 @@ sampleDeleteShelf();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleFindRelatedBooks() {
-  const client = new LibraryServiceClient();
-  // Iterate over all elements.
-  const namesElement = 'Odyssey';
-  const names = [namesElement];
-  const shelvesElement = 'Classics';
-  const shelves = [shelvesElement];
-  const request = {
-    names: formattedNames,
-    shelves: formattedShelves,
-  };
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  client.findRelatedBooks(request)
-    .then(responses => {
-      const resources = responses[0];
-      for (const resource of resources) {
-        const book = resource;
-        console.log(`Here's a related book: ${book}`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  async function sampleFindRelatedBooks() {
+    const namesElement = 'Odyssey';
+    const names = [namesElement];
+    const shelvesElement = 'Classics';
+    const shelves = [shelvesElement];
+
+    // Construct request
+    const request = {
+      names: formattedNames,
+      shelves: formattedShelves,
+    };
+
+    // Run request
+    const [response] = libraryServiceClient.findRelatedBooks(request);
+
+    // Iterate over paged response (uses auto pagination by default)
+    for (const resource of response) {
+      const book = resource;
+      console.log(`Here's a related book: ${book}`);
+    }
+  }
+  sampleFindRelatedBooks();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleFindRelatedBooks();
+main();
 ============== file: samples/v1/find_related_books_request_async_paged_odyssey.js ==============
 // Copyright 2019 Google LLC
 //
@@ -334,52 +350,57 @@ sampleFindRelatedBooks();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleFindRelatedBooks() {
-  const client = new LibraryServiceClient();
-  // Or obtain the paged response.
-  const namesElement = 'Odyssey';
-  const names = [namesElement];
-  const shelvesElement = 'Classics';
-  const shelves = [shelvesElement];
-  const request = {
-    names: formattedNames,
-    shelves: formattedShelves,
-  };
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleFindRelatedBooks() {
+    // Or obtain the paged response.
+    const namesElement = 'Odyssey';
+    const names = [namesElement];
+    const shelvesElement = 'Classics';
+    const shelves = [shelvesElement];
+
+    // Construct request
+    const request = {
+      names: formattedNames,
+      shelves: formattedShelves,
+    };
 
 
-  const options = {autoPaginate: false};
-  const callback = responses => {
-    // The actual resources in a response.
-    const resources = responses[0];
-    // The next request if the response shows that there are more responses.
-    const nextRequest = responses[1];
-    // The actual response object, if necessary.
-    // const rawResponse = responses[2];
-    for (const resource of resources) {
-      const book = resource;
-      console.log(`Here's a related book: ${book}`);
+    const options = {autoPaginate: false};
+    const callback = responses => {
+      // The actual resources in a response.
+      const resources = responses[0];
+      // The next request if the response shows that there are more responses.
+      const nextRequest = responses[1];
+      // The actual response object, if necessary.
+      // const rawResponse = responses[2];
+      for (const resource of resources) {
+        const book = resource;
+        console.log(`Here's a related book: ${book}`);
+      }
+      if (nextRequest) {
+        // Fetch the next page.
+        return libraryServiceClient.findRelatedBooks(nextRequest, options).then(callback);
+      }
     }
-    if (nextRequest) {
-      // Fetch the next page.
-      return client.findRelatedBooks(nextRequest, options).then(callback);
-    }
+    libraryServiceClient.findRelatedBooks(request, options)
+      .then(callback)
+      .catch(err => {
+        console.error(err);
+      });
   }
-  client.findRelatedBooks(request, options)
-    .then(callback)
-    .catch(err => {
-      console.error(err);
-    });
+  sampleFindRelatedBooks();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleFindRelatedBooks();
+main();
 ============== file: samples/v1/get_big_book_long_running_event_emitter_wap.js ==============
 // Copyright 2019 Google LLC
 //
@@ -404,61 +425,67 @@ sampleFindRelatedBooks();
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleGetBigBook(shelf) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel\\"`\b\t\n\r') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel\\"`\b\t\n\r';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Handle the operation using the event emitter pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        // Testing iterating over map fields when both key and value are specified.
-        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
-          console.log(`key: ${myKey}, value: ${myValue}`);
-        }
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-        // Testing iterating over map fields when only key is specified.
-        for (const anotherKey of Object.keys(result.mapListValueValue)) {
-          console.log(`key: ${anotherKey}`);
-        }
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-        // Testing iterating over map fields when only value is specified.
-        for (const anotherValue of Object.values(result.mapListValueValue)) {
-          console.log(`value: ${anotherValue}`);
-        }
+    // Handle the operation using the event emitter pattern.
+    libraryServiceClient.getBigBook({name: formattedName});
+      .then(responses => {
+        const [operation, initApiResponse] = responses;
 
-        console.log(`name: ${result.name}`);
-        console.log(`author: ${result.author}`);
+        // Adding a listener for the "complete" event starts polling for the
+        // completion of the operation.
+        operation.on('complete', (result, metadata, finalApiResponse) => {
+          // Testing iterating over map fields when both key and value are specified.
+          for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+            console.log(`key: ${myKey}, value: ${myValue}`);
+          }
+
+          // Testing iterating over map fields when only key is specified.
+          for (const anotherKey of Object.keys(result.mapListValueValue)) {
+            console.log(`key: ${anotherKey}`);
+          }
+
+          // Testing iterating over map fields when only value is specified.
+          for (const anotherValue of Object.values(result.mapListValueValue)) {
+            console.log(`value: ${anotherValue}`);
+          }
+
+          console.log(`name: ${result.name}`);
+          console.log(`author: ${result.author}`);
+        });
+
+        // Adding a listener for the "progress" event causes the callback to be
+        // called on any change in metadata when the operation is polled.
+        operation.on('progress', (metadata, apiResponse) => {
+          // doSomethingWith(metadata)
+        });
+
+        // Adding a listener for the "error" event handles any errors found during polling.
+        operation.on('error', err => {
+          // throw(err);
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  }
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -467,7 +494,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf);
+main(argv.shelf);
 ============== file: samples/v1/get_big_book_long_running_event_emitter_wap2.js ==============
 // Copyright 2019 Google LLC
 //
@@ -492,52 +519,52 @@ sampleGetBigBook(argv.shelf);
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/**
- * Testing resource name overlap
- *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
- */
-function sampleGetBigBook(shelf, bigBookName) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel', bigBookName = 'War and Peace') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Handle the operation using the event emitter pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        console.log(result);
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Handle the operation using the event emitter pattern.
+    libraryServiceClient.getBigBook({name: formattedName});
+      .then(responses => {
+        const [operation, initApiResponse] = responses;
+
+        // Adding a listener for the "complete" event starts polling for the
+        // completion of the operation.
+        operation.on('complete', (result, metadata, finalApiResponse) => {
+          console.log(result);
+        });
+
+        // Adding a listener for the "progress" event causes the callback to be
+        // called on any change in metadata when the operation is polled.
+        operation.on('progress', (metadata, apiResponse) => {
+          // doSomethingWith(metadata)
+        });
+
+        // Adding a listener for the "error" event handles any errors found during polling.
+        operation.on('error', err => {
+          // throw(err);
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  }
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -550,7 +577,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf, argv.big_book_name);
+main(argv.shelf, argv.big_book_name);
 ============== file: samples/v1/get_big_book_long_running_promise_await_wap.js ==============
 // Copyright 2019 Google LLC
 //
@@ -575,43 +602,49 @@ sampleGetBigBook(argv.shelf, argv.big_book_name);
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-async function sampleGetBigBook(shelf) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel\\"`\b\t\n\r') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel\\"`\b\t\n\r';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigBook({name: formattedName});
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Testing iterating over map fields when both key and value are specified.
-  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
-    console.log(`key: ${myKey}, value: ${myValue}`);
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Start long-running operation. You can wait for now or get results later.
+    const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
+
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+
+    // Testing iterating over map fields when both key and value are specified.
+    for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+      console.log(`key: ${myKey}, value: ${myValue}`);
+    }
+
+    // Testing iterating over map fields when only key is specified.
+    for (const anotherKey of Object.keys(response.mapListValueValue)) {
+      console.log(`key: ${anotherKey}`);
+    }
+
+    // Testing iterating over map fields when only value is specified.
+    for (const anotherValue of Object.values(response.mapListValueValue)) {
+      console.log(`value: ${anotherValue}`);
+    }
+
+    console.log(`name: ${response.name}`);
+    console.log(`author: ${response.author}`);
   }
-
-  // Testing iterating over map fields when only key is specified.
-  for (const anotherKey of Object.keys(response.mapListValueValue)) {
-    console.log(`key: ${anotherKey}`);
-  }
-
-  // Testing iterating over map fields when only value is specified.
-  for (const anotherValue of Object.values(response.mapListValueValue)) {
-    console.log(`value: ${anotherValue}`);
-  }
-
-  console.log(`name: ${response.name}`);
-  console.log(`author: ${response.author}`);
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -620,7 +653,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf).catch(console.error);
+main(argv.shelf);
 ============== file: samples/v1/get_big_book_long_running_promise_await_wap2.js ==============
 // Copyright 2019 Google LLC
 //
@@ -645,34 +678,34 @@ sampleGetBigBook(argv.shelf).catch(console.error);
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/**
- * Testing resource name overlap
- *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
- */
-async function sampleGetBigBook(shelf, bigBookName) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel', bigBookName = 'War and Peace') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigBook({name: formattedName});
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  console.log(response);
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Start long-running operation. You can wait for now or get results later.
+    const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
+
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+
+    console.log(response);
+  }
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -685,7 +718,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
+main(argv.shelf, argv.big_book_name);
 ============== file: samples/v1/get_big_book_long_running_promise_wap.js ==============
 // Copyright 2019 Google LLC
 //
@@ -710,54 +743,60 @@ sampleGetBigBook(argv.shelf, argv.big_book_name).catch(console.error);
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-function sampleGetBigBook(shelf) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel\\"`\b\t\n\r') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel\\"`\b\t\n\r';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Handle the operation using the promise pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-      // Testing iterating over map fields when both key and value are specified.
-      for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
-        console.log(`key: ${myKey}, value: ${myValue}`);
-      }
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-      // Testing iterating over map fields when only key is specified.
-      for (const anotherKey of Object.keys(result.mapListValueValue)) {
-        console.log(`key: ${anotherKey}`);
-      }
+    // Handle the operation using the promise pattern.
+    libraryServiceClient.getBigBook({name: formattedName});
+      .then(responses => {
+        const [operation, initialApiResponse] = responses;
 
-      // Testing iterating over map fields when only value is specified.
-      for (const anotherValue of Object.values(result.mapListValueValue)) {
-        console.log(`value: ${anotherValue}`);
-      }
+        // Operation#promise starts polling for the completion of the LRO.
+        return operation.promise();
+      })
+      .then(responses => {
+        const result = responses[0];
+        const metadata = responses[1];
+        const finalApiResponse = responses[2];
 
-      console.log(`name: ${result.name}`);
-      console.log(`author: ${result.author}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+        // Testing iterating over map fields when both key and value are specified.
+        for (const [myKey, myValue] of Object.entries(result.mapListValueValue)) {
+          console.log(`key: ${myKey}, value: ${myValue}`);
+        }
+
+        // Testing iterating over map fields when only key is specified.
+        for (const anotherKey of Object.keys(result.mapListValueValue)) {
+          console.log(`key: ${anotherKey}`);
+        }
+
+        // Testing iterating over map fields when only value is specified.
+        for (const anotherValue of Object.values(result.mapListValueValue)) {
+          console.log(`value: ${anotherValue}`);
+        }
+
+        console.log(`name: ${result.name}`);
+        console.log(`author: ${result.author}`);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -766,7 +805,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf);
+main(argv.shelf);
 ============== file: samples/v1/get_big_book_long_running_promise_wap2.js ==============
 // Copyright 2019 Google LLC
 //
@@ -791,45 +830,45 @@ sampleGetBigBook(argv.shelf);
 
 'use strict';
 
-// [START hopper]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/**
- * Testing resource name overlap
- *
- * @param shelf {string} Test word wrapping for long lines. This is a long comment. The name of the
- * shelf to retrieve the big book from.
- * @param bigBookName {string} The name of the book.
- */
-function sampleGetBigBook(shelf, bigBookName) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel', bigBookName = 'War and Peace') {
+  // [START hopper]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel';
   // const bigBookName = 'War and Peace';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Handle the operation using the promise pattern.
-  client.getBigBook({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-      console.log(result);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Handle the operation using the promise pattern.
+    libraryServiceClient.getBigBook({name: formattedName});
+      .then(responses => {
+        const [operation, initialApiResponse] = responses;
+
+        // Operation#promise starts polling for the completion of the LRO.
+        return operation.promise();
+      })
+      .then(responses => {
+        const result = responses[0];
+        const metadata = responses[1];
+        const finalApiResponse = responses[2];
+
+        console.log(result);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  sampleGetBigBook();
+  // [END hopper]
 }
-
-// [END hopper]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -842,7 +881,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf, argv.big_book_name);
+main(argv.shelf, argv.big_book_name);
 ============== file: samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_with_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -867,47 +906,50 @@ sampleGetBigBook(argv.shelf, argv.big_book_name);
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test response handling for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Handle the operation using the event emitter pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
-        // Got nothing
-        console.log(`Got nothing.`);
+    // Handle the operation using the event emitter pattern.
+    libraryServiceClient.getBigNothing({name: formattedName});
+      .then(responses => {
+        const [operation, initApiResponse] = responses;
+
+        // Adding a listener for the "complete" event starts polling for the
+        // completion of the operation.
+        operation.on('complete', (result, metadata, finalApiResponse) => {
+          // Got nothing
+          console.log(`Got nothing.`);
+        });
+
+        // Adding a listener for the "progress" event causes the callback to be
+        // called on any change in metadata when the operation is polled.
+        operation.on('progress', (metadata, apiResponse) => {
+          // doSomethingWith(metadata)
+        });
+
+        // Adding a listener for the "error" event handles any errors found during polling.
+        operation.on('error', err => {
+          // throw(err);
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
+main();
 ============== file: samples/v1/get_big_nothing_long_running_event_emitter_empty_response_type_without_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -932,45 +974,48 @@ sampleGetBigNothing();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default response handling is turned off for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Handle the operation using the event emitter pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initApiResponse] = responses;
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-      // Adding a listener for the "complete" event starts polling for the
-      // completion of the operation.
-      operation.on('complete', (result, metadata, finalApiResponse) => {
+    // Handle the operation using the event emitter pattern.
+    libraryServiceClient.getBigNothing({name: formattedName});
+      .then(responses => {
+        const [operation, initApiResponse] = responses;
+
+        // Adding a listener for the "complete" event starts polling for the
+        // completion of the operation.
+        operation.on('complete', (result, metadata, finalApiResponse) => {
+        });
+
+        // Adding a listener for the "progress" event causes the callback to be
+        // called on any change in metadata when the operation is polled.
+        operation.on('progress', (metadata, apiResponse) => {
+          // doSomethingWith(metadata)
+        });
+
+        // Adding a listener for the "error" event handles any errors found during polling.
+        operation.on('error', err => {
+          // throw(err);
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-
-      // Adding a listener for the "progress" event causes the callback to be
-      // called on any change in metadata when the operation is polled.
-      operation.on('progress', (metadata, apiResponse) => {
-        // doSomethingWith(metadata)
-      });
-
-      // Adding a listener for the "error" event handles any errors found during polling.
-      operation.on('error', err => {
-        // throw(err);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
+main();
 ============== file: samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_with_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -995,29 +1040,32 @@ sampleGetBigNothing();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test response handling for methods that return empty */
-async function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigNothing({name: formattedName});
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
+    // Start long-running operation. You can wait for now or get results later.
+    const [operation] = await libraryServiceClient.getBigNothing({name: formattedName});;
 
-  // Got nothing
-  console.log(`Got nothing.`);
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+
+    // Got nothing
+    console.log(`Got nothing.`);
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing().catch(console.error);
+main();
 ============== file: samples/v1/get_big_nothing_long_running_promise_await_empty_response_type_without_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1042,27 +1090,30 @@ sampleGetBigNothing().catch(console.error);
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default response handling is turned off for methods that return empty */
-async function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigNothing({name: formattedName});
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
+    // Start long-running operation. You can wait for now or get results later.
+    const [operation] = await libraryServiceClient.getBigNothing({name: formattedName});;
 
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing().catch(console.error);
+main();
 ============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1087,40 +1138,43 @@ sampleGetBigNothing().catch(console.error);
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test response handling for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Handle the operation using the promise pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
+    // Handle the operation using the promise pattern.
+    libraryServiceClient.getBigNothing({name: formattedName});
+      .then(responses => {
+        const [operation, initialApiResponse] = responses;
 
-      // Got nothing
-      console.log(`Got nothing.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+        // Operation#promise starts polling for the completion of the LRO.
+        return operation.promise();
+      })
+      .then(responses => {
+        const result = responses[0];
+        const metadata = responses[1];
+        const finalApiResponse = responses[2];
+
+        // Got nothing
+        console.log(`Got nothing.`);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
+main();
 ============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1145,38 +1199,41 @@ sampleGetBigNothing();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default response handling is turned off for methods that return empty */
-function sampleGetBigNothing() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Handle the operation using the promise pattern.
-  client.getBigNothing({name: formattedName})
-    .then(responses => {
-      const [operation, initialApiResponse] = responses;
+  async function sampleGetBigNothing() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-      // Operation#promise starts polling for the completion of the LRO.
-      return operation.promise();
-    })
-    .then(responses => {
-      const result = responses[0];
-      const metadata = responses[1];
-      const finalApiResponse = responses[2];
+    // Handle the operation using the promise pattern.
+    libraryServiceClient.getBigNothing({name: formattedName});
+      .then(responses => {
+        const [operation, initialApiResponse] = responses;
 
-    })
-    .catch(err => {
-      console.error(err);
-    });
+        // Operation#promise starts polling for the completion of the LRO.
+        return operation.promise();
+      })
+      .then(responses => {
+        const result = responses[0];
+        const metadata = responses[1];
+        const finalApiResponse = responses[2];
+
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+  sampleGetBigNothing();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBigNothing();
+main();
 ============== file: samples/v1/get_book_request_test_on_success_map.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1202,31 +1259,32 @@ sampleGetBigNothing();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-function sampleGetBook() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  client.getBook({name: formattedName})
-    .then(responses => {
-      const response = responses[0];
-      const intKeyVal = response.mapStringValue[123];
-      const booleanKeyVal = response.mapBoolKey[true];
-      const mapValueField = response.mapMessageValue['key'].field;
-      console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
-      console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleGetBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Run request
+    const [response] = await libraryServiceClient.getBook({name: formattedName});
+
+    const intKeyVal = response.mapStringValue[123];
+    const booleanKeyVal = response.mapBoolKey[true];
+    const mapValueField = response.mapMessageValue['key'].field;
+    console.log(`Test printing map fields: ${response.mapListValueValue['quoted_key']}`);
+    console.log(`Test printing enum fields of a map value: ${response.mapMessageValue['key'].alignment}`);
+  }
+  sampleGetBook();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleGetBook();
+main();
 ============== file: samples/v1/lovelace.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1251,23 +1309,26 @@ sampleGetBook();
 
 'use strict';
 
-// [START lovelace]
+function main() {
+  // [START lovelace]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleStreamBooks() {
-  const client = new LibraryServiceClient();
-  const name = 'BASIC';
-    client.streamBooks({name: name}).on('data', response => {
-      console.log(response);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleStreamBooks() {
+    const name = 'BASIC';
+      libraryServiceClient.streamBooks({name: name}).on('data', response => {
+        console.log(response);
+      });
+  }
+  sampleStreamBooks();
+  // [END lovelace]
 }
 
-// [END lovelace]
-// tslint:disable-next-line:no-any
-
-sampleStreamBooks();
+main();
 ============== file: samples/v1/monolog_about_book_request_streaming_client_prog.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1292,32 +1353,35 @@ sampleStreamBooks();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleMonologAboutBook() {
-  const client = new LibraryServiceClient();
-  const stream = client.monologAboutBook((err, response) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(`The stage of the comment is: ${response.stage}`);
-  });
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const request = {
-    name: formattedName,
-  };
-  // Write request objects.
-  stream.write(request);
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleMonologAboutBook() {
+    const stream = libraryServiceClient.monologAboutBook((err, response) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(`The stage of the comment is: ${response.stage}`);
+    });
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const request = {
+      name: formattedName,
+    };
+    // Write request objects.
+    stream.write(request);
+  }
+  sampleMonologAboutBook();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleMonologAboutBook();
+main();
 ============== file: samples/v1/publish_series_request_pi_version.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1342,63 +1406,63 @@ sampleMonologAboutBook();
 
 'use strict';
 
-// [START canonical]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/**
- * Testing <@calling forms>
- *
- * @param shelfName {string} The name of the shelf where books are published to.
- * @param edition {number} The edition of the series.
- */
-function samplePublishSeries(shelfName, edition) {
-  const client = new LibraryServiceClient();
+function main(shelfName = 'Math', edition = 123) {
+  // [START canonical]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelfName = 'Math';
   // const edition = 123;
-  const shelf = {
-    name: shelfName,
-  };
-  const books = [];
-  const seriesString = 'xyz3141592654';
-  const seriesUuid = {
-    seriesString: seriesString,
-  };
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      // % % % output handling % % % %
-      // fourScoreAndSevenYears ago
-      //
-      // our fathers brought forth upon this continent
-      // a new nation
-      // conceived in liberty
-      //
-      // and dedicated to the proposition that allMenAreCreatedEqual.
-      // Do something with bookNames one by one
-      const bookNames = response.bookNames;
-      for (const title of response.bookNames) {
-        // Now we deal with thisSingleBook!
-        console.log(`\t%\`\` The book's title: "${title}", \\\nand the book costs $50.00 \`\`%`);
-      }
-      console.log(`The first book is: ${response.bookNames[0]}`);
-      console.log(`The author of the first book is: ${response.books[0].author}`);
-      console.log(`That's all!`);
-      console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
 
-// [END canonical]
-// tslint:disable-next-line:no-any
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
+
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function samplePublishSeries() {
+    const shelf = {
+      name: shelfName,
+    };
+    const books = [];
+    const seriesString = 'xyz3141592654';
+    const seriesUuid = {
+      seriesString: seriesString,
+    };
+
+    // Construct request
+    const request = {
+      shelf: shelf,
+      books: books,
+      seriesUuid: seriesUuid,
+      edition: edition,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.publishSeries(request);
+
+    // % % % output handling % % % %
+    // fourScoreAndSevenYears ago
+    //
+    // our fathers brought forth upon this continent
+    // a new nation
+    // conceived in liberty
+    //
+    // and dedicated to the proposition that allMenAreCreatedEqual.
+    // Do something with bookNames one by one
+    const bookNames = response.bookNames;
+    for (const title of response.bookNames) {
+      // Now we deal with thisSingleBook!
+      console.log(`\t%\`\` The book's title: "${title}", \\\nand the book costs $50.00 \`\`%`);
+    }
+    console.log(`The first book is: ${response.bookNames[0]}`);
+    console.log(`The author of the first book is: ${response.books[0].author}`);
+    console.log(`That's all!`);
+    console.log(`series_uuid: ${response.seriesUuid.seriesBytes}`);
+  }
+  samplePublishSeries();
+  // [END canonical]
+}
 
 const argv = require(`yargs`)
   .option('shelf_name', {
@@ -1411,7 +1475,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-samplePublishSeries(argv.shelf_name, argv.edition);
+main(argv.shelf_name, argv.edition);
 ============== file: samples/v1/publish_series_request_second_edition.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1436,37 +1500,39 @@ samplePublishSeries(argv.shelf_name, argv.edition);
 
 'use strict';
 
-// [START canonical]
+function main() {
+  // [START canonical]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function samplePublishSeries() {
-  const client = new LibraryServiceClient();
-  const shelf = {};
-  const books = [];
-  const seriesUuid = {};
-  const edition = 2;
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function samplePublishSeries() {
+    const shelf = {};
+    const books = [];
+    const seriesUuid = {};
+    const edition = 2;
+
+    // Construct request
+    const request = {
+      shelf: shelf,
+      books: books,
+      seriesUuid: seriesUuid,
+      edition: edition,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.publishSeries(request);
+
+    console.log(response);
+  }
+  samplePublishSeries();
+  // [END canonical]
 }
 
-// [END canonical]
-// tslint:disable-next-line:no-any
-
-samplePublishSeries();
+main();
 ============== file: samples/v1/publish_series_request_test_request_object_field_comments.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1491,63 +1557,67 @@ samplePublishSeries();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-const fs = require('fs');
-/** Test request object field comments */
-function samplePublishSeries() {
-  const client = new LibraryServiceClient();
+  // Additional imports
+  const fs = require('fs');
 
-  // Comment on a resource name
-  const formattedName = client.shelfPath('math');
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // A super long comment
-  // wraps words at newline characters
-  // as well
-  const theme = 'Math';
+  async function samplePublishSeries() {
 
-  // Comment on a primitive field
-  const internalTheme = 'Statistics';
-  const shelf = {
-    name: formattedName,
-    theme: theme,
-    internalTheme: internalTheme,
-  };
-  const books = [];
+    // Comment on a resource name
+    const formattedName = libraryServiceClient.shelfPath('math');
 
-  // Comment on a file input field
-  const seriesBytes = fs.readFileSync('xyz3141592654').toString('base64');
+    // A super long comment
+    // wraps words at newline characters
+    // as well
+    const theme = 'Math';
 
-  // Comment on a message
-  const seriesUuid = {
-    seriesBytes: seriesBytes,
-  };
+    // Comment on a primitive field
+    const internalTheme = 'Statistics';
+    const shelf = {
+      name: formattedName,
+      theme: theme,
+      internalTheme: internalTheme,
+    };
+    const books = [];
 
-  // A super long long long long long long long long long long long long long long comment that tests
-  // word wrapping
-  const edition = 123;
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-    edition: edition,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+    // Comment on a file input field
+    const seriesBytes = fs.readFileSync('xyz3141592654').toString('base64');
+
+    // Comment on a message
+    const seriesUuid = {
+      seriesBytes: seriesBytes,
+    };
+
+    // A super long long long long long long long long long long long long long long comment that tests
+    // word wrapping
+    const edition = 123;
+
+    // Construct request
+    const request = {
+      shelf: shelf,
+      books: books,
+      seriesUuid: seriesUuid,
+      edition: edition,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.publishSeries(request);
+
+    console.log(response);
+  }
+  samplePublishSeries();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-samplePublishSeries();
+main();
 ============== file: samples/v1/publish_series_request_test_write_to_file.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1572,41 +1642,45 @@ samplePublishSeries();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-const util = require('util');
-const fs = require('fs');
-/** Testing write fields to files. */
-function samplePublishSeries() {
-  const client = new LibraryServiceClient();
-  const shelf = {};
-  const books = [];
-  const seriesUuid = {};
-  const request = {
-    shelf: shelf,
-    books: books,
-    seriesUuid: seriesUuid,
-  };
-  client.publishSeries(request)
-    .then(responses => {
-      const response = responses[0];
-      // testing writing bytes field.
-      var writeFile = util.promisify(fs.writeFile);
-      writeFile(`uuid_of_series_with_book_${response.bookNames[0]}.raw`, response.seriesUuid.seriesBytes, 'binary');
-      // testing writing string field.
-      writeFile('series_uuid_in_plain_text.txt', response.seriesUuid.seriesString);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Additional imports
+  const util = require('util');
+  const fs = require('fs');
+
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function samplePublishSeries() {
+    const shelf = {};
+    const books = [];
+    const seriesUuid = {};
+
+    // Construct request
+    const request = {
+      shelf: shelf,
+      books: books,
+      seriesUuid: seriesUuid,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.publishSeries(request);
+
+    // testing writing bytes field.
+    var writeFile = util.promisify(fs.writeFile);
+    await writeFile(`uuid_of_series_with_book_${response.bookNames[0]}.raw`, response.seriesUuid.seriesBytes, 'binary');
+    // testing writing string field.
+    await writeFile('series_uuid_in_plain_text.txt', response.seriesUuid.seriesString);
+  }
+  samplePublishSeries();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-samplePublishSeries();
+main();
 ============== file: samples/v1/sample_get_shelf.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1631,33 +1705,35 @@ samplePublishSeries();
 
 'use strict';
 
-// [START sample_get_shelf]
+function main() {
+  // [START sample_get_shelf]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default calling forms for unary methods. */
-function sampleGetShelf() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.shelfPath('my-shelf');
-  const options = '';
-  const request = {
-    name: formattedName,
-    options: options,
-  };
-  client.getShelf(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(`The theme of the shelf is: ${response.theme}`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleGetShelf() {
+    const formattedName = libraryServiceClient.shelfPath('my-shelf');
+    const options = '';
+
+    // Construct request
+    const request = {
+      name: formattedName,
+      options: options,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.getShelf(request);
+
+    console.log(`The theme of the shelf is: ${response.theme}`);
+  }
+  sampleGetShelf();
+  // [END sample_get_shelf]
 }
 
-// [END sample_get_shelf]
-// tslint:disable-next-line:no-any
-
-sampleGetShelf();
+main();
 ============== file: samples/v1/stream_shelves_request_streaming_server_empty.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1682,23 +1758,26 @@ sampleGetShelf();
 
 'use strict';
 
-// [START sample]
+function main() {
+  // [START sample]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Testing calling forms */
-function sampleStreamShelves() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.shelfPath('[SHELF_ID]');
-    client.streamShelves({name: formattedName}).on('data', response => {
-      console.log(response);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleStreamShelves() {
+    const formattedName = libraryServiceClient.shelfPath('[SHELF_ID]');
+      libraryServiceClient.streamShelves({name: formattedName}).on('data', response => {
+        console.log(response);
+      });
+  }
+  sampleStreamShelves();
+  // [END sample]
 }
 
-// [END sample]
-// tslint:disable-next-line:no-any
-
-sampleStreamShelves();
+main();
 ============== file: samples/v1/test_default_calling_form_for_paging.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1723,30 +1802,30 @@ sampleStreamShelves();
 
 'use strict';
 
-// [START test_default_calling_form_for_paging]
+function main() {
+  // [START test_default_calling_form_for_paging]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test default calling form for paging methods. */
-function sampleListShelves() {
-  const client = new LibraryServiceClient();
-  // Iterate over all elements.
-  client.listShelves({})
-    .then(responses => {
-      const resources = responses[0];
-      for (const resource of resources) {
-        console.log(`shelf name: ${resource}`);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleListShelves() {
+
+    // Run request
+    const [response] = libraryServiceClient.listShelves({});
+
+    // Iterate over paged response (uses auto pagination by default)
+    for (const resource of response) {
+      console.log(`shelf name: ${resource}`);
+    }
+  }
+  sampleListShelves();
+  // [END test_default_calling_form_for_paging]
 }
 
-// [END test_default_calling_form_for_paging]
-// tslint:disable-next-line:no-any
-
-sampleListShelves();
+main();
 ============== file: samples/v1/test_float_and_int64.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1770,148 +1849,154 @@ sampleListShelves();
 
 'use strict';
 
-// [START test_float_and_int64]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-function sampleTestOptionalRequiredFlatteningParams(paramFloat, paramLong) {
-  const client = new LibraryServiceClient();
+function main(paramFloat = 1.2345, paramLong = 67890) {
+  // [START test_float_and_int64]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const paramFloat = 1.2345;
   // const paramLong = 67890;
-  const requiredSingularInt32 = 0;
-  const requiredSingularDouble = 0.0;
-  const requiredSingularBool = false;
-  const requiredSingularEnum = 'ZERO';
-  const requiredSingularString = '';
-  const requiredSingularBytes = Buffer.from('');
-  const requiredSingularMessage = {};
-  const formattedRequiredSingularResourceName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const formattedRequiredSingularResourceNameOneof = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const requiredSingularResourceNameCommon = '';
-  const requiredSingularFixed32 = 0;
-  const requiredSingularFixed64 = 0;
-  const requiredRepeatedInt32 = [];
-  const requiredRepeatedInt64 = [];
-  const requiredRepeatedFloat = [];
-  const requiredRepeatedDouble = [];
-  const requiredRepeatedBool = [];
-  const requiredRepeatedEnum = [];
-  const requiredRepeatedString = [];
-  const requiredRepeatedBytes = [];
-  const requiredRepeatedMessage = [];
-  const formattedRequiredRepeatedResourceName = [];
-  const formattedRequiredRepeatedResourceNameOneof = [];
-  const requiredRepeatedResourceNameCommon = [];
-  const requiredRepeatedFixed32 = [];
-  const requiredRepeatedFixed64 = [];
-  const requiredMap = {};
-  const requiredAnyValue = {};
-  const requiredStructValue = {};
-  const requiredValueValue = {};
-  const requiredListValueValue = {};
-  const requiredTimeValue = {};
-  const requiredDurationValue = {};
-  const requiredFieldMaskValue = {};
-  const requiredInt32Value = {};
-  const requiredUint32Value = {};
-  const requiredInt64Value = {};
-  const requiredUint64Value = {};
-  const requiredFloatValue = {};
-  const requiredDoubleValue = {};
-  const requiredStringValue = {};
-  const requiredBoolValue = {};
-  const requiredBytesValue = {};
-  const requiredRepeatedAnyValue = [];
-  const requiredRepeatedStructValue = [];
-  const requiredRepeatedValueValue = [];
-  const requiredRepeatedListValueValue = [];
-  const requiredRepeatedTimeValue = [];
-  const requiredRepeatedDurationValue = [];
-  const requiredRepeatedFieldMaskValue = [];
-  const requiredRepeatedInt32Value = [];
-  const requiredRepeatedUint32Value = [];
-  const requiredRepeatedInt64Value = [];
-  const requiredRepeatedUint64Value = [];
-  const requiredRepeatedFloatValue = [];
-  const requiredRepeatedDoubleValue = [];
-  const requiredRepeatedStringValue = [];
-  const requiredRepeatedBoolValue = [];
-  const requiredRepeatedBytesValue = [];
-  const request = {
-    requiredSingularInt32: requiredSingularInt32,
-    requiredSingularInt64: paramLong,
-    requiredSingularFloat: paramFloat,
-    requiredSingularDouble: requiredSingularDouble,
-    requiredSingularBool: requiredSingularBool,
-    requiredSingularEnum: requiredSingularEnum,
-    requiredSingularString: requiredSingularString,
-    requiredSingularBytes: requiredSingularBytes,
-    requiredSingularMessage: requiredSingularMessage,
-    requiredSingularResourceName: formattedRequiredSingularResourceName,
-    requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
-    requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
-    requiredSingularFixed32: requiredSingularFixed32,
-    requiredSingularFixed64: requiredSingularFixed64,
-    requiredRepeatedInt32: requiredRepeatedInt32,
-    requiredRepeatedInt64: requiredRepeatedInt64,
-    requiredRepeatedFloat: requiredRepeatedFloat,
-    requiredRepeatedDouble: requiredRepeatedDouble,
-    requiredRepeatedBool: requiredRepeatedBool,
-    requiredRepeatedEnum: requiredRepeatedEnum,
-    requiredRepeatedString: requiredRepeatedString,
-    requiredRepeatedBytes: requiredRepeatedBytes,
-    requiredRepeatedMessage: requiredRepeatedMessage,
-    requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
-    requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-    requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
-    requiredRepeatedFixed32: requiredRepeatedFixed32,
-    requiredRepeatedFixed64: requiredRepeatedFixed64,
-    requiredMap: requiredMap,
-    requiredAnyValue: requiredAnyValue,
-    requiredStructValue: requiredStructValue,
-    requiredValueValue: requiredValueValue,
-    requiredListValueValue: requiredListValueValue,
-    requiredTimeValue: requiredTimeValue,
-    requiredDurationValue: requiredDurationValue,
-    requiredFieldMaskValue: requiredFieldMaskValue,
-    requiredInt32Value: requiredInt32Value,
-    requiredUint32Value: requiredUint32Value,
-    requiredInt64Value: requiredInt64Value,
-    requiredUint64Value: requiredUint64Value,
-    requiredFloatValue: requiredFloatValue,
-    requiredDoubleValue: requiredDoubleValue,
-    requiredStringValue: requiredStringValue,
-    requiredBoolValue: requiredBoolValue,
-    requiredBytesValue: requiredBytesValue,
-    requiredRepeatedAnyValue: requiredRepeatedAnyValue,
-    requiredRepeatedStructValue: requiredRepeatedStructValue,
-    requiredRepeatedValueValue: requiredRepeatedValueValue,
-    requiredRepeatedListValueValue: requiredRepeatedListValueValue,
-    requiredRepeatedTimeValue: requiredRepeatedTimeValue,
-    requiredRepeatedDurationValue: requiredRepeatedDurationValue,
-    requiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
-    requiredRepeatedInt32Value: requiredRepeatedInt32Value,
-    requiredRepeatedUint32Value: requiredRepeatedUint32Value,
-    requiredRepeatedInt64Value: requiredRepeatedInt64Value,
-    requiredRepeatedUint64Value: requiredRepeatedUint64Value,
-    requiredRepeatedFloatValue: requiredRepeatedFloatValue,
-    requiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
-    requiredRepeatedStringValue: requiredRepeatedStringValue,
-    requiredRepeatedBoolValue: requiredRepeatedBoolValue,
-    requiredRepeatedBytesValue: requiredRepeatedBytesValue,
-  };
-  client.testOptionalRequiredFlatteningParams(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(response);
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
 
-// [END test_float_and_int64]
-// tslint:disable-next-line:no-any
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
+
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleTestOptionalRequiredFlatteningParams() {
+    const requiredSingularInt32 = 0;
+    const requiredSingularDouble = 0.0;
+    const requiredSingularBool = false;
+    const requiredSingularEnum = 'ZERO';
+    const requiredSingularString = '';
+    const requiredSingularBytes = Buffer.from('');
+    const requiredSingularMessage = {};
+    const formattedRequiredSingularResourceName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedRequiredSingularResourceNameOneof = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const requiredSingularResourceNameCommon = '';
+    const requiredSingularFixed32 = 0;
+    const requiredSingularFixed64 = 0;
+    const requiredRepeatedInt32 = [];
+    const requiredRepeatedInt64 = [];
+    const requiredRepeatedFloat = [];
+    const requiredRepeatedDouble = [];
+    const requiredRepeatedBool = [];
+    const requiredRepeatedEnum = [];
+    const requiredRepeatedString = [];
+    const requiredRepeatedBytes = [];
+    const requiredRepeatedMessage = [];
+    const formattedRequiredRepeatedResourceName = [];
+    const formattedRequiredRepeatedResourceNameOneof = [];
+    const requiredRepeatedResourceNameCommon = [];
+    const requiredRepeatedFixed32 = [];
+    const requiredRepeatedFixed64 = [];
+    const requiredMap = {};
+    const requiredAnyValue = {};
+    const requiredStructValue = {};
+    const requiredValueValue = {};
+    const requiredListValueValue = {};
+    const requiredTimeValue = {};
+    const requiredDurationValue = {};
+    const requiredFieldMaskValue = {};
+    const requiredInt32Value = {};
+    const requiredUint32Value = {};
+    const requiredInt64Value = {};
+    const requiredUint64Value = {};
+    const requiredFloatValue = {};
+    const requiredDoubleValue = {};
+    const requiredStringValue = {};
+    const requiredBoolValue = {};
+    const requiredBytesValue = {};
+    const requiredRepeatedAnyValue = [];
+    const requiredRepeatedStructValue = [];
+    const requiredRepeatedValueValue = [];
+    const requiredRepeatedListValueValue = [];
+    const requiredRepeatedTimeValue = [];
+    const requiredRepeatedDurationValue = [];
+    const requiredRepeatedFieldMaskValue = [];
+    const requiredRepeatedInt32Value = [];
+    const requiredRepeatedUint32Value = [];
+    const requiredRepeatedInt64Value = [];
+    const requiredRepeatedUint64Value = [];
+    const requiredRepeatedFloatValue = [];
+    const requiredRepeatedDoubleValue = [];
+    const requiredRepeatedStringValue = [];
+    const requiredRepeatedBoolValue = [];
+    const requiredRepeatedBytesValue = [];
+
+    // Construct request
+    const request = {
+      requiredSingularInt32: requiredSingularInt32,
+      requiredSingularInt64: paramLong,
+      requiredSingularFloat: paramFloat,
+      requiredSingularDouble: requiredSingularDouble,
+      requiredSingularBool: requiredSingularBool,
+      requiredSingularEnum: requiredSingularEnum,
+      requiredSingularString: requiredSingularString,
+      requiredSingularBytes: requiredSingularBytes,
+      requiredSingularMessage: requiredSingularMessage,
+      requiredSingularResourceName: formattedRequiredSingularResourceName,
+      requiredSingularResourceNameOneof: formattedRequiredSingularResourceNameOneof,
+      requiredSingularResourceNameCommon: requiredSingularResourceNameCommon,
+      requiredSingularFixed32: requiredSingularFixed32,
+      requiredSingularFixed64: requiredSingularFixed64,
+      requiredRepeatedInt32: requiredRepeatedInt32,
+      requiredRepeatedInt64: requiredRepeatedInt64,
+      requiredRepeatedFloat: requiredRepeatedFloat,
+      requiredRepeatedDouble: requiredRepeatedDouble,
+      requiredRepeatedBool: requiredRepeatedBool,
+      requiredRepeatedEnum: requiredRepeatedEnum,
+      requiredRepeatedString: requiredRepeatedString,
+      requiredRepeatedBytes: requiredRepeatedBytes,
+      requiredRepeatedMessage: requiredRepeatedMessage,
+      requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+      requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+      requiredRepeatedResourceNameCommon: requiredRepeatedResourceNameCommon,
+      requiredRepeatedFixed32: requiredRepeatedFixed32,
+      requiredRepeatedFixed64: requiredRepeatedFixed64,
+      requiredMap: requiredMap,
+      requiredAnyValue: requiredAnyValue,
+      requiredStructValue: requiredStructValue,
+      requiredValueValue: requiredValueValue,
+      requiredListValueValue: requiredListValueValue,
+      requiredTimeValue: requiredTimeValue,
+      requiredDurationValue: requiredDurationValue,
+      requiredFieldMaskValue: requiredFieldMaskValue,
+      requiredInt32Value: requiredInt32Value,
+      requiredUint32Value: requiredUint32Value,
+      requiredInt64Value: requiredInt64Value,
+      requiredUint64Value: requiredUint64Value,
+      requiredFloatValue: requiredFloatValue,
+      requiredDoubleValue: requiredDoubleValue,
+      requiredStringValue: requiredStringValue,
+      requiredBoolValue: requiredBoolValue,
+      requiredBytesValue: requiredBytesValue,
+      requiredRepeatedAnyValue: requiredRepeatedAnyValue,
+      requiredRepeatedStructValue: requiredRepeatedStructValue,
+      requiredRepeatedValueValue: requiredRepeatedValueValue,
+      requiredRepeatedListValueValue: requiredRepeatedListValueValue,
+      requiredRepeatedTimeValue: requiredRepeatedTimeValue,
+      requiredRepeatedDurationValue: requiredRepeatedDurationValue,
+      requiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
+      requiredRepeatedInt32Value: requiredRepeatedInt32Value,
+      requiredRepeatedUint32Value: requiredRepeatedUint32Value,
+      requiredRepeatedInt64Value: requiredRepeatedInt64Value,
+      requiredRepeatedUint64Value: requiredRepeatedUint64Value,
+      requiredRepeatedFloatValue: requiredRepeatedFloatValue,
+      requiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
+      requiredRepeatedStringValue: requiredRepeatedStringValue,
+      requiredRepeatedBoolValue: requiredRepeatedBoolValue,
+      requiredRepeatedBytesValue: requiredRepeatedBytesValue,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.testOptionalRequiredFlatteningParams(request);
+
+    console.log(response);
+  }
+  sampleTestOptionalRequiredFlatteningParams();
+  // [END test_float_and_int64]
+}
 
 const argv = require(`yargs`)
   .option('param_float', {
@@ -1924,7 +2009,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
+main(argv.param_float, argv.param_long);
 ============== file: samples/v1/test_resource_name_oneof.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1948,27 +2033,28 @@ sampleTestOptionalRequiredFlatteningParams(argv.param_float, argv.param_long);
 
 'use strict';
 
-// [START test_resource_name_oneof]
+function main() {
+  // [START test_resource_name_oneof]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-function sampleGetBookFromAbsolutelyAnywhere() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  client.getBookFromAbsolutelyAnywhere({name: formattedName})
-    .then(responses => {
-      const response = responses[0];
-      console.log(`Archived book found.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleGetBookFromAbsolutelyAnywhere() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Run request
+    const [response] = await libraryServiceClient.getBookFromAbsolutelyAnywhere({name: formattedName});
+
+    console.log(`Archived book found.`);
+  }
+  sampleGetBookFromAbsolutelyAnywhere();
+  // [END test_resource_name_oneof]
 }
 
-// [END test_resource_name_oneof]
-// tslint:disable-next-line:no-any
-
-sampleGetBookFromAbsolutelyAnywhere();
+main();
 ============== file: samples/v1/test_resource_name_oneof_2.js ==============
 // Copyright 2019 Google LLC
 //
@@ -1992,27 +2078,28 @@ sampleGetBookFromAbsolutelyAnywhere();
 
 'use strict';
 
-// [START test_resource_name_oneof_2]
+function main() {
+  // [START test_resource_name_oneof_2]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-function sampleGetBookFromAbsolutelyAnywhere() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  client.getBookFromAbsolutelyAnywhere({name: formattedName})
-    .then(responses => {
-      const response = responses[0];
-      console.log(`Book on shelf found.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleGetBookFromAbsolutelyAnywhere() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Run request
+    const [response] = await libraryServiceClient.getBookFromAbsolutelyAnywhere({name: formattedName});
+
+    console.log(`Book on shelf found.`);
+  }
+  sampleGetBookFromAbsolutelyAnywhere();
+  // [END test_resource_name_oneof_2]
 }
 
-// [END test_resource_name_oneof_2]
-// tslint:disable-next-line:no-any
-
-sampleGetBookFromAbsolutelyAnywhere();
+main();
 ============== file: samples/v1/test_setting_up_empty_objects_in_request.js ==============
 // Copyright 2019 Google LLC
 //
@@ -2037,39 +2124,41 @@ sampleGetBookFromAbsolutelyAnywhere();
 
 'use strict';
 
-// [START test_setting_up_empty_objects_in_request]
+function main() {
+  // [START test_setting_up_empty_objects_in_request]
 
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-/** Test setting up empty objects in the request objects. */
-function sampleGetShelf() {
-  const client = new LibraryServiceClient();
-  const formattedName = client.shelfPath('my-shelf');
-  const options = '';
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // we can set up this empty nested object now
-  const message = {};
-  const stringBuilder = {};
-  const request = {
-    name: formattedName,
-    options: options,
-    message: message,
-    stringBuilder: stringBuilder,
-  };
-  client.getShelf(request)
-    .then(responses => {
-      const response = responses[0];
-      console.log(`Shelf found.`);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  async function sampleGetShelf() {
+    const formattedName = libraryServiceClient.shelfPath('my-shelf');
+    const options = '';
+
+    // we can set up this empty nested object now
+    const message = {};
+    const stringBuilder = {};
+
+    // Construct request
+    const request = {
+      name: formattedName,
+      options: options,
+      message: message,
+      stringBuilder: stringBuilder,
+    };
+
+    // Run request
+    const [response] = await libraryServiceClient.getShelf(request);
+
+    console.log(`Shelf found.`);
+  }
+  sampleGetShelf();
+  // [END test_setting_up_empty_objects_in_request]
 }
 
-// [END test_setting_up_empty_objects_in_request]
-// tslint:disable-next-line:no-any
-
-sampleGetShelf();
+main();
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.js ==============
 // Copyright 2019 Google LLC
 //
@@ -2094,43 +2183,49 @@ sampleGetShelf();
 
 'use strict';
 
-// [START this_tag_should_be_the_name_of_the_file]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-/** Testing calling forms */
-async function sampleGetBigBook(shelf) {
-  const client = new LibraryServiceClient();
+function main(shelf = 'Novel\\"`\b\t\n\r') {
+  // [START this_tag_should_be_the_name_of_the_file]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const shelf = 'Novel\\"`\b\t\n\r';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
 
-  // Create a job whose results you can either wait for now, or get later
-  const [operation] = await client.getBigBook({name: formattedName});
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
 
-  // Get a Promise representation of the final result of the job
-  const [response] = await operation.promise();
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
 
-  // Testing iterating over map fields when both key and value are specified.
-  for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
-    console.log(`key: ${myKey}, value: ${myValue}`);
+  async function sampleGetBigBook() {
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+
+    // Start long-running operation. You can wait for now or get results later.
+    const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
+
+    // Wait for operation to complete.
+    const [response] = await operation.promise();
+
+    // Testing iterating over map fields when both key and value are specified.
+    for (const [myKey, myValue] of Object.entries(response.mapListValueValue)) {
+      console.log(`key: ${myKey}, value: ${myValue}`);
+    }
+
+    // Testing iterating over map fields when only key is specified.
+    for (const anotherKey of Object.keys(response.mapListValueValue)) {
+      console.log(`key: ${anotherKey}`);
+    }
+
+    // Testing iterating over map fields when only value is specified.
+    for (const anotherValue of Object.values(response.mapListValueValue)) {
+      console.log(`value: ${anotherValue}`);
+    }
+
+    console.log(`name: ${response.name}`);
+    console.log(`author: ${response.author}`);
   }
-
-  // Testing iterating over map fields when only key is specified.
-  for (const anotherKey of Object.keys(response.mapListValueValue)) {
-    console.log(`key: ${anotherKey}`);
-  }
-
-  // Testing iterating over map fields when only value is specified.
-  for (const anotherValue of Object.values(response.mapListValueValue)) {
-    console.log(`value: ${anotherValue}`);
-  }
-
-  console.log(`name: ${response.name}`);
-  console.log(`author: ${response.author}`);
+  sampleGetBigBook();
+  // [END this_tag_should_be_the_name_of_the_file]
 }
-
-// [END this_tag_should_be_the_name_of_the_file]
-// tslint:disable-next-line:no-any
 
 const argv = require(`yargs`)
   .option('shelf', {
@@ -2139,7 +2234,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleGetBigBook(argv.shelf).catch(console.error);
+main(argv.shelf);
 ============== file: samples/v1/turing_prog_request_streaming_bidi.js ==============
 // Copyright 2019 Google LLC
 //
@@ -2164,37 +2259,45 @@ sampleGetBigBook(argv.shelf).catch(console.error);
 
 'use strict';
 
-// [START turing_prog_request_streaming_bidi]
-
-const {LibraryServiceClient} = require('@google-cloud/library').v1;
-
-const fs = require('fs');
-/** Testing calling forms */
-function sampleDiscussBook(imageFileName, stage) {
-  const client = new LibraryServiceClient();
-  const stream = client.discussBook().on('data', response => {
-    console.log(response);
-  });
+function main(imageFileName = 'image_file.jpg', stage = 'DRAFT') {
+  // [START turing_prog_request_streaming_bidi]
+  /**
+  * TODO(developer): Uncomment these variables before running the sample.
+  */
   // const imageFileName = 'image_file.jpg';
   // const stage = 'DRAFT';
-  const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
-  const comment = fs.readFileSync('comment_file').toString('base64');
-  const comment2 = {
-    comment: comment,
-    stage: stage,
-  };
-  const image = fs.readFileSync(imageFileName).toString('base64');
-  const request = {
-    name: formattedName,
-    comment: comment2,
-    image: image,
-  };
-  // Write request objects.
-  stream.write(request);
-}
 
-// [END turing_prog_request_streaming_bidi]
-// tslint:disable-next-line:no-any
+  // Imports the client library
+  const {LibraryServiceClient} = require('@google-cloud/library').v1;
+
+  // Additional imports
+  const fs = require('fs');
+
+  // Instantiates a client
+  const libraryServiceClient = new LibraryServiceClient();
+
+  async function sampleDiscussBook() {
+    const stream = libraryServiceClient.discussBook().on('data', response => {
+      console.log(response);
+    });
+    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const comment = fs.readFileSync('comment_file').toString('base64');
+    const comment2 = {
+      comment: comment,
+      stage: stage,
+    };
+    const image = fs.readFileSync(imageFileName).toString('base64');
+    const request = {
+      name: formattedName,
+      comment: comment2,
+      image: image,
+    };
+    // Write request objects.
+    stream.write(request);
+  }
+  sampleDiscussBook();
+  // [END turing_prog_request_streaming_bidi]
+}
 
 const argv = require(`yargs`)
   .option('image_file_name', {
@@ -2207,7 +2310,7 @@ const argv = require(`yargs`)
   })
   .argv;
 
-sampleDiscussBook(argv.image_file_name, argv.stage);
+main(argv.image_file_name, argv.stage);
 ============== file: smoke-test/library_service_smoke_test.js ==============
 // Copyright 2019 Google LLC
 //
@@ -2238,6 +2341,8 @@ describe('LibraryServiceSmokeTest', () => {
     const book = {
       rating: rating,
     };
+
+    // Construct request
     const request = {
       name: formattedName,
       book: book,
@@ -5396,6 +5501,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const options = '';
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   options: options,
@@ -5637,6 +5744,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -5699,6 +5808,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const book = {};
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   book: book,
@@ -5777,6 +5888,8 @@ class LibraryServiceClient {
    * const seriesUuid = {
    *   seriesString: seriesString,
    * };
+   *
+   * // Construct request
    * const request = {
    *   shelf: shelf,
    *   books: books,
@@ -5910,6 +6023,8 @@ class LibraryServiceClient {
    * // Iterate over all elements.
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const filter = 'book-filter-string';
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   filter: filter,
@@ -5929,6 +6044,8 @@ class LibraryServiceClient {
    * // Or obtain the paged response.
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const filter = 'book-filter-string';
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   filter: filter,
@@ -6015,6 +6132,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF_ID]');
    * const filter = 'book-filter-string';
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   filter: filter,
@@ -6123,6 +6242,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const book = {};
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   book: book,
@@ -6183,6 +6304,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -6391,6 +6514,8 @@ class LibraryServiceClient {
    *   alignment: alignment,
    * };
    * const comments = [commentsElement];
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   comments: comments,
@@ -6445,6 +6570,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.archivedBookPath('[ARCHIVE]', '[BOOK]');
    * const formattedParent = client.projectPath('[PROJECT]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   parent: formattedParent,
@@ -6510,6 +6637,8 @@ class LibraryServiceClient {
    * const formattedAltBookName = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const formattedPlace = client.locationPath('[PROJECT]', '[LOCATION]');
    * const formattedFolder = client.folderPath('[FOLDER]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -6629,6 +6758,8 @@ class LibraryServiceClient {
    * const indexName = 'default index';
    * const indexMapItem = '';
    * const indexMap = {'default_key' : indexMapItem};
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   indexName: indexName,
@@ -6893,6 +7024,8 @@ class LibraryServiceClient {
    * const namesElement = '';
    * const names = [namesElement];
    * const formattedShelves = [];
+   *
+   * // Construct request
    * const request = {
    *   names: formattedNames,
    *   shelves: formattedShelves,
@@ -6913,6 +7046,8 @@ class LibraryServiceClient {
    * const namesElement = '';
    * const names = [namesElement];
    * const formattedShelves = [];
+   *
+   * // Construct request
    * const request = {
    *   names: formattedNames,
    *   shelves: formattedShelves,
@@ -6992,6 +7127,8 @@ class LibraryServiceClient {
    * const namesElement = '';
    * const names = [namesElement];
    * const formattedShelves = [];
+   *
+   * // Construct request
    * const request = {
    *   names: formattedNames,
    *   shelves: formattedShelves,
@@ -7044,6 +7181,8 @@ class LibraryServiceClient {
    *
    * const formattedResource = client.bookPath('[BOOK_SHELF]', '[BOOK]');
    * const label = '';
+   *
+   * // Construct request
    * const request = {
    *   resource: formattedResource,
    *   label: label,
@@ -7547,6 +7686,8 @@ class LibraryServiceClient {
    * const requiredRepeatedStringValue = [];
    * const requiredRepeatedBoolValue = [];
    * const requiredRepeatedBytesValue = [];
+   *
+   * // Construct request
    * const request = {
    *   requiredSingularInt32: requiredSingularInt32,
    *   requiredSingularInt64: requiredSingularInt64,
