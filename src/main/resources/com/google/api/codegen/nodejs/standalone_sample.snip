@@ -75,11 +75,7 @@
   async function {@sample.sampleFunctionName}() {
     @switch sample.callingForm
     @case "Request"
-      @if apiMethod.hasReturnValue
-        {@methodCallSampleCodeWithReturnValue(apiMethod, sample)}
-      @else
-        {@methodCallSampleCodeWithoutReturnValue(apiMethod, sample)}
-      @end
+      {@methodCallSampleCodeForRequest(apiMethod, sample)}
     @case "RequestAsyncPaged"
       {@methodCallSampleCodeForPagedResponse(apiMethod, sample)}
     @case "RequestAsyncPagedAll"
@@ -160,26 +156,13 @@
   @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod, sample)
+@private methodCallSampleCodeForRequest(apiMethod, sample)
   {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
 
   // Run request
   const [response] = await {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}
 
   {@processResponse(sample)}
-@end
-
-# TODO – verify still works post-refactoring
-@private methodCallSampleCodeWithoutReturnValue(apiMethod, sample)
-  {@initCode(apiMethod, sample.sampleInitCode, "standalone")}
-
-  // Run request
-  const [response] = {@methodCallSampleCodePrefix(apiMethod, sample.sampleInitCode)}.catch(err => {
-    console.error(err);
-  });
-  @if sample.outputs
-    {@processResponse(sample)}
-  @end
 @end
 
 # NOTE: This is never called for standalone Node.js samples, but used for incode.
