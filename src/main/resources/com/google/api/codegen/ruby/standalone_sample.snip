@@ -16,7 +16,7 @@
       @end
       @#   bundle exec ruby {@sampleFile.outputPath} {@commandlineArgumentList(sample.sampleInitCode.argDefaultParams)}
 
-      require "{@sample.sampleInitCode.topLevelIndexFileImportName}"
+      @# {@sample.descriptionLine}
 
       {@standaloneSample(apiMethod, sample)}
 
@@ -25,16 +25,20 @@
 @end
 
 @private standaloneSample(apiMethod, sample)
-  @# [START {@sample.regionTag}]
-  
-  @if not(sample.sampleFunctionDoc.isEmpty)
-    {@processSampleFunctionDoc(sample.sampleFunctionDoc)}
-  @end
+
+  @# Wrap code sample in parameterized method (to call with arg parsing below)
   @if sample.sampleInitCode.argDefaultParams.size
     def {@sample.sampleFunctionName} {@formalArgs(sample.sampleInitCode.argDefaultParams)}
   @else
     def {@sample.sampleFunctionName}
   @end
+    @if sample.regionTag
+      @# [START {@sample.regionTag}]
+    @end
+
+    @# Import client library
+    require "{@sample.sampleInitCode.topLevelIndexFileImportName}"
+
     @# Instantiate a client
     @if apiMethod.hasApiVersion
       {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new version: :{@apiMethod.apiVersion.toLowerCase}
@@ -65,8 +69,10 @@
     @default
       $unhandledCallingForm: {@sample.callingForm} in sample "{@apiMethod.getClass.getSimpleName}"$
     @end
+    @if sample.regionTag
+      @# [END {@sample.regionTag}]
+    @end
   end
-  @# [END {@sample.regionTag}]
   
   # Code below processes command-line arguments to execute this code sample.
 
@@ -238,7 +244,7 @@
 @private initCode(initCodeSpec)
   @if initCodeSpec.argDefaultLines
     @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
-      @# {@line}
+      {@line}
     @end
 
 
@@ -260,6 +266,9 @@
 
     @end
     {@initCodeLine(line)}
+    @if line.descriptions
+
+    @end
   @end
 @end
 
