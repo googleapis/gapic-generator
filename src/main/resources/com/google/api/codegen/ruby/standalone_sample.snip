@@ -30,10 +30,10 @@
   @else
     def {@sample.sampleFunctionName}
   @end
+
     @if sample.regionTag
       @# [START {@sample.regionTag}]
     @end
-
     @# Import client library
     require "{@sample.sampleInitCode.topLevelIndexFileImportName}"
 
@@ -233,7 +233,7 @@
 
 @private formalArgs(params)
   @join param : params on ", "
-    {@param.identifier}
+    {@param.identifier} = {@renderInitValue(param.initValue)}
   @end
 @end
 
