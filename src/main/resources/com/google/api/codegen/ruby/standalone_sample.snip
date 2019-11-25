@@ -25,8 +25,6 @@
 @end
 
 @private standaloneSample(apiMethod, sample)
-
-  @# Wrap code sample in parameterized method (to call with arg parsing below)
   @if sample.sampleInitCode.argDefaultParams.size
     def {@sample.sampleFunctionName} {@formalArgs(sample.sampleInitCode.argDefaultParams)}
   @else
@@ -49,7 +47,6 @@
     # Construct request
     @if sample.sampleInitCode.lines
       {@initCode(sample.sampleInitCode)}
-
     @end
     @switch sample.callingForm
     @case "Request"
@@ -74,7 +71,7 @@
     @end
   end
   
-  # Code below processes command-line arguments to execute this code sample.
+  @# Code below processes command-line arguments to execute this code sample.
 
   require "optparse"
 
@@ -133,6 +130,7 @@
   @if apiMethod.hasReturnValue
     response = {@methodCallSampleCode(apiMethod, sample)}
     @if sample.outputs
+
       {@processOutputViews(sample.outputs)}
     @end
   @else
@@ -261,14 +259,10 @@
 @private initCodeLinesWithDescriptions(lines)
   @join line : lines
     @if line.descriptions
-
       {@toComments(line.descriptions)}
 
     @end
     {@initCodeLine(line)}
-    @if line.descriptions
-
-    @end
   @end
 @end
 
@@ -276,14 +270,19 @@
   @switch line.lineType.toString
   @case "StructureInitLine"
     {@initLineStructure(line)}
+
   @case "ListInitLine"
     {@initLineList(line)}
+
   @case "MapInitLine"
     {@initLineMap(line)}
+
   @case "SimpleInitLine"
     {@initLineSimple(line)}
+
   @case "ReadFileInitLine"
     {@initLineReadFile(line)}
+
   @default
     $unhandledCase: {@line.lineType.toString}$
   @end
