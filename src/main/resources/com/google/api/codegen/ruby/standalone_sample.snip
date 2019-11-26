@@ -26,7 +26,7 @@
 
 @private standaloneSample(apiMethod, sample)
   @if sample.sampleInitCode.argDefaultParams.size
-    def {@sample.sampleFunctionName} {@formalArgs(sample.sampleInitCode.argDefaultParams)}
+    def {@sample.sampleFunctionName} {@formalArgsWithDefaultValues(sample.sampleInitCode.argDefaultParams)}
   @else
     def {@sample.sampleFunctionName}
   @end
@@ -228,10 +228,15 @@
     @end
     opts.parse!
   end
-
 @end
 
 @private formalArgs(params)
+  @join param : params on ", "
+    {@param.identifier}
+  @end
+@end
+
+@private formalArgsWithDefaultValues(params)
   @join param : params on ", "
     {@param.identifier} = {@renderInitValue(param.initValue)}
   @end
@@ -241,8 +246,9 @@
 # in setting up resource names from incode samples.
 @private initCode(initCodeSpec)
   @if initCodeSpec.argDefaultLines
+    @# TODO(developer): Uncomment these variables before running the sample.
     @join line : util.pretty(initCodeLines(initCodeSpec.argDefaultLines))
-      {@line}
+      @# {@line}
     @end
 
 
