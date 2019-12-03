@@ -243,6 +243,48 @@ public abstract class ResourceDescriptorConfig {
             diagCollector, configOverrides, deprecatedPatternResourceMap, language);
   }
 
+  Map<String, String> getChildParentResourceMap() {
+    
+  }
+
+  ResourceDescriptorConfig getParentResource() {
+    Set<ResourceNameConfig> parentResourceCandidates =
+        patternResourceDescriptorMap.values().stream()
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
+
+    for (String parentPattern : getParentPatterns()) {
+
+      // Avoid unnecessary lookups.
+      if (parentResourceCandidates.isEmpty()) {
+        return Collections.emptyList();
+      }
+
+      parentResourceCandidates.retainAll(
+          patternResourceDescriptorMap.getOrDefault(parentPatterns, Collections.emptySet()));
+    }
+
+    parentResourceCandidates =
+        parentResourceCandidates().stream()
+            .filter(c -> c.getPatterns().size() == getPatterns().size())
+            .collect(Collectors.toList());
+
+    if (parentResourceCandidates.size() == 0) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Can't find parent resource for " + getUnqualifiedTypeName()));
+    }
+
+    if (parentResourceCandidates.size() > 1) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Found more than one parent resource for " + getUnqualifiedTypeName()));
+    }
+
+  } 
+
   /** Package-private for use in ResourceNameMessageConfigs. */
   List<String> getParentPatterns() {
     return getPatterns().stream()

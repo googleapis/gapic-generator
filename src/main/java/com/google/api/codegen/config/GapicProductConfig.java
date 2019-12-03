@@ -246,6 +246,17 @@ public abstract class GapicProductConfig implements ProductConfig {
               .flatMap(i -> i.getDeprecatedCollectionsList().stream())
               .collect(ImmutableMap.toImmutableMap(c -> c.getNamePattern(), c -> c));
 
+      // Create a pattern-to-resource map to make looking up parent resources easier.
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
+      for (ResourceDescriptorConfig resourceDescriptor : descriptorConfigMap.values()) {
+        for (String pattern : resourceDescriptor.getPatterns()) {
+          patternResourceDescriptorMap.putIfAbsent(pattern, new HashSet<>());
+          patternResourceDescriptorMap.get(pattern).add(resourceDescriptor);
+        }
+      }
+      // 
+      Map<String, String> childParentResourceMap;
+
       resourceNameConfigs =
           createResourceNameConfigsFromAnnotationsAndGapicConfig(
               model,

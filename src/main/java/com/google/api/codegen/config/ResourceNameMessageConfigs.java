@@ -67,71 +67,25 @@ public abstract class ResourceNameMessageConfigs {
         // Handle resource definitions.
         ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
         if (resourceDescriptor != null) {
-          fieldEntityMapBuilder.put(getFieldEntityMapForResourceDefinition(message, resourceDescriptor));
+          collectFieldEntityMapForResourceDefinition(fieldEntityMapBuilder, resourceDescriptor, message);
         }
 
         // Handle resource references.
-
-
-        if (resourceDescriptor != null) {
-          resourceFieldName = resourceDescriptor.getNameField();
-          if (Strings.isNullOrEmpty(resourceFieldName)) {
-            resourceFieldName = "name"; // Default field containing the resource path.
-          }
-          Field resourceField = message.lookupField(resourceFieldName);
-          String entityName =
-              getResourceDescriptorTypeForField(
-                  false,
-                  diagCollector,
-                  descriptorConfigMap,
-                  resourceDescriptor.getType(),
-                  message,
-                  resourceField);
-          if (Strings.isNullOrEmpty(entityName)) {
-            continue;
-          }
-          if (!resourceNameConfigs.containsKey(entityName)) {
-            continue;
-          }
-          fieldEntityMapBuilder.put(resourceField.getSimpleName(), entityName);
-        }
-
-        for (Field field : message.getFields()) {
-          if (!parser.hasResourceReference(field)) {
-            continue;
-          }
-          if (field.getSimpleName().equals(resourceFieldName)) {
-            // We've already processed the Resource message's "name" field above.
-            continue;
-          }
-
-          ResourceReference reference = parser.getResourceReference(field);
-          boolean isChildReference = !Strings.isNullOrEmpty(reference.getChildType());
-          String type = isChildReference ? reference.getChildType() : reference.getType();
-          if (type.equals("*")) {
-            // This is an AnyResourceNameConfig.
-            fieldEntityMapBuilder.put(field.getSimpleName(), "*");
-            continue;
-          }
-          String entityName =
-              getResourceDescriptorTypeForField(
-                  isChildReference, diagCollector, descriptorConfigMap, type, message, field);
-          if (Strings.isNullOrEmpty(entityName)) continue;
-          fieldEntityMapBuilder.put(field.getSimpleName(), entityName);
-        }
-        ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
-        if (fieldEntityMap.size() > 0) {
-          ResourceNameMessageConfig messageConfig =
-              new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
-          builder.put(messageConfig.messageName(), messageConfig);
+        collectFieldEntityMapForResourceReference(fieldEntityMap, parser, message, resourceNameConfigs);
         }
       }
+      ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
+      if (fieldEntityMap.size() > 0) {
+        ResourceNameMessageConfig messageConfig =
+            new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
+        builder.put(messageConfig.messageName(), messageConfig);
     }
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
-  private Map.Entry<String, String> getFieldEntityMapForResourceDefinition(
+  private void collectFieldEntityMapForResourceDefinition(
+      ImmutableMap.Builder<String, String> fieldEntityMap,
       ResourceDescriptor resourceDescriptor,
       MessageType message) {
     String resourceFieldName = resourceDescriptor.getNameField();
@@ -139,13 +93,15 @@ public abstract class ResourceNameMessageConfigs {
       resourceFieldName = "name";
     }
     String entityName = resourceDescriptor.getDerivedEntityName();
-    return new AbstractMap.SimpleEntry<>(resourceFieldName, entityName);
+    fieldEntityMap.put(resourceFieldName, entityName);
   }
 
-  private Map<String, String> getFieldEntityMapForResourceReference(
+  private Map<String, String> collectFieldEntityMapForResourceReference(
+      ImmutableMap.Builder<String, String> fieldEntityMap,
       ProtoParser parser,
       MessageType message,
-      Map<String, ResourceNameConfig> resourceNameConfigs) {
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      Map<String, ResourceNameConfig> parentResourceNameConfigs) {
     for (Field field : message.getFields()) {
       ResourceReference reference = parser.getResourceReference(field);
       if (reference == null) {
@@ -164,56 +120,27 @@ public abstract class ResourceNameMessageConfigs {
           field);
 
       if (childType != null) {
-        ResourceDescriptor parentResource = resourceNameConfigs.
+        ResourceNameConfig parentResource = parentResourceNameConfigs.get(childType);
+        Preconditions.checkArgument(
+            parentResource != null,
+            "Referencing non-existing parent resource: %s",
+            childType);
+        fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityName());
+        continue;
       }
 
-      String type = reference.getType();
-
-  }
-
-  private static String getResourceDescriptorTypeForField(
-      boolean isChildReference,
-      DiagCollector diagCollector,
-      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
-      String type,
-      MessageType message,
-      Field field) {
-    ResourceDescriptorConfig config = descriptorConfigMap.get(type);
-    if (config == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Reference to unknown type \"%s\" on field %s.%s",
-              type,
-              message.getFullName(),
-              field.getFullName()));
-      return null;
-    }
-
-    String entityName;
-    if (isChildReference) {
-      // Attempt to resolve the reference to an existing type. If we can't, mark this
-      // type as having a child reference, and resolve the reference to the derived
-      // parent type.
-      List<String> parentPatterns = config.getParentPatterns();
-      Optional<ResourceDescriptorConfig> parentConfig =
-          descriptorConfigMap
-              .values()
-              .stream()
-              .filter(
-                  c ->
-                      parentPatterns.size() == c.getPatterns().size()
-                          && parentPatterns.containsAll(c.getPatterns()))
-              .findFirst();
-      if (parentConfig.isPresent()) {
-        entityName = parentConfig.get().getDerivedEntityName();
-      } else {
-        entityName = config.getDerivedParentEntityName();
+      if (type.equals("*")) {
+        fieldEntityMapBuilder.put(field.getSimpleName(), "*");
+        continue;
       }
-    } else {
-      entityName = config.getDerivedEntityName();
+      
+      ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(type);
+      Preconditions.checkArgument(
+          resourceNameConfig != null,
+          "Referencing non-existing resource: %s",
+          type);
+      fieldEntityMap.put(field.getSimpleName(), resourceNameConfig.getEntityName());
     }
-    return entityName;
   }
 
   @VisibleForTesting
