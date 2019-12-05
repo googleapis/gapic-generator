@@ -18,6 +18,8 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
+import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.auto.value.AutoValue;
 
@@ -35,10 +37,24 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean useResourceNameFormatOptionInSample(
       MethodContext context, FieldConfig fieldConfig) {
-    return resourceNameTypesEnabled()
-        && fieldConfig != null
-        && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly())
-        && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
+    boolean hasResourceNameFormatOption =
+        resourceNameTypesEnabled()
+            && fieldConfig != null
+            && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly())
+            && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
+
+    if (!hasResourceNameFormatOption) {
+      return false;
+    }
+
+    boolean requiresMultiPatternResourceSupport =
+        fieldConfig.getResourceNameType() == ResourceNameType.ONEOF
+            && ((ResourceNameOneofConfig) fieldConfig.getResourceNameConfig())
+                    .getSingleResourceNameConfigs()
+                    .size()
+                == 0;
+
+    return !requiresMultiPatternResourceSupport;
   }
 
   @Override

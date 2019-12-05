@@ -17,10 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.ResourceDescriptor;
-import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -99,52 +96,5 @@ public class ResourceDescriptorConfigTest {
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}/bars/{bar}/bang"))
         .isEqualTo("foos/{foo}/bars/{bar}");
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}")).isEqualTo("");
-  }
-
-  @Test
-  public void testBuildEntityNameMap() {
-    assertThat(
-            ResourceDescriptorConfig.buildEntityNameMap(
-                ImmutableList.of("foos/{foo}/bars/{bar}"), Name.from("")))
-        .isEqualTo(ImmutableMap.of("foos/{foo}/bars/{bar}", Name.from("bar")));
-    assertThat(
-            ResourceDescriptorConfig.buildEntityNameMap(
-                ImmutableList.of("foos/{foo}/bars/{bar}"), Name.from("fuzz")))
-        .isEqualTo(ImmutableMap.of("foos/{foo}/bars/{bar}", Name.from("fuzz")));
-    assertThat(
-            ResourceDescriptorConfig.buildEntityNameMap(
-                ImmutableList.of("foos/{foo}/bars/{bar}", "foos/{foo}/bazs/{baz}/bars/{bar}"),
-                Name.from("")))
-        .isEqualTo(
-            ImmutableMap.of(
-                "foos/{foo}/bars/{bar}",
-                Name.from("foo"),
-                "foos/{foo}/bazs/{baz}/bars/{bar}",
-                Name.from("baz")));
-    assertThat(
-            ResourceDescriptorConfig.buildEntityNameMap(
-                ImmutableList.of("foos/{foo}/bars/{bar}", "foos/{foo}/bazs/{baz}/bars/{bar}"),
-                Name.from("bar")))
-        .isEqualTo(
-            ImmutableMap.of(
-                "foos/{foo}/bars/{bar}",
-                Name.from("foo_bar"),
-                "foos/{foo}/bazs/{baz}/bars/{bar}",
-                Name.from("baz_bar")));
-    assertThat(
-            ResourceDescriptorConfig.buildEntityNameMap(
-                ImmutableList.of(
-                    "foos/{foo}/bars/{bar}",
-                    "foos/{foo}/bazs/{baz}/bars/{bar}",
-                    "foos/{foo}/wizzs/{wizz}/bazs/{baz}/bars/{bar}"),
-                Name.from("bar")))
-        .isEqualTo(
-            ImmutableMap.of(
-                "foos/{foo}/bars/{bar}",
-                Name.from("foo_bar"),
-                "foos/{foo}/bazs/{baz}/bars/{bar}",
-                Name.from("foo_baz_bar"),
-                "foos/{foo}/wizzs/{wizz}/bazs/{baz}/bars/{bar}",
-                Name.from("wizz_baz_bar")));
   }
 }

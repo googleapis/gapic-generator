@@ -2989,12 +2989,6 @@ module Library
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
-      ARCHIVE_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive}/books/{book}"
-      )
-
-      private_constant :ARCHIVE_BOOK_PATH_TEMPLATE
-
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "archives/{archive}/books/{book}"
       )
@@ -3049,17 +3043,6 @@ module Library
 
       private_constant :SHELF_PATH_TEMPLATE
 
-      # Returns a fully-qualified archive_book resource name string.
-      # @param archive [String]
-      # @param book [String]
-      # @return [String]
-      def self.archive_book_path archive, book
-        ARCHIVE_BOOK_PATH_TEMPLATE.render(
-          :"archive" => archive,
-          :"book" => book
-        )
-      end
-
       # Returns a fully-qualified archived_book resource name string.
       # @param archive [String]
       # @param book [String]
@@ -3072,6 +3055,8 @@ module Library
       end
 
       # Returns a fully-qualified book resource name string.
+      # @deprecated Multi-pattern resource names will have unified creation and parsing helper functions.
+      # This helper function will be deleted in the next major version.
       # @param book_shelf [String]
       # @param book [String]
       # @return [String]

@@ -14,25 +14,23 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.ResourceDescriptor;
 import com.google.api.codegen.DeprecatedCollectionConfigProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.Name;
-import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.pathtemplate.ValidationException;
-import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
  * Class that represents a google.api.ResourceDescriptor annotation, and is used to construct
@@ -107,50 +105,12 @@ public abstract class ResourceDescriptorConfig {
         requiresOneofConfig ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName);
   }
 
-  private static String getUnqualifiedTypeName(String typeName) {
+  static String getUnqualifiedTypeName(String typeName) {
     return typeName.substring(typeName.lastIndexOf("/") + 1);
   }
 
   private String getUnqualifiedTypeName() {
     return getUnqualifiedTypeName(getUnifiedResourceType());
-  }
-
-  private static ArrayList<ResourceNameConfig> buildSingleResourceNameConfigs(
-      DiagCollector diagCollector,
-      List<String> patterns,
-      Map<String, Name> nameMap,
-      ProtoFile protoFile,
-      Map<String, SingleResourceNameConfig> configOverrides) {
-    try {
-      return patterns.stream()
-          .map(
-              (String p) -> {
-                String gapicConfigEntityId = nameMap.get(p).toLowerUnderscore();
-                if (configOverrides.containsKey(gapicConfigEntityId)) {
-                  SingleResourceNameConfig overrideConfig =
-                      configOverrides.get(gapicConfigEntityId);
-                  return SingleResourceNameConfig.newBuilder()
-                      .setNamePattern(p)
-                      .setNameTemplate(PathTemplate.create(p))
-                      .setEntityId(nameMap.get(p).toUpperCamel())
-                      .setEntityName(overrideConfig.getEntityName())
-                      .setCommonResourceName(overrideConfig.getCommonResourceName())
-                      .build();
-                } else {
-                  return SingleResourceNameConfig.newBuilder()
-                      .setNamePattern(p)
-                      .setNameTemplate(PathTemplate.create(p))
-                      .setEntityId(nameMap.get(p).toUpperCamel())
-                      .setEntityName(nameMap.get(p))
-                      .build();
-                }
-              })
-          .collect(Collectors.toCollection(ArrayList::new));
-    } catch (ValidationException e) {
-      // Catch exception that may be thrown by PathTemplate.create
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return new ArrayList<>();
-    }
   }
 
   /** Package-private for use in GapicProductConfig. */
@@ -166,8 +126,13 @@ public abstract class ResourceDescriptorConfig {
 
     // Single-pattern resource.
     if (getPatterns().size() == 1) {
-      return buildSingleResourceNameConfigs(
-          diagCollector, getPatterns(), entityNameMap, getAssignedProtoFile(), configOverrides);
+      return Collections.singletonMap(
+          getUnqualifiedTypeName(),
+          SingleResourceNameConfig.createSingleResourceNameWithOverride(
+              diagCollector,
+              getUnqualifiedTypeName(),
+              getPatterns().get(0),
+              configOverrides.get(unqualifiedTypeName.toLowerUnderscore())));
     }
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.builder();
 
@@ -186,108 +151,75 @@ public abstract class ResourceDescriptorConfig {
     String oneOfId = getUnqualifiedTypeName() + "Oneof";
     ResourceNameOneofConfig oneofConfig =
         new AutoValue_ResourceNameOneofConfig(
-            oneofId,
-            Name.anyCamel(oneofId),
-            ImmutableList.copyOf(resourceNameConfigs),
+            oneOfId,
+            Name.anyCamel(oneOfId),
+            ImmutableList.copyOf(resourceNameConfigs.build().values()),
             getAssignedProtoFile());
-    resourceNameConfigs.put(oneofId, oneofConfig);
+    resourceNameConfigs.put(oneOfId, oneofConfig);
     return resourceNameConfigs.build();
   }
 
-  /** Package-private for use in GapicProductConfig. */
-  List<ResourceNameConfig> buildParentResourceNameConfigs(
-      DiagCollector diagCollector,
-      Map<String, SingleResourceNameConfig> configOverrides,
-      Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
-      TargetLanguage language) {
+  /**
+   * Returns a child-to-parent map of unified resource types.
+   *
+   * <p>We consider resource Foo to be resource Bar's parent iff Foo and Bar have the same number of
+   * patterns, and for each pattern 'B' in Bar, there is a pattern 'F' in Foo , such that 'F' is the
+   * parent 'B'.
+   *
+   * <p>Package private for use in GapicProductConfig.
+   */
+  static Map<String, String> getChildParentResourceMap(
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
+      ResourceDescriptorConfig parentResource =
+          getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
+      if (parentResource != null) {
+        builder.put(entry.getKey(), parentResource.getUnifiedResourceType());
+      }
+    }
+    return builder.build();
+  }
 
-    Set<ResourceNameConfig> parentResourceCandidates =
-        patternResourceDescriptorMap.values().stream()
+  @Nullable
+  private static ResourceDescriptorConfig getParentResourceDescriptor(
+      ResourceDescriptorConfig childResource,
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    Set<ResourceDescriptorConfig> parentResourceCandidates =
+        patternResourceDescriptorMap
+            .values()
+            .stream()
             .flatMap(Set::stream)
             .collect(Collectors.toSet());
 
-    for (String parentPattern : getParentPatterns()) {
+    // Loop over patterns. For each pattern, retain all resource descriptors with a pattern that
+    // is the parent pattern of this pattern in parentResourceCandidates.
+    for (String parentPattern : childResource.getParentPatterns()) {
 
       // Avoid unnecessary lookups.
       if (parentResourceCandidates.isEmpty()) {
-        return Collections.emptyList();
+        return null;
       }
 
       parentResourceCandidates.retainAll(
-          patternResourceDescriptorMap.getOrDefault(parentPatterns, Collections.emptySet()));
+          patternResourceDescriptorMap.getOrDefault(parentPattern, Collections.emptySet()));
     }
 
+    // Filter out resources that have more patterns than childResource does.
     parentResourceCandidates =
-        parentResourceCandidates().stream()
-            .filter(c -> c.getPatterns().size() == getPatterns().size())
-            .collect(Collectors.toList());
-
-    if (parentResourceCandidates.size() == 0) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Can't find parent resource for " + getUnqualifiedTypeName()));
-    }
-
-    if (parentResourceCandidates.size() > 1) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Found more than one parent resource for " + getUnqualifiedTypeName()));
-    }
-
-    return parentResourceCandidates
-        .get(0)
-        .buildResourceNameConfigs(
-            diagCollector, configOverrides, deprecatedPatternResourceMap, language);
-  }
-
-  Map<String, String> getChildParentResourceMap() {
-    
-  }
-
-  ResourceDescriptorConfig getParentResource() {
-    Set<ResourceNameConfig> parentResourceCandidates =
-        patternResourceDescriptorMap.values().stream()
-            .flatMap(Set::stream)
+        parentResourceCandidates
+            .stream()
+            .filter(c -> c.getPatterns().size() == childResource.getPatterns().size())
             .collect(Collectors.toSet());
 
-    for (String parentPattern : getParentPatterns()) {
-
-      // Avoid unnecessary lookups.
-      if (parentResourceCandidates.isEmpty()) {
-        return Collections.emptyList();
-      }
-
-      parentResourceCandidates.retainAll(
-          patternResourceDescriptorMap.getOrDefault(parentPatterns, Collections.emptySet()));
-    }
-
-    parentResourceCandidates =
-        parentResourceCandidates().stream()
-            .filter(c -> c.getPatterns().size() == getPatterns().size())
-            .collect(Collectors.toList());
-
-    if (parentResourceCandidates.size() == 0) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Can't find parent resource for " + getUnqualifiedTypeName()));
-    }
-
-    if (parentResourceCandidates.size() > 1) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Found more than one parent resource for " + getUnqualifiedTypeName()));
-    }
-
-  } 
+    return parentResourceCandidates.size() == 1 ? parentResourceCandidates.iterator().next() : null;
+  }
 
   /** Package-private for use in ResourceNameMessageConfigs. */
-  List<String> getParentPatterns() {
-    return getPatterns().stream()
+  private List<String> getParentPatterns() {
+    return getPatterns()
+        .stream()
         .map(ResourceDescriptorConfig::getParentPattern)
         .distinct()
         .collect(Collectors.toList());
