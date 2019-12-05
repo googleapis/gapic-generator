@@ -137,9 +137,8 @@ public abstract class ResourceDescriptorConfig {
               getUnqualifiedTypeName(),
               getPatterns().get(0),
               configOverrides.get(
-                  unqualifiedTypeName
-                      .toLowerUnderscore()))); // entity names in gapic config are in
-                                               // lower_underscore case.
+                  unqualifiedTypeName.toLowerUnderscore()))); // entity names in gapic config are in
+      // lower_underscore case.
     }
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.builder();
 
@@ -223,7 +222,6 @@ public abstract class ResourceDescriptorConfig {
     return parentResourceCandidates.size() == 1 ? parentResourceCandidates.iterator().next() : null;
   }
 
-  /** Package-private for use in ResourceNameMessageConfigs. */
   private List<String> getParentPatterns() {
     return getPatterns()
         .stream()
