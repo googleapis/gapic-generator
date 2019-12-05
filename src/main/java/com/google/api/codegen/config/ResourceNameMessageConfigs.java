@@ -82,6 +82,7 @@ public abstract class ResourceNameMessageConfigs {
     }
 
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
+    map.entrySet().forEach(System.out::println);
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
@@ -142,11 +143,14 @@ public abstract class ResourceNameMessageConfigs {
       }
 
       String unqualifiedResourceType = ResourceDescriptorConfig.getUnqualifiedTypeName(type);
-      ResourceNameConfig resourceNameConfig = resourceNameConfigs.get(unqualifiedResourceType);
-      if (resourceNameConfig == null) {
-        unqualifiedResourceType = unqualifiedResourceType + "Oneof";
-        resourceNameConfig = resourceNameConfigs.get(unqualifiedResourceType);
+      ResourceNameConfig resourceNameConfig =
+          resourceNameConfigs.get(unqualifiedResourceType + "Oneof");
+      if (resourceNameConfig != null
+          && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+        fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType + "Oneof");
+        continue;
       }
+      resourceNameConfig = resourceNameConfigs.get(unqualifiedResourceType);
       Preconditions.checkArgument(
           resourceNameConfig != null, "Referencing non-existing resource: %s", type);
       fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType);

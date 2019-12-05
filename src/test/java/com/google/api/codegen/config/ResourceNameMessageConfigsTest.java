@@ -94,7 +94,8 @@ public class ResourceNameMessageConfigsTest {
               .setType("library.googleapis.com/Shelf")
               .addPattern(PROTO_SHELF_PATH)
               .build(),
-          protoFile);
+          protoFile,
+          true);
 
   private static final ResourceDescriptorConfig BOOK_RESOURCE_DESCRIPTOR_CONFIG =
       ResourceDescriptorConfig.from(
@@ -102,7 +103,8 @@ public class ResourceNameMessageConfigsTest {
               .setType("library.googleapis.com/Book")
               .addPattern(PROTO_BOOK_PATH)
               .build(),
-          protoFile);
+          protoFile,
+          true);
 
   private static final ResourceDescriptorConfig ARCHIVED_BOOK_RESOURCE_DESCRIPTOR_CONFIG =
       ResourceDescriptorConfig.from(
@@ -110,7 +112,8 @@ public class ResourceNameMessageConfigsTest {
               .setType("library.googleapis.com/ArchivedBook")
               .addPattern(PROTO_ARCHIVED_BOOK_PATH)
               .build(),
-          protoFile);
+          protoFile,
+          true);
 
   private static final Map<String, ResourceDescriptorConfig> resourceDescriptorConfigMap =
       ImmutableMap.of(

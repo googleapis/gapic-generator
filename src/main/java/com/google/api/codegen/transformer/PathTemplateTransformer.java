@@ -80,6 +80,7 @@ public class PathTemplateTransformer {
             context, fieldNamePattern, foundSet, resourceNameConfigs);
       }
     }
+    foundSet.stream().forEach(e -> System.out.println("here " + e));
     return ImmutableList.sortedCopyOf(
         Comparator.comparing(ResourceNameConfig::getEntityId), resourceNameConfigs);
   }

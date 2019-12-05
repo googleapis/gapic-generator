@@ -39,6 +39,9 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class ResourceDescriptorConfig {
 
+  /** Whether this resource is defined at message level. */
+  public abstract boolean isDefinedAtMessageLevel();
+
   /** The unified resource type, taken from the annotation. */
   public abstract String getUnifiedResourceType();
 
@@ -73,7 +76,7 @@ public abstract class ResourceDescriptorConfig {
   public abstract String getDerivedEntityName();
 
   public static ResourceDescriptorConfig from(
-      ResourceDescriptor descriptor, ProtoFile assignedProtoFile) {
+      ResourceDescriptor descriptor, ProtoFile assignedProtoFile, boolean isDefinedAtMessageLevel) {
     // The logic for requiresOneofConfig and requiresSinglePattern is finicky, so let's lay out
     // the desired result for all possible combinations of History and number of patterns:
     // (history, patterns) -> (requiresOneofConfig, requiresSinglePattern)
@@ -95,6 +98,7 @@ public abstract class ResourceDescriptorConfig {
 
     String unqualifiedTypeName = getUnqualifiedTypeName(descriptor.getType());
     return new AutoValue_ResourceDescriptorConfig(
+        isDefinedAtMessageLevel,
         descriptor.getType(),
         ImmutableList.copyOf(descriptor.getPatternList()),
         descriptor.getNameField(),

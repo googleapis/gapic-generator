@@ -824,7 +824,19 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (ResourceDescriptorConfig resourceDescriptorConfig : resourceDescriptorConfigs.values()) {
       String unifiedResourceType = resourceDescriptorConfig.getUnifiedResourceType();
 
-      // Referenced by (google.api.resource).type.
+      // Message-level resource definitions.
+      if (resourceDescriptorConfig.isDefinedAtMessageLevel()) {
+        Map<String, ResourceNameConfig> resources =
+            resourceDescriptorConfig.buildResourceNameConfigs(
+                diagCollector,
+                singleResourceNameConfigsFromGapicConfig,
+                deprecatedPatternResourceMap,
+                language);
+        annotationResourceNameConfigs.putAll(resources);
+        continue;
+      }
+
+      // File-level resource definitions referenced by (google.api.resource).type.
       if (typesWithTypeReferences.contains(unifiedResourceType)) {
         Map<String, ResourceNameConfig> resources =
             resourceDescriptorConfig.buildResourceNameConfigs(
@@ -835,7 +847,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         annotationResourceNameConfigs.putAll(resources);
       }
 
-      // Referenced by (google.api.resource).child_type.
+      // File-level resource definitions referenced by (google.api.resource).child_type.
       if (typesWithChildReferences.contains(unifiedResourceType)) {
         ResourceDescriptorConfig parentResource =
             resourceDescriptorConfigs.get(childParentResourceMap.get(unifiedResourceType));
@@ -847,6 +859,7 @@ public abstract class GapicProductConfig implements ProductConfig {
                 language);
         annotationResourceNameConfigs.putAll(resources);
       }
+      // Discard file-level resource definitions never referenced.
     }
 
     // Single resource names cannot be supported in a standalone manner for GAPIC v2, because the
@@ -898,6 +911,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
+    resourceNameConfigs.build().entrySet().stream().forEach(System.out::println);
     return resourceNameConfigs.build();
   }
 

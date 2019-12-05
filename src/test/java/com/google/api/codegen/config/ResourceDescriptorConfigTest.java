@@ -30,7 +30,7 @@ public class ResourceDescriptorConfigTest {
         ResourceDescriptor.newBuilder().setType("abc/Def");
 
     ResourceDescriptor descriptor = descriptorBuilder.addPattern("foos/{foo}").build();
-    ResourceDescriptorConfig config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    ResourceDescriptorConfig config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isFalse();
     assertThat(config.getSinglePattern()).isEqualTo("foos/{foo}");
 
@@ -40,7 +40,7 @@ public class ResourceDescriptorConfigTest {
             .addPattern("foos/{foo}")
             .addPattern("foos/{foo}/bars/{bar}")
             .build();
-    config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isTrue();
     assertThat(config.getSinglePattern()).isEqualTo("");
 
@@ -50,7 +50,7 @@ public class ResourceDescriptorConfigTest {
             .addPattern("foos/{foo}")
             .setHistory(ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN)
             .build();
-    config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isFalse();
     assertThat(config.getSinglePattern()).isEqualTo("foos/{foo}");
 
@@ -61,7 +61,7 @@ public class ResourceDescriptorConfigTest {
             .addPattern("foos/{foo}/bars/{bar}")
             .setHistory(ResourceDescriptor.History.ORIGINALLY_SINGLE_PATTERN)
             .build();
-    config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isTrue();
     assertThat(config.getSinglePattern()).isEqualTo("foos/{foo}");
 
@@ -71,7 +71,7 @@ public class ResourceDescriptorConfigTest {
             .addPattern("foos/{foo}")
             .setHistory(ResourceDescriptor.History.FUTURE_MULTI_PATTERN)
             .build();
-    config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isTrue();
     assertThat(config.getSinglePattern()).isEqualTo("");
 
@@ -82,7 +82,7 @@ public class ResourceDescriptorConfigTest {
             .addPattern("foos/{foo}/bars/{bar}")
             .setHistory(ResourceDescriptor.History.FUTURE_MULTI_PATTERN)
             .build();
-    config = ResourceDescriptorConfig.from(descriptor, protoFile);
+    config = ResourceDescriptorConfig.from(descriptor, protoFile, true);
     assertThat(config.getRequiresOneofConfig()).isTrue();
     assertThat(config.getSinglePattern()).isEqualTo("");
   }
