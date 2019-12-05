@@ -136,7 +136,10 @@ public abstract class ResourceDescriptorConfig {
               diagCollector,
               getUnqualifiedTypeName(),
               getPatterns().get(0),
-              configOverrides.get(unqualifiedTypeName.toLowerUnderscore())));
+              configOverrides.get(
+                  unqualifiedTypeName
+                      .toLowerUnderscore()))); // entity names in gapic config are in
+                                               // lower_underscore case.
     }
     ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.builder();
 

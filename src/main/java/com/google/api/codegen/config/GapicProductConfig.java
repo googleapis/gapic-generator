@@ -224,8 +224,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           protoParser.getResourceDescriptorConfigMap(model.getFiles(), diagCollector);
 
       List<ResourceReference> fieldsWithResourceRefs =
-          model
-              .getFiles()
+          sourceProtos
               .stream()
               .flatMap(protoFile -> protoFile.getMessages().stream())
               .flatMap(messageType -> messageType.getFields().stream())
@@ -284,7 +283,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               configsWithChildTypeReferences,
               deprecatedPatternResourceMap,
               patternResourceDescriptorMap,
-              childParentResourceMap);
+              childParentResourceMap,
+              defaultPackage);
 
       messageConfigs =
           ResourceNameMessageConfigs.createFromAnnotations(
@@ -812,7 +812,8 @@ public abstract class GapicProductConfig implements ProductConfig {
           Set<String> typesWithChildReferences,
           Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
           Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
-          Map<String, String> childParentResourceMap) {
+          Map<String, String> childParentResourceMap,
+          String defaultPackage) {
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
         getAllCollectionConfigProtos(model, configProto);
@@ -824,8 +825,21 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (ResourceDescriptorConfig resourceDescriptorConfig : resourceDescriptorConfigs.values()) {
       String unifiedResourceType = resourceDescriptorConfig.getUnifiedResourceType();
 
+      // We should create ResourceNameConfigs only for resources that have one or more associated
+      // message
+      // in the source protos we are generating GAPICs for.
+      // That should include:
+      // - resources defined at message-level on any message in source protos
+      // - resources referenced by any message in source protos through `type`
+      // - parent resources of those referenced by any message in source protos through `child_type`
+
       // Message-level resource definitions.
-      if (resourceDescriptorConfig.isDefinedAtMessageLevel()) {
+      if (resourceDescriptorConfig.isDefinedAtMessageLevel()
+          && resourceDescriptorConfig
+              .getAssignedProtoFile()
+              .getProto()
+              .getPackage()
+              .equals(defaultPackage)) {
         Map<String, ResourceNameConfig> resources =
             resourceDescriptorConfig.buildResourceNameConfigs(
                 diagCollector,
@@ -836,7 +850,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         continue;
       }
 
-      // File-level resource definitions referenced by (google.api.resource).type.
+      // resources referenced by (google.api.resource).type in a message inside the
+      // package of the GAPIC.
       if (typesWithTypeReferences.contains(unifiedResourceType)) {
         Map<String, ResourceNameConfig> resources =
             resourceDescriptorConfig.buildResourceNameConfigs(
@@ -847,7 +862,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         annotationResourceNameConfigs.putAll(resources);
       }
 
-      // File-level resource definitions referenced by (google.api.resource).child_type.
+      // resource referenced by (google.api.resource).child_type in a message inside the
+      // package of the GAPIC.
       if (typesWithChildReferences.contains(unifiedResourceType)) {
         ResourceDescriptorConfig parentResource =
             resourceDescriptorConfigs.get(childParentResourceMap.get(unifiedResourceType));
@@ -859,7 +875,7 @@ public abstract class GapicProductConfig implements ProductConfig {
                 language);
         annotationResourceNameConfigs.putAll(resources);
       }
-      // Discard file-level resource definitions never referenced.
+      // Discard resource definitions never referenced in the package of the GAPIC.
     }
 
     // Single resource names cannot be supported in a standalone manner for GAPIC v2, because the
@@ -874,8 +890,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that has no corresponding"
-                    + " annotation",
+                "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
                 key));
       }
       if (annotationResourceNameConfigs.get(annotationsStyleKey).getResourceNameType()
@@ -883,8 +898,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that had entity name matching a"
-                    + " non-single resource annotation: %s",
+                "Found single resource name \"%s\" in GAPIC config that had entity name matching a non-single resource annotation: %s",
                 key,
                 annotationResourceNameConfigs.get(key)));
       }
@@ -911,7 +925,6 @@ public abstract class GapicProductConfig implements ProductConfig {
     resourceNameConfigs.putAll(annotationResourceNameConfigs);
     resourceNameConfigs.putAll(finalFixedResourceNameConfigs);
     resourceNameConfigs.putAll(resourceNameOneofConfigsFromGapicConfig);
-    resourceNameConfigs.build().entrySet().stream().forEach(System.out::println);
     return resourceNameConfigs.build();
   }
 

@@ -47,6 +47,15 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
       return false;
     }
 
+    // TODO: support creating resource name strings in tests and samples using creation methods
+    // in the new multi-pattern resource classes.
+    //
+    // Note this check has to be here temporarily to make java_library_no_gapic_config test pass.
+    // In other tests and in production, we can put multi-pattern resource name in
+    // deprecated_collections
+    // in gapic config v2 so that the generator can create resource name strings in the old way, but
+    // not
+    // for this specific test without a gapic config.
     boolean requiresMultiPatternResourceSupport =
         fieldConfig.getResourceNameType() == ResourceNameType.ONEOF
             && ((ResourceNameOneofConfig) fieldConfig.getResourceNameConfig())

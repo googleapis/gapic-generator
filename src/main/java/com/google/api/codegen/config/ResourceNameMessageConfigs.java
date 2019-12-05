@@ -80,9 +80,7 @@ public abstract class ResourceNameMessageConfigs {
         }
       }
     }
-
     ImmutableMap<String, ResourceNameMessageConfig> map = builder.build();
-    map.entrySet().forEach(System.out::println);
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 

@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,6 +79,10 @@ public class ResourceNameMessageConfigsTest {
   private static final Method insertBook = Mockito.mock(Method.class);
 
   private static final String DEFAULT_PACKAGE = "library";
+  private static final FileDescriptorProto fileDescriptor =
+      FileDescriptorProto.newBuilder()
+          .setPackage(DEFAULT_PACKAGE)
+          .build(); // final class, can't be mocked
   private static final String GAPIC_SHELF_PATH = "shelves/{shelf_id}";
   private static final String DELETED_BOOK_PATH = "_deleted-book_";
   private static final String GAPIC_BOOK_PATH = "shelves/{shelf_id}/books/{book_id}";
@@ -212,6 +217,7 @@ public class ResourceNameMessageConfigsTest {
     Mockito.when(protoFile.getMessages()).thenReturn(ImmutableList.of(bookMessage, shelfMessage));
 
     Mockito.doReturn("library").when(protoParser).getProtoPackage(protoFile);
+    Mockito.doReturn(fileDescriptor).when(protoFile).getProto();
 
     Mockito.when(createShelvesMethod.getSimpleName()).thenReturn(CREATE_SHELF_METHOD_NAME);
     Mockito.when(createShelvesMethod.getInputType()).thenReturn(TypeRef.of(createShelvesRequest));
@@ -323,7 +329,8 @@ public class ResourceNameMessageConfigsTest {
             ImmutableSet.of(),
             Collections.emptyMap(),
             patternResourceDescriptorMap,
-            Collections.emptyMap());
+            Collections.emptyMap(),
+            "library");
 
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     assertThat(resourceNameConfigs.size()).isEqualTo(3);
@@ -416,7 +423,8 @@ public class ResourceNameMessageConfigsTest {
             Collections.emptySet(),
             Collections.emptyMap(),
             patternResourceDescriptorMap,
-            Collections.emptyMap());
+            Collections.emptyMap(),
+            "library");
     assertThat(diagCollector.getErrorCount()).isEqualTo(0);
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createFromAnnotations(
