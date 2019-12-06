@@ -847,7 +847,6 @@ public abstract class GapicProductConfig implements ProductConfig {
                 deprecatedPatternResourceMap,
                 language);
         annotationResourceNameConfigs.putAll(resources);
-        continue;
       }
 
       // resources referenced by (google.api.resource).type in a message inside the
