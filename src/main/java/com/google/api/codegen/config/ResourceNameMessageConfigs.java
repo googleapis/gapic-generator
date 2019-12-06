@@ -54,7 +54,7 @@ public abstract class ResourceNameMessageConfigs {
       Map<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser parser,
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
-      Map<String, String> childParentResourceMap) {
+      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
@@ -106,7 +106,7 @@ public abstract class ResourceNameMessageConfigs {
       ProtoParser parser,
       MessageType message,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, String> childParentResourceMap) {
+      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
     for (Field field : message.getFields()) {
       ResourceReference reference = parser.getResourceReference(field);
       if (reference == null) {
@@ -126,9 +126,7 @@ public abstract class ResourceNameMessageConfigs {
 
       if (!childType.isEmpty()) {
         ResourceNameConfig parentResource =
-            resourceNameConfigs.get(
-                ResourceDescriptorConfig.getUnqualifiedTypeName(
-                    childParentResourceMap.get(childType)));
+            resourceNameConfigs.get(childParentResourceMap.get(childType).getDerivedEntityName());
         Preconditions.checkArgument(
             parentResource != null, "Referencing non-existing parent resource: %s", childType);
         fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());

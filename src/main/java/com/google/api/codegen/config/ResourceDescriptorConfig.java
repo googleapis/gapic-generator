@@ -166,7 +166,7 @@ public abstract class ResourceDescriptorConfig {
   }
 
   /**
-   * Returns a child-to-parent map of unified resource types.
+   * Returns a map from unified resource types to the parent resource descriptor config.
    *
    * <p>We consider resource Foo to be resource Bar's parent iff Foo and Bar have the same number of
    * patterns, and for each pattern 'B' in Bar, there is a pattern 'F' in Foo , such that 'F' is the
@@ -174,15 +174,15 @@ public abstract class ResourceDescriptorConfig {
    *
    * <p>Package private for use in GapicProductConfig.
    */
-  static Map<String, String> getChildParentResourceMap(
+  static Map<String, ResourceDescriptorConfig> getChildParentResourceMap(
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
       Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
-    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ResourceDescriptorConfig> builder = ImmutableMap.builder();
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
       ResourceDescriptorConfig parentResource =
           getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
       if (parentResource != null) {
-        builder.put(entry.getKey(), parentResource.getUnifiedResourceType());
+        builder.put(entry.getKey(), parentResource);
       }
     }
     return builder.build();

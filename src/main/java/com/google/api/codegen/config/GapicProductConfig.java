@@ -267,10 +267,9 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
 
       // Create a child-to-parent map to make resolving child_type easier.
-      Map<String, String> childParentResourceMap =
+      Map<String, ResourceDescriptorConfig> childParentResourceMap =
           ResourceDescriptorConfig.getChildParentResourceMap(
               descriptorConfigMap, patternResourceDescriptorMap);
-
       resourceNameConfigs =
           createResourceNameConfigsFromAnnotationsAndGapicConfig(
               model,
@@ -812,7 +811,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           Set<String> typesWithChildReferences,
           Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
           Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
-          Map<String, String> childParentResourceMap,
+          Map<String, ResourceDescriptorConfig> childParentResourceMap,
           String defaultPackage) {
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
@@ -864,8 +863,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       // resource referenced by (google.api.resource).child_type in a message inside the
       // package of the GAPIC.
       if (typesWithChildReferences.contains(unifiedResourceType)) {
-        ResourceDescriptorConfig parentResource =
-            resourceDescriptorConfigs.get(childParentResourceMap.get(unifiedResourceType));
+        ResourceDescriptorConfig parentResource = childParentResourceMap.get(unifiedResourceType);
         Map<String, ResourceNameConfig> resources =
             parentResource.buildResourceNameConfigs(
                 diagCollector,
