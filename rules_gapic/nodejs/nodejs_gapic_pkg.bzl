@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("//rules_gapic:gapic.bzl", "CustomProtoInfo")
 load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
 
 def _nodejs_gapic_src_pkg_impl(ctx):
@@ -21,8 +22,8 @@ def _nodejs_gapic_src_pkg_impl(ctx):
     for dep in ctx.attr.deps:
         if ProtoInfo in dep:
             proto_srcs.extend(dep[ProtoInfo].check_deps_sources.to_list())
-        elif hasattr(dep, "proto"):
-            proto_srcs.extend(dep.proto.check_deps_sources.to_list())
+        elif CustomProtoInfo in dep:
+            proto_srcs.extend(dep[CustomProtoInfo].check_deps_sources.to_list())
         else:
             gapic_srcs.extend(dep.files.to_list())
 
