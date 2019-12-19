@@ -1,0 +1,74 @@
+// Copyright 2019 Google LLC.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+syntax = "proto3";
+
+package google.example.library.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
+option java_multiple_files = true;
+option java_outer_classname = "LibraryProto";
+option java_package = "com.google.example.library.v1";
+
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named `shelves/*`
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `shelves/*/books/*`
+service LibraryService {
+  // Creates a shelf, and returns the new Shelf.
+  rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
+    option (google.api.http) = {
+      post: "/v1/shelves"
+      body: "shelf"
+    };
+    option (google.api.method_signature) = "shelf";
+  }
+}
+
+// A Shelf contains a collection of books with a theme.
+message Shelf {
+  option (google.api.resource) = {
+    type: "library-example.googleapis.com/Shelf",
+    pattern: "shelves/{shelf_id}"
+  };
+  // The resource name of the shelf.
+  // Shelf names have the form `shelves/{shelf_id}`.
+  // The name is ignored when creating a shelf.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library-example.googleapis.com/Shelf"
+  ];
+
+  // The theme of the shelf
+  string theme = 2;
+}
+
+// Request message for LibraryService.CreateShelf.
+message CreateShelfRequest {
+  // The shelf to create.
+  Shelf shelf = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
