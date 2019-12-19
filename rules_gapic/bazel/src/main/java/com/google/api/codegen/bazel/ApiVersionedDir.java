@@ -77,7 +77,7 @@ class ApiVersionedDir {
   private final Map<String, String> langGapicPackages = new HashMap<>();
 
   // A map with service interface names overrides ('language_settings.<lang>.interface_names'
-  // values from gapic yaml)
+  // values from gapic yaml).
   // For example: {
   //   "java": "google.example.library.v1.LibraryService: Library"
   // }
