@@ -95,15 +95,15 @@ class ApiVersionedDir {
   // root if it is in a different directory).
   private String serviceConfigJsonPath;
 
-  // Name of this api. It is calculated from protos package name and is equal to the last
+  // Name of this API. It is calculated from protos package name and is equal to the last
   // non-versioned component of a package name.
   // For example, if package='google.example.library.v1', then name is 'library'.
   private String name;
 
   // Name of assembly.
   // For example:
-  //   - if it is a top-level api: "library"
-  //   - if it is a sub-api (like library/admin): "library-admin"
+  //   - if it is a top-level API: "library"
+  //   - if it is a sub-API (like library/admin): "library-admin"
   //
   private String assemblyName;
 
@@ -213,7 +213,7 @@ class ApiVersionedDir {
       // Trying to figure out version of the versioned API in the most straightforward way,
       // by looking into the versioned part of the package, which should be the last component
       // of the package. Assuming that package must have at least 2 components (otherwise version
-      // would be the top-level name and probably mean something different.
+      // would be the top-level name and probably mean something different).
       if (tokens.length >= 2) {
         String ver = tokens[tokens.length - 1];
         // Count as "version" anything which is the last package component, starts with 'v'
