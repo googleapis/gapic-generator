@@ -1,0 +1,18 @@
+java_binary(
+    name = "build_file_generator",
+    srcs = glob(["src/main/java/**/*.java"]),
+    resources = glob(["src/main/java/**/*.mustache"]),
+    create_executable = True,
+    javacopts = ["-source", "1.8", "-target", "1.8"],
+    jvm_flags = ["-Xmx1024m"],
+    main_class = "com.google.api.codegen.bazel.BuildFileGenerator",
+    visibility = ["//visibility:public"],
+)
+
+java_test(
+    name = "build_file_generator_test",
+    srcs = glob(["src/test/java/**/*.java"]),
+    deps = [":build_file_generator"],
+    data = glob(["src/test/data/**/*.*"]),
+    test_class = "com.google.api.codegen.bazel.BuildFileGeneratorTest",
+)
