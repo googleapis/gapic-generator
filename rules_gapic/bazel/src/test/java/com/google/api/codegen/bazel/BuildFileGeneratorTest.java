@@ -9,17 +9,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BuildFileGeneratorTest {
-  private static final String SRC_DIR =
-      Paths.get("rules_gapic", "bazel", "src", "test", "data", "googleapis").toString();
+  private static final String SRC_DIR = Paths.get("googleapis").toString();
+  private static final String PATH_PREFIX =
+      Paths.get("rules_gapic", "bazel", "src", "test", "data").toString();
 
   @Test
   public void testGenerateBuildFiles() throws IOException {
 
-    ArgsParser args = new ArgsParser(new String[] {"--src=" + SRC_DIR, "--dest=" + SRC_DIR});
+    ArgsParser args = new ArgsParser(new String[] {"--src=" + SRC_DIR});
     FileWriter fw = new FileWriter();
-    new BuildFileGenerator().generateBuildFiles(args.createApisVisitor(fw));
+    new BuildFileGenerator().generateBuildFiles(args.createApisVisitor(fw, PATH_PREFIX));
 
-    Path fileBodyPathPrefix = Paths.get(SRC_DIR, "google", "example", "library");
+    Path fileBodyPathPrefix = Paths.get(PATH_PREFIX, SRC_DIR, "google", "example", "library");
     String gapicBuildFilePath =
         Paths.get(fileBodyPathPrefix.toString(), "v1", "BUILD.bazel").toString();
     String rawBuildFilePath = Paths.get(fileBodyPathPrefix.toString(), "BUILD.bazel").toString();
