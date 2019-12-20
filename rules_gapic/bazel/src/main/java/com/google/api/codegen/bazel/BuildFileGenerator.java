@@ -5,19 +5,19 @@ import java.nio.file.Files;
 
 // To run from bazel and overwrite existing BUILD.bazel files:
 //    bazel run //rules_gapic/bazel:build_file_generator -- \
-//        --src=rules_gapic/bazel/src/test/data/googleapis \
-//        --dest=rules_gapic/bazel/src/test/data/googleapis
+//        --src=rules_gapic/bazel/src/test/data/googleapis
 //
 // To compile and copy resources manually from the repository root directory (no bazel needed):
 //    javac -d . rules_gapic/bazel/src/main/java/com/google/api/codegen/bazel/*.java
 //    cp rules_gapic/bazel/src/main/java/com/google/api/codegen/bazel/*.mustache
-// com/google/api/codegen/bazel
 // Then to run manually:
-//    java -cp . com.google.api.codegen.bazel.BuildFileGenerator
+//    java -cp . com.google.api.codegen.bazel.BuildFileGenerator \
+//        --src=rules_gapic/bazel/src/test/data/googleapis
 public class BuildFileGenerator {
   public static void main(String[] args) throws IOException {
     BuildFileGenerator bfg = new BuildFileGenerator();
-    ApisVisitor visitor = new ArgsParser(args).createApisVisitor(null);
+    ApisVisitor visitor =
+        new ArgsParser(args).createApisVisitor(null, System.getenv("BUILD_WORKSPACE_DIRECTORY"));
     bfg.generateBuildFiles(visitor);
   }
 

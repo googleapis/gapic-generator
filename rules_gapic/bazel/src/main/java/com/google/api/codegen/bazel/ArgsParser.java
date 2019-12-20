@@ -1,8 +1,9 @@
 package com.google.api.codegen.bazel;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,10 @@ class ArgsParser {
       parsedArgs.put(argNameVal[0], argNameVal[1].trim());
     }
 
-    List<String> required = Arrays.asList("--src", "--dest");
+    List<String> required = Collections.singletonList("--src");
     if (!parsedArgs.keySet().containsAll(required)) {
       String msg =
-          "ERROR: Not all of the required arguments are spcified. "
+          "ERROR: Not all of the required arguments are specified. "
               + "The required arguments are: "
               + required;
       System.out.println(msg);
@@ -32,14 +33,31 @@ class ArgsParser {
     }
   }
 
-  ApisVisitor createApisVisitor(ApisVisitor.FileWriter fileWriter) throws IOException {
+  ApisVisitor createApisVisitor(ApisVisitor.FileWriter fileWriter, String relativePathPrefix)
+      throws IOException {
     String gapicApiTemplPath = parsedArgs.get("--gapic_api_templ");
     String rootApiTemplPath = parsedArgs.get("--root_api_templ");
     String rawApiTempl = parsedArgs.get("--raw_api_templ");
 
+    Path srcPath = Paths.get(parsedArgs.get("--src")).normalize();
+    Path destPath = srcPath;
+    String destArg = parsedArgs.get("--dest");
+    if (destArg != null) {
+      destPath = Paths.get(destArg).normalize();
+    }
+
+    if (relativePathPrefix != null) {
+      if (!srcPath.isAbsolute()) {
+        srcPath = Paths.get(relativePathPrefix, srcPath.toString());
+      }
+      if (!destPath.isAbsolute()) {
+        destPath = Paths.get(relativePathPrefix, destPath.toString());
+      }
+    }
+
     return new ApisVisitor(
-        Paths.get(parsedArgs.get("--src")).normalize(),
-        Paths.get(parsedArgs.get("--dest")).normalize(),
+        srcPath,
+        destPath,
         gapicApiTemplPath == null
             ? readResource("BUILD.bazel.gapic_api.mustache")
             : ApisVisitor.readFile(gapicApiTemplPath),
