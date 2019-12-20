@@ -496,10 +496,14 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       GapicProductConfig productConfig,
       SurfaceNamer namer,
       boolean packageHasEnums) {
+
+    List<ImportFileView> standardImports = generateAbsoluteImportImportSection();
+    standardImports.add(createImport("sys"));
+    standardImports.add(createImport("warnings"));
     return ImportSectionView.newBuilder()
         .appImports(
             generateVersionedInitAppImports(apiModel, productConfig, namer, packageHasEnums))
-        .standardImports(generateAbsoluteImportImportSection())
+        .standardImports(standardImports)
         .build();
   }
 
