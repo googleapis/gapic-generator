@@ -812,6 +812,17 @@ except ImportError:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+import warnings
+
+if sys.version_info[:2] == (2, 7):
+    message = (
+        "A future version of this library will drop support for Python 2.7. "
+        "More details about Python 2 support for Google Cloud Client Libraries" 
+        "can be found at https://cloud.google.com/python/docs/python2-sunset/"
+    )
+    warnings.warn(message, DeprecationWarning)
+
 try:
     import pkg_resources
     pkg_resources.declare_namespace(__name__)
