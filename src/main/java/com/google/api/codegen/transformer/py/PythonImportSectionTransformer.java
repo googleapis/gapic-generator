@@ -497,13 +497,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       SurfaceNamer namer,
       boolean packageHasEnums) {
 
-    List<ImportFileView> standardImports = generateAbsoluteImportImportSection();
-    standardImports.add(createImport("sys"));
-    standardImports.add(createImport("warnings"));
+    List<ImportFileView> imports = new ArrayList<>();
+    imports.addAll(generateAbsoluteImportImportSection());
+    imports.add(createImport("sys"));
+    imports.add(createImport("warnings"));
+    Collections.sort(imports, importFileViewComparator());
     return ImportSectionView.newBuilder()
         .appImports(
             generateVersionedInitAppImports(apiModel, productConfig, namer, packageHasEnums))
-        .standardImports(standardImports)
+        .standardImports(imports)
         .build();
   }
 
