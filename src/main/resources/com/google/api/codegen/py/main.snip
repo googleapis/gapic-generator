@@ -61,9 +61,7 @@
             @join function : api.formatResourceFunctions
                 @@classmethod
                 def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
-                    """DEPRECATED. Return a fully-qualified {@function.entityName} string."""
-                    warnings.warn('Resource name helper functions are deprecated.',
-                        PendingDeprecationWarning, stacklevel=1)
+                    """Return a fully-qualified {@function.entityName} string."""
                     return google.api_core.path_template.expand(
                         '{@function.pattern}',
                         {@createRenderParams(function.resourceIdParams)}
