@@ -359,7 +359,7 @@ jobs:
     working_directory: /tmp/
     environment:
       TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
-      BAZEL_VERSION: 0.28.1
+      BAZEL_VERSION: 2.0.0
       PYTHON_VERSION: 3.5.2
     machine: true
     steps:
@@ -413,7 +413,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.37.1
+      - image: googleapis/artman:0.42.2
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -740,7 +740,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:0.37.1
+      - image: googleapis/artman:0.42.2
     steps:
       - attach_workspace:
           at: workspace

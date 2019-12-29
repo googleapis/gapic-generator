@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//rules_gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
+load("//rules_gapic:gapic.bzl", "CustomProtoInfo", "gapic_srcjar", "proto_custom_library")
 load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths")
 
 def _php_gapic_src_pkg_impl(ctx):
@@ -20,7 +20,7 @@ def _php_gapic_src_pkg_impl(ctx):
     gapic_srcs = []
 
     for dep in ctx.attr.deps:
-        if(hasattr(dep, "proto")):
+        if ProtoInfo in dep or CustomProtoInfo in dep:
             proto_grpc_srcs.extend(dep.files.to_list())
         else:
             gapic_srcs.extend(dep.files.to_list())

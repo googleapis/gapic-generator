@@ -873,12 +873,22 @@ __all__ = (
 
 
 from __future__ import absolute_import
+import sys
+import warnings
 
 from google.cloud.example.library_v1 import types
 from google.cloud.example.library_v1.gapic import enums
 from google.cloud.example.library_v1.gapic import library_service_client
 from google.cloud.example.library_v1.gapic import my_proto_client
 
+
+if sys.version_info[:2] == (2, 7):
+    message = (
+        'A future version of this library will drop support for Python 2.7.'
+        'More details about Python 2 support for Google Cloud Client Libraries'
+        'can be found at https://cloud.google.com/python/docs/python2-sunset/'
+    )
+    warnings.warn(message, DeprecationWarning)
 
 class LibraryServiceClient(library_service_client.LibraryServiceClient):
     __doc__ = library_service_client.LibraryServiceClient.__doc__
@@ -1147,9 +1157,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def archive_book_path(cls, archive, book):
-        """DEPRECATED. Return a fully-qualified archive_book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified archive_book string."""
         return google.api_core.path_template.expand(
             'archives/{archive}/books/{book}',
             archive=archive,
@@ -1158,9 +1166,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def archived_book_path(cls, archive, book):
-        """DEPRECATED. Return a fully-qualified archived_book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(
             'archives/{archive}/books/{book}',
             archive=archive,
@@ -1169,9 +1175,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def book_path(cls, book_shelf, book):
-        """DEPRECATED. Return a fully-qualified book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
             'bookShelves/{book_shelf}/books/{book}',
             book_shelf=book_shelf,
@@ -1180,9 +1184,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def book_from_archive_path(cls, archive, book):
-        """DEPRECATED. Return a fully-qualified book_from_archive string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified book_from_archive string."""
         return google.api_core.path_template.expand(
             'archives/{archive}/books/{book}',
             archive=archive,
@@ -1191,9 +1193,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def folder_path(cls, folder):
-        """DEPRECATED. Return a fully-qualified folder string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified folder string."""
         return google.api_core.path_template.expand(
             'folders/{folder}',
             folder=folder,
@@ -1201,9 +1201,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def location_path(cls, project, location):
-        """DEPRECATED. Return a fully-qualified location string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified location string."""
         return google.api_core.path_template.expand(
             'projects/{project}/locations/{location}',
             project=project,
@@ -1212,9 +1210,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def project_path(cls, project):
-        """DEPRECATED. Return a fully-qualified project string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified project string."""
         return google.api_core.path_template.expand(
             'projects/{project}',
             project=project,
@@ -1222,9 +1218,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def project_book_path(cls, project, book):
-        """DEPRECATED. Return a fully-qualified project_book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified project_book string."""
         return google.api_core.path_template.expand(
             'projects/{project}/books/{book}',
             project=project,
@@ -1233,9 +1227,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def publisher_path(cls, project, location, publisher):
-        """DEPRECATED. Return a fully-qualified publisher string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified publisher string."""
         return google.api_core.path_template.expand(
             'projects/{project}/locations/{location}/publishers/{publisher}',
             project=project,
@@ -1245,9 +1237,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def shelf_path(cls, shelf_id):
-        """DEPRECATED. Return a fully-qualified shelf string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}',
             shelf_id=shelf_id,
