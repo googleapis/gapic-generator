@@ -603,10 +603,12 @@
 @end
 
 @private flattenedRequestBuildingCode(apiMethod)
-  @join pathTemplateCheck : apiMethod.pathTemplateChecks
-    {@pathTemplateCheckLine(pathTemplateCheck)}
-  @end
+  @if apiMethod.pathTemplateChecks
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
 
+  @end
   {@apiMethod.serviceRequestTypeName} request =
       @if apiMethod.requestObjectParams
         {@apiMethod.serviceRequestTypeName}.newBuilder()

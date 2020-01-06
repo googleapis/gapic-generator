@@ -82,8 +82,10 @@
   public void {@test.name}() {
     {@addResponse(test)}
 
-    {@initCode(test.testCaseInitCode)}
+    @if test.testCaseInitCode.lines
+      {@initCode(test.testCaseInitCode)}
 
+    @end
     {@methodCall(test)}
 
     {@unarySuccessAsserts(test)}
@@ -95,8 +97,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.testCaseInitCode)}
+      @if test.testCaseInitCode.lines
+        {@initCode(test.testCaseInitCode)}
 
+      @end
       client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.fail("No exception raised");
