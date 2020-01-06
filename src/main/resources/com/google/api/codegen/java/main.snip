@@ -452,9 +452,13 @@
       {@pathTemplateCheckLine(pathTemplateCheck)}
     @end
     {@apiMethod.serviceRequestTypeName} request =
-        {@apiMethod.serviceRequestTypeName}.newBuilder()
-        {@builderSetCalls(apiMethod.requestObjectParams)}
-        .build();
+        @if apiMethod.requestObjectParams
+          {@apiMethod.serviceRequestTypeName}.newBuilder()
+              {@builderSetCalls(apiMethod.requestObjectParams)}
+              .build();
+        @else
+          {@apiMethod.serviceRequestTypeName}.newBuilder().build();
+        @end
     return {@apiMethod.name}(request);
   }
 @end
@@ -604,9 +608,13 @@
   @end
 
   {@apiMethod.serviceRequestTypeName} request =
-      {@apiMethod.serviceRequestTypeName}.newBuilder()
-      {@builderSetCalls(apiMethod.requestObjectParams)}
-      .build();
+      @if apiMethod.requestObjectParams
+        {@apiMethod.serviceRequestTypeName}.newBuilder()
+            {@builderSetCalls(apiMethod.requestObjectParams)}
+            .build();
+      @else
+        {@apiMethod.serviceRequestTypeName}.newBuilder().build();
+      @end
 @end
 
 @private methodDoc(apiMethodDoc, methodSampleCode)
