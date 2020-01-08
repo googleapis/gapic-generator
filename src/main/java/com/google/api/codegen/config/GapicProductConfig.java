@@ -251,7 +251,9 @@ public abstract class GapicProductConfig implements ProductConfig {
               .getInterfacesList()
               .stream()
               .flatMap(i -> i.getDeprecatedCollectionsList().stream())
-              .collect(ImmutableMap.toImmutableMap(c -> c.getNamePattern(), c -> c));
+              .collect(
+                  ImmutableMap.toImmutableMap(
+                      DeprecatedCollectionConfigProto::getNamePattern, c -> c));
 
       // Create a pattern-to-resource map to make looking up parent resources easier.
       Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
@@ -820,60 +822,18 @@ public abstract class GapicProductConfig implements ProductConfig {
         createSingleResourceNamesFromGapicConfigOnly(
             diagCollector, allCollectionConfigProtos, sampleProtoFile, language);
 
-    HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
-    for (ResourceDescriptorConfig resourceDescriptorConfig : resourceDescriptorConfigs.values()) {
-      String unifiedResourceType = resourceDescriptorConfig.getUnifiedResourceType();
-
-      // We should create ResourceNameConfigs only for resources that have one or more associated
-      // message
-      // in the source protos we are generating GAPICs for.
-      // That should include:
-      // - resources defined at message-level on any message in source protos
-      // - resources referenced by any message in source protos through `type`
-      // - parent resources of those referenced by any message in source protos through `child_type`
-
-      // Message-level resource definitions.
-      if (resourceDescriptorConfig.isDefinedAtMessageLevel()
-          && resourceDescriptorConfig
-              .getAssignedProtoFile()
-              .getProto()
-              .getPackage()
-              .equals(defaultPackage)) {
-        Map<String, ResourceNameConfig> resources =
-            resourceDescriptorConfig.buildResourceNameConfigs(
-                diagCollector,
-                singleResourceNameConfigsFromGapicConfig,
-                deprecatedPatternResourceMap,
-                language);
-        annotationResourceNameConfigs.putAll(resources);
-      }
-
-      // resources referenced by (google.api.resource).type in a message inside the
-      // package of the GAPIC.
-      if (typesWithTypeReferences.contains(unifiedResourceType)) {
-        Map<String, ResourceNameConfig> resources =
-            resourceDescriptorConfig.buildResourceNameConfigs(
-                diagCollector,
-                singleResourceNameConfigsFromGapicConfig,
-                deprecatedPatternResourceMap,
-                language);
-        annotationResourceNameConfigs.putAll(resources);
-      }
-
-      // resource referenced by (google.api.resource).child_type in a message inside the
-      // package of the GAPIC.
-      if (typesWithChildReferences.contains(unifiedResourceType)) {
-        ResourceDescriptorConfig parentResource = childParentResourceMap.get(unifiedResourceType);
-        Map<String, ResourceNameConfig> resources =
-            parentResource.buildResourceNameConfigs(
-                diagCollector,
-                singleResourceNameConfigsFromGapicConfig,
-                deprecatedPatternResourceMap,
-                language);
-        annotationResourceNameConfigs.putAll(resources);
-      }
-      // Discard resource definitions never referenced in the package of the GAPIC.
-    }
+    Map<String, ResourceNameConfig> annotationResourceNameConfigs =
+        getResourceNameConfigsFromAnnotation(
+            diagCollector,
+            language,
+            resourceDescriptorConfigs,
+            typesWithTypeReferences,
+            typesWithChildReferences,
+            deprecatedPatternResourceMap,
+            patternResourceDescriptorMap,
+            childParentResourceMap,
+            defaultPackage,
+            singleResourceNameConfigsFromGapicConfig);
 
     // Single resource names cannot be supported in a standalone manner for GAPIC v2, because the
     // pattern field has been removed. Therefore, throw an error if a single resource config is
@@ -1128,6 +1088,61 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     builder.putAll(map);
     return builder.build();
+  }
+
+  /**
+   * We should create ResourceNameConfigs only for resources that have one or more associated
+   * message in the source protos we are generating GAPICs for, including:
+   *
+   * <ul>
+   *   <li>resources defined at message-level on any message in source protos
+   *   <li>resources referenced by any message in source protos through `type`
+   *   <li>parent resources of those referenced by any message in source protos through `child_type`
+   * </ul>
+   */
+  private static Map<String, ResourceNameConfig> getResourceNameConfigsFromAnnotation(
+      DiagCollector diagCollector,
+      TargetLanguage language,
+      Map<String, ResourceDescriptorConfig> resourceDescriptorConfigs,
+      Set<String> typesWithTypeReferences,
+      Set<String> typesWithChildReferences,
+      Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
+      Map<String, ResourceDescriptorConfig> childParentResourceMap,
+      String defaultPackage,
+      Map<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig) {
+    HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
+    for (ResourceDescriptorConfig resourceDescriptorConfig : resourceDescriptorConfigs.values()) {
+      String unifiedResourceType = resourceDescriptorConfig.getUnifiedResourceType();
+
+      if (resourceDescriptorConfig.isDefinedAtMessageLevel()
+              && resourceDescriptorConfig
+                  .getAssignedProtoFile()
+                  .getProto()
+                  .getPackage()
+                  .equals(defaultPackage)
+          || typesWithTypeReferences.contains(unifiedResourceType)) {
+        Map<String, ResourceNameConfig> resources =
+            resourceDescriptorConfig.buildResourceNameConfigs(
+                diagCollector,
+                singleResourceNameConfigsFromGapicConfig,
+                deprecatedPatternResourceMap,
+                language);
+        annotationResourceNameConfigs.putAll(resources);
+      }
+
+      if (typesWithChildReferences.contains(unifiedResourceType)) {
+        ResourceDescriptorConfig parentResource = childParentResourceMap.get(unifiedResourceType);
+        Map<String, ResourceNameConfig> resources =
+            parentResource.buildResourceNameConfigs(
+                diagCollector,
+                singleResourceNameConfigsFromGapicConfig,
+                deprecatedPatternResourceMap,
+                language);
+        annotationResourceNameConfigs.putAll(resources);
+      }
+    }
+    return annotationResourceNameConfigs;
   }
 
   /** Returns the GapicInterfaceConfig for the given API interface. */

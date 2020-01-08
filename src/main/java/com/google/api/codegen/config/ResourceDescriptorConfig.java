@@ -170,7 +170,7 @@ public abstract class ResourceDescriptorConfig {
    *
    * <p>We consider resource Foo to be resource Bar's parent iff Foo and Bar have the same number of
    * patterns, and for each pattern 'B' in Bar, there is a pattern 'F' in Foo , such that 'F' is the
-   * parent 'B'.
+   * parent of 'B'.
    *
    * <p>Package private for use in GapicProductConfig.
    */
@@ -212,7 +212,10 @@ public abstract class ResourceDescriptorConfig {
           patternResourceDescriptorMap.getOrDefault(parentPattern, Collections.emptySet()));
     }
 
-    // Filter out resources that have more patterns than childResource does.
+    // We have made sure that each resource in parentResourceCandidates has all the required
+    // parent patterns of childResource. We now need to make sure they don't have extra patterns
+    // that are not parent of patterns of childResource. We check this by checking that
+    // a parent resource candidate has the same number of patterns as childResource.
     parentResourceCandidates =
         parentResourceCandidates
             .stream()

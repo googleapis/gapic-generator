@@ -64,12 +64,12 @@ public abstract class ResourceNameMessageConfigs {
         // Handle resource definitions.
         ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
         if (resourceDescriptor != null) {
-          collectFieldEntityMapForResourceDefinition(
+          loadFieldEntityPairFromResourceAnnotation(
               fieldEntityMapBuilder, resourceDescriptor, message);
         }
 
         // Handle resource references.
-        collectFieldEntityMapForResourceReference(
+        loadFieldEntityPairFromResourceReferenceAnnotation(
             fieldEntityMapBuilder, parser, message, resourceNameConfigs, childParentResourceMap);
 
         ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
@@ -84,7 +84,11 @@ public abstract class ResourceNameMessageConfigs {
     return new AutoValue_ResourceNameMessageConfigs(map, createFieldsByMessage(protoFiles, map));
   }
 
-  private static void collectFieldEntityMapForResourceDefinition(
+  /**
+   * Create a field name to resource name type mapping from (google.api).resource annotation put it
+   * to fieldEntityMap.
+   */
+  private static void loadFieldEntityPairFromResourceAnnotation(
       ImmutableMap.Builder<String, String> fieldEntityMap,
       ResourceDescriptor resourceDescriptor,
       MessageType message) {
@@ -101,7 +105,11 @@ public abstract class ResourceNameMessageConfigs {
     fieldEntityMap.put(resourceFieldName, entityName);
   }
 
-  private static void collectFieldEntityMapForResourceReference(
+  /**
+   * Create field name to resource name type mappings from (google.api).resource_reference
+   * annotations and put them to fieldEntityMap.
+   */
+  private static void loadFieldEntityPairFromResourceReferenceAnnotation(
       ImmutableMap.Builder<String, String> fieldEntityMap,
       ProtoParser parser,
       MessageType message,
