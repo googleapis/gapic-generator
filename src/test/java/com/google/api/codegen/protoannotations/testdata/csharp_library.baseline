@@ -7203,8 +7203,8 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for TestOptionalRequiredFlatteningParamsAsync</summary>
         public async Task TestOptionalRequiredFlatteningParamsAsync1()
         {
-            // Snippet: TestOptionalRequiredFlatteningParamsAsync(,CallSettings)
-            // Additional: TestOptionalRequiredFlatteningParamsAsync(,CancellationToken)
+            // Snippet: TestOptionalRequiredFlatteningParamsAsync(CallSettings)
+            // Additional: TestOptionalRequiredFlatteningParamsAsync(CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Make the request
@@ -7215,7 +7215,7 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for TestOptionalRequiredFlatteningParams</summary>
         public void TestOptionalRequiredFlatteningParams1()
         {
-            // Snippet: TestOptionalRequiredFlatteningParams(,CallSettings)
+            // Snippet: TestOptionalRequiredFlatteningParams(CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Make the request
@@ -7642,6 +7642,29 @@ namespace Google.Example.Library.V1.Snippets
             };
             // Make the request
             TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.TestOptionalRequiredFlatteningParams(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for PrivateListShelvesAsync</summary>
+        public async Task PrivateListShelvesAsync()
+        {
+            // Snippet: PrivateListShelvesAsync(CallSettings)
+            // Additional: PrivateListShelvesAsync(CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Make the request
+            Book response = await libraryServiceClient.PrivateListShelvesAsync();
+            // End snippet
+        }
+
+        /// <summary>Snippet for PrivateListShelves</summary>
+        public void PrivateListShelves()
+        {
+            // Snippet: PrivateListShelves(CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Make the request
+            Book response = libraryServiceClient.PrivateListShelves();
             // End snippet
         }
 
@@ -10427,6 +10450,56 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest expectedRequest = new ListShelvesRequest();
+            Book expectedResponse = new Book
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Author = "author-1406328437",
+                Title = "title110371416",
+                Read = true,
+            };
+            mockGrpcClient.Setup(x => x.PrivateListShelves(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            Book response = client.PrivateListShelves();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task PrivateListShelvesAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            ListShelvesRequest expectedRequest = new ListShelvesRequest();
+            Book expectedResponse = new Book
+            {
+                BookNameOneof = BookNameOneof.From(new BookName("[BOOK_SHELF]", "[BOOK]")),
+                Author = "author-1406328437",
+                Title = "title110371416",
+                Read = true,
+            };
+            mockGrpcClient.Setup(x => x.PrivateListShelvesAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            Book response = await client.PrivateListShelvesAsync();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void PrivateListShelves2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
             ListShelvesRequest request = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
@@ -10444,7 +10517,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task PrivateListShelvesAsync()
+        public async Task PrivateListShelvesAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -20446,6 +20519,51 @@ namespace Google.Example.Library.V1
         {
             throw new sys::NotImplementedException();
         }
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Book> PrivateListShelvesAsync(
+            gaxgrpc::CallSettings callSettings = null) => PrivateListShelvesAsync(
+                new ListShelvesRequest
+                {
+                },
+                callSettings);
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Book> PrivateListShelvesAsync(
+            st::CancellationToken cancellationToken) => PrivateListShelvesAsync(
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// This method is not exposed in the GAPIC config. It should be generated.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Book PrivateListShelves(
+            gaxgrpc::CallSettings callSettings = null) => PrivateListShelves(
+                new ListShelvesRequest
+                {
+                },
+                callSettings);
 
         /// <summary>
         /// This method is not exposed in the GAPIC config. It should be generated.
