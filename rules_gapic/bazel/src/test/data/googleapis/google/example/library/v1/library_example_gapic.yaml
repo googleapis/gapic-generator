@@ -1,0 +1,66 @@
+type: com.google.api.codegen.ConfigProto
+config_schema_version: 1.0.0
+# The settings of generated code in a specific language.
+language_settings:
+  java:
+    package_name: com.google.cloud.example.library.v1
+  python:
+    package_name: google.cloud.example.library_v1.gapic
+  go:
+    package_name: cloud.google.com/go/example/library/apiv1
+  csharp:
+    package_name: Google.Example.Library.V1
+  ruby:
+    package_name: Google::Cloud::Example::Library::V1
+  php:
+    package_name: Google\Cloud\Example\Library\V1
+  nodejs:
+    package_name: library.v1
+# A list of API interface configurations.
+interfaces:
+# The fully qualified name of the API interface.
+- name: google.example.library.v1.LibraryService
+  # A list of resource collection configurations.
+  # Consists of a name_pattern and an entity_name.
+  # The name_pattern is a pattern to describe the names of the resources of this
+  # collection, using the platform's conventions for URI patterns. A generator
+  # may use this to generate methods to compose and decompose such names. The
+  # pattern should use named placeholders as in `shelves/{shelf}/books/{book}`;
+  # those will be taken as hints for the parameter names of the generated
+  # methods. If empty, no name methods are generated.
+  # The entity_name is the name to be used as a basis for generated methods and
+  # classes.
+  collections:
+  - name_pattern: shelves/{shelf}
+    entity_name: shelf
+  - name_pattern: shelves/{shelf}/books/{book}
+    entity_name: book
+  # Definition for retryable codes.
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - DEADLINE_EXCEEDED
+    - UNAVAILABLE
+  - name: non_idempotent
+    retry_codes: []
+  # Definition for retry/backoff parameters.
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.3
+    max_retry_delay_millis: 60000
+    initial_rpc_timeout_millis: 20000
+    rpc_timeout_multiplier: 1
+    max_rpc_timeout_millis: 20000
+    total_timeout_millis: 600000
+  methods:
+  - name: CreateShelf
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+    required_fields:
+    - shelf
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 10000

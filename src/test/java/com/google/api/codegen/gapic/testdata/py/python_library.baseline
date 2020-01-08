@@ -774,7 +774,7 @@ Api Reference
 ============== file: google/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -798,7 +798,7 @@ except ImportError:
 ============== file: google/cloud/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -824,7 +824,7 @@ except ImportError:
 ============== file: google/cloud/example/library.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -857,7 +857,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -873,12 +873,22 @@ __all__ = (
 
 
 from __future__ import absolute_import
+import sys
+import warnings
 
 from google.cloud.example.library_v1 import types
 from google.cloud.example.library_v1.gapic import enums
 from google.cloud.example.library_v1.gapic import library_service_client
 from google.cloud.example.library_v1.gapic import my_proto_client
 
+
+if sys.version_info[:2] == (2, 7):
+    message = (
+        'A future version of this library will drop support for Python 2.7.'
+        'More details about Python 2 support for Google Cloud Client Libraries'
+        'can be found at https://cloud.google.com/python/docs/python2-sunset/'
+    )
+    warnings.warn(message, DeprecationWarning)
 
 class LibraryServiceClient(library_service_client.LibraryServiceClient):
     __doc__ = library_service_client.LibraryServiceClient.__doc__
@@ -901,7 +911,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/gapic/enums.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1038,7 +1048,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
 ============== file: google/cloud/example/library_v1/gapic/library_service_client.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1147,9 +1157,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def archived_book_path(cls, archive_path, book_id):
-        """DEPRECATED. Return a fully-qualified archived_book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(
             'archives/{archive_path}/books/{book_id=**}',
             archive_path=archive_path,
@@ -1158,9 +1166,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def book_path(cls, shelf_id, book_id):
-        """DEPRECATED. Return a fully-qualified book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}/books/{book_id}',
             shelf_id=shelf_id,
@@ -1169,9 +1175,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def folder_path(cls, folder):
-        """DEPRECATED. Return a fully-qualified folder string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified folder string."""
         return google.api_core.path_template.expand(
             'folders/{folder}',
             folder=folder,
@@ -1179,9 +1183,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def location_path(cls, project, location):
-        """DEPRECATED. Return a fully-qualified location string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified location string."""
         return google.api_core.path_template.expand(
             'projects/{project}/locations/{location}',
             project=project,
@@ -1190,9 +1192,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def project_path(cls, project):
-        """DEPRECATED. Return a fully-qualified project string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified project string."""
         return google.api_core.path_template.expand(
             'projects/{project}',
             project=project,
@@ -1200,9 +1200,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def project_book_path(cls, project, book):
-        """DEPRECATED. Return a fully-qualified project_book string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified project_book string."""
         return google.api_core.path_template.expand(
             'projects/{project}/books/{book}',
             project=project,
@@ -1211,9 +1209,7 @@ class LibraryServiceClient(object):
 
     @classmethod
     def shelf_path(cls, shelf_id):
-        """DEPRECATED. Return a fully-qualified shelf string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf_id}',
             shelf_id=shelf_id,
@@ -4216,7 +4212,7 @@ config = {
 ============== file: google/cloud/example/library_v1/gapic/my_proto_client.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4304,9 +4300,7 @@ class MyProtoClient(object):
 
     @classmethod
     def return_path(cls, shelf, book, return_):
-        """DEPRECATED. Return a fully-qualified return string."""
-        warnings.warn('Resource name helper functions are deprecated.',
-            PendingDeprecationWarning, stacklevel=1)
+        """Return a fully-qualified return string."""
         return google.api_core.path_template.expand(
             'shelves/{shelf}/books/{book}/returns/{return}',
             shelf=shelf,
@@ -4515,7 +4509,7 @@ config = {
 ============== file: google/cloud/example/library_v1/gapic/transports/library_service_grpc_transport.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5021,7 +5015,7 @@ class LibraryServiceGrpcTransport(object):
 ============== file: google/cloud/example/library_v1/gapic/transports/my_proto_grpc_transport.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5150,7 +5144,7 @@ class MyProtoGrpcTransport(object):
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5228,7 +5222,7 @@ __all__ = tuple(sorted(names))
 ============== file: nox.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5312,7 +5306,7 @@ def lint_setup_py(session):
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5360,7 +5354,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5406,7 +5400,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5453,7 +5447,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5498,7 +5492,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5549,7 +5543,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5601,7 +5595,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5671,7 +5665,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5737,7 +5731,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5788,7 +5782,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5837,7 +5831,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_book_request_test_on_success_map.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5888,7 +5882,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5934,7 +5928,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5983,7 +5977,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6064,7 +6058,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_second_edition.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6113,7 +6107,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6183,7 +6177,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6236,7 +6230,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/sample_get_shelf.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6283,7 +6277,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6329,7 +6323,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_default_calling_form_for_paging.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6374,7 +6368,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_float_and_int64.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6486,7 +6480,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_resource_name_oneof.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6530,7 +6524,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_resource_name_oneof_2.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6574,7 +6568,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_setting_up_empty_objects_in_request.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6625,7 +6619,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6695,7 +6689,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6763,7 +6757,7 @@ universal = 1
 ============== file: setup.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6845,7 +6839,7 @@ setuptools.setup(
 ============== file: tests/system/gapic/v1/test_system_library_service_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6882,7 +6876,7 @@ class TestSystemLibraryService(object):
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -8296,7 +8290,7 @@ class TestLibraryServiceClient(object):
 ============== file: tests/unit/gapic/v1/test_my_proto_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
