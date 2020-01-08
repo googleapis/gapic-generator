@@ -771,9 +771,11 @@ public class InitCodeTransformer {
     SingleResourceNameConfig singleResourceNameConfig;
     switch (fieldConfig.getResourceNameType()) {
       case ANY:
-        // TODO(michaelbausor): handle case where there are no other resource names at all...
-        singleResourceNameConfig =
-            Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
+        Iterable<SingleResourceNameConfig> singleResourceNameConfigs = context.getProductConfig().getSingleResourceNameConfigs();
+        if (!singleResourceNameConfigs.hasNext()) {
+          
+        }
+        singleResourceNameConfig = singleResourceNameConfigs.next();
         MethodModel methodModel = context.getMethodModel();
         if (methodModel instanceof ProtoMethodModel) {
           ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
