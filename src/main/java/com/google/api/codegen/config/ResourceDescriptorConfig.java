@@ -15,23 +15,22 @@
 package com.google.api.codegen.config;
 
 import com.google.api.ResourceDescriptor;
+import com.google.api.codegen.DeprecatedCollectionConfigProto;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.util.Name;
-import com.google.api.pathtemplate.PathTemplate;
-import com.google.api.pathtemplate.ValidationException;
-import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
  * Class that represents a google.api.ResourceDescriptor annotation, and is used to construct
@@ -39,6 +38,9 @@ import java.util.stream.Collectors;
  */
 @AutoValue
 public abstract class ResourceDescriptorConfig {
+
+  /** Whether this resource is defined at message level. */
+  public abstract boolean isDefinedAtMessageLevel();
 
   /** The unified resource type, taken from the annotation. */
   public abstract String getUnifiedResourceType();
@@ -74,7 +76,7 @@ public abstract class ResourceDescriptorConfig {
   public abstract String getDerivedEntityName();
 
   public static ResourceDescriptorConfig from(
-      ResourceDescriptor descriptor, ProtoFile assignedProtoFile) {
+      ResourceDescriptor descriptor, ProtoFile assignedProtoFile, boolean isDefinedAtMessageLevel) {
     // The logic for requiresOneofConfig and requiresSinglePattern is finicky, so let's lay out
     // the desired result for all possible combinations of History and number of patterns:
     // (history, patterns) -> (requiresOneofConfig, requiresSinglePattern)
@@ -96,6 +98,7 @@ public abstract class ResourceDescriptorConfig {
 
     String unqualifiedTypeName = getUnqualifiedTypeName(descriptor.getType());
     return new AutoValue_ResourceDescriptorConfig(
+        isDefinedAtMessageLevel,
         descriptor.getType(),
         ImmutableList.copyOf(descriptor.getPatternList()),
         descriptor.getNameField(),
@@ -106,7 +109,7 @@ public abstract class ResourceDescriptorConfig {
         requiresOneofConfig ? (unqualifiedTypeName + "Oneof") : unqualifiedTypeName);
   }
 
-  private static String getUnqualifiedTypeName(String typeName) {
+  static String getUnqualifiedTypeName(String typeName) {
     return typeName.substring(typeName.lastIndexOf("/") + 1);
   }
 
@@ -114,122 +117,115 @@ public abstract class ResourceDescriptorConfig {
     return getUnqualifiedTypeName(getUnifiedResourceType());
   }
 
-  private static ArrayList<ResourceNameConfig> buildSingleResourceNameConfigs(
+  /** Package-private for use in GapicProductConfig. */
+  Map<String, ResourceNameConfig> buildResourceNameConfigs(
       DiagCollector diagCollector,
-      List<String> patterns,
-      Map<String, Name> nameMap,
-      ProtoFile protoFile,
-      Map<String, SingleResourceNameConfig> configOverrides) {
-    try {
-      return patterns
-          .stream()
-          .map(
-              (String p) -> {
-                String gapicConfigEntityId = nameMap.get(p).toLowerUnderscore();
-                if (configOverrides.containsKey(gapicConfigEntityId)) {
-                  SingleResourceNameConfig overrideConfig =
-                      configOverrides.get(gapicConfigEntityId);
-                  return SingleResourceNameConfig.newBuilder()
-                      .setNamePattern(p)
-                      .setNameTemplate(PathTemplate.create(p))
-                      .setEntityId(nameMap.get(p).toUpperCamel())
-                      .setEntityName(overrideConfig.getEntityName())
-                      .setCommonResourceName(overrideConfig.getCommonResourceName())
-                      .build();
-                } else {
-                  return SingleResourceNameConfig.newBuilder()
-                      .setNamePattern(p)
-                      .setNameTemplate(PathTemplate.create(p))
-                      .setEntityId(nameMap.get(p).toUpperCamel())
-                      .setEntityName(nameMap.get(p))
-                      .build();
-                }
-              })
-          .collect(Collectors.toCollection(ArrayList::new));
-    } catch (ValidationException e) {
-      // Catch exception that may be thrown by PathTemplate.create
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
-      return new ArrayList<>();
-    }
-  }
+      Map<String, SingleResourceNameConfig> configOverrides,
+      Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
+      TargetLanguage language) {
 
-  /** Package-private for use in GapicProductConfig. */
-  List<ResourceNameConfig> buildResourceNameConfigs(
-      DiagCollector diagCollector, Map<String, SingleResourceNameConfig> configOverrides) {
     Name unqualifiedTypeName = Name.anyCamel(getUnqualifiedTypeName());
-    HashMap<String, Name> entityNameMap = buildEntityNameMap(getPatterns(), unqualifiedTypeName);
-    for (String key : entityNameMap.keySet()) {
-      if (key.equals(getSinglePattern())) {
-        entityNameMap.put(key, unqualifiedTypeName);
+    Preconditions.checkArgument(
+        getPatterns().size() > 0, "Resource %s has no patterns.", getUnifiedResourceType());
+
+    // Single-pattern resource.
+    if (getPatterns().size() == 1) {
+      return Collections.singletonMap(
+          getUnqualifiedTypeName(),
+          SingleResourceNameConfig.createSingleResourceNameWithOverride(
+              diagCollector,
+              getUnqualifiedTypeName(),
+              getPatterns().get(0),
+              configOverrides.get(
+                  unqualifiedTypeName.toLowerUnderscore()))); // entity names in gapic config are in
+      // lower_underscore case.
+    }
+    ImmutableMap.Builder<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.builder();
+
+    // Multi-pattern resource.
+    for (String pattern : getPatterns()) {
+      DeprecatedCollectionConfigProto deprecatedResourceProto =
+          deprecatedPatternResourceMap.get(pattern);
+      if (deprecatedResourceProto == null) {
+        continue;
       }
+      SingleResourceNameConfig deprecatedSingleResource =
+          SingleResourceNameConfig.createDeprecatedSingleResourceName(
+              diagCollector, deprecatedResourceProto, getAssignedProtoFile(), language);
+      resourceNameConfigs.put(deprecatedSingleResource.getEntityId(), deprecatedSingleResource);
     }
-
-    ArrayList<ResourceNameConfig> resourceNameConfigs =
-        buildSingleResourceNameConfigs(
-            diagCollector, getPatterns(), entityNameMap, getAssignedProtoFile(), configOverrides);
-
-    if (getRequiresOneofConfig()) {
-      String oneofId = getUnqualifiedTypeName() + "Oneof";
-      resourceNameConfigs.add(
-          new AutoValue_ResourceNameOneofConfig(
-              oneofId,
-              Name.anyCamel(oneofId),
-              ImmutableList.copyOf(resourceNameConfigs),
-              getAssignedProtoFile()));
-    }
-    return resourceNameConfigs;
+    String oneOfId = getUnqualifiedTypeName() + "Oneof";
+    ResourceNameOneofConfig oneofConfig =
+        new AutoValue_ResourceNameOneofConfig(
+            oneOfId,
+            Name.anyCamel(oneOfId),
+            ImmutableList.copyOf(resourceNameConfigs.build().values()),
+            getAssignedProtoFile());
+    resourceNameConfigs.put(oneOfId, oneofConfig);
+    return resourceNameConfigs.build();
   }
 
-  /** Package-private for use in GapicProductConfig. */
-  List<ResourceNameConfig> buildParentResourceNameConfigs(
-      DiagCollector diagCollector, Map<String, SingleResourceNameConfig> configOverrides) {
-    List<String> parentPatterns = getParentPatterns();
-    HashMap<String, Name> entityNameMap = buildEntityNameMap(parentPatterns, Name.from(""));
-    ArrayList<ResourceNameConfig> resourceNameConfigs =
-        buildSingleResourceNameConfigs(
-            diagCollector, parentPatterns, entityNameMap, getAssignedProtoFile(), configOverrides);
-
-    if (parentPatterns.size() > 1) {
-      String oneofId = "ParentOneof";
-      resourceNameConfigs.add(
-          new AutoValue_ResourceNameOneofConfig(
-              oneofId,
-              Name.anyCamel(oneofId),
-              ImmutableList.copyOf(resourceNameConfigs),
-              getAssignedProtoFile()));
-    }
-    return resourceNameConfigs;
-  }
-
-  /** Package-private for use in ResourceNameMessageConfigs. */
-  String getDerivedParentEntityName() {
-    List<String> parentPatterns = getParentPatterns();
-    if (parentPatterns.size() == 0) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Unexpected error - size of getParentPatterns is zero. patterns: [%s]",
-              String.join(", ", getPatterns())));
-    }
-    if (parentPatterns.size() > 1) {
-      return "ParentOneof";
-    } else {
-      List<String> segments = getSegments(parentPatterns.get(0));
-      if (segments.size() == 0) {
-        throw new IllegalArgumentException(
-            String.format(
-                "Unexpected error - size of segments is zero. pattern: %s", parentPatterns.get(0)));
-      }
-      String lastSegment = segments.get(segments.size() - 1);
-      if (isVariableBinding(lastSegment)) {
-        return Name.from(unwrapVariableSegment(lastSegment)).toUpperCamel();
-      } else {
-        return Name.anyCamel(lastSegment).toUpperCamel();
+  /**
+   * Returns a map from unified resource types to the parent resource descriptor config.
+   *
+   * <p>We consider resource Foo to be resource Bar's parent iff Foo and Bar have the same number of
+   * patterns, and for each pattern 'B' in Bar, there is a pattern 'F' in Foo , such that 'F' is the
+   * parent of 'B'.
+   *
+   * <p>Package private for use in GapicProductConfig.
+   */
+  static Map<String, ResourceDescriptorConfig> getChildParentResourceMap(
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    ImmutableMap.Builder<String, ResourceDescriptorConfig> builder = ImmutableMap.builder();
+    for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
+      ResourceDescriptorConfig parentResource =
+          getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
+      if (parentResource != null) {
+        builder.put(entry.getKey(), parentResource);
       }
     }
+    return builder.build();
   }
 
-  /** Package-private for use in ResourceNameMessageConfigs. */
-  List<String> getParentPatterns() {
+  @Nullable
+  private static ResourceDescriptorConfig getParentResourceDescriptor(
+      ResourceDescriptorConfig childResource,
+      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    Set<ResourceDescriptorConfig> parentResourceCandidates =
+        patternResourceDescriptorMap
+            .values()
+            .stream()
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
+
+    // Loop over patterns. For each pattern, retain all resource descriptors with a pattern that
+    // is the parent pattern of this pattern in parentResourceCandidates.
+    for (String parentPattern : childResource.getParentPatterns()) {
+
+      // Avoid unnecessary lookups.
+      if (parentResourceCandidates.isEmpty()) {
+        return null;
+      }
+
+      parentResourceCandidates.retainAll(
+          patternResourceDescriptorMap.getOrDefault(parentPattern, Collections.emptySet()));
+    }
+
+    // We have made sure that each resource in parentResourceCandidates has all the required
+    // parent patterns of childResource. We now need to make sure they don't have extra patterns
+    // that are not parent of patterns of childResource. We check this by checking that
+    // a parent resource candidate has the same number of patterns as childResource.
+    parentResourceCandidates =
+        parentResourceCandidates
+            .stream()
+            .filter(c -> c.getPatterns().size() == childResource.getPatterns().size())
+            .collect(Collectors.toSet());
+
+    return parentResourceCandidates.size() == 1 ? parentResourceCandidates.iterator().next() : null;
+  }
+
+  private List<String> getParentPatterns() {
     return getPatterns()
         .stream()
         .map(ResourceDescriptorConfig::getParentPattern)
@@ -257,68 +253,5 @@ public abstract class ResourceDescriptorConfig {
 
   private static boolean isVariableBinding(String segment) {
     return segment.startsWith("{") && segment.endsWith("}");
-  }
-
-  private static String unwrapVariableSegment(String segment) {
-    return segment.substring(1, segment.length() - 1);
-  }
-
-  /**
-   * Builds a map from patterns to unique entity names. Uses a trie structure to determine the
-   * shortest unique name that can be used.
-   */
-  @VisibleForTesting
-  static HashMap<String, Name> buildEntityNameMap(List<String> patterns, Name suffix) {
-    TrieNode trie = new TrieNode();
-    Map<String, List<String>> patternsToSegmentsMap =
-        patterns
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Function.identity(),
-                    (String p) ->
-                        Lists.reverse(
-                            getSegments(p)
-                                .stream()
-                                .filter(ResourceDescriptorConfig::isVariableBinding)
-                                .map(ResourceDescriptorConfig::unwrapVariableSegment)
-                                .collect(Collectors.toList()))));
-    for (List<String> segments : patternsToSegmentsMap.values()) {
-      insertSegmentsIntoTrie(segments, trie);
-    }
-
-    HashMap<String, Name> nameMap = new HashMap<>();
-    for (String pattern : patternsToSegmentsMap.keySet()) {
-      List<String> identifyingNamePieces = new ArrayList<>();
-      TrieNode node = trie;
-      List<String> segments = patternsToSegmentsMap.get(pattern);
-      for (String segment : segments) {
-        if (node.size() > 1) {
-          identifyingNamePieces.add(segment);
-        }
-        node = node.get(segment);
-      }
-      Name entityName =
-          Name.from(Lists.reverse(identifyingNamePieces).toArray(new String[0])).join(suffix);
-      if (entityName.toLowerCamel().isEmpty()) {
-        // This can occur for a single pattern and empty suffix
-        if (segments.size() > 0) {
-          entityName = Name.from(segments.get(0));
-        }
-      }
-      nameMap.put(pattern, entityName);
-    }
-    return nameMap;
-  }
-
-  private static class TrieNode extends HashMap<String, TrieNode> {}
-
-  private static void insertSegmentsIntoTrie(List<String> segments, TrieNode trieNode) {
-    for (String segment : segments) {
-      if (!trieNode.containsKey(segment)) {
-        trieNode.put(segment, new TrieNode());
-      }
-      trieNode = trieNode.get(segment);
-    }
   }
 }

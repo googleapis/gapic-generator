@@ -109,6 +109,29 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         : resourceConfigV1.toBuilder().setDeprecated(true).build();
   }
 
+  public static SingleResourceNameConfig createSingleResourceNameWithOverride(
+      DiagCollector diagCollector,
+      String unifiedResourceType,
+      String pattern,
+      @Nullable SingleResourceNameConfig configOverride) {
+    String entityId = ResourceDescriptorConfig.getUnqualifiedTypeName(unifiedResourceType);
+    Name entityName = Name.upperCamel(entityId);
+    try {
+      return SingleResourceNameConfig.newBuilder()
+          .setNamePattern(pattern)
+          .setNameTemplate(PathTemplate.create(pattern))
+          .setEntityId(entityId)
+          .setEntityName(configOverride == null ? entityName : configOverride.getEntityName())
+          .setCommonResourceName(
+              configOverride == null ? null : configOverride.getCommonResourceName())
+          .build();
+    } catch (ValidationException e) {
+      // Catch exception that may be thrown by PathTemplate.create
+      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
+      return null;
+    }
+  }
+
   /** Returns the name pattern for the resource name config. */
   public abstract String getNamePattern();
 

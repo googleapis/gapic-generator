@@ -194,14 +194,16 @@ public class ProtoParser {
 
       // Get Resource[Set] definitions from file-level annotations.
       for (ResourceDescriptor definition : getFileLevelResourceDescriptors(protoFile)) {
-        collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
+        collectResourceDescriptor(
+            diagCollector, localDefs, mapBuilder, definition, protoFile, false);
       }
 
       // Get Resource[Set] definitions from fields in message types.
       for (MessageType message : protoFile.getMessages()) {
         ResourceDescriptor definition = getResourceDescriptor(message);
         if (definition != null) {
-          collectResourceDescriptor(diagCollector, localDefs, mapBuilder, definition, protoFile);
+          collectResourceDescriptor(
+              diagCollector, localDefs, mapBuilder, definition, protoFile, true);
         }
       }
     }
@@ -295,7 +297,8 @@ public class ProtoParser {
       Map<String, ResourceDescriptor> definitions,
       ImmutableMap.Builder<String, ResourceDescriptorConfig> configs,
       ResourceDescriptor definition,
-      ProtoFile protoFile) {
+      ProtoFile protoFile,
+      boolean isDefinedAtMessageLevel) {
     if (definitions.put(definition.getType(), definition) != null) {
       diagCollector.addDiag(
           Diag.error(
@@ -306,7 +309,8 @@ public class ProtoParser {
               protoFile.getFullName()));
       return;
     }
-    ResourceDescriptorConfig config = ResourceDescriptorConfig.from(definition, protoFile);
+    ResourceDescriptorConfig config =
+        ResourceDescriptorConfig.from(definition, protoFile, isDefinedAtMessageLevel);
     configs.put(config.getUnifiedResourceType(), config);
   }
 }
