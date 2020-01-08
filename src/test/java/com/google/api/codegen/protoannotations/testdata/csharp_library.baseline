@@ -6068,7 +6068,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            IResourceName name = new ArchiveBookName("[ARCHIVE]", "[BOOK]");
+            IResourceName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
             // Make the request
             PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStringsAsync(name);
@@ -6112,7 +6112,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            IResourceName name = new ArchiveBookName("[ARCHIVE]", "[BOOK]");
+            IResourceName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
             // Make the request
             PagedEnumerable<ListStringsResponse, IResourceName> response =
                 libraryServiceClient.ListStrings(name);
@@ -22505,105 +22505,6 @@ using linq = System.Linq;
 namespace Google.Example.Library.V1
 {
     /// <summary>
-    /// Resource name for the 'archive_book' resource.
-    /// </summary>
-    public sealed partial class ArchiveBookName : gax::IResourceName, sys::IEquatable<ArchiveBookName>
-    {
-        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("archives/{archive}/books/{book}");
-
-        /// <summary>
-        /// Parses the given archive_book resource name in string form into a new
-        /// <see cref="ArchiveBookName"/> instance.
-        /// </summary>
-        /// <param name="archiveBookName">The archive_book resource name in string form. Must not be <c>null</c>.</param>
-        /// <returns>The parsed <see cref="ArchiveBookName"/> if successful.</returns>
-        public static ArchiveBookName Parse(string archiveBookName)
-        {
-            gax::GaxPreconditions.CheckNotNull(archiveBookName, nameof(archiveBookName));
-            gax::TemplatedResourceName resourceName = s_template.ParseName(archiveBookName);
-            return new ArchiveBookName(resourceName[0], resourceName[1]);
-        }
-
-        /// <summary>
-        /// Tries to parse the given archive_book resource name in string form into a new
-        /// <see cref="ArchiveBookName"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="archiveBookName"/> is null,
-        /// as this would usually indicate a programming error rather than a data error.
-        /// </remarks>
-        /// <param name="archiveBookName">The archive_book resource name in string form. Must not be <c>null</c>.</param>
-        /// <param name="result">When this method returns, the parsed <see cref="ArchiveBookName"/>,
-        /// or <c>null</c> if parsing fails.</param>
-        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
-        public static bool TryParse(string archiveBookName, out ArchiveBookName result)
-        {
-            gax::GaxPreconditions.CheckNotNull(archiveBookName, nameof(archiveBookName));
-            gax::TemplatedResourceName resourceName;
-            if (s_template.TryParseName(archiveBookName, out resourceName))
-            {
-                result = new ArchiveBookName(resourceName[0], resourceName[1]);
-                return true;
-            }
-            else
-            {
-                result = null;
-                return false;
-            }
-        }
-
-        /// <summary>Formats the IDs into the string representation of the <see cref="ArchiveBookName"/>.</summary>
-        /// <param name="archiveId">The <c>archive</c> ID. Must not be <c>null</c>.</param>
-        /// <param name="bookId">The <c>book</c> ID. Must not be <c>null</c>.</param>
-        /// <returns>The string representation of the <see cref="ArchiveBookName"/>.</returns>
-        public static string Format(string archiveId, string bookId) =>
-            s_template.Expand(gax::GaxPreconditions.CheckNotNull(archiveId, nameof(archiveId)), gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId)));
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="ArchiveBookName"/> resource name class
-        /// from its component parts.
-        /// </summary>
-        /// <param name="archiveId">The archive ID. Must not be <c>null</c>.</param>
-        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
-        public ArchiveBookName(string archiveId, string bookId)
-        {
-            ArchiveId = gax::GaxPreconditions.CheckNotNull(archiveId, nameof(archiveId));
-            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
-        }
-
-        /// <summary>
-        /// The archive ID. Never <c>null</c>.
-        /// </summary>
-        public string ArchiveId { get; }
-
-        /// <summary>
-        /// The book ID. Never <c>null</c>.
-        /// </summary>
-        public string BookId { get; }
-
-        /// <inheritdoc />
-        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
-
-        /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ArchiveId, BookId);
-
-        /// <inheritdoc />
-        public override int GetHashCode() => ToString().GetHashCode();
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as ArchiveBookName);
-
-        /// <inheritdoc />
-        public bool Equals(ArchiveBookName other) => ToString() == other?.ToString();
-
-        /// <inheritdoc />
-        public static bool operator ==(ArchiveBookName a, ArchiveBookName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
-
-        /// <inheritdoc />
-        public static bool operator !=(ArchiveBookName a, ArchiveBookName b) => !(a == b);
-    }
-
-    /// <summary>
     /// Resource name for the 'archived_book' resource.
     /// </summary>
     public sealed partial class ArchivedBookName : gax::IResourceName, sys::IEquatable<ArchivedBookName>
@@ -22802,13 +22703,112 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Resource name for the 'book_from_archive' resource.
+    /// </summary>
+    public sealed partial class BookFromArchiveName : gax::IResourceName, sys::IEquatable<BookFromArchiveName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("archives/{archive}/books/{book}");
+
+        /// <summary>
+        /// Parses the given book_from_archive resource name in string form into a new
+        /// <see cref="BookFromArchiveName"/> instance.
+        /// </summary>
+        /// <param name="bookFromArchiveName">The book_from_archive resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="BookFromArchiveName"/> if successful.</returns>
+        public static BookFromArchiveName Parse(string bookFromArchiveName)
+        {
+            gax::GaxPreconditions.CheckNotNull(bookFromArchiveName, nameof(bookFromArchiveName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(bookFromArchiveName);
+            return new BookFromArchiveName(resourceName[0], resourceName[1]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given book_from_archive resource name in string form into a new
+        /// <see cref="BookFromArchiveName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="bookFromArchiveName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="bookFromArchiveName">The book_from_archive resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="BookFromArchiveName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string bookFromArchiveName, out BookFromArchiveName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(bookFromArchiveName, nameof(bookFromArchiveName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(bookFromArchiveName, out resourceName))
+            {
+                result = new BookFromArchiveName(resourceName[0], resourceName[1]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="BookFromArchiveName"/>.</summary>
+        /// <param name="archiveId">The <c>archive</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="bookId">The <c>book</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="BookFromArchiveName"/>.</returns>
+        public static string Format(string archiveId, string bookId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(archiveId, nameof(archiveId)), gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="BookFromArchiveName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="archiveId">The archive ID. Must not be <c>null</c>.</param>
+        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
+        public BookFromArchiveName(string archiveId, string bookId)
+        {
+            ArchiveId = gax::GaxPreconditions.CheckNotNull(archiveId, nameof(archiveId));
+            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
+        }
+
+        /// <summary>
+        /// The archive ID. Never <c>null</c>.
+        /// </summary>
+        public string ArchiveId { get; }
+
+        /// <summary>
+        /// The book ID. Never <c>null</c>.
+        /// </summary>
+        public string BookId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ArchiveId, BookId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as BookFromArchiveName);
+
+        /// <inheritdoc />
+        public bool Equals(BookFromArchiveName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(BookFromArchiveName a, BookFromArchiveName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(BookFromArchiveName a, BookFromArchiveName b) => !(a == b);
+    }
+
+    /// <summary>
     /// Resource name which will contain one of a choice of resource names.
     /// </summary>
     /// <remarks>
     /// This resource name will contain one of the following:
     /// <list type="bullet">
     /// <item><description>BookName: A resource of type 'book'.</description></item>
-    /// <item><description>ArchiveBookName: A resource of type 'archive_book'.</description></item>
+    /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
     /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
     /// </list>
     /// </remarks>
@@ -22830,9 +22830,9 @@ namespace Google.Example.Library.V1
             BookName = 1,
 
             /// <summary>
-            /// A resource of type 'archive_book'.
+            /// A resource of type 'book_from_archive'.
             /// </summary>
-            ArchiveBookName = 2,
+            BookFromArchiveName = 2,
 
             /// <summary>
             /// A resource of type 'project_book'.
@@ -22847,7 +22847,7 @@ namespace Google.Example.Library.V1
         /// To parse successfully the resource name must be one of the following:
         /// <list type="bullet">
         /// <item><description>BookName: A resource of type 'book'.</description></item>
-        /// <item><description>ArchiveBookName: A resource of type 'archive_book'.</description></item>
+        /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
         /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
         /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
@@ -22874,7 +22874,7 @@ namespace Google.Example.Library.V1
         /// To parse successfully the resource name must be one of the following:
         /// <list type="bullet">
         /// <item><description>BookName: A resource of type 'book'.</description></item>
-        /// <item><description>ArchiveBookName: A resource of type 'archive_book'.</description></item>
+        /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
         /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
         /// Or an <see cref="gax::UnknownResourceName"/> if <paramref name="allowUnknown"/> is <c>true</c>.
@@ -22894,10 +22894,10 @@ namespace Google.Example.Library.V1
                 result = new BookNameOneof(OneofType.BookName, bookName);
                 return true;
             }
-            ArchiveBookName archiveBookName;
-            if (ArchiveBookName.TryParse(name, out archiveBookName))
+            BookFromArchiveName bookFromArchiveName;
+            if (BookFromArchiveName.TryParse(name, out bookFromArchiveName))
             {
-                result = new BookNameOneof(OneofType.ArchiveBookName, archiveBookName);
+                result = new BookNameOneof(OneofType.BookFromArchiveName, bookFromArchiveName);
                 return true;
             }
             ProjectBookName projectBookName;
@@ -22928,12 +22928,12 @@ namespace Google.Example.Library.V1
         public static BookNameOneof From(BookName bookName) => new BookNameOneof(OneofType.BookName, bookName);
 
         /// <summary>
-        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="ArchiveBookName"/>
+        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="BookFromArchiveName"/>
         /// </summary>
-        /// <param name="archiveBookName">The <see cref="ArchiveBookName"/> to be contained within
+        /// <param name="bookFromArchiveName">The <see cref="BookFromArchiveName"/> to be contained within
         /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
-        /// <returns>A new <see cref="BookNameOneof"/>, containing <paramref name="archiveBookName"/>.</returns>
-        public static BookNameOneof From(ArchiveBookName archiveBookName) => new BookNameOneof(OneofType.ArchiveBookName, archiveBookName);
+        /// <returns>A new <see cref="BookNameOneof"/>, containing <paramref name="bookFromArchiveName"/>.</returns>
+        public static BookNameOneof From(BookFromArchiveName bookFromArchiveName) => new BookNameOneof(OneofType.BookFromArchiveName, bookFromArchiveName);
 
         /// <summary>
         /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="ProjectBookName"/>
@@ -22949,7 +22949,7 @@ namespace Google.Example.Library.V1
             {
                 case OneofType.Unknown: return true; // Anything goes with Unknown.
                 case OneofType.BookName: return name is BookName;
-                case OneofType.ArchiveBookName: return name is ArchiveBookName;
+                case OneofType.BookFromArchiveName: return name is BookFromArchiveName;
                 case OneofType.ProjectBookName: return name is ProjectBookName;
                 default: return false;
             }
@@ -22998,13 +22998,13 @@ namespace Google.Example.Library.V1
         public BookName BookName => CheckAndReturn<BookName>(OneofType.BookName);
 
         /// <summary>
-        /// Get the contained <see cref="gax::IResourceName"/> as <see cref="ArchiveBookName"/>.
+        /// Get the contained <see cref="gax::IResourceName"/> as <see cref="BookFromArchiveName"/>.
         /// </summary>
         /// <remarks>
         /// An <see cref="sys::InvalidOperationException"/> will be thrown if this does not
-        /// contain an instance of <see cref="ArchiveBookName"/>.
+        /// contain an instance of <see cref="BookFromArchiveName"/>.
         /// </remarks>
-        public ArchiveBookName ArchiveBookName => CheckAndReturn<ArchiveBookName>(OneofType.ArchiveBookName);
+        public BookFromArchiveName BookFromArchiveName => CheckAndReturn<BookFromArchiveName>(OneofType.BookFromArchiveName);
 
         /// <summary>
         /// Get the contained <see cref="gax::IResourceName"/> as <see cref="ProjectBookName"/>.

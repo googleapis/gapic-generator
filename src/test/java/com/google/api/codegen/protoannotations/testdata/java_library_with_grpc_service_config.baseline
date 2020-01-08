@@ -4470,9 +4470,6 @@ public class LibraryClient implements BackgroundResource {
   private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
 
-  private static final PathTemplate ARCHIVE_BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
-
   private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
 
@@ -4499,19 +4496,6 @@ public class LibraryClient implements BackgroundResource {
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a archive_book resource.
-   *
-   * @deprecated Use the {@link ArchiveBookName} class instead.
-   */
-  @Deprecated
-  public static final String formatArchiveBookName(String archive, String book) {
-    return ARCHIVE_BOOK_PATH_TEMPLATE.instantiate(
-        "archive", archive,
-        "book", book);
-  }
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -4626,28 +4610,6 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfName(String shelfId) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf_id", shelfId);
-  }
-
-  /**
-   * Parses the archive from the given fully-qualified path which
-   * represents a archive_book resource.
-   *
-   * @deprecated Use the {@link ArchiveBookName} class instead.
-   */
-  @Deprecated
-  public static final String parseArchiveFromArchiveBookName(String archiveBookName) {
-    return ARCHIVE_BOOK_PATH_TEMPLATE.parse(archiveBookName).get("archive");
-  }
-
-  /**
-   * Parses the book from the given fully-qualified path which
-   * represents a archive_book resource.
-   *
-   * @deprecated Use the {@link ArchiveBookName} class instead.
-   */
-  @Deprecated
-  public static final String parseBookFromArchiveBookName(String archiveBookName) {
-    return ARCHIVE_BOOK_PATH_TEMPLATE.parse(archiveBookName).get("book");
   }
 
   /**
@@ -6320,7 +6282,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -6345,7 +6307,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
    *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
@@ -14633,7 +14595,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    ResourceName stringsElement = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -14683,7 +14645,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    ResourceName stringsElement = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -14691,7 +14653,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ResourceName name = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
     ListStringsPagedResponse pagedListResponse = client.listStrings(name);
 
@@ -14721,7 +14683,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ResourceName name = ArchiveBookName.of("[ARCHIVE]", "[BOOK]");
+      ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
 
       client.listStrings(name);
       Assert.fail("No exception raised");
