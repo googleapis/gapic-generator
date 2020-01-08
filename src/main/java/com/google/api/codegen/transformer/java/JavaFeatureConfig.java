@@ -47,6 +47,15 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
       return false;
     }
 
+    // For an any resource name, we choose one single resource name defined in the API for
+    // sample generation. If there are no single resource names in the API, we do not use
+    // resource name format option.
+    boolean apiHasSingleResources =
+        context.getProductConfig().getSingleResourceNameConfigs().iterator().hasNext();
+    if (fieldConfig.getResourceNameType() == ResourceNameType.ANY && !apiHasSingleResources) {
+      return false;
+    }
+
     // TODO: support creating resource name strings in tests and samples using creation methods
     // in the new multi-pattern resource classes.
     //
