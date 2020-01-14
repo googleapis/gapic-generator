@@ -166,22 +166,22 @@ public abstract class ResourceDescriptorConfig {
   }
 
   /**
-   * Returns a map from unified resource types to the parent resource descriptor config.
+   * Returns a map from unified resource types to parent resources.
    *
-   * <p>We consider resource Foo to be resource Bar's parent iff Foo and Bar have the same number of
-   * patterns, and for each pattern 'B' in Bar, there is a pattern 'F' in Foo , such that 'F' is the
-   * parent of 'B'.
+   * <p> We consider the list of resources to be another resource Bar's parents if
+   * the union of all patterns in the list have one-to-one parent-child mapping with 
+   * Bar's patterns.
    *
    * <p>Package private for use in GapicProductConfig.
    */
-  static Map<String, ResourceDescriptorConfig> getChildParentResourceMap(
+  static Map<String, List<ResourceDescriptorConfig>> getChildParentResourceMap(
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
       Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
     ImmutableMap.Builder<String, ResourceDescriptorConfig> builder = ImmutableMap.builder();
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
-      ResourceDescriptorConfig parentResource =
+      List<ResourceDescriptorConfig> parentResource =
           getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
-      if (parentResource != null) {
+      if (!parentResource.isEmpty()) {
         builder.put(entry.getKey(), parentResource);
       }
     }
@@ -189,48 +189,43 @@ public abstract class ResourceDescriptorConfig {
   }
 
   @Nullable
-  private static ResourceDescriptorConfig getParentResourceDescriptor(
+  private static List<ResourceDescriptorConfig> getParentResourceDescriptor(
       ResourceDescriptorConfig childResource,
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
-    Set<ResourceDescriptorConfig> parentResourceCandidates =
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    List<ResourceDescriptorConfig> resources =
         patternResourceDescriptorMap
             .values()
             .stream()
             .flatMap(Set::stream)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
 
-    // Loop over patterns. For each pattern, retain all resource descriptors with a pattern that
-    // is the parent pattern of this pattern in parentResourceCandidates.
-    for (String parentPattern : childResource.getParentPatterns()) {
-
-      // Avoid unnecessary lookups.
-      if (parentResourceCandidates.isEmpty()) {
-        return null;
-      }
-
-      parentResourceCandidates.retainAll(
-          patternResourceDescriptorMap.getOrDefault(parentPattern, Collections.emptySet()));
-    }
-
-    // We have made sure that each resource in parentResourceCandidates has all the required
-    // parent patterns of childResource. We now need to make sure they don't have extra patterns
-    // that are not parent of patterns of childResource. We check this by checking that
-    // a parent resource candidate has the same number of patterns as childResource.
-    parentResourceCandidates =
-        parentResourceCandidates
-            .stream()
-            .filter(c -> c.getPatterns().size() == childResource.getPatterns().size())
-            .collect(Collectors.toSet());
-
-    return parentResourceCandidates.size() == 1 ? parentResourceCandidates.iterator().next() : null;
-  }
-
-  private List<String> getParentPatterns() {
-    return getPatterns()
+    ImmutableList<ResourceDescriptorConfig> parentResources = ImmutableList.Builder<>();
+    
+    Map<String, Boolean> matchedParentPatterns = childResource.getPatterns()
         .stream()
         .map(ResourceDescriptorConfig::getParentPattern)
         .distinct()
-        .collect(Collectors.toList());
+        .collect(Collectors.toMap(p -> p, p -> false));
+    int unmatchedPatternsCount = matchedParentPatterns.size();
+
+    for (ResourceDescriptorConfig resource : resources) {
+      for (String pattern : resource.getPatterns()) {
+        Boolean matched = matchedParentPatterns.get(pattern);
+        if (matched == null) {
+          continue;
+        }
+        if (matched == false) {
+          unmatchedPatternsCount -= 1;
+        }
+        matchedParentPatterns.put(pattern, true);
+      }
+      parentResources.add(resource);
+    }
+
+    if (unmatchedPatternsCount == 0) {
+      return parentResources.build();
+    }
+    return Collections.emptyList();
   }
 
   @VisibleForTesting

@@ -40,6 +40,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -264,8 +265,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
     List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableListMultimap<String, String> fieldNamePatterns =
+        ImmutableListMultimap.copyOf(methodConfigProto.getFieldNamePatterns().entrySet());
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();
 
@@ -344,9 +345,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
   }
 
-  public static ImmutableMap<String, String> getFieldNamePatterns(
+  public static ImmutableListMultimap<String, String> getFieldNamePatterns(
       Method method, ResourceNameMessageConfigs messageConfigs) {
-    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
+    ImmutableListMultimap.Builder<String, String> resultCollector = ImmutableListMultimap.builder();
     // Only look two levels deep in the request object, so fields of fields of the request object.
     getFieldNamePatterns(messageConfigs, method.getInputMessage(), resultCollector, "", 2);
     return resultCollector.build();
@@ -370,7 +371,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   private static void getFieldNamePatterns(
       ResourceNameMessageConfigs messageConfigs,
       MessageType messageType,
-      ImmutableMap.Builder<String, String> resultCollector,
+      ImmutableListMultimap.Builder<String, String> resultCollector,
       String fieldNamePrefix,
       int depth) {
     if (depth < 1) throw new IllegalStateException("depth must be positive");
@@ -424,7 +425,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     public abstract Builder setBatching(@Nullable BatchingConfig val);
 
-    public abstract Builder setFieldNamePatterns(ImmutableMap<String, String> val);
+    public abstract Builder setFieldNamePatterns(ImmutableMultimap<String, String> val);
 
     public abstract Builder setSampleCodeInitFields(List<String> val);
 

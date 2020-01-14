@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.ImmutableListMultiMap;
 import java.util.*;
 
 /** Configuration of the resource name types for all message field. */
@@ -54,12 +55,12 @@ public abstract class ResourceNameMessageConfigs {
       Map<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser parser,
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
-      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
-        ImmutableMap.Builder<String, String> fieldEntityMapBuilder = ImmutableMap.builder();
+        ImmutableListMultimap.Builder<String, String> fieldEntityMapBuilder = ImmutableListMultimap.builder();
 
         // Handle resource definitions.
         ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
@@ -72,7 +73,7 @@ public abstract class ResourceNameMessageConfigs {
         loadFieldEntityPairFromResourceReferenceAnnotation(
             fieldEntityMapBuilder, parser, message, resourceNameConfigs, childParentResourceMap);
 
-        ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
+        ImmutableListMultimap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
         if (fieldEntityMap.size() > 0) {
           ResourceNameMessageConfig messageConfig =
               new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
@@ -89,7 +90,7 @@ public abstract class ResourceNameMessageConfigs {
    * to fieldEntityMap.
    */
   private static void loadFieldEntityPairFromResourceAnnotation(
-      ImmutableMap.Builder<String, String> fieldEntityMap,
+      ImmutableListMultimap.Builder<String, String> fieldEntityMap,
       ResourceDescriptor resourceDescriptor,
       MessageType message) {
     String resourceFieldName = resourceDescriptor.getNameField();
@@ -110,11 +111,11 @@ public abstract class ResourceNameMessageConfigs {
    * annotations and put them to fieldEntityMap.
    */
   private static void loadFieldEntityPairFromResourceReferenceAnnotation(
-      ImmutableMap.Builder<String, String> fieldEntityMap,
+      ImmutableListMultimap.Builder<String, String> fieldEntityMap,
       ProtoParser parser,
       MessageType message,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap) {
     for (Field field : message.getFields()) {
       ResourceReference reference = parser.getResourceReference(field);
       if (reference == null) {
@@ -133,11 +134,13 @@ public abstract class ResourceNameMessageConfigs {
           field);
 
       if (!childType.isEmpty()) {
-        ResourceNameConfig parentResource =
-            resourceNameConfigs.get(childParentResourceMap.get(childType).getDerivedEntityName());
-        Preconditions.checkArgument(
-            parentResource != null, "Referencing non-existing parent resource: %s", childType);
-        fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
+        for (ResourceDescriptorConfig parentResourceDescriptor : childParentResourceMap.get(childType)) {
+          String derivedEntityName = parentResourceDescriptor.getDerivedEntityName();
+          ResourceNameConfig parentResource = resourceNameConfigs.get(derivedEntityName);
+          Preconditions.checkArgument(
+              parentResource != null, "Referencing non-existing parent resource: %s", childType);
+          fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
+        }
         continue;
       }
 

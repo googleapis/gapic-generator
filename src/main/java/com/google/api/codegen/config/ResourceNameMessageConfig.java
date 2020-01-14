@@ -18,6 +18,7 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableListMultimap;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue
@@ -28,14 +29,14 @@ public abstract class ResourceNameMessageConfig {
 
   // Maps the simple name of a field to the name of a resource entity (a resource entity
   // contains a resource URL).
-  abstract ImmutableMap<String, String> fieldEntityMap();
+  abstract ImmutableListMultimap<String, String> fieldEntityMap();
 
   static ResourceNameMessageConfig createResourceNameMessageConfig(
       ResourceNameMessageConfigProto messageResourceTypesProto, String defaultPackage) {
     String messageName = messageResourceTypesProto.getMessageName();
     String fullyQualifiedMessageName = getFullyQualifiedMessageName(defaultPackage, messageName);
-    ImmutableMap<String, String> fieldEntityMap =
-        ImmutableMap.copyOf(messageResourceTypesProto.getFieldEntityMap());
+    ImmutableListMultimap<String, String> fieldEntityMap =
+        ImmutableListMultimap.copyOf(messageResourceTypesProto.getFieldEntityMap().entrySet());
 
     return new AutoValue_ResourceNameMessageConfig(fullyQualifiedMessageName, fieldEntityMap);
   }
@@ -59,6 +60,7 @@ public abstract class ResourceNameMessageConfig {
   }
 
   String getEntityNameForField(String fieldSimpleName) {
-    return fieldEntityMap().get(fieldSimpleName);
+    List<String> entityNames = fieldEntityMap().get(fieldSimpleName);
+    return entityNames.get(0);
   }
 }

@@ -38,6 +38,8 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameConfig getResourceNameConfig();
 
+  public abstract List<ResourceNameConfig> getResourceNameConfigs();
+
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();
 
@@ -90,18 +92,22 @@ public abstract class FieldConfig {
   static FieldConfig createFieldConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      Map<String, String> fieldNamePatterns,
+      ListMultimap<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
     String flattenedFieldEntityName = null;
+    List<String> flattenedFieldEntityNames;
     if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
       messageFieldEntityName = messageConfigs.getFieldResourceName(field);
     }
     if (fieldNamePatterns != null) {
-      flattenedFieldEntityName = fieldNamePatterns.get(field.getNameAsParameter());
+      flattenedFieldEntityNames = fieldNamePatterns.get(field.getNameAsParameter());
+      if (flattenedFieldEntityNames != null && flattenedFieldEntityNames.size() >= 1) {
+        flattenedFieldEntityName = flattenedFieldEntityNames.get(0);
+      }
     }
     if (flattenedFieldEntityName == null) {
       flattenedFieldEntityName = messageFieldEntityName;
@@ -164,6 +170,13 @@ public abstract class FieldConfig {
 
     return createFieldConfig(
         field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
+    return newBuilder()
+      .setField(field)
+      .setResourceNameTreatment(resourceNameTreatment)
+      .setResourceNameConfig(flattenedFieldResourceNameConfig)
+      .setResourceNameConfigs()
+      .setMessageResourceNameConfig(messageFieldResourceNameConfig)
+      .build();
   }
 
   private static ResourceNameConfig getResourceNameConfig(
@@ -287,5 +300,25 @@ public abstract class FieldConfig {
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
     return Maps.uniqueIndex(fieldConfigs, f -> f.getField().getFullName());
+  }
+
+  @AutoValue.Builder
+  public static class Builder {
+
+    public abstract Builder setField(FieldModel val);
+
+    public abstract Builder setResourceNameTreatment(ResourceNameTreatment val);
+
+    public abstract Builder setResourceNameConfig(ResourceNameConfig val);
+
+    public abstract Builder setResourceNameConfigs(ImmutableList<ResourceNameConfig> val);
+
+    public abstract Builder setMessageResourceNameConfig(ResourceNameConfig val);
+
+    public abstract FieldConfig build();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_Builder().setResourceNameConfigs(ImmutableList.of());
   }
 }

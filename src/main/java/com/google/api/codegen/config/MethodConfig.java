@@ -23,6 +23,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableListMultimap;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.threeten.bp.Duration;
@@ -184,7 +185,7 @@ public abstract class MethodConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
-      ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableListMultimap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
