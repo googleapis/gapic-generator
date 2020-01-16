@@ -294,10 +294,6 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
-    System.out.println("haha");
-    System.out.println(methods.size());
-    methods.stream().map(m -> m.name() + "," + m.type() + "," + m.grpcStreamingType()).forEach(System.out::println);
-
     StaticLangApiMethodView exampleApiMethod =
         searchExampleMethod(
             methods, ClientMethodType.FlattenedMethod, GrpcStreamingType.NonStreaming);
