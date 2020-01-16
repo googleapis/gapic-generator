@@ -294,6 +294,10 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
+    System.out.println("haha");
+    System.out.println(methods.size());
+    methods.stream().map(m -> m.name() + "," + m.type() + "," + m.grpcStreamingType()).forEach(System.out::println);
+
     StaticLangApiMethodView exampleApiMethod =
         searchExampleMethod(
             methods, ClientMethodType.FlattenedMethod, GrpcStreamingType.NonStreaming);
@@ -333,6 +337,11 @@ public class JavaSurfaceTransformer {
       exampleApiMethod =
           searchExampleMethod(
               methods, ClientMethodType.CallableMethod, GrpcStreamingType.ClientStreaming);
+    }
+    if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.PagedCallableMethod, GrpcStreamingType.NonStreaming);
     }
     if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
