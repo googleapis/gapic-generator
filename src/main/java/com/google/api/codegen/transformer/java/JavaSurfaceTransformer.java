@@ -335,6 +335,11 @@ public class JavaSurfaceTransformer {
               methods, ClientMethodType.CallableMethod, GrpcStreamingType.ClientStreaming);
     }
     if (exampleApiMethod == null) {
+      exampleApiMethod =
+          searchExampleMethod(
+              methods, ClientMethodType.PagedCallableMethod, GrpcStreamingType.NonStreaming);
+    }
+    if (exampleApiMethod == null) {
       throw new RuntimeException("Could not find method to use as an example method");
     }
     return exampleApiMethod;
