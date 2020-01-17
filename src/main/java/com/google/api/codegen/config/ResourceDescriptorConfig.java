@@ -168,9 +168,8 @@ public abstract class ResourceDescriptorConfig {
   /**
    * Returns a map from unified resource types to parent resources.
    *
-   * <p> We consider the list of resources to be another resource Bar's parents if
-   * the union of all patterns in the list have one-to-one parent-child mapping with 
-   * Bar's patterns.
+   * <p>We consider the list of resources to be another resource Bar's parents if the union of all
+   * patterns in the list have one-to-one parent-child mapping with Bar's patterns.
    *
    * <p>Package private for use in GapicProductConfig.
    */
@@ -199,13 +198,15 @@ public abstract class ResourceDescriptorConfig {
             .flatMap(Set::stream)
             .collect(Collectors.toList());
 
-    ImmutableList<ResourceDescriptorConfig> parentResources = ImmutableList.Builder<>();
-    
-    Map<String, Boolean> matchedParentPatterns = childResource.getPatterns()
-        .stream()
-        .map(ResourceDescriptorConfig::getParentPattern)
-        .distinct()
-        .collect(Collectors.toMap(p -> p, p -> false));
+    ImmutableList.Builder<ResourceDescriptorConfig> parentResources = ImmutableList.builder();
+
+    Map<String, Boolean> matchedParentPatterns =
+        childResource
+            .getPatterns()
+            .stream()
+            .map(ResourceDescriptorConfig::getParentPattern)
+            .distinct()
+            .collect(Collectors.toMap(p -> p, p -> false));
     int unmatchedPatternsCount = matchedParentPatterns.size();
 
     for (ResourceDescriptorConfig resource : resources) {

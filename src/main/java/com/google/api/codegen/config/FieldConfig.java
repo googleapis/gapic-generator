@@ -38,8 +38,6 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameConfig getResourceNameConfig();
 
-  public abstract List<ResourceNameConfig> getResourceNameConfigs();
-
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();
 
@@ -49,6 +47,8 @@ public abstract class FieldConfig {
     }
     return getResourceNameConfig().getResourceNameType();
   }
+
+  public List<FieldConfig> flatResourceNameConfigs() {}
 
   private static FieldConfig createFieldConfig(
       FieldModel field,
@@ -78,7 +78,28 @@ public abstract class FieldConfig {
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
       ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFieldConfig(
+    List<FieldConfig> configs =
+        createMessageFieldConfigs(
+            messageConfigs, resourceNameConfigs, field, defaultResourceNameTreatment);
+    if (configs.size() == 1) {
+      return configs.get(0);
+    }
+    throw new IllegalArgumentException(
+        String.format(
+            "Field %s has multiple resource name configs: [%s], can't create a single FieldConfig object.",
+            configs
+                .stream()
+                .map(FieldConfig::getResourceNameConfig)
+                .map(ResourceNameConfig::getEntityName)
+                .collect(Collectors.joining(","))));
+  }
+
+  static List<FieldConfig> createMessageFieldConfigs(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldModel field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFieldConfigs(
         null,
         messageConfigs,
         null,
@@ -88,30 +109,93 @@ public abstract class FieldConfig {
         defaultResourceNameTreatment);
   }
 
-  /** Package-private since this is not used outside the config package. */
-  static FieldConfig createFieldConfig(
+  static List<FieldConfig> createFieldConfigs(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      ListMultimap<String, String> fieldNamePatterns,
+      ImmutableListMultimap<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
-    String messageFieldEntityName = null;
-    String flattenedFieldEntityName = null;
-    List<String> flattenedFieldEntityNames;
+    List<String> messageFieldEntityNames = Collections.emptyList();
+    List<String> flattenedFieldEntityNames = Collections.emptyList();
     if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
-      messageFieldEntityName = messageConfigs.getFieldResourceName(field);
+      messageFieldEntityNames = messageConfigs.getFieldResourceNames(field);
     }
     if (fieldNamePatterns != null) {
       flattenedFieldEntityNames = fieldNamePatterns.get(field.getNameAsParameter());
-      if (flattenedFieldEntityNames != null && flattenedFieldEntityNames.size() >= 1) {
-        flattenedFieldEntityName = flattenedFieldEntityNames.get(0);
-      }
     }
-    if (flattenedFieldEntityName == null) {
-      flattenedFieldEntityName = messageFieldEntityName;
+    if (flattenedFieldEntityNames.isEmpty()) {
+      flattenedFieldEntityNames = messageFieldEntityNames;
     }
+
+    if (messageFieldEntityNames.size() > 1 || flattenedFieldEntityNames.size() > 1) {
+      return createFieldConfigsWithMultipleResourceNames(
+          diagCollector,
+          messageFieldEntityNames,
+          flattenedFieldEntityNames,
+          resourceNameConfigs,
+          field,
+          treatment,
+          defaultResourceNameTreatment);
+    }
+
+    String messageFieldEntityName =
+        messageFieldEntityNames.isEmpty() ? null : messageFieldEntityNames.get(0);
+    String flattenedFieldEntityName =
+        flattenedFieldEntityNames.isEmpty() ? null : flattenedFieldEntityNames.get(0);
+    return Collections.singletonList(
+        createFieldConfig(
+            diagCollector,
+            messageFieldEntityNames.get(0),
+            flattenedFieldEntityNames.get(0),
+            resourceNameConfigs,
+            field,
+            treatment,
+            defaultResourceNameTreatment));
+  }
+
+  private static List<FieldConfig> createFieldConfigsWithMultipleResourceNames(
+      DiagCollector diagCollector,
+      List<String> messageFieldEntityNames,
+      List<String> flattenedFieldEntityNames,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldModel field,
+      ResourceNameTreatment treatment,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    Preconditions.checkState(
+        new HashSet<String>(messageFieldEntityNames)
+            .equals(new HashSet<String>(flattenedFieldEntityName)),
+        "fields with multiple resource name configs must have exactly the same set of "
+            + "resource name configs as a message field and a flattened field, but got: "
+            + "messageFieldEntityNames: %s and flattenedFieldEntityNames: %s",
+        messageFieldEntityNames.stream().collect(Collectors.joining(",")),
+        flattenedFieldEntityNames.stream().collect(Collectors.joining(",")));
+
+    ImmutableList.Builder<FieldConfig> fieldConfigs = ImmutableList.builder();
+    for (String entityName : messageFieldEntityNames) {
+      fieldConfigs.add(
+          createFieldConfig(
+              diagCollector,
+              entityName,
+              entityName,
+              resourceNameConfigs,
+              field,
+              treatment,
+              defaultResourceNameTreatment));
+    }
+    return fieldConfig.build();
+  }
+
+  /** Package-private since this is not used outside the config package. */
+  static FieldConfig createFieldConfig(
+      DiagCollector diagCollector,
+      @Nullable String messageFieldEntityName,
+      @Nullable String flattenedFieldEntityName,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldModel field,
+      ResourceNameTreatment treatment,
+      ResourceNameTreatment defaultResourceNameTreatment) {
 
     if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
@@ -168,15 +252,12 @@ public abstract class FieldConfig {
 
     validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
 
-    return createFieldConfig(
-        field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
     return newBuilder()
-      .setField(field)
-      .setResourceNameTreatment(resourceNameTreatment)
-      .setResourceNameConfig(flattenedFieldResourceNameConfig)
-      .setResourceNameConfigs()
-      .setMessageResourceNameConfig(messageFieldResourceNameConfig)
-      .build();
+        .setField(field)
+        .setResourceNameTreatment(resourceNameTreatment)
+        .setResourceNameConfig(flattenedFieldResourceNameConfig)
+        .setMessageResourceNameConfig(messageFieldResourceNameConfig)
+        .build();
   }
 
   private static ResourceNameConfig getResourceNameConfig(
@@ -310,8 +391,6 @@ public abstract class FieldConfig {
     public abstract Builder setResourceNameTreatment(ResourceNameTreatment val);
 
     public abstract Builder setResourceNameConfig(ResourceNameConfig val);
-
-    public abstract Builder setResourceNameConfigs(ImmutableList<ResourceNameConfig> val);
 
     public abstract Builder setMessageResourceNameConfig(ResourceNameConfig val);
 

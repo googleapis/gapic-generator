@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableListMultimap;
 
 /** Configuration of the resource name types for fields of a single message. */
@@ -59,8 +58,7 @@ public abstract class ResourceNameMessageConfig {
     }
   }
 
-  String getEntityNameForField(String fieldSimpleName) {
-    List<String> entityNames = fieldEntityMap().get(fieldSimpleName);
-    return entityNames.get(0);
+  List<String> getEntityNamesForField(String fieldSimpleName) {
+    return fieldEntityMap().get(fieldSimpleName);
   }
 }

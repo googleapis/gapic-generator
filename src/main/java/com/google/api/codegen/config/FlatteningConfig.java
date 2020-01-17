@@ -26,6 +26,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashSet;
@@ -211,7 +212,7 @@ public abstract class FlatteningConfig {
           FieldConfig.createFieldConfig(
               diagCollector,
               messageConfigs,
-              methodConfigProto.getFieldNamePatternsMap(),
+              ImmutableListMultimap.copyOf(methodConfigProto.getFieldNamePatternsMap().entrySet()),
               resourceNameConfigs,
               parameterField,
               flatteningGroup
@@ -284,7 +285,7 @@ public abstract class FlatteningConfig {
               ? ResourceNameTreatment.STATIC_TYPES
               : ResourceNameTreatment.NONE;
       FieldConfig fieldConfig =
-          FieldConfig.createMessageFieldConfig(
+          FieldConfig.createMessageFieldConfigs(
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
@@ -304,6 +305,18 @@ public abstract class FlatteningConfig {
                 ImmutableMap.toImmutableMap(
                     Map.Entry::getKey, e -> e.getValue().withResourceNameInSampleOnly()));
     return new AutoValue_FlatteningConfig(newFlattenedFieldConfigs);
+  }
+
+  public FlatteningConfig withResourceNamesInSamplesOnlyForField(String fieldName) {
+    HashMap<String, FieldConfig> newFlatteningFieldConfigs = new HashMap<>();
+    newFlatteningFieldConfigs.putAll(getFlattenedFieldConfigs);
+    newFlatteningFieldConfigs.put(
+        fieldName, newFlatteningFieldConfigs.get(fieldName).withResourceNameInSampleOnly());
+    return new AutoValue_FlatteningConfig(ImmutableMap.copyOf(newFlatteningFieldConfigs));
+  }
+
+  public List<FlatteningConfig> flatResourceNameConfigs() {
+    ImmutableList<FlatteningConfig> configs = ImmutableList.builder();
   }
 
   public static boolean hasAnyRepeatedResourceNameParameter(FlatteningConfig flatteningGroup) {

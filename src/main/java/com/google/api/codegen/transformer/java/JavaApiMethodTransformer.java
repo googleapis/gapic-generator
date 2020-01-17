@@ -116,9 +116,19 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
       for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
         MethodContext flattenedMethodContext =
             interfaceContext.asFlattenedMethodContext(methodContext, flatteningGroup);
+
+        if (flatteningGroup.hasMultipleFieldsWithMultipleResourceNames()) {
+          // error
+        }
+
+        if (flatteningGroup.hasOneSingularFieldWithMultipleResourceNames()) {
+          // flats out
+        }
+
         if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
           flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
         }
+
         apiMethods.add(
             generateFlattenedMethod(
                 flattenedMethodContext.withCallingForms(

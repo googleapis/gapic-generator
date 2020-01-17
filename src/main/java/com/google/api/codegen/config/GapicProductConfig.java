@@ -1081,6 +1081,9 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     Map<String, FieldConfig> map = new HashMap<>();
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+      List<FieldConfig> fieldConfigs =
+          FieldConfig.createMessageFieldConfig(
+              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES);
       map.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(
@@ -1132,14 +1135,15 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
 
       if (typesWithChildReferences.contains(unifiedResourceType)) {
-        List<ResourceDescriptorConfig> parentResources = childParentResourceMap.get(unifiedResourceType);
+        List<ResourceDescriptorConfig> parentResources =
+            childParentResourceMap.get(unifiedResourceType);
         for (ResourceDescriptorConfig parentResource : parentResources) {
           Map<String, ResourceNameConfig> resources =
-            parentResource.buildResourceNameConfigs(
-                diagCollector,
-                singleResourceNameConfigsFromGapicConfig,
-                deprecatedPatternResourceMap,
-                language);
+              parentResource.buildResourceNameConfigs(
+                  diagCollector,
+                  singleResourceNameConfigsFromGapicConfig,
+                  deprecatedPatternResourceMap,
+                  language);
           annotationResourceNameConfigs.putAll(resources);
         }
       }

@@ -39,8 +39,8 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -388,9 +388,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
 
       if (messageConfigs.fieldHasResourceName(messageType.getFullName(), field.getSimpleName())) {
-        resultCollector.put(
+        resultCollector.putAll(
             fieldNameKey,
-            messageConfigs.getFieldResourceName(messageType.getFullName(), field.getSimpleName()));
+            messageConfigs.getFieldResourceNames(messageType.getFullName(), field.getSimpleName()));
       }
     }
   }
