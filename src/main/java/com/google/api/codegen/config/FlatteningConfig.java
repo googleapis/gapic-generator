@@ -99,7 +99,7 @@ public abstract class FlatteningConfig {
       ProtoMethodModel methodModel,
       ProtoParser protoParser) {
 
-    ImmutableMap.Builder<String, FlatteningConfig> flatteningConfigs = ImmutableMap.builder();
+    ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs = ImmutableListMultimap.builder();
 
     insertFlatteningsFromGapicConfig(
         diagCollector,
@@ -132,21 +132,23 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoMethodModel methodModel,
       ProtoParser protoParser,
-      ImmutableMap.Builder<String, FlatteningConfig> flatteningConfigs) {
+      ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs) {
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
     for (List<String> signature : methodSignatures) {
-      FlatteningConfig groupConfig =
-          FlatteningConfig.createFlatteningFromProtoFile(
+      List<FlatteningConfig> groupConfigs =
+          FlatteningConfig.createFlatteningsFromProtoFile(
               diagCollector,
               messageConfigs,
               resourceNameConfigs,
               signature,
               methodModel,
               protoParser);
-      if (groupConfig != null) {
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
+      if (groupConfigs != null) {
+        for (FlatteningConfig groupConfig : groupConfigs) {
+          flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
+        }
       }
     }
   }
@@ -237,15 +239,13 @@ public abstract class FlatteningConfig {
    * provided method.
    */
   @Nullable
-  private static FlatteningConfig createFlatteningFromProtoFile(
+  private static List<FlatteningConfig> createFlatteningsFromProtoFile(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       List<String> flattenedParams,
       ProtoMethodModel method,
       ProtoParser protoParser) {
-
-    // TODO(andrealin): combine this method with createFlatteningFromConfigProto.
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     Set<String> oneofNames = new HashSet<>();
 
@@ -284,13 +284,17 @@ public abstract class FlatteningConfig {
           protoParser.hasResourceReference(parameterField.getProtoField())
               ? ResourceNameTreatment.STATIC_TYPES
               : ResourceNameTreatment.NONE;
-      FieldConfig fieldConfig =
+      List<FieldConfig> fieldConfigs =
           FieldConfig.createMessageFieldConfigs(
               messageConfigs, resourceNameConfigs, parameterField, resourceNameTreatment);
       flattenedFieldConfigBuilder.put(parameter, fieldConfig);
     }
     return new AutoValue_FlatteningConfig(flattenedFieldConfigBuilder.build());
   }
+
+  private static collectFieldConfigs(
+    List<ImmutableMap.Builder<String, FieldConfig>> flatteningConfigs,
+    String flattenedParam)
 
   public Iterable<FieldModel> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
