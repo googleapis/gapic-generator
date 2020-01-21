@@ -98,6 +98,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
         CollectionConfigProto.newBuilder()
             .setEntityName(upperCamelEntityName)
             .setNamePattern(deprecatedResource.getNamePattern())
+            .addAllLanguageOverrides(deprecatedResource.getLanguageOverridesList())
             .build();
     SingleResourceNameConfig resourceConfigV1 =
         createSingleResourceName(diagCollector, resourceV1, file, language);

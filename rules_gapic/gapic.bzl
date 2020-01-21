@@ -84,7 +84,7 @@ gapic_srcjar = rule(
     implementation = _gapic_srcjar_impl,
 )
 
-_ProtoInfo = provider(
+CustomProtoInfo = provider(
     fields = [
         "direct_sources",
         "check_deps_sources",
@@ -101,7 +101,7 @@ def _proto_custom_library_impl(ctx):
     check_dep_sources_list = []
 
     for dep in ctx.attr.deps:
-        prov = ProtoInfo if ProtoInfo in dep else _ProtoInfo
+        prov = ProtoInfo if ProtoInfo in dep else CustomProtoInfo
         src = dep[prov].check_deps_sources
         srcs_list.append(src)
         check_dep_sources_list.append(src)
@@ -175,7 +175,7 @@ def _proto_custom_library_impl(ctx):
     #   - transitive_imports
     #   - transitive_descriptor_sets
     return [
-        _ProtoInfo(
+        CustomProtoInfo(
             direct_sources = check_dep_sources,
             check_deps_sources = check_dep_sources,
             transitive_imports = imports,
@@ -185,7 +185,11 @@ def _proto_custom_library_impl(ctx):
 
 proto_custom_library = rule(
     attrs = {
-        "deps": attr.label_list(mandatory = True, allow_empty = False, providers = [[ProtoInfo], [_ProtoInfo]]),
+        "deps": attr.label_list(
+            mandatory = True,
+            allow_empty = False,
+            providers = [[ProtoInfo], [CustomProtoInfo]],
+        ),
         "plugin": attr.label(mandatory = False, executable = True, cfg = "host"),
         "plugin_file_args": attr.label_keyed_string_dict(
             mandatory = False,
@@ -328,6 +332,7 @@ def _calculate_import_prefix(strip_import_prefix):
     tokens_len = len(tokens)
     for i in range(1, tokens_len):
         t = tokens[i]
+
         # This logic is executed only if import_prefix is not specified by
         # a user explicitly (so there is no enforced coupling to google cloud
         # domain, it serves only as a convenient default value).
