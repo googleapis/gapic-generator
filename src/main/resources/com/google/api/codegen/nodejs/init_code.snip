@@ -97,7 +97,12 @@
 @end
 
 @private initLineSimple(line, sampleType)
-  const {@line.identifier} = {@renderInitValue(line.initValue, sampleType)};
+  # Support writing strings to bytes fields
+  @if line.typeName == "Buffer"
+    const {@line.identifier} = Buffer.from({@renderInitValue(line.initValue, sampleType)});
+  @else
+    const {@line.identifier} = {@renderInitValue(line.initValue, sampleType)};
+  @end
 @end
 
 @snippet renderInitValue(initValue, sampleType)
