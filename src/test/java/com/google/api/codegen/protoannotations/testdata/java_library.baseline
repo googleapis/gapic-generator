@@ -5472,34 +5472,6 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
    *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(ArchiveName name, String filter) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-            .setName(name == null ? null : name.toString())
-            .setFilter(filter)
-            .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
-   *   String filter = "book-filter-string";
    *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -5528,34 +5500,6 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(ShelfName name, String filter) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-            .setName(name == null ? null : name.toString())
-            .setFilter(filter)
-            .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName name = ShelfName.of("[SHELF_ID]");
-   *   String filter = "book-filter-string";
    *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -5570,34 +5514,6 @@ public class LibraryClient implements BackgroundResource {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
             .setName(name)
-            .setFilter(filter)
-            .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName name = ProjectName.of("[PROJECT]");
-   *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(ProjectName name, String filter) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-            .setName(name == null ? null : name.toString())
             .setFilter(filter)
             .build();
     return listBooks(request);
@@ -5960,31 +5876,6 @@ public class LibraryClient implements BackgroundResource {
    */
   public final UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
     return stub.moveBookCallable();
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists a primitive resource. To test go page streaming.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ResourceName name = ArchiveName.of("[ARCHIVE]");
-   *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListStringsPagedResponse listStrings(ResourceName name) {
-    ListStringsRequest request =
-        ListStringsRequest.newBuilder()
-            .setName(name == null ? null : name.toString())
-            .build();
-    return listStrings(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8101,37 +7992,6 @@ public class LibraryClient implements BackgroundResource {
    *   ProjectName parent = ProjectName.of("[PROJECT]");
    *   ProjectName destination = ProjectName.of("[PROJECT]");
    *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(ProjectName parent, ProjectName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
    *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -8163,37 +8023,6 @@ public class LibraryClient implements BackgroundResource {
    *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
    *   ProjectName destination = ProjectName.of("[PROJECT]");
    *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(LocationName parent, ProjectName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
-   *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
    *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -8210,37 +8039,6 @@ public class LibraryClient implements BackgroundResource {
         ListPublishersRequest.newBuilder()
             .setParent(parent)
             .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(ProjectName parent, ArchiveName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
             .addAllAdditionalDestinations(additionalDestinations)
             .build();
     return listPublishers(request);
@@ -8287,37 +8085,6 @@ public class LibraryClient implements BackgroundResource {
    *   ProjectName parent = ProjectName.of("[PROJECT]");
    *   ShelfName destination = ShelfName.of("[SHELF_ID]");
    *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(ProjectName parent, ShelfName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ShelfName destination = ShelfName.of("[SHELF_ID]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
    *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -8349,37 +8116,6 @@ public class LibraryClient implements BackgroundResource {
    *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
    *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(LocationName parent, ArchiveName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
-   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
    *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
    *     // doThingsWith(element);
    *   }
@@ -8396,37 +8132,6 @@ public class LibraryClient implements BackgroundResource {
         ListPublishersRequest.newBuilder()
             .setParent(parent)
             .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
-            .build();
-    return listPublishers(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
-   *   ShelfName destination = ShelfName.of("[SHELF_ID]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent, destination, formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param parent
-   * @param destination
-   * @param additionalDestinations
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListPublishersPagedResponse listPublishers(LocationName parent, ShelfName destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent == null ? null : parent.toString())
-            .setDestination(destination == null ? null : destination.toString())
             .addAllAdditionalDestinations(additionalDestinations)
             .build();
     return listPublishers(request);
@@ -10375,7 +10080,6 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -10562,7 +10266,6 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -11740,7 +11443,6 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.example.library.v1.AddCommentsRequest;
-import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;

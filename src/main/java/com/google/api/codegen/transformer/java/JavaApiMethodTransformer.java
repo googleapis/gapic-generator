@@ -189,17 +189,17 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)
                 .withCallingForms(Collections.singletonList(CallingForm.LongRunningFlattenedAsync));
-        if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-          flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
-        }
+        // if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+        //   flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
+        // }
         apiMethods.add(
             generateAsyncOperationFlattenedMethod(flattenedMethodContext, sampleContext));
 
-        if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(
-              generateAsyncOperationFlattenedMethod(
-                  flattenedMethodContext.withResourceNamesInSamplesOnly(), sampleContext));
-        }
+        // if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+        //   apiMethods.add(
+        //       generateAsyncOperationFlattenedMethod(
+        //           flattenedMethodContext.withResourceNamesInSamplesOnly(), sampleContext));
+        // }
       }
     }
     apiMethods.add(
@@ -230,9 +230,9 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)
                 .withCallingForms(ImmutableList.of(CallingForm.FlattenedPaged));
-        if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
-        }
+        // if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
+        //   apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
+        // }
         if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
           apiMethods.add(
               generatePagedFlattenedMethod(
