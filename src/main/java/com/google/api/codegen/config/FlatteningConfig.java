@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +54,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel,
-      ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs) {
+      ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs) {
 
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
@@ -66,12 +66,12 @@ public abstract class FlatteningConfig {
               flatteningGroup,
               methodModel);
       if (groupConfig != null) {
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
         if (hasAnyResourceNameParameter(groupConfig)) {
           flatteningConfigs.put(
-              flatteningConfigToString(groupConfig) + "2",
-              groupConfig.withResourceNamesInSamplesOnly());
+              flatteningConfigToString(groupConfig),
+              ImmutableList.of(groupConfig, groupConfig.withResourceNamesInSamplesOnly()));
         }
+        flatteningConfigs.put(flatteningConfigToString(groupConfig), ImmutableList.of(groupConfig));
       }
     }
   }
@@ -82,8 +82,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
-    ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs =
-        ImmutableListMultimap.builder();
+    ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs = ImmutableMap.builder();
     insertFlatteningsFromGapicConfig(
         diagCollector,
         messageConfigs,
@@ -94,7 +93,12 @@ public abstract class FlatteningConfig {
     if (diagCollector.hasErrors()) {
       return null;
     }
-    return ImmutableList.copyOf(flatteningConfigs.build().values());
+    return flatteningConfigs
+        .build()
+        .values()
+        .stream()
+        .flatMap(List::stream)
+        .collect(ImmutableList.toImmutableList());
   }
 
   @VisibleForTesting
@@ -107,8 +111,7 @@ public abstract class FlatteningConfig {
       ProtoMethodModel methodModel,
       ProtoParser protoParser) {
 
-    ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs =
-        ImmutableListMultimap.builder();
+    ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs = ImmutableMap.builder();
 
     insertFlatteningsFromGapicConfig(
         diagCollector,
@@ -128,7 +131,12 @@ public abstract class FlatteningConfig {
     if (diagCollector.hasErrors()) {
       return null;
     }
-    return ImmutableList.copyOf(flatteningConfigs.build().values());
+    return flatteningConfigs
+        .build()
+        .values()
+        .stream()
+        .flatMap(List::stream)
+        .collect(ImmutableList.toImmutableList());
   }
 
   /**
@@ -141,7 +149,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoMethodModel methodModel,
       ProtoParser protoParser,
-      ImmutableListMultimap.Builder<String, FlatteningConfig> flatteningConfigs) {
+      ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs) {
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
@@ -154,10 +162,8 @@ public abstract class FlatteningConfig {
               signature,
               methodModel,
               protoParser);
-      if (groupConfigs != null) {
-        for (FlatteningConfig groupConfig : groupConfigs) {
-          flatteningConfigs.put(flatteningConfigToString(groupConfig), groupConfig);
-        }
+      if (groupConfigs != null && !groupConfigs.isEmpty()) {
+        flatteningConfigs.put(flatteningConfigToString(groupConfigs.get(0)), groupConfigs);
       }
     }
   }
@@ -274,7 +280,7 @@ public abstract class FlatteningConfig {
     }
 
     // We also generate an overload that all resource names are treated as strings
-    if (hasAnyResourceNameParameter(flatteningConfigs)) {
+    if (hasBothSingularAndRepeatedResourceNameParameters(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
 
@@ -292,7 +298,7 @@ public abstract class FlatteningConfig {
     int flatteningConfigsCount = flatteningConfigs.size();
     if (flatteningConfigsCount == 0) {
       for (int j = 0; j < fieldConfigs.size(); j++) {
-        HashMap<String, FieldConfig> newFlattening = new HashMap<>();
+        LinkedHashMap<String, FieldConfig> newFlattening = new LinkedHashMap<>();
         newFlattening.put(parameter, fieldConfigs.get(j));
         flatteningConfigs.add(newFlattening);
         System.out.println(j);
@@ -300,7 +306,8 @@ public abstract class FlatteningConfig {
     } else {
       for (int i = 0; i < flatteningConfigsCount; i++) {
         for (int j = 0; j < fieldConfigs.size() - 1; j++) {
-          HashMap<String, FieldConfig> newFlattening = new HashMap<>(flatteningConfigs.get(i));
+          LinkedHashMap<String, FieldConfig> newFlattening =
+              new LinkedHashMap<>(flatteningConfigs.get(i));
           newFlattening.put(parameter, fieldConfigs.get(j));
           flatteningConfigs.add(newFlattening);
           System.out.println(i);
@@ -422,5 +429,30 @@ public abstract class FlatteningConfig {
 
   private static boolean hasAnyResourceNameParameter(Map<String, FieldConfig> flatteningGroup) {
     return flatteningGroup.values().stream().anyMatch(FieldConfig::useResourceNameType);
+  }
+
+  private static boolean hasSingularResourceNameParameter(
+      Map<String, FieldConfig> flatteningGroup) {
+    return flatteningGroup
+        .values()
+        .stream()
+        .anyMatch(
+            f -> (!f.getField().isRepeated() && !f.getField().isMap() && f.useResourceNameType()));
+  }
+
+  private static boolean hasAnyRepeatedResourceNameParameter(
+      Map<String, FieldConfig> flatteningGroup) {
+    return flatteningGroup
+        .values()
+        .stream()
+        .anyMatch(f -> f.getField().isRepeated() && f.useResourceNameType());
+  }
+
+  private static boolean hasBothSingularAndRepeatedResourceNameParameters(
+      List<Map<String, FieldConfig>> flatteningGroups) {
+    return flatteningGroups
+        .stream()
+        .anyMatch(
+            f -> (hasSingularResourceNameParameter(f) && hasAnyRepeatedResourceNameParameter(f)));
   }
 }

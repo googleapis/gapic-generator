@@ -244,11 +244,15 @@ public abstract class GapicMethodConfig extends MethodConfig {
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfig(
                     method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
-
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     } else {
-      return builder.build();
+      GapicMethodConfig methodConfig = builder.build();
+      if (methodConfig.getMethodModel().getSimpleName().contains("ListPublishers")) {
+        System.out.println("methodconfig");
+        System.out.println(methodConfig.getFlatteningConfigs());
+      }
+      return methodConfig;
     }
   }
 

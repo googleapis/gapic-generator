@@ -195,7 +195,7 @@ public abstract class FieldConfig {
               field,
               treatment,
               defaultResourceNameTreatment);
-      fieldConfig.useResourceNameTypeInSampleOnly();
+      fieldConfig = fieldConfig.withResourceNameInSampleOnly();
       return Collections.singletonList(fieldConfig);
     }
     ImmutableList.Builder<FieldConfig> fieldConfigs = ImmutableList.builder();

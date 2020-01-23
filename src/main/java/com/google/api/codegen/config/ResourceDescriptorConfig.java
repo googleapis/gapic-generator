@@ -25,11 +25,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * Class that represents a google.api.ResourceDescriptor annotation, and is used to construct
@@ -176,57 +176,72 @@ public abstract class ResourceDescriptorConfig {
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
       Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
     ImmutableMap.Builder<String, List<ResourceDescriptorConfig>> builder = ImmutableMap.builder();
+    List<ResourceDescriptorConfig> allResources =
+        ImmutableList.copyOf(descriptorConfigMap.values());
+    System.out.println(allResources);
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
-      List<ResourceDescriptorConfig> parentResource =
-          getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
-      if (!parentResource.isEmpty()) {
-        builder.put(entry.getKey(), parentResource);
+      ResourceDescriptorConfig childResource = entry.getValue();
+      for (int i = 0; i < allResources.size(); i++) {
+        List<ResourceDescriptorConfig> parentResource =
+            matchParentResourceDescriptor(
+                getParentPatternsMap(childResource),
+                allResources,
+                new ArrayList<>(),
+                childResource.getPatterns().size(),
+                i);
+        if (parentResource != null) {
+          builder.put(entry.getKey(), parentResource);
+          break;
+        }
       }
     }
-    return builder.build();
+
+    Map<String, List<ResourceDescriptorConfig>> result = builder.build();
+    System.out.println(result);
+    return result;
   }
 
-  @Nullable
-  private static List<ResourceDescriptorConfig> getParentResourceDescriptor(
-      ResourceDescriptorConfig childResource,
-      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
-    List<ResourceDescriptorConfig> resources =
-        patternResourceDescriptorMap
-            .values()
-            .stream()
-            .flatMap(List::stream)
-            .distinct()
-            .collect(Collectors.toList());
-
-    ImmutableList.Builder<ResourceDescriptorConfig> parentResources = ImmutableList.builder();
-
-    Map<String, Boolean> matchedParentPatterns =
-        childResource
-            .getPatterns()
-            .stream()
-            .map(ResourceDescriptorConfig::getParentPattern)
-            .distinct()
-            .collect(Collectors.toMap(p -> p, p -> false));
-    int unmatchedPatternsCount = matchedParentPatterns.size();
-
-    for (ResourceDescriptorConfig resource : resources) {
-      for (String pattern : resource.getPatterns()) {
-        Boolean matched = matchedParentPatterns.get(pattern);
-        if (matched == null) {
-          continue;
-        }
-        if (matched == false) {
-          unmatchedPatternsCount -= 1;
-        }
-        matchedParentPatterns.put(pattern, true);
+  private static List<ResourceDescriptorConfig> matchParentResourceDescriptor(
+      Map<String, Boolean> parentPatterns,
+      List<ResourceDescriptorConfig> allResources,
+      List<ResourceDescriptorConfig> matchedParentResources,
+      int unmatchedPatternsCount,
+      int i) {
+    System.out.println("parentPatterns");
+    System.out.println(parentPatterns);
+    System.out.println("matchedparentresource");
+    System.out.println(matchedParentResources);
+    System.out.println("currentresource");
+    System.out.println(allResources.get(i));
+    // We make a copy to advance in the depth-first search. There won't be
+    // too many patterns in a resource so performance-wise it is not a problem.
+    Map<String, Boolean> parentPatternsCopy = new HashMap<>(parentPatterns);
+    ResourceDescriptorConfig matchingResource = allResources.get(i);
+    for (String pattern : matchingResource.getPatterns()) {
+      if (!parentPatternsCopy.containsKey(pattern)) {
+        return null;
       }
-      parentResources.add(resource);
+      if (parentPatternsCopy.get(pattern) == false) {
+        unmatchedPatternsCount--;
+        parentPatternsCopy.put(pattern, true);
+      }
     }
-
+    matchedParentResources.add(matchingResource);
     if (unmatchedPatternsCount == 0) {
-      return parentResources.build();
+      return ImmutableList.copyOf(matchedParentResources);
     }
-    return Collections.emptyList();
+    for (int j = i + 1; j < allResources.size(); j++) {
+      List<ResourceDescriptorConfig> result =
+          matchParentResourceDescriptor(
+              parentPatternsCopy, allResources, matchedParentResources, unmatchedPatternsCount, j);
+
+      // We stop when we find the first list of matched parent resources
+      if (result != null) {
+        return result;
+      }
+    }
+    matchedParentResources.remove(matchedParentResources.size() - 1);
+    return null;
   }
 
   @VisibleForTesting
@@ -241,6 +256,14 @@ public abstract class ResourceDescriptorConfig {
       return "";
     }
     return String.join("/", segments.subList(0, index));
+  }
+
+  static Map<String, Boolean> getParentPatternsMap(ResourceDescriptorConfig resource) {
+    return resource
+        .getPatterns()
+        .stream()
+        .map(ResourceDescriptorConfig::getParentPattern)
+        .collect(ImmutableMap.toImmutableMap(p -> p, p -> false));
   }
 
   private static List<String> getSegments(String pattern) {
