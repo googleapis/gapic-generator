@@ -21,8 +21,11 @@ import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -158,5 +161,33 @@ public abstract class GapicMethodContext implements MethodContext {
         getTypeTable(),
         new ProtoInterfaceModel(getInterfaceModel().getInterface()),
         callingForms);
+  }
+
+  public ImmutableMap<String, String> getFieldResourceEntityMap() {
+    ImmutableMap.Builder<String, String> fieldResourceEntityMap = ImmutableMap.builder();
+    if (isFlattenedMethodContext()) {
+      for (Map.Entry<String, FieldConfig> entry :
+          getFlatteningConfig().getFlattenedFieldConfigs().entrySet()) {
+        FieldConfig fieldConfig = entry.getValue();
+        ResourceNameConfig resourceConfig = fieldConfig.getResourceNameConfig();
+        if (resourceConfig != null) {
+          fieldResourceEntityMap.put(entry.getKey(), resourceConfig.getEntityId());
+        }
+      }
+      return fieldResourceEntityMap.build();
+    }
+
+    // For non-flattening methods, resource name configs are only used to generate
+    // samples, so we can always use the first resource name config for this purpose.
+    //
+    // Because YAML does not support many-to-many mapping, for GAPICs generated solely
+    // from GAPIC YAML, fieldNamePatterns is in fact a normal map instead of a multimap,
+    // therefore taking only the first element from fieldNamePatterns causes no changes
+    // to those libraries.
+    for (Map.Entry<String, Collection<String>> entry :
+        getMethodConfig().getFieldNamePatterns().asMap().entrySet()) {
+      fieldResourceEntityMap.put(entry.getKey(), ((List<String>) entry.getValue()).get(0));
+    }
+    return fieldResourceEntityMap.build();
   }
 }

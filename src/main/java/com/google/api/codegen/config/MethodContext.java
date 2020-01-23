@@ -18,6 +18,7 @@ import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.CallingForm;
+import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -70,4 +71,11 @@ public interface MethodContext {
    * MethodContext.
    */
   MethodContext withCallingForms(List<CallingForm> callingForms);
+
+  /**
+   * Returns a map from field names to unqualified resource entity names. If this is a flattening
+   * method context, respect resource name configs set to flattening fields rather than message
+   * fields.
+   */
+  ImmutableMap<String, String> getFieldResourceEntityMap();
 }

@@ -256,12 +256,12 @@ public abstract class GapicProductConfig implements ProductConfig {
                       DeprecatedCollectionConfigProto::getNamePattern, c -> c));
 
       // Create a pattern-to-resource map to make looking up parent resources easier.
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
       for (ResourceDescriptorConfig resourceDescriptor : descriptorConfigMap.values()) {
         for (String pattern : resourceDescriptor.getPatterns()) {
-          Set<ResourceDescriptorConfig> resources = patternResourceDescriptorMap.get(pattern);
+          List<ResourceDescriptorConfig> resources = patternResourceDescriptorMap.get(pattern);
           if (resources == null) {
-            resources = new HashSet<>();
+            resources = new ArrayList<>();
             patternResourceDescriptorMap.put(pattern, resources);
           }
           resources.add(resourceDescriptor);
@@ -812,7 +812,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           Set<String> typesWithTypeReferences,
           Set<String> typesWithChildReferences,
           Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
-          Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
+          Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap,
           Map<String, List<ResourceDescriptorConfig>> childParentResourceMap,
           String defaultPackage) {
 
@@ -1081,13 +1081,11 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
     Map<String, FieldConfig> map = new HashMap<>();
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
-      List<FieldConfig> fieldConfigs =
-          FieldConfig.createMessageFieldConfig(
-              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES);
       map.put(
           field.getFullName(),
-          FieldConfig.createMessageFieldConfig(
-              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
+          FieldConfig.createMessageFieldConfigs(
+                  messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES)
+              .get(0));
     }
     builder.putAll(map);
     return builder.build();
@@ -1110,7 +1108,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       Set<String> typesWithTypeReferences,
       Set<String> typesWithChildReferences,
       Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap,
       Map<String, List<ResourceDescriptorConfig>> childParentResourceMap,
       String defaultPackage,
       Map<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig) {
@@ -1136,7 +1134,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       if (typesWithChildReferences.contains(unifiedResourceType)) {
         List<ResourceDescriptorConfig> parentResources =
-            childParentResourceMap.get(unifiedResourceType);
+            childParentResourceMap.getOrDefault(unifiedResourceType, Collections.emptyList());
         for (ResourceDescriptorConfig parentResource : parentResources) {
           Map<String, ResourceNameConfig> resources =
               parentResource.buildResourceNameConfigs(

@@ -224,25 +224,25 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "nodejs_samplegen_config_migration_library.baseline",
-            new String[] {"another_service"}),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.CSHARP,
-            new String[] {"library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            null,
-            "another_service"),
-        GapicTestBase2.createTestConfig(
-            TargetLanguage.CSHARP,
-            new String[] {"samplegen_config_migration_library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            null,
-            null,
-            null,
-            sampleConfigFileNames(),
-            "csharp_samplegen_config_migration_library.baseline",
             new String[] {"another_service"}));
+    // GapicTestBase2.createTestConfig(
+    //     TargetLanguage.CSHARP,
+    //     new String[] {"library_gapic.yaml"},
+    //     "library_pkg2.yaml",
+    //     "library",
+    //     null,
+    //     "another_service"),
+    // GapicTestBase2.createTestConfig(
+    //     TargetLanguage.CSHARP,
+    //     new String[] {"samplegen_config_migration_library_gapic.yaml"},
+    //     "library_pkg2.yaml",
+    //     "library",
+    //     null,
+    //     null,
+    //     null,
+    //     sampleConfigFileNames(),
+    //     "csharp_samplegen_config_migration_library.baseline",
+    //     new String[] {"another_service"}));
   }
 
   @Test

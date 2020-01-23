@@ -495,6 +495,9 @@ public class TestCaseTransformer {
         .stream()
         .findFirst()
         .orElseThrow(
-            () -> new IllegalArgumentException("No available flattening for smoke test to use."));
+            () ->
+                new IllegalArgumentException(
+                    "No available flattening for smoke test to use: "
+                        + methodConfig.getMethodModel().getFullName()));
   }
 }

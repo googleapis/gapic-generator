@@ -60,7 +60,7 @@ public abstract class MethodConfig {
   @Nullable
   public abstract BatchingConfig getBatching();
 
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
+  public abstract ImmutableListMultimap<String, String> getFieldNamePatterns();
 
   public abstract List<String> getSampleCodeInitFields();
 
@@ -191,14 +191,15 @@ public abstract class MethodConfig {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
     for (FieldModel field : fields) {
       fieldConfigsBuilder.add(
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              fieldNamePatterns,
-              resourceNameConfigs,
-              field,
-              ResourceNameTreatment.UNSET_TREATMENT,
-              defaultResourceNameTreatment));
+          FieldConfig.createFieldConfigs(
+                  diagCollector,
+                  messageConfigs,
+                  fieldNamePatterns,
+                  resourceNameConfigs,
+                  field,
+                  ResourceNameTreatment.UNSET_TREATMENT,
+                  defaultResourceNameTreatment)
+              .get(0));
     }
     return fieldConfigsBuilder.build();
   }

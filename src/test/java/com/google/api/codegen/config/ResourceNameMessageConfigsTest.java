@@ -52,7 +52,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -129,14 +128,14 @@ public class ResourceNameMessageConfigsTest {
           "library.googleapis.com/ArchivedBook",
           ARCHIVED_BOOK_RESOURCE_DESCRIPTOR_CONFIG);
 
-  private static final Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap =
+  private static final Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap =
       ImmutableMap.of(
           PROTO_SHELF_PATH,
-          ImmutableSet.of(SHELF_RESOURCE_DESCRIPTOR_CONFIG),
+          ImmutableList.of(SHELF_RESOURCE_DESCRIPTOR_CONFIG),
           PROTO_BOOK_PATH,
-          ImmutableSet.of(BOOK_RESOURCE_DESCRIPTOR_CONFIG),
+          ImmutableList.of(BOOK_RESOURCE_DESCRIPTOR_CONFIG),
           PROTO_ARCHIVED_BOOK_PATH,
-          ImmutableSet.of(ARCHIVED_BOOK_RESOURCE_DESCRIPTOR_CONFIG));
+          ImmutableList.of(ARCHIVED_BOOK_RESOURCE_DESCRIPTOR_CONFIG));
 
   @BeforeClass
   public static void startUp() {
@@ -259,6 +258,7 @@ public class ResourceNameMessageConfigsTest {
             Collections.emptyMap());
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
+    System.out.println(messageConfigs.getResourceTypeConfigMap());
     ResourceNameMessageConfig bookMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");
     assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("Book");
@@ -302,16 +302,18 @@ public class ResourceNameMessageConfigsTest {
 
     ResourceNameMessageConfig bookResource =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");
-    assertThat(bookResource.getEntityNameForField("name")).isEqualTo("book");
+    assertThat(bookResource.getEntityNamesForField("name").get(0)).isEqualTo("book");
 
     ResourceNameMessageConfig getShelfRequestObject =
         messageConfigs.getResourceTypeConfigMap().get("library.BookFromAnywhere");
-    assertThat(getShelfRequestObject.getEntityNameForField("name")).isEqualTo("book_oneof");
+    assertThat(getShelfRequestObject.getEntityNamesForField("name").get(0)).isEqualTo("book_oneof");
 
     ResourceNameMessageConfig shelfResource =
         messageConfigs.getResourceTypeConfigMap().get("library.Shelf");
-    assertThat(shelfResource.getEntityNameForField("name")).isEqualTo("shelf");
+    assertThat(shelfResource.getEntityNamesForField("name").get(0)).isEqualTo("shelf");
   }
+
+  public void testCreateResourceNameMessageConfigForFieldWithMultipleResourceNames() {}
 
   @Test
   public void testCreateResourceNameConfigs() {
@@ -454,6 +456,7 @@ public class ResourceNameMessageConfigsTest {
             .collect(Collectors.toList());
 
     assertThat(flatteningConfigs).isNotNull();
+    System.out.println(flatteningConfigs);
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
     // Check the flattening from the Gapic config.

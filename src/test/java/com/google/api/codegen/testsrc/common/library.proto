@@ -28,8 +28,8 @@ option java_package = "com.google.example.library.v1";
 option go_package = "google.golang.org/genproto/googleapis/example/library/v1;library";
 
 option (google.api.resource_definition) = {
-  type: "library.googleapis.com/Publisher",
-  pattern: "projects/{project}/locations/{location}/publishers/{publisher}"
+  type: "library.googleapis.com/Archive",
+  pattern: "archives/{archive}"
 };
 
 // This API represents a simple digital library.  It lets you manage Shelf
@@ -112,6 +112,10 @@ service LibraryService {
       }
     };
     option (google.api.method_signature) = "shelf,books,edition,series_uuid,publisher";
+  }
+
+  rpc ListPublishers(ListPublishersRequest) returns (ListPublishersResponse) {
+    option (google.api.method_signature) = "parent,destination,additional_destinations";
   }
 
   // Gets a book.
@@ -396,7 +400,7 @@ service LibraryService {
 message Book {
   option (google.api.resource) = {
     type: "library.googleapis.com/Book",
-    pattern: "bookShelves/{book_shelf}/books/{book}",
+    pattern: "shelves/{shelf_id}/books/{book}",
     pattern: "archives/{archive}/books/{book}",
     pattern: "projects/{project}/books/{book}"
     history: ORIGINALLY_SINGLE_PATTERN,
@@ -713,7 +717,7 @@ message ListBooksRequest {
   // The name of the shelf whose books we'd like to list.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "library.googleapis.com/Shelf"];
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"];
 
   // Requested page size. Server may return fewer books than requested.
   // If unspecified, server will pick an appropriate default.
@@ -918,7 +922,7 @@ message DiscussBookRequest {
 message FindRelatedBooksRequest {
   repeated string names = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "library.googleapis.com/Book"];
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"];
   repeated string shelves = 2 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference).type = "library.googleapis.com/Shelf"];
@@ -1103,4 +1107,41 @@ message TestOptionalRequiredFlatteningParamsRequest {
 }
 
 message TestOptionalRequiredFlatteningParamsResponse {
+}
+
+message Publisher {
+
+  option (google.api.resource) = {
+    type: "library.googleapis.com/Publisher",
+    pattern: "projects/{project}/locations/{location}/publishers/{publisher}",
+    pattern: "projects/{project}/publishers/{publisher}",
+    pattern: "*"
+  };
+
+  string name = 1;
+}
+
+message ListPublishersRequest {
+
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).child_type = "library.googleapis.com/Publisher"];
+
+  string destination = 2 [
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"];
+
+  repeated string additional_destinations = 3 [
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"];
+
+  int32 page_size = 4;
+
+  string page_token = 5;
+}
+
+message ListPublishersResponse {
+
+  repeated Publisher publishers = 1;
+
+  string next_page_token = 2;
+
 }

@@ -18,6 +18,7 @@ import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.util.Name;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableListMultimap;
+import java.util.List;
 
 /** Configuration of the resource name types for fields of a single message. */
 @AutoValue

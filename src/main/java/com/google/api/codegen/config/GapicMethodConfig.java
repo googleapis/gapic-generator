@@ -192,7 +192,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    ImmutableMap<String, String> fieldNamePatterns = getFieldNamePatterns(method, messageConfigs);
+    ImmutableListMultimap<String, String> fieldNamePatterns =
+        getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
@@ -425,7 +426,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     public abstract Builder setBatching(@Nullable BatchingConfig val);
 
-    public abstract Builder setFieldNamePatterns(ImmutableMultimap<String, String> val);
+    public abstract Builder setFieldNamePatterns(ImmutableListMultimap<String, String> val);
 
     public abstract Builder setSampleCodeInitFields(List<String> val);
 

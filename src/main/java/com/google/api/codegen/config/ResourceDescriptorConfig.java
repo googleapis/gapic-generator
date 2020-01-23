@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -175,8 +174,8 @@ public abstract class ResourceDescriptorConfig {
    */
   static Map<String, List<ResourceDescriptorConfig>> getChildParentResourceMap(
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
-    ImmutableMap.Builder<String, ResourceDescriptorConfig> builder = ImmutableMap.builder();
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap) {
+    ImmutableMap.Builder<String, List<ResourceDescriptorConfig>> builder = ImmutableMap.builder();
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
       List<ResourceDescriptorConfig> parentResource =
           getParentResourceDescriptor(entry.getValue(), patternResourceDescriptorMap);
@@ -195,7 +194,7 @@ public abstract class ResourceDescriptorConfig {
         patternResourceDescriptorMap
             .values()
             .stream()
-            .flatMap(Set::stream)
+            .flatMap(List::stream)
             .collect(Collectors.toList());
 
     ImmutableList.Builder<ResourceDescriptorConfig> parentResources = ImmutableList.builder();

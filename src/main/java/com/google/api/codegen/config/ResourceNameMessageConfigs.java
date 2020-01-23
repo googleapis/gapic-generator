@@ -30,6 +30,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import java.util.*;
@@ -134,8 +135,9 @@ public abstract class ResourceNameMessageConfigs {
           field);
 
       if (!childType.isEmpty()) {
-        for (ResourceDescriptorConfig parentResourceDescriptor :
-            childParentResourceMap.get(childType)) {
+        List<ResourceDescriptorConfig> parents =
+            childParentResourceMap.getOrDefault(childType, Collections.emptyList());
+        for (ResourceDescriptorConfig parentResourceDescriptor : parents) {
           String derivedEntityName = parentResourceDescriptor.getDerivedEntityName();
           ResourceNameConfig parentResource = resourceNameConfigs.get(derivedEntityName);
           Preconditions.checkArgument(
@@ -246,7 +248,7 @@ public abstract class ResourceNameMessageConfigs {
     return !getResourceNamesForField(messageFullName, fieldSimpleName).isEmpty();
   }
 
-  String getFieldResourceNames(FieldModel field) {
+  List<String> getFieldResourceNames(FieldModel field) {
     return getFieldResourceNames(field.getParentFullName(), field.getSimpleName());
   }
 
