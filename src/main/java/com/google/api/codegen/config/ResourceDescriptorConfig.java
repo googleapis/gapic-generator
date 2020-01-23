@@ -195,6 +195,7 @@ public abstract class ResourceDescriptorConfig {
             .values()
             .stream()
             .flatMap(List::stream)
+            .distinct()
             .collect(Collectors.toList());
 
     ImmutableList.Builder<ResourceDescriptorConfig> parentResources = ImmutableList.builder();
