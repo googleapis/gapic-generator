@@ -71,8 +71,10 @@ public abstract class FlatteningConfig {
           flatteningConfigs.put(
               flatteningConfigToString(groupConfig),
               ImmutableList.of(groupConfig, groupConfig.withResourceNamesInSamplesOnly()));
+        } else {
+          flatteningConfigs.put(
+              flatteningConfigToString(groupConfig), ImmutableList.of(groupConfig));
         }
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), ImmutableList.of(groupConfig));
       }
     }
   }
