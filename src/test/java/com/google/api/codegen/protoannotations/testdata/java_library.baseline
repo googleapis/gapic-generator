@@ -711,7 +711,7 @@ public class DeleteShelfRequestEmptyResponseTypeWithoutResponseHandling {
 
 package com.google.example.examples.library.v1;
 
-import com.google.example.library.v1.ArchiveName;
+import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
@@ -725,7 +725,7 @@ public class FindRelatedBooksCallableCallableListOdyssey {
   /*
    * Please include the following imports to run this sample.
    *
-   * import com.google.example.library.v1.ArchiveName;
+   * import com.google.example.library.v1.BookFromArchiveName;
    * import com.google.example.library.v1.BookName;
    * import com.google.example.library.v1.FindRelatedBooksRequest;
    * import com.google.example.library.v1.FindRelatedBooksResponse;
@@ -738,12 +738,12 @@ public class FindRelatedBooksCallableCallableListOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-      List<ArchiveName> names = Arrays.asList(namesElement);
+      BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+      List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
       FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ArchiveName.toStringList(names))
+        .addAllNames(BookName.toStringList(names))
         .addAllShelves(ShelfName.toStringList(shelves))
         .build();
       while (true) {
@@ -863,7 +863,7 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 package com.google.example.examples.library.v1;
 
 import com.google.api.core.ApiFuture;
-import com.google.example.library.v1.ArchiveName;
+import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
@@ -878,7 +878,7 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
    * Please include the following imports to run this sample.
    *
    * import com.google.api.core.ApiFuture;
-   * import com.google.example.library.v1.ArchiveName;
+   * import com.google.example.library.v1.BookFromArchiveName;
    * import com.google.example.library.v1.BookName;
    * import com.google.example.library.v1.FindRelatedBooksRequest;
    * import com.google.example.library.v1.FindRelatedBooksResponse;
@@ -891,12 +891,12 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-      List<ArchiveName> names = Arrays.asList(namesElement);
+      BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+      List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
       FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ArchiveName.toStringList(names))
+        .addAllNames(BookName.toStringList(names))
         .addAllShelves(ShelfName.toStringList(shelves))
         .build();
       ApiFuture<FindRelatedBooksPagedResponse> future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
@@ -941,7 +941,7 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
 package com.google.example.examples.library.v1;
 
-import com.google.example.library.v1.ArchiveName;
+import com.google.example.library.v1.BookFromArchiveName;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.LibraryClient;
@@ -954,7 +954,7 @@ public class FindRelatedBooksRequestPagedOdyssey {
   /*
    * Please include the following imports to run this sample.
    *
-   * import com.google.example.library.v1.ArchiveName;
+   * import com.google.example.library.v1.BookFromArchiveName;
    * import com.google.example.library.v1.BookName;
    * import com.google.example.library.v1.FindRelatedBooksRequest;
    * import com.google.example.library.v1.LibraryClient;
@@ -966,12 +966,12 @@ public class FindRelatedBooksRequestPagedOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-      List<ArchiveName> names = Arrays.asList(namesElement);
+      BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+      List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF_ID]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
       FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-        .addAllNames(ArchiveName.toStringList(names))
+        .addAllNames(BookName.toStringList(names))
         .addAllShelves(ShelfName.toStringList(shelves))
         .build();
       for (BookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
@@ -1050,7 +1050,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name);
 
       System.out.println("Waiting for operation to complete...");
       Book response = future.get();
@@ -1159,7 +1159,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
+      OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name);
 
       System.out.println("Waiting for operation to complete...");
       Book response = future.get();
@@ -1882,7 +1882,7 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithRes
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name);
 
       System.out.println("Waiting for operation to complete...");
       future.get();
@@ -1946,7 +1946,7 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithout
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
       BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
+      OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name);
 
       System.out.println("Waiting for operation to complete...");
       future.get();
@@ -2894,6 +2894,7 @@ import org.apache.commons.cli.Options;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -2907,6 +2908,7 @@ public class PublishSeriesFlattenedPiVersion {
    * import com.google.example.library.v1.Book;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.PublisherName;
    * import com.google.example.library.v1.SeriesUuid;
    * import com.google.example.library.v1.Shelf;
    * import java.util.ArrayList;
@@ -2936,7 +2938,7 @@ public class PublishSeriesFlattenedPiVersion {
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
-      String publisher = "";
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
       PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher);
       // % % % output handling % % % %
       // fourScoreAndSevenYears ago
@@ -3014,6 +3016,7 @@ package com.google.example.examples.library.v1;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.LibraryClient;
 import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
 import java.util.ArrayList;
@@ -3027,6 +3030,7 @@ public class PublishSeriesFlattenedSecondEdition {
    * import com.google.example.library.v1.Book;
    * import com.google.example.library.v1.LibraryClient;
    * import com.google.example.library.v1.PublishSeriesResponse;
+   * import com.google.example.library.v1.PublisherName;
    * import com.google.example.library.v1.SeriesUuid;
    * import com.google.example.library.v1.Shelf;
    * import java.util.ArrayList;
@@ -3040,7 +3044,7 @@ public class PublishSeriesFlattenedSecondEdition {
       List<Book> books = new ArrayList<>();
       int edition = 2;
       SeriesUuid seriesUuid = SeriesUuid.newBuilder().build();
-      String publisher = "";
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
       PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher);
       System.out.println(response);
     } catch (Exception exception) {
@@ -4490,6 +4494,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate PROJECT_BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}/books/{book}");
 
+  private static final PathTemplate PUBLISHER_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/locations/{location}/publishers/{publisher}");
+
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf_id}");
 
@@ -4592,6 +4599,20 @@ public class LibraryClient implements BackgroundResource {
     return PROJECT_BOOK_PATH_TEMPLATE.instantiate(
         "project", project,
         "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String formatPublisherName(String project, String location, String publisher) {
+    return PUBLISHER_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "location", location,
+        "publisher", publisher);
   }
 
   /**
@@ -4747,6 +4768,39 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseBookFromProjectBookName(String projectBookName) {
     return PROJECT_BOOK_PATH_TEMPLATE.parse(projectBookName).get("book");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("project");
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("location");
+  }
+
+  /**
+   * Parses the publisher from the given fully-qualified path which
+   * represents a publisher resource.
+   *
+   * @deprecated Use the {@link PublisherName} class instead.
+   */
+  @Deprecated
+  public static final String parsePublisherFromPublisherName(String publisherName) {
+    return PUBLISHER_PATH_TEMPLATE.parse(publisherName).get("publisher");
   }
 
   /**
@@ -5316,7 +5370,7 @@ public class LibraryClient implements BackgroundResource {
    *   SeriesUuid seriesUuid = SeriesUuid.newBuilder()
    *     .setSeriesString(seriesString)
    *     .build();
-   *   String publisher = "";
+   *   PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
    *   PublishSeriesResponse response = libraryClient.publishSeries(shelf, books, edition, seriesUuid, publisher);
    * }
    * </code></pre>
@@ -5470,7 +5524,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String filter = "book-filter-string";
    *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
    *     // doThingsWith(element);
@@ -5500,62 +5554,6 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(String name, String filter) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-            .setName(name)
-            .setFilter(filter)
-            .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName name = ProjectName.of("[PROJECT]");
-   *   String filter = "book-filter-string";
-   *   for (Book element : libraryClient.listBooks(name.toString(), filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the shelf whose books we'd like to list.
-   * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final ListBooksPagedResponse listBooks(String name, String filter) {
-    ListBooksRequest request =
-        ListBooksRequest.newBuilder()
-            .setName(name)
-            .setFilter(filter)
-            .build();
-    return listBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Lists books in a shelf.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
-   *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
    *     .setFilter(filter)
@@ -5581,7 +5579,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
@@ -5606,7 +5604,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName name = ArchiveName.of("[ARCHIVE]");
+   *   ShelfName name = ShelfName.of("[SHELF_ID]");
    *   String filter = "book-filter-string";
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(name.toString())
@@ -6570,11 +6568,11 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;ArchiveName&gt; names = Arrays.asList(namesElement);
+   *   BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ArchiveName.toStringList(names))
+   *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   for (BookName element : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
@@ -6598,11 +6596,11 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;ArchiveName&gt; names = Arrays.asList(namesElement);
+   *   BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ArchiveName.toStringList(names))
+   *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
@@ -6624,11 +6622,11 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName namesElement = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;ArchiveName&gt; names = Arrays.asList(namesElement);
+   *   BookName namesElement = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
+   *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
-   *     .addAllNames(ArchiveName.toStringList(names))
+   *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
    *   while (true) {
@@ -6731,30 +6729,6 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-   *   Book response = libraryClient.getBigBookAsync(name.toString()).get();
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
-  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(String name) {
-    GetBookRequest request =
-        GetBookRequest.newBuilder()
-            .setName(name)
-            .build();
-    return getBigBookAsync(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Test long-running operations
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -6833,30 +6807,6 @@ public class LibraryClient implements BackgroundResource {
     GetBookRequest request =
         GetBookRequest.newBuilder()
             .setName(name == null ? null : name.toString())
-            .build();
-    return getBigNothingAsync(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Test long-running operations with empty return type.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookFromArchiveName.of("[ARCHIVE]", "[BOOK]");
-   *   libraryClient.getBigNothingAsync(name.toString()).get();
-   * }
-   * </code></pre>
-   *
-   * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
-  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(String name) {
-    GetBookRequest request =
-        GetBookRequest.newBuilder()
-            .setName(name)
             .build();
     return getBigNothingAsync(request);
   }
@@ -7989,28 +7939,29 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
    *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8020,28 +7971,29 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   ShelfName source = ShelfName.of("[SHELF_ID]");
    *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8051,28 +8003,61 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ArchiveName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8082,28 +8067,29 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
    *   ShelfName destination = ShelfName.of("[SHELF_ID]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ArchiveName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8113,28 +8099,29 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   ShelfName source = ShelfName.of("[SHELF_ID]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ShelfName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8144,28 +8131,29 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+   *   ShelfName source = ShelfName.of("[SHELF_ID]");
    *   ShelfName destination = ShelfName.of("[SHELF_ID]");
-   *   List&lt;String&gt; formattedAdditionalDestinations = new ArrayList&lt;&gt;();
-   *   for (Publisher element : libraryClient.listPublishers(parent.toString(), destination.toString(), formattedAdditionalDestinations).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
    * }
    * </code></pre>
    *
-   * @param parent
+   * @param source
    * @param destination
-   * @param additionalDestinations
+   * @param publishers
+   * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(String parent, String destination, List<String> additionalDestinations) {
-    ListPublishersRequest request =
-        ListPublishersRequest.newBuilder()
-            .setParent(parent)
-            .setDestination(destination)
-            .addAllAdditionalDestinations(additionalDestinations)
+  public final MoveBooksResponse moveBooks(ShelfName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
             .build();
-    return listPublishers(request);
+    return moveBooks(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8175,22 +8163,112 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ListPublishersRequest request = ListPublishersRequest.newBuilder()
-   *     .setParent(parent.toString())
-   *     .build();
-   *   for (Publisher element : libraryClient.listPublishers(request).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ShelfName destination = ShelfName.of("[SHELF_ID]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source.toString(), destination.toString(), formattedPublishers, project.toString());
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(String source, String destination, List<String> publishers, String project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source)
+            .setDestination(destination)
+            .addAllPublishers(publishers)
+            .setProject(project)
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   MoveBooksRequest request = MoveBooksRequest.newBuilder().build();
+   *   MoveBooksResponse response = libraryClient.moveBooks(request);
    * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final ListPublishersPagedResponse listPublishers(ListPublishersRequest request) {
-    return listPublishersPagedCallable()
-        .call(request);
+  public final MoveBooksResponse moveBooks(MoveBooksRequest request) {
+    return moveBooksCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8200,20 +8278,15 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ListPublishersRequest request = ListPublishersRequest.newBuilder()
-   *     .setParent(parent.toString())
-   *     .build();
-   *   ApiFuture&lt;ListPublishersPagedResponse&gt; future = libraryClient.listPublishersPagedCallable().futureCall(request);
+   *   MoveBooksRequest request = MoveBooksRequest.newBuilder().build();
+   *   ApiFuture&lt;MoveBooksResponse&gt; future = libraryClient.moveBooksCallable().futureCall(request);
    *   // Do something
-   *   for (Publisher element : future.get().iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   *   MoveBooksResponse response = future.get();
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListPublishersRequest, ListPublishersPagedResponse> listPublishersPagedCallable() {
-    return stub.listPublishersPagedCallable();
+  public final UnaryCallable<MoveBooksRequest, MoveBooksResponse> moveBooksCallable() {
+    return stub.moveBooksCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8223,27 +8296,272 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName parent = ProjectName.of("[PROJECT]");
-   *   ListPublishersRequest request = ListPublishersRequest.newBuilder()
-   *     .setParent(parent.toString())
-   *     .build();
-   *   while (true) {
-   *     ListPublishersResponse response = libraryClient.listPublishersCallable().call(request);
-   *     for (Publisher element : response.getPublishersList()) {
-   *       // doThingsWith(element);
-   *     }
-   *     String nextPageToken = response.getNextPageToken();
-   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
-   *       request = request.toBuilder().setPageToken(nextPageToken).build();
-   *     } else {
-   *       break;
-   *     }
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ArchiveName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF_ID]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ShelfName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ProjectName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   ArchiveBooksResponse response = libraryClient.archiveBooks(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ArchiveBooksRequest request) {
+    return archiveBooksCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   ApiFuture&lt;ArchiveBooksResponse&gt; future = libraryClient.archiveBooksCallable().futureCall(request);
+   *   // Do something
+   *   ArchiveBooksResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksCallable() {
+    return stub.archiveBooksCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ArchiveName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF_ID]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ShelfName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ProjectName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   ArchiveBooksResponse response = libraryClient.longRunningArchiveBooksAsync(request).get();
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ArchiveBooksRequest request) {
+    return longRunningArchiveBooksOperationCallable().futureCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   OperationFuture&lt;ArchiveBooksResponse, ArchiveBooksMetadata&gt; future = libraryClient.longRunningArchiveBooksOperationCallable().futureCall(request);
+   *   // Do something
+   *   ArchiveBooksResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public final OperationCallable<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationCallable() {
+    return stub.longRunningArchiveBooksOperationCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   ApiFuture&lt;Operation&gt; future = libraryClient.longRunningArchiveBooksCallable().futureCall(request);
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ArchiveBooksRequest, Operation> longRunningArchiveBooksCallable() {
+    return stub.longRunningArchiveBooksCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   BidiStream&lt;ArchiveBooksRequest, ArchiveBooksResponse&gt; bidiStream =
+   *       libraryClient.streamingArchiveBooksCallable().call();
+   *
+   *   ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+   *   bidiStream.send(request);
+   *   for (ArchiveBooksResponse response : bidiStream) {
+   *     // Do something when receive a response
    *   }
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListPublishersRequest, ListPublishersResponse> listPublishersCallable() {
-    return stub.listPublishersCallable();
+  public final BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable() {
+    return stub.streamingArchiveBooksCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -8729,94 +9047,6 @@ public class LibraryClient implements BackgroundResource {
     }
 
   }
-  public static class ListPublishersPagedResponse extends AbstractPagedListResponse<
-      ListPublishersRequest,
-      ListPublishersResponse,
-      Publisher,
-      ListPublishersPage,
-      ListPublishersFixedSizeCollection> {
-
-    public static ApiFuture<ListPublishersPagedResponse> createAsync(
-        PageContext<ListPublishersRequest, ListPublishersResponse, Publisher> context,
-        ApiFuture<ListPublishersResponse> futureResponse) {
-      ApiFuture<ListPublishersPage> futurePage =
-          ListPublishersPage.createEmptyPage().createPageAsync(context, futureResponse);
-      return ApiFutures.transform(
-          futurePage,
-          new ApiFunction<ListPublishersPage, ListPublishersPagedResponse>() {
-            @Override
-            public ListPublishersPagedResponse apply(ListPublishersPage input) {
-              return new ListPublishersPagedResponse(input);
-            }
-          },
-          MoreExecutors.directExecutor());
-    }
-
-    private ListPublishersPagedResponse(ListPublishersPage page) {
-      super(page, ListPublishersFixedSizeCollection.createEmptyCollection());
-    }
-
-
-  }
-
-  public static class ListPublishersPage extends AbstractPage<
-      ListPublishersRequest,
-      ListPublishersResponse,
-      Publisher,
-      ListPublishersPage> {
-
-    private ListPublishersPage(
-        PageContext<ListPublishersRequest, ListPublishersResponse, Publisher> context,
-        ListPublishersResponse response) {
-      super(context, response);
-    }
-
-    private static ListPublishersPage createEmptyPage() {
-      return new ListPublishersPage(null, null);
-    }
-
-    @Override
-    protected ListPublishersPage createPage(
-        PageContext<ListPublishersRequest, ListPublishersResponse, Publisher> context,
-        ListPublishersResponse response) {
-      return new ListPublishersPage(context, response);
-    }
-
-    @Override
-    public ApiFuture<ListPublishersPage> createPageAsync(
-        PageContext<ListPublishersRequest, ListPublishersResponse, Publisher> context,
-        ApiFuture<ListPublishersResponse> futureResponse) {
-      return super.createPageAsync(context, futureResponse);
-    }
-
-
-
-
-  }
-
-  public static class ListPublishersFixedSizeCollection extends AbstractFixedSizeCollection<
-      ListPublishersRequest,
-      ListPublishersResponse,
-      Publisher,
-      ListPublishersPage,
-      ListPublishersFixedSizeCollection> {
-
-    private ListPublishersFixedSizeCollection(List<ListPublishersPage> pages, int collectionSize) {
-      super(pages, collectionSize);
-    }
-
-    private static ListPublishersFixedSizeCollection createEmptyCollection() {
-      return new ListPublishersFixedSizeCollection(null, 0);
-    }
-
-    @Override
-    protected ListPublishersFixedSizeCollection createCollection(
-        List<ListPublishersPage> pages, int collectionSize) {
-      return new ListPublishersFixedSizeCollection(pages, collectionSize);
-    }
-
-
-  }
 }
 ============== file: src/main/java/com/google/example/library/v1/LibrarySettings.java ==============
 /*
@@ -8886,7 +9116,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
@@ -9147,10 +9376,39 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   }
 
   /**
-   * Returns the object with the settings used for calls to listPublishers.
+   * Returns the object with the settings used for calls to moveBooks.
    */
-  public PagedCallSettings<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings() {
-    return ((LibraryServiceStubSettings) getStubSettings()).listPublishersSettings();
+  public UnaryCallSettings<MoveBooksRequest, MoveBooksResponse> moveBooksSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).moveBooksSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to archiveBooks.
+   */
+  public UnaryCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).archiveBooksSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to longRunningArchiveBooks.
+   */
+  public UnaryCallSettings<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).longRunningArchiveBooksSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to longRunningArchiveBooks.
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public OperationCallSettings<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).longRunningArchiveBooksOperationSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to streamingArchiveBooks.
+   */
+  public StreamingCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).streamingArchiveBooksSettings();
   }
 
   /**
@@ -9487,10 +9745,39 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
     }
 
     /**
-     * Returns the builder for the settings used for calls to listPublishers.
+     * Returns the builder for the settings used for calls to moveBooks.
      */
-    public PagedCallSettings.Builder<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings() {
-      return getStubSettingsBuilder().listPublishersSettings();
+    public UnaryCallSettings.Builder<MoveBooksRequest, MoveBooksResponse> moveBooksSettings() {
+      return getStubSettingsBuilder().moveBooksSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to archiveBooks.
+     */
+    public UnaryCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings() {
+      return getStubSettingsBuilder().archiveBooksSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to longRunningArchiveBooks.
+     */
+    public UnaryCallSettings.Builder<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings() {
+      return getStubSettingsBuilder().longRunningArchiveBooksSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to longRunningArchiveBooks.
+     */
+    @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings() {
+      return getStubSettingsBuilder().longRunningArchiveBooksOperationSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to streamingArchiveBooks.
+     */
+    public StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
+      return getStubSettingsBuilder().streamingArchiveBooksSettings();
     }
 
     /**
@@ -10080,6 +10367,10 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchiveBooksMetadata;
+import com.google.example.library.v1.ArchiveBooksRequest;
+import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -10102,14 +10393,11 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListPublishersRequest;
-import com.google.example.library.v1.ListPublishersResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -10117,10 +10405,11 @@ import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.MoveBooksRequest;
+import com.google.example.library.v1.MoveBooksResponse;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Publisher;
 import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -10266,6 +10555,10 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchiveBooksMetadata;
+import com.google.example.library.v1.ArchiveBooksRequest;
+import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -10288,14 +10581,11 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListPublishersRequest;
-import com.google.example.library.v1.ListPublishersResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -10303,10 +10593,11 @@ import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.MoveBooksRequest;
+import com.google.example.library.v1.MoveBooksResponse;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Publisher;
 import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -10557,12 +10848,33 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
-  private static final MethodDescriptor<ListPublishersRequest, ListPublishersResponse> listPublishersMethodDescriptor =
-      MethodDescriptor.<ListPublishersRequest, ListPublishersResponse>newBuilder()
+  private static final MethodDescriptor<MoveBooksRequest, MoveBooksResponse> moveBooksMethodDescriptor =
+      MethodDescriptor.<MoveBooksRequest, MoveBooksResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName("google.example.library.v1.LibraryService/ListPublishers")
-          .setRequestMarshaller(ProtoUtils.marshaller(ListPublishersRequest.getDefaultInstance()))
-          .setResponseMarshaller(ProtoUtils.marshaller(ListPublishersResponse.getDefaultInstance()))
+          .setFullMethodName("google.example.library.v1.LibraryService/MoveBooks")
+          .setRequestMarshaller(ProtoUtils.marshaller(MoveBooksRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(MoveBooksResponse.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksMethodDescriptor =
+      MethodDescriptor.<ArchiveBooksRequest, ArchiveBooksResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/ArchiveBooks")
+          .setRequestMarshaller(ProtoUtils.marshaller(ArchiveBooksRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(ArchiveBooksResponse.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<ArchiveBooksRequest, Operation> longRunningArchiveBooksMethodDescriptor =
+      MethodDescriptor.<ArchiveBooksRequest, Operation>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/LongRunningArchiveBooks")
+          .setRequestMarshaller(ProtoUtils.marshaller(ArchiveBooksRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksMethodDescriptor =
+      MethodDescriptor.<ArchiveBooksRequest, ArchiveBooksResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.BIDI_STREAMING)
+          .setFullMethodName("google.example.library.v1.LibraryService/StreamingArchiveBooks")
+          .setRequestMarshaller(ProtoUtils.marshaller(ArchiveBooksRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(ArchiveBooksResponse.getDefaultInstance()))
           .build();
   private static final MethodDescriptor<ListShelvesRequest, Book> privateListShelvesMethodDescriptor =
       MethodDescriptor.<ListShelvesRequest, Book>newBuilder()
@@ -10610,8 +10922,11 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
-  private final UnaryCallable<ListPublishersRequest, ListPublishersResponse> listPublishersCallable;
-  private final UnaryCallable<ListPublishersRequest, ListPublishersPagedResponse> listPublishersPagedCallable;
+  private final UnaryCallable<MoveBooksRequest, MoveBooksResponse> moveBooksCallable;
+  private final UnaryCallable<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksCallable;
+  private final UnaryCallable<ArchiveBooksRequest, Operation> longRunningArchiveBooksCallable;
+  private final OperationCallable<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationCallable;
+  private final BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable;
   private final UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable;
 
   private final GrpcStubCallableFactory callableFactory;
@@ -10921,9 +11236,48 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
-    GrpcCallSettings<ListPublishersRequest, ListPublishersResponse> listPublishersTransportSettings =
-        GrpcCallSettings.<ListPublishersRequest, ListPublishersResponse>newBuilder()
-            .setMethodDescriptor(listPublishersMethodDescriptor)
+    GrpcCallSettings<MoveBooksRequest, MoveBooksResponse> moveBooksTransportSettings =
+        GrpcCallSettings.<MoveBooksRequest, MoveBooksResponse>newBuilder()
+            .setMethodDescriptor(moveBooksMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<MoveBooksRequest>() {
+                  @Override
+                  public Map<String, String> extract(MoveBooksRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("source", String.valueOf(request.getSource()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksTransportSettings =
+        GrpcCallSettings.<ArchiveBooksRequest, ArchiveBooksResponse>newBuilder()
+            .setMethodDescriptor(archiveBooksMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<ArchiveBooksRequest>() {
+                  @Override
+                  public Map<String, String> extract(ArchiveBooksRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("source", String.valueOf(request.getSource()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<ArchiveBooksRequest, Operation> longRunningArchiveBooksTransportSettings =
+        GrpcCallSettings.<ArchiveBooksRequest, Operation>newBuilder()
+            .setMethodDescriptor(longRunningArchiveBooksMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<ArchiveBooksRequest>() {
+                  @Override
+                  public Map<String, String> extract(ArchiveBooksRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("source", String.valueOf(request.getSource()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksTransportSettings =
+        GrpcCallSettings.<ArchiveBooksRequest, ArchiveBooksResponse>newBuilder()
+            .setMethodDescriptor(streamingArchiveBooksMethodDescriptor)
             .build();
     GrpcCallSettings<ListShelvesRequest, Book> privateListShelvesTransportSettings =
         GrpcCallSettings.<ListShelvesRequest, Book>newBuilder()
@@ -10966,8 +11320,12 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
-    this.listPublishersCallable = callableFactory.createUnaryCallable(listPublishersTransportSettings,settings.listPublishersSettings(), clientContext);
-    this.listPublishersPagedCallable = callableFactory.createPagedCallable(listPublishersTransportSettings,settings.listPublishersSettings(), clientContext);
+    this.moveBooksCallable = callableFactory.createUnaryCallable(moveBooksTransportSettings,settings.moveBooksSettings(), clientContext);
+    this.archiveBooksCallable = callableFactory.createUnaryCallable(archiveBooksTransportSettings,settings.archiveBooksSettings(), clientContext);
+    this.longRunningArchiveBooksCallable = callableFactory.createUnaryCallable(longRunningArchiveBooksTransportSettings,settings.longRunningArchiveBooksSettings(), clientContext);
+    this.longRunningArchiveBooksOperationCallable = callableFactory.createOperationCallable(
+        longRunningArchiveBooksTransportSettings,settings.longRunningArchiveBooksOperationSettings(), clientContext, this.operationsStub);
+    this.streamingArchiveBooksCallable = callableFactory.createBidiStreamingCallable(streamingArchiveBooksTransportSettings,settings.streamingArchiveBooksSettings(), clientContext);
     this.privateListShelvesCallable = callableFactory.createUnaryCallable(privateListShelvesTransportSettings,settings.privateListShelvesSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
@@ -11116,12 +11474,25 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return testOptionalRequiredFlatteningParamsCallable;
   }
 
-  public UnaryCallable<ListPublishersRequest, ListPublishersPagedResponse> listPublishersPagedCallable() {
-    return listPublishersPagedCallable;
+  public UnaryCallable<MoveBooksRequest, MoveBooksResponse> moveBooksCallable() {
+    return moveBooksCallable;
   }
 
-  public UnaryCallable<ListPublishersRequest, ListPublishersResponse> listPublishersCallable() {
-    return listPublishersCallable;
+  public UnaryCallable<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksCallable() {
+    return archiveBooksCallable;
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationCallable() {
+    return longRunningArchiveBooksOperationCallable;
+  }
+
+  public UnaryCallable<ArchiveBooksRequest, Operation> longRunningArchiveBooksCallable() {
+    return longRunningArchiveBooksCallable;
+  }
+
+  public BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable() {
+    return streamingArchiveBooksCallable;
   }
 
   public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
@@ -11443,6 +11814,10 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchiveBooksMetadata;
+import com.google.example.library.v1.ArchiveBooksRequest;
+import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -11465,13 +11840,10 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListPublishersRequest;
-import com.google.example.library.v1.ListPublishersResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -11479,10 +11851,11 @@ import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.LocationName;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.MoveBooksRequest;
+import com.google.example.library.v1.MoveBooksResponse;
 import com.google.example.library.v1.ProjectName;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Publisher;
 import com.google.example.library.v1.PublisherName;
 import com.google.example.library.v1.SeriesUuid;
 import com.google.example.library.v1.Shelf;
@@ -11676,12 +12049,25 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
-  public UnaryCallable<ListPublishersRequest, ListPublishersPagedResponse> listPublishersPagedCallable() {
-    throw new UnsupportedOperationException("Not implemented: listPublishersPagedCallable()");
+  public UnaryCallable<MoveBooksRequest, MoveBooksResponse> moveBooksCallable() {
+    throw new UnsupportedOperationException("Not implemented: moveBooksCallable()");
   }
 
-  public UnaryCallable<ListPublishersRequest, ListPublishersResponse> listPublishersCallable() {
-    throw new UnsupportedOperationException("Not implemented: listPublishersCallable()");
+  public UnaryCallable<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksCallable() {
+    throw new UnsupportedOperationException("Not implemented: archiveBooksCallable()");
+  }
+
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallable<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationCallable() {
+    throw new UnsupportedOperationException("Not implemented: longRunningArchiveBooksOperationCallable()");
+  }
+
+  public UnaryCallable<ArchiveBooksRequest, Operation> longRunningArchiveBooksCallable() {
+    throw new UnsupportedOperationException("Not implemented: longRunningArchiveBooksCallable()");
+  }
+
+  public BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable() {
+    throw new UnsupportedOperationException("Not implemented: streamingArchiveBooksCallable()");
   }
 
   public UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable() {
@@ -11758,6 +12144,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.ArchiveBooksMetadata;
+import com.google.example.library.v1.ArchiveBooksRequest;
+import com.google.example.library.v1.ArchiveBooksResponse;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
@@ -11777,23 +12166,21 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
-import com.google.example.library.v1.ListPublishersRequest;
-import com.google.example.library.v1.ListPublishersResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
 import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.MoveBooksRequest;
+import com.google.example.library.v1.MoveBooksResponse;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
-import com.google.example.library.v1.Publisher;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
@@ -11884,7 +12271,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
-  private final PagedCallSettings<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings;
+  private final UnaryCallSettings<MoveBooksRequest, MoveBooksResponse> moveBooksSettings;
+  private final UnaryCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings;
+  private final UnaryCallSettings<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings;
+  private final OperationCallSettings<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings;
+  private final StreamingCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings;
   private final UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings;
 
   /**
@@ -12100,10 +12491,39 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
-   * Returns the object with the settings used for calls to listPublishers.
+   * Returns the object with the settings used for calls to moveBooks.
    */
-  public PagedCallSettings<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings() {
-    return listPublishersSettings;
+  public UnaryCallSettings<MoveBooksRequest, MoveBooksResponse> moveBooksSettings() {
+    return moveBooksSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to archiveBooks.
+   */
+  public UnaryCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings() {
+    return archiveBooksSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to longRunningArchiveBooks.
+   */
+  public UnaryCallSettings<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings() {
+    return longRunningArchiveBooksSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to longRunningArchiveBooks.
+   */
+  @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+  public OperationCallSettings<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings() {
+    return longRunningArchiveBooksOperationSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to streamingArchiveBooks.
+   */
+  public StreamingCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
+    return streamingArchiveBooksSettings;
   }
 
   /**
@@ -12229,7 +12649,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
-    listPublishersSettings = settingsBuilder.listPublishersSettings().build();
+    moveBooksSettings = settingsBuilder.moveBooksSettings().build();
+    archiveBooksSettings = settingsBuilder.archiveBooksSettings().build();
+    longRunningArchiveBooksSettings = settingsBuilder.longRunningArchiveBooksSettings().build();
+    longRunningArchiveBooksOperationSettings = settingsBuilder.longRunningArchiveBooksOperationSettings().build();
+    streamingArchiveBooksSettings = settingsBuilder.streamingArchiveBooksSettings().build();
     privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
 
@@ -12370,41 +12794,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
       };
 
-  private static final PagedListDescriptor<ListPublishersRequest, ListPublishersResponse, Publisher> LIST_PUBLISHERS_PAGE_STR_DESC =
-      new PagedListDescriptor<ListPublishersRequest, ListPublishersResponse, Publisher>() {
-        @Override
-        public String emptyToken() {
-          return "";
-        }
-        @Override
-        public ListPublishersRequest injectToken(ListPublishersRequest payload, String token) {
-          return ListPublishersRequest
-            .newBuilder(payload)
-            .setPageToken(token)
-            .build();
-        }
-        @Override
-        public ListPublishersRequest injectPageSize(ListPublishersRequest payload, int pageSize) {
-          return ListPublishersRequest
-            .newBuilder(payload)
-            .setPageSize(pageSize)
-            .build();
-        }
-        @Override
-        public Integer extractPageSize(ListPublishersRequest payload) {
-          return payload.getPageSize();
-        }
-        @Override
-        public String extractNextToken(ListPublishersResponse payload) {
-          return payload.getNextPageToken();
-        }
-        @Override
-        public Iterable<Publisher> extractResources(ListPublishersResponse payload) {
-          return payload.getPublishersList() != null ? payload.getPublishersList() :
-            ImmutableList.<Publisher>of();
-        }
-      };
-
   private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
@@ -12458,20 +12847,6 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
               PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
           return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
-        }
-      };
-
-  private static final PagedListResponseFactory<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> LIST_PUBLISHERS_PAGE_STR_FACT =
-      new PagedListResponseFactory<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse>() {
-        @Override
-        public ApiFuture<ListPublishersPagedResponse> getFuturePagedResponse(
-            UnaryCallable<ListPublishersRequest, ListPublishersResponse> callable,
-            ListPublishersRequest request,
-            ApiCallContext context,
-            ApiFuture<ListPublishersResponse> futureResponse) {
-          PageContext<ListPublishersRequest, ListPublishersResponse, Publisher> pageContext =
-              PageContext.create(callable, LIST_PUBLISHERS_PAGE_STR_DESC, request, context);
-          return ListPublishersPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
@@ -12633,7 +13008,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
-    private final PagedCallSettings.Builder<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings;
+    private final UnaryCallSettings.Builder<MoveBooksRequest, MoveBooksResponse> moveBooksSettings;
+    private final UnaryCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings;
+    private final UnaryCallSettings.Builder<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings;
+    private final OperationCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings;
+    private final StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings;
     private final UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -12742,8 +13121,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
-      listPublishersSettings = PagedCallSettings.newBuilder(
-          LIST_PUBLISHERS_PAGE_STR_FACT);
+      moveBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      archiveBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      longRunningArchiveBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
+      longRunningArchiveBooksOperationSettings = OperationCallSettings.newBuilder();
+
+      streamingArchiveBooksSettings = StreamingCallSettings.newBuilder();
 
       privateListShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
@@ -12771,7 +13157,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
-          listPublishersSettings,
+          moveBooksSettings,
+          archiveBooksSettings,
+          longRunningArchiveBooksSettings,
           privateListShelvesSettings
       );
 
@@ -12909,7 +13297,15 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.listPublishersSettings()
+      builder.moveBooksSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.archiveBooksSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.longRunningArchiveBooksSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -12956,6 +13352,26 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
                      .setMaxRpcTimeout(Duration.ZERO) // ignored
                      .setTotalTimeout(Duration.ofMillis(600000L))
                      .build()));
+      builder
+          .longRunningArchiveBooksOperationSettings()
+          .setInitialCallSettings(
+              UnaryCallSettings.<ArchiveBooksRequest, OperationSnapshot>newUnaryCallSettingsBuilder()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create(ArchiveBooksResponse.class))
+          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create(ArchiveBooksMetadata.class))
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(500L))
+                     .setRetryDelayMultiplier(1.5)
+                     .setMaxRetryDelay(Duration.ofMillis(5000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(300000L))
+                     .build()));
 
       return builder;
     }
@@ -12993,7 +13409,11 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
-      listPublishersSettings = settings.listPublishersSettings.toBuilder();
+      moveBooksSettings = settings.moveBooksSettings.toBuilder();
+      archiveBooksSettings = settings.archiveBooksSettings.toBuilder();
+      longRunningArchiveBooksSettings = settings.longRunningArchiveBooksSettings.toBuilder();
+      longRunningArchiveBooksOperationSettings = settings.longRunningArchiveBooksOperationSettings.toBuilder();
+      streamingArchiveBooksSettings = settings.streamingArchiveBooksSettings.toBuilder();
       privateListShelvesSettings = settings.privateListShelvesSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
@@ -13020,7 +13440,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
-          listPublishersSettings,
+          moveBooksSettings,
+          archiveBooksSettings,
+          longRunningArchiveBooksSettings,
           privateListShelvesSettings
       );
     }
@@ -13253,10 +13675,39 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     }
 
     /**
-     * Returns the builder for the settings used for calls to listPublishers.
+     * Returns the builder for the settings used for calls to moveBooks.
      */
-    public PagedCallSettings.Builder<ListPublishersRequest, ListPublishersResponse, ListPublishersPagedResponse> listPublishersSettings() {
-      return listPublishersSettings;
+    public UnaryCallSettings.Builder<MoveBooksRequest, MoveBooksResponse> moveBooksSettings() {
+      return moveBooksSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to archiveBooks.
+     */
+    public UnaryCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings() {
+      return archiveBooksSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to longRunningArchiveBooks.
+     */
+    public UnaryCallSettings.Builder<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings() {
+      return longRunningArchiveBooksSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to longRunningArchiveBooks.
+     */
+    @BetaApi("The surface for use by generated code is not stable yet and may change in the future.")
+    public OperationCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings() {
+      return longRunningArchiveBooksOperationSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to streamingArchiveBooks.
+     */
+    public StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
+      return streamingArchiveBooksSettings;
     }
 
     /**
@@ -13654,7 +14105,6 @@ import com.google.common.collect.Lists;
 import com.google.example.library.v1.Comment;
 import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
-import static com.google.example.library.v1.LibraryClient.ListPublishersPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.SomeMessage2;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
@@ -14083,7 +14533,7 @@ public class LibraryClientTest {
     SeriesUuid seriesUuid = SeriesUuid.newBuilder()
       .setSeriesString(seriesString)
       .build();
-    String publisher = "publisher1447404028";
+    PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
 
     PublishSeriesResponse actualResponse =
         client.publishSeries(shelf, books, edition, seriesUuid, publisher);
@@ -14097,7 +14547,7 @@ public class LibraryClientTest {
     Assert.assertEquals(books, actualRequest.getBooksList());
     Assert.assertEquals(edition, actualRequest.getEdition());
     Assert.assertEquals(seriesUuid, actualRequest.getSeriesUuid());
-    Assert.assertEquals(publisher, PublisherNames.parse(actualRequest.getPublisher()));
+    Assert.assertEquals(publisher, PublisherName.parse(actualRequest.getPublisher()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -14118,7 +14568,7 @@ public class LibraryClientTest {
       SeriesUuid seriesUuid = SeriesUuid.newBuilder()
         .setSeriesString(seriesString)
         .build();
-      String publisher = "publisher1447404028";
+      PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
 
       client.publishSeries(shelf, books, edition, seriesUuid, publisher);
       Assert.fail("No exception raised");
@@ -14187,56 +14637,6 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ArchiveName name = ArchiveName.of("[ARCHIVE]");
-    String filter = "book-filter-string";
-
-    ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
-
-    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
-
-    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
-
-    Assert.assertEquals(name, ArchiveName.parse(actualRequest.getName()));
-    Assert.assertEquals(filter, actualRequest.getFilter());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksExceptionTest() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      ArchiveName name = ArchiveName.of("[ARCHIVE]");
-      String filter = "book-filter-string";
-
-      client.listBooks(name, filter);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksTest2() {
-    String nextPageToken = "";
-    Book booksElement = Book.newBuilder().build();
-    List<Book> books = Arrays.asList(booksElement);
-    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllBooks(books)
-      .build();
-    mockLibraryService.addResponse(expectedResponse);
-
     ShelfName name = ShelfName.of("[SHELF_ID]");
     String filter = "book-filter-string";
 
@@ -14260,62 +14660,12 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listBooksExceptionTest2() throws Exception {
+  public void listBooksExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
       ShelfName name = ShelfName.of("[SHELF_ID]");
-      String filter = "book-filter-string";
-
-      client.listBooks(name, filter);
-      Assert.fail("No exception raised");
-    } catch (InvalidArgumentException e) {
-      // Expected exception
-    }
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksTest3() {
-    String nextPageToken = "";
-    Book booksElement = Book.newBuilder().build();
-    List<Book> books = Arrays.asList(booksElement);
-    ListBooksResponse expectedResponse = ListBooksResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllBooks(books)
-      .build();
-    mockLibraryService.addResponse(expectedResponse);
-
-    ProjectName name = ProjectName.of("[PROJECT]");
-    String filter = "book-filter-string";
-
-    ListBooksPagedResponse pagedListResponse = client.listBooks(name, filter);
-
-    List<Book> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getBooksList().get(0), resources.get(0));
-
-    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
-    Assert.assertEquals(1, actualRequests.size());
-    ListBooksRequest actualRequest = (ListBooksRequest)actualRequests.get(0);
-
-    Assert.assertEquals(name, ProjectName.parse(actualRequest.getName()));
-    Assert.assertEquals(filter, actualRequest.getFilter());
-    Assert.assertTrue(
-        channelProvider.isHeaderSent(
-            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
-            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void listBooksExceptionTest3() throws Exception {
-    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-    mockLibraryService.addException(exception);
-
-    try {
-      ProjectName name = ProjectName.of("[PROJECT]");
       String filter = "book-filter-string";
 
       client.listBooks(name, filter);
@@ -15967,33 +16317,30 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ProjectName parent = ProjectName.of("[PROJECT]");
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
     ProjectName destination = ProjectName.of("[PROJECT]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, ProjectName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ProjectName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16002,16 +16349,17 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest() throws Exception {
+  public void moveBooksExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      ProjectName parent = ProjectName.of("[PROJECT]");
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
       ProjectName destination = ProjectName.of("[PROJECT]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -16020,33 +16368,30 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest2() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest2() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+    ShelfName source = ShelfName.of("[SHELF_ID]");
     ProjectName destination = ProjectName.of("[PROJECT]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, LocationName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ProjectName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16055,16 +16400,17 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest2() throws Exception {
+  public void moveBooksExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+      ShelfName source = ShelfName.of("[SHELF_ID]");
       ProjectName destination = ProjectName.of("[PROJECT]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -16073,33 +16419,81 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest3() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest3() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ProjectName parent = ProjectName.of("[PROJECT]");
+    ProjectName source = ProjectName.of("[PROJECT]");
+    ProjectName destination = ProjectName.of("[PROJECT]");
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksExceptionTest3() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ProjectName source = ProjectName.of("[PROJECT]");
+      ProjectName destination = ProjectName.of("[PROJECT]");
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.moveBooks(source, destination, formattedPublishers, project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksTest4() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
     ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, ProjectName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ArchiveName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16108,16 +16502,17 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest3() throws Exception {
+  public void moveBooksExceptionTest4() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      ProjectName parent = ProjectName.of("[PROJECT]");
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
       ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -16126,33 +16521,30 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest4() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest5() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ProjectName parent = ProjectName.of("[PROJECT]");
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
     ShelfName destination = ShelfName.of("[SHELF_ID]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, ProjectName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ShelfName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16161,16 +16553,17 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest4() throws Exception {
+  public void moveBooksExceptionTest5() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      ProjectName parent = ProjectName.of("[PROJECT]");
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
       ShelfName destination = ShelfName.of("[SHELF_ID]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -16179,33 +16572,30 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest5() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest6() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+    ShelfName source = ShelfName.of("[SHELF_ID]");
     ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, LocationName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ArchiveName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16214,16 +16604,17 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest5() throws Exception {
+  public void moveBooksExceptionTest6() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+      ShelfName source = ShelfName.of("[SHELF_ID]");
       ArchiveName destination = ArchiveName.of("[ARCHIVE]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -16232,33 +16623,30 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersTest6() {
-    String nextPageToken = "";
-    Publisher publishersElement = Publisher.newBuilder().build();
-    List<Publisher> publishers = Arrays.asList(publishersElement);
-    ListPublishersResponse expectedResponse = ListPublishersResponse.newBuilder()
-      .setNextPageToken(nextPageToken)
-      .addAllPublishers(publishers)
+  public void moveBooksTest7() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+    ShelfName source = ShelfName.of("[SHELF_ID]");
     ShelfName destination = ShelfName.of("[SHELF_ID]");
-    List<String> formattedAdditionalDestinations = new ArrayList<>();
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
-    ListPublishersPagedResponse pagedListResponse = client.listPublishers(parent, destination, formattedAdditionalDestinations);
-
-    List<Publisher> resources = Lists.newArrayList(pagedListResponse.iterateAll());
-    Assert.assertEquals(1, resources.size());
-    Assert.assertEquals(expectedResponse.getPublishersList().get(0), resources.get(0));
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
-    ListPublishersRequest actualRequest = (ListPublishersRequest)actualRequests.get(0);
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(parent, LocationName.parse(actualRequest.getParent()));
-    Assert.assertEquals(destination, ShelfName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedAdditionalDestinations, actualRequest.getAdditionalDestinationsList());
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -16267,19 +16655,521 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void listPublishersExceptionTest6() throws Exception {
+  public void moveBooksExceptionTest7() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
     try {
-      LocationName parent = LocationName.of("[PROJECT]", "[LOCATION]");
+      ShelfName source = ShelfName.of("[SHELF_ID]");
       ShelfName destination = ShelfName.of("[SHELF_ID]");
-      List<String> formattedAdditionalDestinations = new ArrayList<>();
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.listPublishers(parent, destination, formattedAdditionalDestinations);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksTest8() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ProjectName source = ProjectName.of("[PROJECT]");
+    ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksExceptionTest8() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ProjectName source = ProjectName.of("[PROJECT]");
+      ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.moveBooks(source, destination, formattedPublishers, project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksTest9() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ProjectName source = ProjectName.of("[PROJECT]");
+    ShelfName destination = ShelfName.of("[SHELF_ID]");
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksExceptionTest9() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ProjectName source = ProjectName.of("[PROJECT]");
+      ShelfName destination = ShelfName.of("[SHELF_ID]");
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.moveBooks(source, destination, formattedPublishers, project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksTest10() {
+    boolean success = false;
+    MoveBooksResponse expectedResponse = MoveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ProjectName destination = ProjectName.of("[PROJECT]");
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
+
+    MoveBooksResponse actualResponse =
+        client.moveBooks(source, destination, formattedPublishers, project);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, actualRequest.getSource());
+    Assert.assertEquals(destination, actualRequest.getDestination());
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, actualRequest.getProject());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void moveBooksExceptionTest10() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ProjectName destination = ProjectName.of("[PROJECT]");
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
+
+      client.moveBooks(source, destination, formattedPublishers, project);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksTest() {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.archiveBooks(source, archive);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.archiveBooks(source, archive);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksTest2() {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ShelfName source = ShelfName.of("[SHELF_ID]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.archiveBooks(source, archive);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ShelfName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksExceptionTest2() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName source = ShelfName.of("[SHELF_ID]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.archiveBooks(source, archive);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksTest3() {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ProjectName source = ProjectName.of("[PROJECT]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.archiveBooks(source, archive);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ProjectName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void archiveBooksExceptionTest3() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ProjectName source = ProjectName.of("[PROJECT]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.archiveBooks(source, archive);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksTest() throws Exception {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("longRunningArchiveBooksTest")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.longRunningArchiveBooksAsync(source, archive).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.longRunningArchiveBooksAsync(source, archive).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksTest2() throws Exception {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("longRunningArchiveBooksTest2")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    ShelfName source = ShelfName.of("[SHELF_ID]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.longRunningArchiveBooksAsync(source, archive).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ShelfName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksExceptionTest2() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ShelfName source = ShelfName.of("[SHELF_ID]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.longRunningArchiveBooksAsync(source, archive).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksTest3() throws Exception {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    Operation resultOperation =
+        Operation.newBuilder()
+            .setName("longRunningArchiveBooksTest3")
+            .setDone(true)
+            .setResponse(Any.pack(expectedResponse))
+            .build();
+    mockLibraryService.addResponse(resultOperation);
+
+    ProjectName source = ProjectName.of("[PROJECT]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+    ArchiveBooksResponse actualResponse =
+        client.longRunningArchiveBooksAsync(source, archive).get();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(source, ProjectName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void longRunningArchiveBooksExceptionTest3() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      ProjectName source = ProjectName.of("[PROJECT]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+
+      client.longRunningArchiveBooksAsync(source, archive).get();
+      Assert.fail("No exception raised");
+    } catch (ExecutionException e) {
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+
+  @Test
+  @SuppressWarnings("all")
+  public void streamingArchiveBooksTest() throws Exception {
+    boolean success = false;
+    ArchiveBooksResponse expectedResponse = ArchiveBooksResponse.newBuilder()
+      .setSuccess(success)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+    ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+
+    MockStreamObserver<ArchiveBooksResponse> responseObserver = new MockStreamObserver<>();
+
+    BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> callable =
+        client.streamingArchiveBooksCallable();
+    ApiStreamObserver<ArchiveBooksRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    requestObserver.onNext(request);
+    requestObserver.onCompleted();
+
+    List<ArchiveBooksResponse> actualResponses = responseObserver.future().get();
+    Assert.assertEquals(1, actualResponses.size());
+    Assert.assertEquals(expectedResponse, actualResponses.get(0));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void streamingArchiveBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+    ArchiveBooksRequest request = ArchiveBooksRequest.newBuilder().build();
+
+    MockStreamObserver<ArchiveBooksResponse> responseObserver = new MockStreamObserver<>();
+
+    BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> callable =
+        client.streamingArchiveBooksCallable();
+    ApiStreamObserver<ArchiveBooksRequest> requestObserver =
+        callable.bidiStreamingCall(responseObserver);
+
+    requestObserver.onNext(request);
+
+    try {
+      List<ArchiveBooksResponse> actualResponses = responseObserver.future().get();
+      Assert.fail("No exception thrown");
+    } catch (ExecutionException e) {
+      Assert.assertTrue(e.getCause() instanceof InvalidArgumentException);
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
     }
   }
 
@@ -16716,21 +17606,6 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   }
 
   @Override
-  public void listPublishers(ListPublishersRequest request,
-    StreamObserver<ListPublishersResponse> responseObserver) {
-    Object response = responses.remove();
-    if (response instanceof ListPublishersResponse) {
-      requests.add(request);
-      responseObserver.onNext((ListPublishersResponse) response);
-      responseObserver.onCompleted();
-    } else if (response instanceof Exception) {
-      responseObserver.onError((Exception) response);
-    } else {
-      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
-    }
-  }
-
-  @Override
   public void getBook(GetBookRequest request,
     StreamObserver<Book> responseObserver) {
     Object response = responses.remove();
@@ -17058,6 +17933,81 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     } else {
       responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
     }
+  }
+
+  @Override
+  public void moveBooks(MoveBooksRequest request,
+    StreamObserver<MoveBooksResponse> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof MoveBooksResponse) {
+      requests.add(request);
+      responseObserver.onNext((MoveBooksResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void archiveBooks(ArchiveBooksRequest request,
+    StreamObserver<ArchiveBooksResponse> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof ArchiveBooksResponse) {
+      requests.add(request);
+      responseObserver.onNext((ArchiveBooksResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void longRunningArchiveBooks(ArchiveBooksRequest request,
+    StreamObserver<Operation> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Operation) {
+      requests.add(request);
+      responseObserver.onNext((Operation) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public StreamObserver<ArchiveBooksRequest> streamingArchiveBooks(
+      final StreamObserver<ArchiveBooksResponse> responseObserver) {
+    final Object response = responses.remove();
+    StreamObserver<ArchiveBooksRequest> requestObserver =
+        new StreamObserver<ArchiveBooksRequest>() {
+      @Override
+      public void onNext(ArchiveBooksRequest value) {
+        if (response instanceof ArchiveBooksResponse) {
+          responseObserver.onNext((ArchiveBooksResponse) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
+
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
+    return requestObserver;
   }
 
   @Override
