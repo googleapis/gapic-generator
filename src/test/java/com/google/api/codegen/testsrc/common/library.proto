@@ -424,7 +424,7 @@ service LibraryService {
 message Book {
   option (google.api.resource) = {
     type: "library.googleapis.com/Book",
-    pattern: "shelves/{shelf_id}/books/{book}",
+    pattern: "shelves/{shelf}/books/{book}",
     pattern: "archives/{archive}/books/{book}",
     pattern: "projects/{project}/books/{book}"
     history: ORIGINALLY_SINGLE_PATTERN,
@@ -563,10 +563,10 @@ message SomeMessage2 {
 message Shelf {
   option (google.api.resource) = {
     type: "library.googleapis.com/Shelf",
-    pattern: "shelves/{shelf_id}",
+    pattern: "shelves/{shelf}",
   };
   // The resource name of the shelf.
-  // Shelf names have the form `bookShelves/{shelf_id}`.
+  // Shelf names have the form `shelves/{shelf}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED
   ];

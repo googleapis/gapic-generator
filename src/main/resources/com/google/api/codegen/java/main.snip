@@ -52,6 +52,11 @@
          decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
       {@renderServiceDoc(doc, decoratedSampleCode)}
     @end
+  @case "PagedCallableMethod"
+    @let coreSampleCode = pagedCallableMethodSampleCode(doc.exampleApiMethod, doc.exampleApiMethod.initCode), \
+         decoratedSampleCode = decorateSampleCode(doc.exampleApiMethod, coreSampleCode)
+      {@renderServiceDoc(doc, decoratedSampleCode)}
+    @end
   @default
     $unhandledCase: {@doc.exampleApiMethod.type}$
   @end
