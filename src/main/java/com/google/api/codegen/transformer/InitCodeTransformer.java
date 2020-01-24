@@ -179,7 +179,9 @@ public class InitCodeTransformer {
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
       String actualTransformFunction = null;
-      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+      if (methodContext
+          .getFeatureConfig()
+          .useResourceNameFormatOptionInSample(methodContext, fieldConfig)) {
         if (fieldConfig.requiresParamTransformationFromAny()) {
           expectedTransformFunction = namer.getToStringMethod();
           actualTransformFunction = namer.getToStringMethod();
@@ -190,7 +192,9 @@ public class InitCodeTransformer {
             expectedTransformFunction =
                 namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
           }
-        } else if (methodContext.getFeatureConfig().useResourceNameConverters(fieldConfig)) {
+        } else if (methodContext
+            .getFeatureConfig()
+            .useResourceNameConvertersInSample(methodContext, fieldConfig)) {
           if (fieldConfig.getField().isRepeated()) {
             actualTransformFunction =
                 namer.getResourceTypeParseListMethodName(methodContext.getTypeTable(), fieldConfig);
