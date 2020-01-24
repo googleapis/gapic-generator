@@ -303,9 +303,10 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
-          if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-            methodContext = methodContext.withResourceNamesInSamplesOnly();
-            flatteningGroup = methodContext.getFlatteningConfig();
+          if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+            // methodContext = methodContext.withResourceNamesInSamplesOnly();
+            // flatteningGroup = methodContext.getFlatteningConfig();
+            continue;
           }
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
