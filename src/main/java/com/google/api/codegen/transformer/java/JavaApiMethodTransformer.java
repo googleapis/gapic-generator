@@ -233,11 +233,9 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
         // if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
         //   apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
         // }
-        if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(
-              generatePagedFlattenedMethod(
-                  flattenedMethodContext.withResourceNamesInSamplesOnly(), sampleContext));
-        }
+        // if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+        apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
+        // }
       }
     }
     apiMethods.add(

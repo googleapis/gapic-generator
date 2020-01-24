@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -264,6 +265,10 @@ public abstract class FlatteningConfig {
     Set<String> oneofNames = new HashSet<>();
     List<Map<String, FieldConfig>> flatteningConfigs = new ArrayList<>();
 
+    if (flattenedParams.isEmpty()) {
+      flatteningConfigs.add(Collections.emptyMap());
+    }
+
     for (String parameter : flattenedParams) {
       List<FieldConfig> fieldConfigs =
           createFieldConfigsForParameter(
@@ -310,8 +315,6 @@ public abstract class FlatteningConfig {
               new LinkedHashMap<>(flatteningConfigs.get(i));
           newFlattening.put(parameter, fieldConfigs.get(j));
           flatteningConfigs.add(newFlattening);
-          System.out.println(i);
-          System.out.println(j);
         }
         flatteningConfigs.get(i).put(parameter, fieldConfigs.get(fieldConfigs.size() - 1));
       }
