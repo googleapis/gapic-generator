@@ -65,15 +65,15 @@ interfaces:
     - entity_name: book_from_archive
       name_pattern: "archives/{archive}/books/{book}"
     - entity_name: book
-      name_pattern: "bookShelves/{book_shelf}/books/{book}"
+      name_pattern: "shelves/{shelf}/books/{book}"
       language_overrides:
       - language: java
         entity_name: shelf_book
     smoke_test:
       method: UpdateBook
       init_fields:
-        - name%shelf_id="testShelf-$RANDOM"
-        - name%book_id=$PROJECT_ID
+        - name%shelf="testShelf-$RANDOM"
+        - name%book=$PROJECT_ID
         - book . rating=GOOD
     methods:
       - name: CreateShelf
@@ -88,7 +88,7 @@ interfaces:
           description: "Test default calling forms for unary methods."
           parameters:
             defaults:
-            - name%shelf_id="my-shelf"
+            - name%shelf="my-shelf"
           on_success:
           - print:
               - "The theme of the shelf is: %s"
@@ -98,7 +98,7 @@ interfaces:
           description: "Test setting up empty objects in the request objects."
           parameters:
             defaults:
-            - name%shelf_id="my-shelf"
+            - name%shelf="my-shelf"
             - message={}
             - string_builder={}
             attributes:
@@ -247,7 +247,7 @@ interfaces:
             description: "Test request object field comments"
             parameters:
               defaults:
-                - shelf.name%shelf_id="math"
+                - shelf.name%shelf="math"
                 - shelf.theme=Math
                 - shelf.internal_theme=Statistics
                 - series_uuid.series_bytes="xyz3141592654"
@@ -263,7 +263,7 @@ interfaces:
                   # TODO(hzyi): this comment is currently not generated because resource name
                   # entities are inline literals. We need to revisit this issue when we start
                   # looking at making inline literals configurable
-                - parameter: shelf.name%shelf_id
+                - parameter: shelf.name%shelf
                   description: "Comment on a resource name entity"
                 - parameter: shelf.name
                   description: "Comment on a resource name"
@@ -397,14 +397,14 @@ interfaces:
           parameters:
             defaults:
             - name%archive_path="The archive to search for the book"
-            - name%book_id="The ID of the book"
+            - name%book="The ID of the book"
           on_success:
           - print: ["Archived book found."]
         - id: test_resource_name_oneof_2
           parameters:
             defaults:
-            - name%shelf_id="The Shelf to search for the book"
-            - name%book_id="The ID of the book"
+            - name%shelf="The Shelf to search for the book"
+            - name%book="The ID of the book"
           on_success:
           - print: ["Book on shelf found."]
         samples:
@@ -557,8 +557,8 @@ interfaces:
         sample_code_init_fields:
           - names[0]
         # TODO(michaelbausor): support %-entity notation for list elements
-        #- names[1]%shelf_id=my_shelf
-        #- names[1]%book_id=my_first_book
+        #- names[1]%shelf=my_shelf
+        #- names[1]%book=my_first_book
         sample_value_sets:
           # callingFormCheck: odyssey java: FlattenedPaged RequestPaged CallableList CallablePaged
           # callingFormCheck: odyssey nodejs: RequestAsyncPaged RequestAsyncPagedAll
@@ -626,10 +626,10 @@ interfaces:
             description: "Testing calling forms"
             parameters:
               defaults:
-                - name%shelf_id="Novel\\\"`\b\t\n\r"
-                - name%book_id="War and Peace"
+                - name%shelf="Novel\\\"`\b\t\n\r"
+                - name%book="War and Peace"
               attributes:
-                - parameter: name%shelf_id
+                - parameter: name%shelf
                   sample_argument_name: shelf
             on_success:
               - comment:
@@ -672,13 +672,13 @@ interfaces:
             description: "Testing resource name overlap"
             parameters:
               defaults:
-                - name%shelf_id=Novel
-                - name%book_id="War and Peace"
+                - name%shelf=Novel
+                - name%book="War and Peace"
               attributes:
-                - parameter: name%shelf_id
+                - parameter: name%shelf
                   sample_argument_name: shelf
                   description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
-                - parameter: name%book_id
+                - parameter: name%book
                   sample_argument_name: big_book_name
                   description: "The name of the book."
         samples:

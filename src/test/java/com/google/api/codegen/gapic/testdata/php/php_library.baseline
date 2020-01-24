@@ -274,7 +274,7 @@ function sampleDeleteShelf()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+    $formattedName = $libraryServiceClient->shelfName('[SHELF]');
 
     try {
         $libraryServiceClient->deleteShelf($formattedName);
@@ -324,7 +324,7 @@ function sampleDeleteShelf()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+    $formattedName = $libraryServiceClient->shelfName('[SHELF]');
 
     try {
         $libraryServiceClient->deleteShelf($formattedName);
@@ -833,7 +833,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -895,7 +895,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -957,7 +957,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
@@ -1012,7 +1012,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
@@ -1068,7 +1068,7 @@ function sampleGetBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $response = $libraryServiceClient->getBook($formattedName);
@@ -1175,7 +1175,7 @@ function sampleMonologAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -1234,7 +1234,7 @@ function sampleMonologAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -1625,7 +1625,7 @@ function sampleStreamShelves()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+    $formattedName = $libraryServiceClient->shelfName('[SHELF]');
 
     try {
         // Read all responses until the stream is complete
@@ -1752,8 +1752,8 @@ function sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong)
     $requiredSingularString = '';
     $requiredSingularBytes = '';
     $requiredSingularMessage = new InnerMessage();
-    $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-    $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+    $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $formattedRequiredSingularResourceNameCommon = $libraryServiceClient->projectName('[PROJECT]');
     $requiredSingularFixed32 = 0;
     $requiredSingularFixed64 = 0;
@@ -2109,7 +2109,7 @@ function sampleDiscussBook($imageFileName, $stage)
 
     // $imageFileName = 'image_file.jpg';
     // $stage = Stage::DRAFT;
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
@@ -2194,7 +2194,7 @@ function sampleDiscussBook($imageFileName, $stage)
 
     // $imageFileName = 'image_file.jpg';
     // $stage = Stage::DRAFT;
-    $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
@@ -2289,6 +2289,8 @@ use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\ArchiveBooksRequest;
+use Google\Example\Library\V1\ArchiveBooksResponse;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
 use Google\Example\Library\V1\BookFromArchive;
@@ -2315,6 +2317,8 @@ use Google\Example\Library\V1\ListStringsRequest;
 use Google\Example\Library\V1\ListStringsResponse;
 use Google\Example\Library\V1\MergeShelvesRequest;
 use Google\Example\Library\V1\MoveBookRequest;
+use Google\Example\Library\V1\MoveBooksRequest;
+use Google\Example\Library\V1\MoveBooksResponse;
 use Google\Example\Library\V1\PublishSeriesRequest;
 use Google\Example\Library\V1\PublishSeriesResponse;
 use Google\Example\Library\V1\SeriesUuid;
@@ -2453,7 +2457,7 @@ class LibraryServiceGapicClient
     private static function getArchivedBookNameTemplate()
     {
         if (self::$archivedBookNameTemplate == null) {
-            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book_id=**}');
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path}/books/{book=**}');
         }
 
         return self::$archivedBookNameTemplate;
@@ -2462,7 +2466,7 @@ class LibraryServiceGapicClient
     private static function getBookNameTemplate()
     {
         if (self::$bookNameTemplate == null) {
-            self::$bookNameTemplate = new PathTemplate('shelves/{shelf_id}/books/{book_id}');
+            self::$bookNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
         }
 
         return self::$bookNameTemplate;
@@ -2507,7 +2511,7 @@ class LibraryServiceGapicClient
     private static function getShelfNameTemplate()
     {
         if (self::$shelfNameTemplate == null) {
-            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf_id}');
+            self::$shelfNameTemplate = new PathTemplate('shelves/{shelf}');
         }
 
         return self::$shelfNameTemplate;
@@ -2534,15 +2538,15 @@ class LibraryServiceGapicClient
      * a archived_book resource.
      *
      * @param string $archivePath
-     * @param string $bookId
+     * @param string $book
      * @return string The formatted archived_book resource.
      * @experimental
      */
-    public static function archivedBookName($archivePath, $bookId)
+    public static function archivedBookName($archivePath, $book)
     {
         return self::getArchivedBookNameTemplate()->render([
             'archive_path' => $archivePath,
-            'book_id' => $bookId,
+            'book' => $book,
         ]);
     }
 
@@ -2550,16 +2554,16 @@ class LibraryServiceGapicClient
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
      *
-     * @param string $shelfId
-     * @param string $bookId
+     * @param string $shelf
+     * @param string $book
      * @return string The formatted book resource.
      * @experimental
      */
-    public static function bookName($shelfId, $bookId)
+    public static function bookName($shelf, $book)
     {
         return self::getBookNameTemplate()->render([
-            'shelf_id' => $shelfId,
-            'book_id' => $bookId,
+            'shelf' => $shelf,
+            'book' => $book,
         ]);
     }
 
@@ -2631,14 +2635,14 @@ class LibraryServiceGapicClient
      * Formats a string containing the fully-qualified path to represent
      * a shelf resource.
      *
-     * @param string $shelfId
+     * @param string $shelf
      * @return string The formatted shelf resource.
      * @experimental
      */
-    public static function shelfName($shelfId)
+    public static function shelfName($shelf)
     {
         return self::getShelfNameTemplate()->render([
-            'shelf_id' => $shelfId,
+            'shelf' => $shelf,
         ]);
     }
 
@@ -2646,13 +2650,13 @@ class LibraryServiceGapicClient
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
-     * - archivedBook: archives/{archive_path}/books/{book_id=**}
-     * - book: shelves/{shelf_id}/books/{book_id}
+     * - archivedBook: archives/{archive_path}/books/{book=**}
+     * - book: shelves/{shelf}/books/{book}
      * - folder: folders/{folder}
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
-     * - shelf: shelves/{shelf_id}
+     * - shelf: shelves/{shelf}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
      * match one of the templates listed above. If no $template argument is provided, or if the
@@ -2827,7 +2831,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
      *     $options = '';
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
@@ -2950,7 +2954,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -2999,8 +3003,8 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
-     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF]');
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3051,7 +3055,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
@@ -3175,7 +3179,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3224,7 +3228,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
      *     $filter = 'book-filter-string';
      *     // Iterate over pages of elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName, ['filter' => $filter]);
@@ -3309,7 +3313,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3356,7 +3360,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -3423,8 +3427,8 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF]');
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3548,7 +3552,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $comment = '';
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -3605,7 +3609,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->archivedBookName('[ARCHIVE_PATH]', '[BOOK]');
      *     $formattedParent = $libraryServiceClient->projectName('[PROJECT]');
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName, $formattedParent);
      * } finally {
@@ -3657,8 +3661,8 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-     *     $formattedAltBookName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $formattedAltBookName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $formattedPlace = $libraryServiceClient->locationName('[PROJECT]', '[LOCATION]');
      *     $formattedFolder = $libraryServiceClient->folderName('[FOLDER]');
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName, $formattedPlace, $formattedFolder);
@@ -3716,7 +3720,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3772,7 +3776,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $indexName = 'default index';
      *     $indexMapItem = '';
      *     $indexMap = ['default_key' => $indexMapItem];
@@ -3827,7 +3831,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->shelfName('[SHELF_ID]');
+     *     $formattedName = $libraryServiceClient->shelfName('[SHELF]');
      *     // Read all responses until the stream is complete
      *     $stream = $libraryServiceClient->streamShelves($formattedName);
      *     foreach ($stream->readAll() as $element) {
@@ -3916,7 +3920,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $request = new DiscussBookRequest();
      *     $request->setName($formattedName);
      *     // Write all requests to the server, then read all responses until the
@@ -3982,7 +3986,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $request = new DiscussBookRequest();
      *     $request->setName($formattedName);
      *     // Write data to server and wait for a response
@@ -4163,7 +4167,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedResource = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedResource = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $label = '';
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
@@ -4218,7 +4222,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -4295,7 +4299,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -4379,8 +4383,8 @@ class LibraryServiceGapicClient
      *     $requiredSingularString = '';
      *     $requiredSingularBytes = '';
      *     $requiredSingularMessage = new InnerMessage();
-     *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
-     *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF_ID]', '[BOOK_ID]');
+     *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $formattedRequiredSingularResourceNameCommon = $libraryServiceClient->projectName('[PROJECT]');
      *     $requiredSingularFixed32 = 0;
      *     $requiredSingularFixed64 = 0;
@@ -4829,6 +4833,240 @@ class LibraryServiceGapicClient
             $optionalArgs,
             $request
         )->wait();
+    }
+
+    /**
+     *
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $response = $libraryServiceClient->moveBooks();
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type string $source
+     *     @type string $destination
+     *     @type string[] $publishers
+     *     @type string $project
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\Example\Library\V1\MoveBooksResponse
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function moveBooks(array $optionalArgs = [])
+    {
+        $request = new MoveBooksRequest();
+        if (isset($optionalArgs['source'])) {
+            $request->setSource($optionalArgs['source']);
+        }
+        if (isset($optionalArgs['destination'])) {
+            $request->setDestination($optionalArgs['destination']);
+        }
+        if (isset($optionalArgs['publishers'])) {
+            $request->setPublishers($optionalArgs['publishers']);
+        }
+        if (isset($optionalArgs['project'])) {
+            $request->setProject($optionalArgs['project']);
+        }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'source' => $request->getSource(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
+        return $this->startCall(
+            'MoveBooks',
+            MoveBooksResponse::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
+     *
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $response = $libraryServiceClient->archiveBooks();
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type string $source
+     *     @type string $archive
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\Example\Library\V1\ArchiveBooksResponse
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function archiveBooks(array $optionalArgs = [])
+    {
+        $request = new ArchiveBooksRequest();
+        if (isset($optionalArgs['source'])) {
+            $request->setSource($optionalArgs['source']);
+        }
+        if (isset($optionalArgs['archive'])) {
+            $request->setArchive($optionalArgs['archive']);
+        }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'source' => $request->getSource(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
+        return $this->startCall(
+            'ArchiveBooks',
+            ArchiveBooksResponse::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
+     *
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $response = $libraryServiceClient->longRunningArchiveBooks();
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type string $source
+     *     @type string $archive
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\LongRunning\Operation
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function longRunningArchiveBooks(array $optionalArgs = [])
+    {
+        $request = new ArchiveBooksRequest();
+        if (isset($optionalArgs['source'])) {
+            $request->setSource($optionalArgs['source']);
+        }
+        if (isset($optionalArgs['archive'])) {
+            $request->setArchive($optionalArgs['archive']);
+        }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'source' => $request->getSource(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
+        return $this->startCall(
+            'LongRunningArchiveBooks',
+            Operation::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
+     *
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $request = new ArchiveBooksRequest();
+     *     // Write all requests to the server, then read all responses until the
+     *     // stream is complete
+     *     $requests = [$request];
+     *     $stream = $libraryServiceClient->streamingArchiveBooks();
+     *     $stream->writeAll($requests);
+     *     foreach ($stream->closeWriteAndReadAll() as $element) {
+     *         // doSomethingWith($element);
+     *     }
+     *
+     *
+     *     // Alternatively:
+     *
+     *     // Write requests individually, making read() calls if
+     *     // required. Call closeWrite() once writes are complete, and read the
+     *     // remaining responses from the server.
+     *     $requests = [$request];
+     *     $stream = $libraryServiceClient->streamingArchiveBooks();
+     *     foreach ($requests as $request) {
+     *         $stream->write($request);
+     *         // if required, read a single response from the stream
+     *         $element = $stream->read();
+     *         // doSomethingWith($element)
+     *     }
+     *     $stream->closeWrite();
+     *     $element = $stream->read();
+     *     while (!is_null($element)) {
+     *         // doSomethingWith($element)
+     *         $element = $stream->read();
+     *     }
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call.
+     * }
+     *
+     * @return \Google\ApiCore\BidiStream
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function streamingArchiveBooks(array $optionalArgs = [])
+    {
+        return $this->startCall(
+            'StreamingArchiveBooks',
+            ArchiveBooksResponse::class,
+            $optionalArgs,
+            null,
+            Call::BIDI_STREAMING_CALL
+        );
     }
 
     /**
@@ -5427,6 +5665,24 @@ class MyProtoClient extends MyProtoGapicClient
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "MoveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "ArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "LongRunningArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "StreamingArchiveBooks": {
+          "timeout_millis": 60000
+        },
         "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
@@ -5525,6 +5781,11 @@ return [
             'BabbleAboutBook' => [
                 'grpcStreaming' => [
                     'grpcStreamingType' => 'ClientStreaming',
+                ]
+            ],
+            'StreamingArchiveBooks' => [
+                'grpcStreaming' => [
+                    'grpcStreamingType' => 'BidiStreaming',
                 ]
             ],
         ]
@@ -5779,6 +6040,42 @@ return [
                 'uriTemplate' => '/v1/testofp',
                 'body' => '*',
             ],
+            'MoveBooks' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{source=**}:move',
+                'body' => '*',
+                'placeholders' => [
+                    'source' => [
+                        'getters' => [
+                            'getSource',
+                        ],
+                    ],
+                ]
+            ],
+            'ArchiveBooks' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{source=**}:archive',
+                'body' => '*',
+                'placeholders' => [
+                    'source' => [
+                        'getters' => [
+                            'getSource',
+                        ],
+                    ],
+                ]
+            ],
+            'LongRunningArchiveBooks' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{source=**}:longrunningmove',
+                'body' => '*',
+                'placeholders' => [
+                    'source' => [
+                        'getters' => [
+                            'getSource',
+                        ],
+                    ],
+                ]
+            ],
             'PrivateListShelves' => [
                 'method' => 'get',
                 'uriTemplate' => '/v1/bookShelves',
@@ -5949,6 +6246,8 @@ use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\ApiCore\Testing\MockTransport;
 use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\ArchiveBooksRequest;
+use Google\Example\Library\V1\ArchiveBooksResponse;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
 use Google\Example\Library\V1\BookFromArchive;
@@ -5975,6 +6274,8 @@ use Google\Example\Library\V1\ListStringsRequest;
 use Google\Example\Library\V1\ListStringsResponse;
 use Google\Example\Library\V1\MergeShelvesRequest;
 use Google\Example\Library\V1\MoveBookRequest;
+use Google\Example\Library\V1\MoveBooksRequest;
+use Google\Example\Library\V1\MoveBooksResponse;
 use Google\Example\Library\V1\PublishSeriesRequest;
 use Google\Example\Library\V1\PublishSeriesResponse;
 use Google\Example\Library\V1\SeriesUuid;
@@ -6147,7 +6448,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $options = 'options-1249474914';
 
         $response = $client->getShelf($formattedName, $options);
@@ -6191,7 +6492,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $options = 'options-1249474914';
 
         try {
@@ -6293,7 +6594,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
 
         $client->deleteShelf($formattedName);
         $actualRequests = $transport->popReceivedCalls();
@@ -6332,7 +6633,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
 
         try {
             $client->deleteShelf($formattedName);
@@ -6369,8 +6670,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
-        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -6413,8 +6714,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
-        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         try {
             $client->mergeShelves($formattedName, $formattedOtherShelfName);
@@ -6453,7 +6754,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $book = new Book();
 
         $response = $client->createBook($formattedName, $book);
@@ -6497,7 +6798,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $book = new Book();
 
         try {
@@ -6625,7 +6926,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -6665,7 +6966,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->getBook($formattedName);
@@ -6701,7 +7002,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $filter = 'book-filter-string';
 
         $response = $client->listBooks($formattedName, ['filter' => $filter]);
@@ -6748,7 +7049,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
         $filter = 'book-filter-string';
 
         try {
@@ -6780,7 +7081,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $client->deleteBook($formattedName);
         $actualRequests = $transport->popReceivedCalls();
@@ -6819,7 +7120,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->deleteBook($formattedName);
@@ -6858,7 +7159,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
@@ -6902,7 +7203,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $book = new Book();
 
         try {
@@ -6942,8 +7243,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -6986,8 +7287,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedOtherShelfName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         try {
             $client->moveBook($formattedName, $formattedOtherShelfName);
@@ -7088,7 +7389,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -7138,7 +7439,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -7185,7 +7486,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
+        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK]');
         $formattedParent = $client->projectName('[PROJECT]');
 
         $response = $client->getBookFromArchive($formattedName, $formattedParent);
@@ -7229,7 +7530,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK_ID]');
+        $formattedName = $client->archivedBookName('[ARCHIVE_PATH]', '[BOOK]');
         $formattedParent = $client->projectName('[PROJECT]');
 
         try {
@@ -7269,8 +7570,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedAltBookName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedAltBookName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
         $formattedFolder = $client->folderName('[FOLDER]');
 
@@ -7321,8 +7622,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedAltBookName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedAltBookName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
         $formattedFolder = $client->folderName('[FOLDER]');
 
@@ -7363,7 +7664,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -7403,7 +7704,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->getBookFromAbsolutelyAnywhere($formattedName);
@@ -7434,7 +7735,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
         $indexMap = ['default_key' => $indexMapItem];
@@ -7482,7 +7783,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
         $indexMap = ['default_key' => $indexMapItem];
@@ -7529,7 +7830,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
 
         $serverStream = $client->streamShelves($formattedName);
         $this->assertInstanceOf(ServerStream::class, $serverStream);
@@ -7579,7 +7880,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $this->assertTrue($transport->isExhausted());
 
         // Mock request
-        $formattedName = $client->shelfName('[SHELF_ID]');
+        $formattedName = $client->shelfName('[SHELF]');
 
         $serverStream = $client->streamShelves($formattedName);
         $results = $serverStream->readAll();
@@ -7741,13 +8042,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $request = new DiscussBookRequest();
         $request->setName($formattedName);
-        $formattedName2 = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName2 = $client->bookName('[SHELF]', '[BOOK]');
         $request2 = new DiscussBookRequest();
         $request2->setName($formattedName2);
-        $formattedName3 = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName3 = $client->bookName('[SHELF]', '[BOOK]');
         $request3 = new DiscussBookRequest();
         $request3->setName($formattedName3);
 
@@ -7931,7 +8232,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         $response = $client->addLabel($formattedResource, $label);
@@ -7975,7 +8276,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         try {
@@ -8035,7 +8336,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -8113,7 +8414,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -8175,7 +8476,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -8253,7 +8554,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -8304,8 +8605,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF]', '[BOOK]');
         $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
@@ -8584,8 +8885,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $formattedRequiredSingularResourceName = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
-        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF_ID]', '[BOOK_ID]');
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF]', '[BOOK]');
         $formattedRequiredSingularResourceNameCommon = $client->projectName('[PROJECT]');
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
@@ -8642,6 +8943,308 @@ class LibraryServiceClientTest extends GeneratedTest
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function moveBooksTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $success = false;
+        $expectedResponse = new MoveBooksResponse();
+        $expectedResponse->setSuccess($success);
+        $transport->addResponse($expectedResponse);
+
+        $response = $client->moveBooks();
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/MoveBooks', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function moveBooksExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->moveBooks();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function archiveBooksTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $success = false;
+        $expectedResponse = new ArchiveBooksResponse();
+        $expectedResponse->setSuccess($success);
+        $transport->addResponse($expectedResponse);
+
+        $response = $client->archiveBooks();
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/ArchiveBooks', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function archiveBooksExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->archiveBooks();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function longRunningArchiveBooksTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $name = 'name3373707';
+        $done = true;
+        $expectedResponse = new Operation();
+        $expectedResponse->setName($name);
+        $expectedResponse->setDone($done);
+        $transport->addResponse($expectedResponse);
+
+        $response = $client->longRunningArchiveBooks();
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/LongRunningArchiveBooks', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function longRunningArchiveBooksExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->longRunningArchiveBooks();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamingArchiveBooksTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $success = false;
+        $expectedResponse = new ArchiveBooksResponse();
+        $expectedResponse->setSuccess($success);
+        $transport->addResponse($expectedResponse);
+        $success2 = true;
+        $expectedResponse2 = new ArchiveBooksResponse();
+        $expectedResponse2->setSuccess($success2);
+        $transport->addResponse($expectedResponse2);
+        $success3 = false;
+        $expectedResponse3 = new ArchiveBooksResponse();
+        $expectedResponse3->setSuccess($success3);
+        $transport->addResponse($expectedResponse3);
+
+        // Mock request
+        $request = new ArchiveBooksRequest();
+        $request2 = new ArchiveBooksRequest();
+        $request3 = new ArchiveBooksRequest();
+
+        $bidi = $client->streamingArchiveBooks();
+        $this->assertInstanceOf(BidiStream::class, $bidi);
+
+        $bidi->write($request);
+        $responses = [];
+        $responses[] = $bidi->read();
+
+        $bidi->writeAll([$request2, $request3]);
+        foreach ($bidi->closeWriteAndReadAll() as $response) {
+            $responses[] = $response;
+        }
+
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
+
+        $createStreamRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($createStreamRequests));
+        $streamFuncCall = $createStreamRequests[0]->getFuncCall();
+        $streamRequestObject = $createStreamRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/StreamingArchiveBooks', $streamFuncCall);
+        $this->assertNull($streamRequestObject);
+
+        $callObjects = $transport->popCallObjects();
+        $this->assertSame(1, count($callObjects));
+        $bidiCall = $callObjects[0];
+
+        $writeRequests = $bidiCall->popReceivedCalls();
+        $expectedRequests = [];
+        $expectedRequests[] = $request;
+        $expectedRequests[] = $request2;
+        $expectedRequests[] = $request3;
+        $this->assertEquals($expectedRequests, $writeRequests);
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamingArchiveBooksExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+
+        $transport->setStreamingStatus($status);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $bidi = $client->streamingArchiveBooks();
+        $results = $bidi->closeWriteAndReadAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
