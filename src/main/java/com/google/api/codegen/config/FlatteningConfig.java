@@ -280,7 +280,7 @@ public abstract class FlatteningConfig {
     }
 
     // We also generate an overload that all resource names are treated as strings
-    if (hasBothSingularAndRepeatedResourceNameParameters(flatteningConfigs)) {
+    if (hasSingularResourceNameParameters(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
 
@@ -448,11 +448,8 @@ public abstract class FlatteningConfig {
         .anyMatch(f -> f.getField().isRepeated() && f.useResourceNameType());
   }
 
-  private static boolean hasBothSingularAndRepeatedResourceNameParameters(
+  private static boolean hasSingularResourceNameParameters(
       List<Map<String, FieldConfig>> flatteningGroups) {
-    return flatteningGroups
-        .stream()
-        .anyMatch(
-            f -> (hasSingularResourceNameParameter(f) && hasAnyRepeatedResourceNameParameter(f)));
+    return flatteningGroups.stream().anyMatch(FlatteningConfig::hasSingularResourceNameParameter);
   }
 }
