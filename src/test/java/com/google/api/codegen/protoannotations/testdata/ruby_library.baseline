@@ -289,7 +289,7 @@ $ gem install library
 require "library"
 
 library_client = Library::Library.new
-formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", project_id)
+formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 rating = :GOOD
 book = { rating: rating }
 response = library_client.update_book(formatted_name, book)
@@ -567,7 +567,7 @@ describe "LibraryServiceSmokeTest v1" do
     project_id = ENV["LIBRARY_TEST_PROJECT"].freeze
 
     library_client = Library::Library.new(version: :v1)
-    formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", project_id)
+    formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     rating = :GOOD
     book = { rating: rating }
     response = library_client.update_book(formatted_name, book)
@@ -621,7 +621,7 @@ require "pathname"
 # require "library"
 #
 # library_client = Library::Library.new
-# formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", project_id)
+# formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
 # rating = :GOOD
 # book = { rating: rating }
 # response = library_client.update_book(formatted_name, book)
@@ -837,7 +837,7 @@ module Library
   # require "library"
   #
   # library_client = Library::Library.new(version: :v1)
-  # formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", project_id)
+  # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
   # rating = :GOOD
   # book = { rating: rating }
   # response = library_client.update_book(formatted_name, book)
@@ -3028,7 +3028,7 @@ module Library
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "bookShelves/{book_shelf}/books/{book}"
+        "shelves/{shelf}/books/{book}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
@@ -3089,12 +3089,12 @@ module Library
       # Returns a fully-qualified book resource name string.
       # @deprecated Multi-pattern resource names will have unified creation and parsing helper functions.
       # This helper function will be deleted in the next major version.
-      # @param book_shelf [String]
+      # @param shelf [String]
       # @param book [String]
       # @return [String]
-      def self.book_path book_shelf, book
+      def self.book_path shelf, book
         BOOK_PATH_TEMPLATE.render(
-          :"book_shelf" => book_shelf,
+          :"shelf" => shelf,
           :"book" => book
         )
       end
@@ -3838,7 +3838,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   response = library_client.get_book(formatted_name)
 
       def get_book \
@@ -3926,7 +3926,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   library_client.delete_book(formatted_name)
 
       def delete_book \
@@ -3971,7 +3971,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # TODO: Initialize `book`:
       #   book = {}
@@ -4014,7 +4014,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   response = library_client.move_book(formatted_name, formatted_other_shelf_name)
 
@@ -4100,7 +4100,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   comment = ''
       #   stage = :UNSET
       #   alignment = :CHAR
@@ -4181,8 +4181,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
       #   formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
       #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name, formatted_place, formatted_folder)
@@ -4223,7 +4223,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
 
       def get_book_from_absolutely_anywhere \
@@ -4258,7 +4258,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   index_name = "default index"
       #
       #   # TODO: Initialize `index_map_item`:
@@ -4367,7 +4367,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   request = { name: formatted_name }
       #   requests = [request]
       #   library_client.discuss_book(requests).each do |element|
@@ -4400,7 +4400,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   request = { name: formatted_name }
       #   requests = [request]
       #   response = library_client.monolog_about_book(requests)
@@ -4431,7 +4431,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   request = { name: formatted_name }
       #   requests = [request]
       #   library_client.babble_about_book(requests)
@@ -4523,7 +4523,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_resource = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # TODO: Initialize `label`:
       #   label = ''
@@ -4555,7 +4555,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # Register a callback during the method call.
       #   operation = library_client.get_big_book(formatted_name) do |op|
@@ -4615,7 +4615,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # Register a callback during the method call.
       #   operation = library_client.get_big_nothing(formatted_name) do |op|
@@ -4961,8 +4961,8 @@ module Library
       #
       #   # TODO: Initialize `required_singular_message`:
       #   required_singular_message = {}
-      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # TODO: Initialize `required_singular_resource_name_common`:
       #   required_singular_resource_name_common = ''
@@ -6072,7 +6072,7 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   request = { name: formatted_name }
 
   requests = [request]
@@ -6121,7 +6121,7 @@ def sample_babble_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   request = { name: formatted_name }
 
   requests = [request]
@@ -6364,7 +6364,7 @@ def sample_get_big_book shelf
   library_client = Library::Library.new version: :v1
 
   # shelf = "Novel\\\"`\b\t\n\r"
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "War and Peace")
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
@@ -6449,7 +6449,7 @@ def sample_get_big_book shelf, big_book_name
 
   # shelf = "Novel"
   # big_book_name = "War and Peace"
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", big_book_name)
+  formatted_name = library_client.class.book_path(shelf, big_book_name)
 
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
@@ -6514,7 +6514,7 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
@@ -6569,7 +6569,7 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
@@ -6621,7 +6621,7 @@ def sample_get_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   response = library_client.get_book(formatted_name)
   int_key_val = response.map_string_value[123]
@@ -6716,7 +6716,7 @@ def sample_monolog_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   request = { name: formatted_name }
 
   requests = [request]
@@ -7162,8 +7162,8 @@ def sample_test_optional_required_flattening_params param_float, param_long
   required_singular_string = ''
   required_singular_bytes = ''
   required_singular_message = {}
-  formatted_required_singular_resource_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-  formatted_required_singular_resource_name_oneof = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_required_singular_resource_name = library_client.class.book_path("[SHELF]", "[BOOK]")
+  formatted_required_singular_resource_name_oneof = library_client.class.book_path("[SHELF]", "[BOOK]")
   required_singular_resource_name_common = ''
   required_singular_fixed32 = 0
   required_singular_fixed64 = 0
@@ -7267,7 +7267,7 @@ def sample_get_book_from_absolutely_anywhere
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "The ID of the book")
+  formatted_name = library_client.class.book_path("[SHELF]", "The ID of the book")
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Archived book found."
@@ -7310,7 +7310,7 @@ def sample_get_book_from_absolutely_anywhere
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "The ID of the book")
+  formatted_name = library_client.class.book_path("The Shelf to search for the book", "The ID of the book")
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Book on shelf found."
@@ -7406,7 +7406,7 @@ def sample_get_big_book shelf
   library_client = Library::Library.new version: :v1
 
   # shelf = "Novel\\\"`\b\t\n\r"
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "War and Peace")
+  formatted_name = library_client.class.book_path(shelf, "War and Peace")
 
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
@@ -7487,7 +7487,7 @@ def sample_discuss_book image_file_name, stage
 
   # image_file_name = "image_file.jpg"
   # stage = :DRAFT
-  formatted_name = library_client.class.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   comment = File.binread "comment_file"
   comment_2 = { comment: comment, stage: stage }
   image = File.binread image_file_name
@@ -8167,7 +8167,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8215,7 +8215,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8325,7 +8325,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8360,7 +8360,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8394,7 +8394,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       book = {}
 
       # Create expected grpc response
@@ -8444,7 +8444,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       book = {}
 
       # Mock Grpc layer
@@ -8480,7 +8480,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes move_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Create expected grpc response
@@ -8530,7 +8530,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes move_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
@@ -8628,7 +8628,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_comments without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       comment = ''
       stage = :UNSET
       alignment = :CHAR
@@ -8676,7 +8676,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_comments with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       comment = ''
       stage = :UNSET
       alignment = :CHAR
@@ -8809,8 +8809,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
       formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
@@ -8873,8 +8873,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
       formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
@@ -8918,7 +8918,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8966,7 +8966,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9000,7 +9000,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book_index without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       index_name = "default index"
       index_map_item = ''
       index_map = { "default_key" => index_map_item }
@@ -9048,7 +9048,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book_index with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       index_name = "default index"
       index_map_item = ''
       index_map = { "default_key" => index_map_item }
@@ -9236,7 +9236,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Create expected grpc response
@@ -9273,7 +9273,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -9309,7 +9309,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Create expected grpc response
@@ -9345,7 +9345,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -9381,7 +9381,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes babble_about_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -9411,7 +9411,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes babble_about_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -9525,7 +9525,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label without error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       label = ''
 
       # Create expected grpc response
@@ -9566,7 +9566,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label with error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       label = ''
 
       # Mock Grpc layer
@@ -9602,7 +9602,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -9650,7 +9650,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book and returns an operation error.' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       operation_error = Google::Rpc::Status.new(
@@ -9689,7 +9689,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9723,7 +9723,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       expected_response = {}
@@ -9762,7 +9762,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing and returns an operation error.' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       operation_error = Google::Rpc::Status.new(
@@ -9801,7 +9801,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9844,8 +9844,8 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
@@ -10178,8 +10178,8 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
-      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_from_archive_path("[ARCHIVE]", "[BOOK]")
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       required_singular_resource_name_common = ''
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0

@@ -57,7 +57,7 @@ function sampleBabbleAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -116,7 +116,7 @@ function sampleBabbleAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -173,7 +173,7 @@ function sampleBabbleAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -229,7 +229,7 @@ function sampleBabbleAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -496,7 +496,7 @@ function sampleGetBigBook($shelf)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $shelf = 'Novel\\"`\b\t\n\r';
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', 'War and Peace');
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -596,7 +596,7 @@ function sampleGetBigBook($shelf, $bigBookName)
 
     // $shelf = 'Novel';
     // $bigBookName = 'War and Peace';
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', $bigBookName);
+    $formattedName = $libraryServiceClient->bookName($shelf, $bigBookName);
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -676,7 +676,7 @@ function sampleGetBigBook($shelf)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $shelf = 'Novel\\"`\b\t\n\r';
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', 'War and Peace');
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
@@ -769,7 +769,7 @@ function sampleGetBigBook($shelf, $bigBookName)
 
     // $shelf = 'Novel';
     // $bigBookName = 'War and Peace';
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', $bigBookName);
+    $formattedName = $libraryServiceClient->bookName($shelf, $bigBookName);
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
@@ -841,7 +841,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -903,7 +903,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         // start the operation, keep the operation name, and resume later
@@ -965,7 +965,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
@@ -1020,7 +1020,7 @@ function sampleGetBigNothing()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
@@ -1076,7 +1076,7 @@ function sampleGetBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
 
     try {
         $response = $libraryServiceClient->getBook($formattedName);
@@ -1183,7 +1183,7 @@ function sampleMonologAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -1242,7 +1242,7 @@ function sampleMonologAboutBook()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $request = new DiscussBookRequest();
     $request->setName($formattedName);
 
@@ -1760,8 +1760,8 @@ function sampleTestOptionalRequiredFlatteningParams($paramFloat, $paramLong)
     $requiredSingularString = '';
     $requiredSingularBytes = '';
     $requiredSingularMessage = new InnerMessage();
-    $formattedRequiredSingularResourceName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-    $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+    $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $requiredSingularResourceNameCommon = '';
     $requiredSingularFixed32 = 0;
     $requiredSingularFixed64 = 0;
@@ -1874,7 +1874,7 @@ function sampleGetBookFromAbsolutelyAnywhere()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', 'The ID of the book');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', 'The ID of the book');
 
     try {
         $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
@@ -1921,7 +1921,7 @@ function sampleGetBookFromAbsolutelyAnywhere()
 {
     $libraryServiceClient = new LibraryServiceClient();
 
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', 'The ID of the book');
+    $formattedName = $libraryServiceClient->bookName('The Shelf to search for the book', 'The ID of the book');
 
     try {
         $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
@@ -2027,7 +2027,7 @@ function sampleGetBigBook($shelf)
     $libraryServiceClient = new LibraryServiceClient();
 
     // $shelf = 'Novel\\"`\b\t\n\r';
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', 'War and Peace');
+    $formattedName = $libraryServiceClient->bookName($shelf, 'War and Peace');
 
     try {
         $operationResponse = $libraryServiceClient->getBigBook($formattedName);
@@ -2117,7 +2117,7 @@ function sampleDiscussBook($imageFileName, $stage)
 
     // $imageFileName = 'image_file.jpg';
     // $stage = Stage::DRAFT;
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
@@ -2202,7 +2202,7 @@ function sampleDiscussBook($imageFileName, $stage)
 
     // $imageFileName = 'image_file.jpg';
     // $stage = Stage::DRAFT;
-    $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+    $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
     $comment = file_get_contents('comment_file');
     $comment2 = new Comment();
     $comment2->setComment($comment);
@@ -2477,7 +2477,7 @@ class LibraryServiceGapicClient
     private static function getBookNameTemplate()
     {
         if (self::$bookNameTemplate == null) {
-            self::$bookNameTemplate = new PathTemplate('bookShelves/{book_shelf}/books/{book}');
+            self::$bookNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
         }
 
         return self::$bookNameTemplate;
@@ -2585,16 +2585,16 @@ class LibraryServiceGapicClient
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
      *
-     * @param string $bookShelf
+     * @param string $shelf
      * @param string $book
      * @return string The formatted book resource.
      * @deprecated Multi-pattern resource names will have unified formatting functions.
      *             This helper function will be deleted in the next major version.
      */
-    public static function bookName($bookShelf, $book)
+    public static function bookName($shelf, $book)
     {
         return self::getBookNameTemplate()->render([
-            'book_shelf' => $bookShelf,
+            'shelf' => $shelf,
             'book' => $book,
         ]);
     }
@@ -2721,7 +2721,7 @@ class LibraryServiceGapicClient
      * The following name formats are supported:
      * Template: Pattern
      * - archivedBook: archives/{archive}/books/{book}
-     * - book: bookShelves/{book_shelf}/books/{book}
+     * - book: shelves/{shelf}/books/{book}
      * - bookFromArchive: archives/{archive}/books/{book}
      * - folder: folders/{folder}
      * - location: projects/{project}/locations/{location}
@@ -3251,7 +3251,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3385,7 +3385,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3432,7 +3432,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -3499,7 +3499,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $formattedOtherShelfName = $libraryServiceClient->shelfName('[SHELF]');
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
@@ -3624,7 +3624,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $comment = '';
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -3733,8 +3733,8 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-     *     $formattedAltBookName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $formattedAltBookName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $formattedPlace = $libraryServiceClient->locationName('[PROJECT]', '[LOCATION]');
      *     $formattedFolder = $libraryServiceClient->folderName('[FOLDER]');
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName, $formattedPlace, $formattedFolder);
@@ -3792,7 +3792,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -3848,7 +3848,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $indexName = 'default index';
      *     $indexMapItem = '';
      *     $indexMap = ['default_key' => $indexMapItem];
@@ -3992,7 +3992,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $request = new DiscussBookRequest();
      *     $request->setName($formattedName);
      *     // Write all requests to the server, then read all responses until the
@@ -4058,7 +4058,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $request = new DiscussBookRequest();
      *     $request->setName($formattedName);
      *     // Write data to server and wait for a response
@@ -4113,7 +4113,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $request = new DiscussBookRequest();
      *     $request->setName($formattedName);
      *     // Write data to server and wait for a response
@@ -4241,7 +4241,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedResource = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedResource = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $label = '';
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
@@ -4296,7 +4296,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -4373,7 +4373,7 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -4457,8 +4457,8 @@ class LibraryServiceGapicClient
      *     $requiredSingularString = '';
      *     $requiredSingularBytes = '';
      *     $requiredSingularMessage = new InnerMessage();
-     *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-     *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+     *     $formattedRequiredSingularResourceName = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $formattedRequiredSingularResourceNameOneof = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
      *     $requiredSingularResourceNameCommon = '';
      *     $requiredSingularFixed32 = 0;
      *     $requiredSingularFixed64 = 0;
@@ -6237,7 +6237,7 @@ class LibraryServiceSmokeTest extends GeneratedTest
         }
 
         $libraryServiceClient = new LibraryServiceClient();
-        $formattedName = $libraryServiceClient->bookFromArchiveName('[ARCHIVE]', $projectId);
+        $formattedName = $libraryServiceClient->bookName('testShelf-'. time(), $projectId);
         $rating = Rating::GOOD;
         $book = new Book();
         $book->setRating($rating);
@@ -6958,7 +6958,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -6998,7 +6998,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->getBook($formattedName);
@@ -7113,7 +7113,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $client->deleteBook($formattedName);
         $actualRequests = $transport->popReceivedCalls();
@@ -7152,7 +7152,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->deleteBook($formattedName);
@@ -7191,7 +7191,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
@@ -7235,7 +7235,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $book = new Book();
 
         try {
@@ -7275,7 +7275,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
@@ -7319,7 +7319,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedOtherShelfName = $client->shelfName('[SHELF]');
 
         try {
@@ -7421,7 +7421,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -7471,7 +7471,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $comment = '95';
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -7602,8 +7602,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-        $formattedAltBookName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedAltBookName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
         $formattedFolder = $client->folderName('[FOLDER]');
 
@@ -7654,8 +7654,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-        $formattedAltBookName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedAltBookName = $client->bookName('[SHELF]', '[BOOK]');
         $formattedPlace = $client->locationName('[PROJECT]', '[LOCATION]');
         $formattedFolder = $client->folderName('[FOLDER]');
 
@@ -7696,7 +7696,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -7736,7 +7736,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         try {
             $client->getBookFromAbsolutelyAnywhere($formattedName);
@@ -7767,7 +7767,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
         $indexMap = ['default_key' => $indexMapItem];
@@ -7815,7 +7815,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $indexName = 'default index';
         $indexMapItem = 'indexMapItem1918721251';
         $indexMap = ['default_key' => $indexMapItem];
@@ -8074,13 +8074,13 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse3);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
         $request = new DiscussBookRequest();
         $request->setName($formattedName);
-        $formattedName2 = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName2 = $client->bookName('[SHELF]', '[BOOK]');
         $request2 = new DiscussBookRequest();
         $request2->setName($formattedName2);
-        $formattedName3 = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName3 = $client->bookName('[SHELF]', '[BOOK]');
         $request3 = new DiscussBookRequest();
         $request3->setName($formattedName3);
 
@@ -8264,7 +8264,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         $response = $client->addLabel($formattedResource, $label);
@@ -8308,7 +8308,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
         $label = 'label102727412';
 
         try {
@@ -8368,7 +8368,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -8446,7 +8446,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -8508,7 +8508,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -8586,7 +8586,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsTransport->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedName = $client->bookName('[SHELF]', '[BOOK]');
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -8637,8 +8637,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $formattedRequiredSingularResourceName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-        $formattedRequiredSingularResourceNameOneof = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF]', '[BOOK]');
         $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;
@@ -8917,8 +8917,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $requiredSingularString = 'requiredSingularString-1949894503';
         $requiredSingularBytes = '-29';
         $requiredSingularMessage = new InnerMessage();
-        $formattedRequiredSingularResourceName = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
-        $formattedRequiredSingularResourceNameOneof = $client->bookFromArchiveName('[ARCHIVE]', '[BOOK]');
+        $formattedRequiredSingularResourceName = $client->bookName('[SHELF]', '[BOOK]');
+        $formattedRequiredSingularResourceNameOneof = $client->bookName('[SHELF]', '[BOOK]');
         $requiredSingularResourceNameCommon = 'requiredSingularResourceNameCommon-1126805002';
         $requiredSingularFixed32 = 720656715;
         $requiredSingularFixed64 = 720656810;

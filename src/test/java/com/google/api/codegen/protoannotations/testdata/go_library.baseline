@@ -56,7 +56,7 @@ func TestLibClientSmoke(t *testing.T) {
     t.Fatal(err)
   }
 
-  var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", projectId)
+  var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "testShelf-" + strconv.FormatInt(time.Now().UnixNano(), 10) + "", projectId)
   var rating librarypb.Book_Rating = librarypb.Book_GOOD
   var book = &librarypb.Book{
       Rating: rating,
@@ -3092,7 +3092,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -3121,7 +3121,7 @@ func TestLibraryServiceGetBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -3224,7 +3224,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -3250,7 +3250,7 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -3285,7 +3285,7 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -3316,7 +3316,7 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -3354,7 +3354,7 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
@@ -3385,7 +3385,7 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
@@ -3480,7 +3480,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -3516,7 +3516,7 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -3561,8 +3561,8 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
-    var formattedAltBookName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
     var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
@@ -3596,8 +3596,8 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
-    var formattedAltBookName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
     var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
@@ -3638,7 +3638,7 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
         Name: formattedName,
     }
@@ -3667,7 +3667,7 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
         Name: formattedName,
     }
@@ -3694,7 +3694,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -3727,7 +3727,7 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -3906,7 +3906,7 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3945,7 +3945,7 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3987,7 +3987,7 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -4023,7 +4023,7 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -4057,7 +4057,7 @@ func TestLibraryServiceBabbleAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -4090,7 +4090,7 @@ func TestLibraryServiceBabbleAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -4201,7 +4201,7 @@ func TestLabelerAddLabel(t *testing.T) {
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
 
-    var formattedResource string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -4232,7 +4232,7 @@ func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLabeler.err = gstatus.Error(errCode, "test error")
 
-    var formattedResource string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -4278,7 +4278,7 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4321,7 +4321,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
         },
     })
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4360,7 +4360,7 @@ func TestLibraryServiceGetBigNothing(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4400,7 +4400,7 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
         },
     })
 
-    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4439,8 +4439,8 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var formattedRequiredSingularResourceName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
-    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
@@ -4588,8 +4588,8 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var formattedRequiredSingularResourceName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
-    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
