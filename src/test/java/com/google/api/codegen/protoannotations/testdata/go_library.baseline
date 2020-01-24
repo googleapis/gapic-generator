@@ -56,7 +56,7 @@ func TestLibClientSmoke(t *testing.T) {
     t.Fatal(err)
   }
 
-  var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+  var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", projectId)
   var rating librarypb.Book_Rating = librarypb.Book_GOOD
   var book = &librarypb.Book{
       Rating: rating,
@@ -244,6 +244,10 @@ type CallOptions struct {
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
     TestOptionalRequiredFlatteningParams []gax.CallOption
+    MoveBooks []gax.CallOption
+    ArchiveBooks []gax.CallOption
+    LongRunningArchiveBooks []gax.CallOption
+    StreamingArchiveBooks []gax.CallOption
     PrivateListShelves []gax.CallOption
 }
 
@@ -299,6 +303,10 @@ func defaultCallOptions() *CallOptions {
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
         TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
+        MoveBooks: retry[[2]string{"default", "non_idempotent"}],
+        ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
+        LongRunningArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
+        StreamingArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         PrivateListShelves: retry[[2]string{"default", "idempotent"}],
     }
 }
@@ -922,6 +930,75 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     return resp, nil
 }
 
+// MoveBooks
+func (c *LibClient) MoveBooks(ctx context.Context, req *librarypb.MoveBooksRequest, opts ...gax.CallOption) (*librarypb.MoveBooksResponse, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "source", url.QueryEscape(req.GetSource())))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.MoveBooks[0:len(c.CallOptions.MoveBooks):len(c.CallOptions.MoveBooks)], opts...)
+    var resp *librarypb.MoveBooksResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.MoveBooks(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// ArchiveBooks
+func (c *LibClient) ArchiveBooks(ctx context.Context, req *librarypb.ArchiveBooksRequest, opts ...gax.CallOption) (*librarypb.ArchiveBooksResponse, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "source", url.QueryEscape(req.GetSource())))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.ArchiveBooks[0:len(c.CallOptions.ArchiveBooks):len(c.CallOptions.ArchiveBooks)], opts...)
+    var resp *librarypb.ArchiveBooksResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.ArchiveBooks(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// LongRunningArchiveBooks
+func (c *LibClient) LongRunningArchiveBooks(ctx context.Context, req *librarypb.ArchiveBooksRequest, opts ...gax.CallOption) (*LongRunningArchiveBooksOperation, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "source", url.QueryEscape(req.GetSource())))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.LongRunningArchiveBooks[0:len(c.CallOptions.LongRunningArchiveBooks):len(c.CallOptions.LongRunningArchiveBooks)], opts...)
+    var resp *longrunningpb.Operation
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.LongRunningArchiveBooks(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return &LongRunningArchiveBooksOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, resp),
+    }, nil
+}
+
+// StreamingArchiveBooks
+func (c *LibClient) StreamingArchiveBooks(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_StreamingArchiveBooksClient, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.StreamingArchiveBooks[0:len(c.CallOptions.StreamingArchiveBooks):len(c.CallOptions.StreamingArchiveBooks)], opts...)
+    var resp librarypb.LibraryService_StreamingArchiveBooksClient
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.StreamingArchiveBooks(ctx, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 // PrivateListShelves this method is not exposed in the GAPIC config. It should be generated.
 func (c *LibClient) PrivateListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
@@ -1188,6 +1265,75 @@ func (op *GetBigNothingOperation) Done() bool {
 // Name returns the name of the long-running operation.
 // The name is assigned by the server and is unique within the service from which the operation is created.
 func (op *GetBigNothingOperation) Name() string {
+    return op.lro.Name()
+}
+
+// LongRunningArchiveBooksOperation manages a long-running operation from LongRunningArchiveBooks.
+type LongRunningArchiveBooksOperation struct {
+    lro *longrunning.Operation
+}
+
+// LongRunningArchiveBooksOperation returns a new LongRunningArchiveBooksOperation from a given name.
+// The name must be that of a previously created LongRunningArchiveBooksOperation, possibly from a different process.
+func (c *LibClient) LongRunningArchiveBooksOperation(name string) *LongRunningArchiveBooksOperation {
+    return &LongRunningArchiveBooksOperation{
+        lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
+    }
+}
+
+// Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
+//
+// See documentation of Poll for error-handling information.
+func (op *LongRunningArchiveBooksOperation) Wait(ctx context.Context, opts ...gax.CallOption) (*librarypb.ArchiveBooksResponse, error) {
+    var resp librarypb.ArchiveBooksResponse
+    if err := op.lro.WaitWithInterval(ctx, &resp, 5000*time.Millisecond, opts...); err != nil {
+        return nil, err
+    }
+    return &resp, nil
+}
+
+// Poll fetches the latest state of the long-running operation.
+//
+// Poll also fetches the latest metadata, which can be retrieved by Metadata.
+//
+// If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
+// the operation has completed with failure, the error is returned and op.Done will return true.
+// If Poll succeeds and the operation has completed successfully,
+// op.Done will return true, and the response of the operation is returned.
+// If Poll succeeds and the operation has not completed, the returned response and error are both nil.
+func (op *LongRunningArchiveBooksOperation) Poll(ctx context.Context, opts ...gax.CallOption) (*librarypb.ArchiveBooksResponse, error) {
+    var resp librarypb.ArchiveBooksResponse
+    if err := op.lro.Poll(ctx, &resp, opts...); err != nil {
+        return nil, err
+    }
+    if !op.Done() {
+        return nil, nil
+    }
+    return &resp, nil
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// Metadata itself does not contact the server, but Poll does.
+// To get the latest metadata, call this method after a successful call to Poll.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (op *LongRunningArchiveBooksOperation) Metadata() (*librarypb.ArchiveBooksMetadata, error) {
+    var meta librarypb.ArchiveBooksMetadata
+    if err := op.lro.Metadata(&meta); err == longrunning.ErrNoMetadata {
+        return nil, nil
+    } else if err != nil {
+        return nil, err
+    }
+    return &meta, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (op *LongRunningArchiveBooksOperation) Done() bool {
+    return op.lro.Done()
+}
+
+// Name returns the name of the long-running operation.
+// The name is assigned by the server and is unique within the service from which the operation is created.
+func (op *LongRunningArchiveBooksOperation) Name() string {
     return op.lro.Name()
 }
 
@@ -1769,6 +1915,99 @@ func ExampleClient_TestOptionalRequiredFlatteningParams() {
     _ = resp
 }
 
+func ExampleClient_MoveBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.MoveBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.MoveBooks(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_ArchiveBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ArchiveBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.ArchiveBooks(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_LongRunningArchiveBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ArchiveBooksRequest{
+        // TODO: Fill request struct fields.
+    }
+    op, err := c.LongRunningArchiveBooks(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    resp, err := op.Wait(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_StreamingArchiveBooks() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    stream, err := c.StreamingArchiveBooks(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    go func() {
+        reqs := []*librarypb.ArchiveBooksRequest{
+            // TODO: Create requests.
+        }
+        for _, req := range reqs {
+            if err := stream.Send(req); err != nil {
+                // TODO: Handle error.
+            }
+        }
+        stream.CloseSend()
+    }()
+    for {
+        resp, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            // TODO: handle error.
+        }
+        // TODO: Use resp.
+        _ = resp
+    }
+}
+
 func ExampleClient_PrivateListShelves() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2201,6 +2440,67 @@ func (s *mockLibraryServer) GetBigNothing(ctx context.Context, req *librarypb.Ge
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
+func (s *mockLibraryServer) MoveBooks(ctx context.Context, req *librarypb.MoveBooksRequest) (*librarypb.MoveBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.MoveBooksResponse), nil
+}
+
+func (s *mockLibraryServer) ArchiveBooks(ctx context.Context, req *librarypb.ArchiveBooksRequest) (*librarypb.ArchiveBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.ArchiveBooksResponse), nil
+}
+
+func (s *mockLibraryServer) LongRunningArchiveBooks(ctx context.Context, req *librarypb.ArchiveBooksRequest) (*longrunningpb.Operation, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*longrunningpb.Operation), nil
+}
+
+func (s *mockLibraryServer) StreamingArchiveBooks(stream librarypb.LibraryService_StreamingArchiveBooksServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    for {
+        if req, err := stream.Recv(); err == io.EOF {
+            break
+        } else if err != nil {
+            return err
+        } else {
+            s.reqs = append(s.reqs, req)
+        }
+    }
+    if s.err != nil {
+        return s.err
+    }
+    for _, v := range s.resps {
+        if err := stream.Send(v.(*librarypb.ArchiveBooksResponse)); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
 func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
@@ -2391,7 +2691,7 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
         Name: formattedName,
@@ -2422,7 +2722,7 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
         Name: formattedName,
@@ -2517,7 +2817,7 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.DeleteShelfRequest{
         Name: formattedName,
     }
@@ -2543,7 +2843,7 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.DeleteShelfRequest{
         Name: formattedName,
     }
@@ -2576,8 +2876,8 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
-    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MergeShelvesRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -2607,8 +2907,8 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
-    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MergeShelvesRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -2645,7 +2945,7 @@ func TestLibraryServiceCreateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
         Name: formattedName,
@@ -2676,7 +2976,7 @@ func TestLibraryServiceCreateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
         Name: formattedName,
@@ -2792,7 +3092,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -2821,7 +3121,7 @@ func TestLibraryServiceGetBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -2854,7 +3154,7 @@ func TestLibraryServiceListBooks(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var filter string = "book-filter-string"
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
@@ -2895,7 +3195,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var filter string = "book-filter-string"
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
@@ -2924,7 +3224,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -2950,7 +3250,7 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -2985,7 +3285,7 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -3016,7 +3316,7 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -3054,8 +3354,8 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -3085,8 +3385,8 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedOtherShelfName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -3180,7 +3480,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -3216,7 +3516,7 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -3261,8 +3561,8 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedAltBookName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedAltBookName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
     var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
@@ -3296,8 +3596,8 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedAltBookName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedAltBookName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
     var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
@@ -3338,7 +3638,7 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
         Name: formattedName,
     }
@@ -3367,7 +3667,7 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookFromAbsolutelyAnywhereRequest{
         Name: formattedName,
     }
@@ -3394,7 +3694,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -3427,7 +3727,7 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -3464,7 +3764,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.StreamShelvesRequest{
         Name: formattedName,
     }
@@ -3497,7 +3797,7 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF_ID]")
+    var formattedName string = fmt.Sprintf("shelves/%s", "[SHELF]")
     var request = &librarypb.StreamShelvesRequest{
         Name: formattedName,
     }
@@ -3606,7 +3906,7 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3645,7 +3945,7 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3687,7 +3987,7 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3723,7 +4023,7 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3757,7 +4057,7 @@ func TestLibraryServiceBabbleAboutBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3790,7 +4090,7 @@ func TestLibraryServiceBabbleAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.DiscussBookRequest{
         Name: formattedName,
     }
@@ -3901,7 +4201,7 @@ func TestLabelerAddLabel(t *testing.T) {
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
 
-    var formattedResource string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedResource string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -3932,7 +4232,7 @@ func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLabeler.err = gstatus.Error(errCode, "test error")
 
-    var formattedResource string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedResource string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -3978,7 +4278,7 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4021,7 +4321,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
         },
     })
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4060,7 +4360,7 @@ func TestLibraryServiceGetBigNothing(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4100,7 +4400,7 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
         },
     })
 
-    var formattedName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -4139,8 +4439,8 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var formattedRequiredSingularResourceName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
@@ -4288,8 +4588,8 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredSingularString string = "requiredSingularString-1949894503"
     var requiredSingularBytes []byte = []byte("-29")
     var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
-    var formattedRequiredSingularResourceName string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
-    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("bookShelves/%s/books/%s", "[BOOK_SHELF]", "[BOOK]")
+    var formattedRequiredSingularResourceName string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
+    var formattedRequiredSingularResourceNameOneof string = fmt.Sprintf("archives/%s/books/%s", "[ARCHIVE]", "[BOOK]")
     var requiredSingularResourceNameCommon string = "requiredSingularResourceNameCommon-1126805002"
     var requiredSingularFixed32 int32 = 720656715
     var requiredSingularFixed64 int64 = 720656810
@@ -4410,6 +4710,264 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     }
 
     resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceMoveBooks(t *testing.T) {
+    var success bool = false
+    var expectedResponse = &librarypb.MoveBooksResponse{
+        Success: success,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.MoveBooksRequest = &librarypb.MoveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MoveBooks(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceMoveBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.MoveBooksRequest = &librarypb.MoveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.MoveBooks(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceArchiveBooks(t *testing.T) {
+    var success bool = false
+    var expectedResponse = &librarypb.ArchiveBooksResponse{
+        Success: success,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ArchiveBooks(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceArchiveBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ArchiveBooks(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceLongRunningArchiveBooks(t *testing.T) {
+    var success bool = false
+    var expectedResponse = &librarypb.ArchiveBooksResponse{
+        Success: success,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    any, err := ptypes.MarshalAny(expectedResponse)
+    if err != nil {
+        t.Fatal(err)
+    }
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Response{ Response: any },
+    })
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.LongRunningArchiveBooks(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := respLRO.Wait(context.Background())
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceLongRunningArchiveBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = nil
+    mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
+        Name: "longrunning-test",
+        Done: true,
+        Result: &longrunningpb.Operation_Error{
+            Error: &status.Status{
+                Code: int32(errCode),
+                Message: "test error",
+            },
+        },
+    })
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    respLRO, err := c.LongRunningArchiveBooks(context.Background(), request)
+    if err != nil {
+        t.Fatal(err)
+    }
+    resp, err := respLRO.Wait(context.Background())
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceStreamingArchiveBooks(t *testing.T) {
+    var success bool = false
+    var expectedResponse = &librarypb.ArchiveBooksResponse{
+        Success: success,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamingArchiveBooks(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.CloseSend(); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceStreamingArchiveBooksError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.ArchiveBooksRequest = &librarypb.ArchiveBooksRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    stream, err := c.StreamingArchiveBooks(context.Background())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.Send(request); err != nil {
+        t.Fatal(err)
+    }
+    if err := stream.CloseSend(); err != nil {
+        t.Fatal(err)
+    }
+    resp, err := stream.Recv()
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)

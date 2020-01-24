@@ -2221,7 +2221,7 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The resource name of the shelf.
-        #     Shelf names have the form `bookShelves/{shelf_id}`.
+        #     Shelf names have the form `shelves/{shelf}`.
         # @!attribute [rw] theme
         #   @return [String]
         #     The theme of the shelf
@@ -2810,6 +2810,30 @@ module Google
         end
 
         class TestOptionalRequiredFlatteningParamsResponse; end
+
+        # @!attribute [rw] source
+        #   @return [String]
+        # @!attribute [rw] destination
+        #   @return [String]
+        # @!attribute [rw] publishers
+        #   @return [Array<String>]
+        # @!attribute [rw] project
+        #   @return [String]
+        class MoveBooksRequest; end
+
+        # @!attribute [rw] success
+        #   @return [true, false]
+        class MoveBooksResponse; end
+
+        # @!attribute [rw] source
+        #   @return [String]
+        # @!attribute [rw] archive
+        #   @return [String]
+        class ArchiveBooksRequest; end
+
+        # @!attribute [rw] success
+        #   @return [true, false]
+        class ArchiveBooksResponse; end
       end
     end
   end
@@ -2994,13 +3018,13 @@ module Library
       end
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "archives/{archive_path}/books/{book_id=**}"
+        "archives/{archive_path}/books/{book=**}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}/books/{book_id}"
+        "shelves/{shelf}/books/{book}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
@@ -3012,30 +3036,30 @@ module Library
       private_constant :PROJECT_PATH_TEMPLATE
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf_id}"
+        "shelves/{shelf}"
       )
 
       private_constant :SHELF_PATH_TEMPLATE
 
       # Returns a fully-qualified archived_book resource name string.
       # @param archive_path [String]
-      # @param book_id [String]
+      # @param book [String]
       # @return [String]
-      def self.archived_book_path archive_path, book_id
+      def self.archived_book_path archive_path, book
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
           :"archive_path" => archive_path,
-          :"book_id" => book_id
+          :"book" => book
         )
       end
 
       # Returns a fully-qualified book resource name string.
-      # @param shelf_id [String]
-      # @param book_id [String]
+      # @param shelf [String]
+      # @param book [String]
       # @return [String]
-      def self.book_path shelf_id, book_id
+      def self.book_path shelf, book
         BOOK_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id,
-          :"book_id" => book_id
+          :"shelf" => shelf,
+          :"book" => book
         )
       end
 
@@ -3049,11 +3073,11 @@ module Library
       end
 
       # Returns a fully-qualified shelf resource name string.
-      # @param shelf_id [String]
+      # @param shelf [String]
       # @return [String]
-      def self.shelf_path shelf_id
+      def self.shelf_path shelf
         SHELF_PATH_TEMPLATE.render(
-          :"shelf_id" => shelf_id
+          :"shelf" => shelf
         )
       end
 
@@ -3376,6 +3400,35 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
+        @move_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:move_books),
+          defaults["move_books"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'source' => request.source}
+          end
+        )
+        @archive_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:archive_books),
+          defaults["archive_books"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'source' => request.source}
+          end
+        )
+        @long_running_archive_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:long_running_archive_books),
+          defaults["long_running_archive_books"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'source' => request.source}
+          end
+        )
+        @streaming_archive_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:streaming_archive_books),
+          defaults["streaming_archive_books"],
+          exception_transformer: exception_transformer
+        )
         @private_list_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:private_list_shelves),
           defaults["private_list_shelves"],
@@ -3445,7 +3498,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #
       #   # TODO: Initialize `options_`:
       #   options_ = ''
@@ -3520,7 +3573,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   library_client.delete_shelf(formatted_name)
 
       def delete_shelf \
@@ -3555,8 +3608,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
+      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   response = library_client.merge_shelves(formatted_name, formatted_other_shelf_name)
 
       def merge_shelves \
@@ -3592,7 +3645,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #
       #   # TODO: Initialize `book`:
       #   book = {}
@@ -3690,7 +3743,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   response = library_client.get_book(formatted_name)
 
       def get_book \
@@ -3732,7 +3785,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   filter = "book-filter-string"
       #
       #   # Iterate over all results.
@@ -3778,7 +3831,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   library_client.delete_book(formatted_name)
 
       def delete_book \
@@ -3823,7 +3876,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # TODO: Initialize `book`:
       #   book = {}
@@ -3866,8 +3919,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   response = library_client.move_book(formatted_name, formatted_other_shelf_name)
 
       def move_book \
@@ -3952,7 +4005,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   comment = ''
       #   stage = :UNSET
       #   alignment = :CHAR
@@ -3995,7 +4048,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
       #   response = library_client.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
@@ -4032,8 +4085,8 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
       def get_book_from_anywhere \
@@ -4072,7 +4125,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
 
       def get_book_from_absolutely_anywhere \
@@ -4107,7 +4160,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   index_name = "default index"
       #
       #   # TODO: Initialize `index_map_item`:
@@ -4147,7 +4200,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       #   library_client.stream_shelves(formatted_name).each do |element|
       #     # Process element.
       #   end
@@ -4216,7 +4269,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   request = { name: formatted_name }
       #   requests = [request]
       #   library_client.discuss_book(requests).each do |element|
@@ -4249,7 +4302,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   request = { name: formatted_name }
       #   requests = [request]
       #   response = library_client.monolog_about_book(requests)
@@ -4371,7 +4424,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # TODO: Initialize `label`:
       #   label = ''
@@ -4403,7 +4456,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # Register a callback during the method call.
       #   operation = library_client.get_big_book(formatted_name) do |op|
@@ -4463,7 +4516,7 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #
       #   # Register a callback during the method call.
       #   operation = library_client.get_big_nothing(formatted_name) do |op|
@@ -4809,8 +4862,8 @@ module Library
       #
       #   # TODO: Initialize `required_singular_message`:
       #   required_singular_message = {}
-      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       #
       #   # TODO: Initialize `required_singular_fixed32`:
@@ -5118,6 +5171,131 @@ module Library
         @test_optional_required_flattening_params.call(req, options, &block)
       end
 
+      # @param source [String]
+      # @param destination [String]
+      # @param publishers [Array<String>]
+      # @param project [String]
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::MoveBooksResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::MoveBooksResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.move_books
+
+      def move_books \
+          source: nil,
+          destination: nil,
+          publishers: nil,
+          project: nil,
+          options: nil,
+          &block
+        req = {
+          source: source,
+          destination: destination,
+          publishers: publishers,
+          project: project
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MoveBooksRequest)
+        @move_books.call(req, options, &block)
+      end
+
+      # @param source [String]
+      # @param archive [String]
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::ArchiveBooksResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::ArchiveBooksResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.archive_books
+
+      def archive_books \
+          source: nil,
+          archive: nil,
+          options: nil,
+          &block
+        req = {
+          source: source,
+          archive: archive
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ArchiveBooksRequest)
+        @archive_books.call(req, options, &block)
+      end
+
+      # @param source [String]
+      # @param archive [String]
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Longrunning::Operation]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Longrunning::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.long_running_archive_books
+
+      def long_running_archive_books \
+          source: nil,
+          archive: nil,
+          options: nil,
+          &block
+        req = {
+          source: source,
+          archive: archive
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ArchiveBooksRequest)
+        @long_running_archive_books.call(req, options, &block)
+      end
+
+      # @param reqs [Enumerable<Google::Example::Library::V1::ArchiveBooksRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::ArchiveBooksResponse>]
+      #   An enumerable of Google::Example::Library::V1::ArchiveBooksResponse instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   request = {}
+      #   requests = [request]
+      #   library_client.streaming_archive_books(requests).each do |element|
+      #     # Process element.
+      #   end
+
+      def streaming_archive_books reqs, options: nil
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::ArchiveBooksRequest)
+        end
+        @streaming_archive_books.call(request_protos, options)
+      end
+
       # This method is not exposed in the GAPIC config. It should be generated.
       #
       # @param page_token [String]
@@ -5324,6 +5502,26 @@ end
           "retry_params_name": "default"
         },
         "TestOptionalRequiredFlatteningParams": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "MoveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "ArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "LongRunningArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "StreamingArchiveBooks": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -5759,7 +5957,7 @@ def sample_delete_shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
+  formatted_name = library_client.class.shelf_path("[SHELF]")
 
   library_client.delete_shelf(formatted_name)
 
@@ -5806,7 +6004,7 @@ def sample_delete_shelf
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.shelf_path("[SHELF_ID]")
+  formatted_name = library_client.class.shelf_path("[SHELF]")
 
   library_client.delete_shelf(formatted_name)
 end
@@ -5850,7 +6048,7 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
@@ -5905,7 +6103,7 @@ def sample_get_big_nothing
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   # Make the long-running operation request
   operation = library_client.get_big_nothing(formatted_name)
@@ -6008,7 +6206,7 @@ def sample_get_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
   response = library_client.get_book(formatted_name)
   int_key_val = response.map_string_value[123]
@@ -6483,7 +6681,7 @@ def sample_monolog_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   request = { name: formatted_name }
 
   requests = [request]
@@ -6583,8 +6781,8 @@ def sample_test_optional_required_flattening_params param_float, param_long
   required_singular_string = ''
   required_singular_bytes = ''
   required_singular_message = {}
-  formatted_required_singular_resource_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
-  formatted_required_singular_resource_name_oneof = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_required_singular_resource_name = library_client.class.book_path("[SHELF]", "[BOOK]")
+  formatted_required_singular_resource_name_oneof = library_client.class.book_path("[SHELF]", "[BOOK]")
   formatted_required_singular_resource_name_common = library_client.class.project_path("[PROJECT]")
   required_singular_fixed32 = 0
   required_singular_fixed64 = 0
@@ -6656,7 +6854,7 @@ def sample_get_book_from_absolutely_anywhere
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.archived_book_path("The archive to search for the book", "The ID of the book")
+  formatted_name = library_client.class.book_path("[SHELF]", "The ID of the book")
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Archived book found."
@@ -6918,7 +7116,7 @@ def sample_discuss_book image_file_name, stage
 
   # image_file_name = "image_file.jpg"
   # stage = :DRAFT
-  formatted_name = library_client.class.book_path("[SHELF_ID]", "[BOOK_ID]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
   comment = File.binread "comment_file"
   comment_2 = { comment: comment, stage: stage }
   image = File.binread image_file_name
@@ -7110,7 +7308,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       options_ = ''
 
       # Create expected grpc response
@@ -7158,7 +7356,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_shelf with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       options_ = ''
 
       # Mock Grpc layer
@@ -7256,7 +7454,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_shelf without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7291,7 +7489,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_shelf with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7325,8 +7523,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes merge_shelves without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
+      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -7373,8 +7571,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes merge_shelves with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
+      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7409,7 +7607,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes create_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       book = {}
 
       # Create expected grpc response
@@ -7459,7 +7657,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes create_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       book = {}
 
       # Mock Grpc layer
@@ -7598,7 +7796,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -7646,7 +7844,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7680,7 +7878,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes list_books without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       filter = "book-filter-string"
 
       # Create expected grpc response
@@ -7720,7 +7918,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes list_books with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
       filter = "book-filter-string"
 
       # Mock Grpc layer
@@ -7756,7 +7954,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7791,7 +7989,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes delete_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -7825,7 +8023,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       book = {}
 
       # Create expected grpc response
@@ -7875,7 +8073,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       book = {}
 
       # Mock Grpc layer
@@ -7911,8 +8109,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes move_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -7961,8 +8159,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes move_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8059,7 +8257,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_comments without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       comment = ''
       stage = :UNSET
       alignment = :CHAR
@@ -8107,7 +8305,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_comments with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       comment = ''
       stage = :UNSET
       alignment = :CHAR
@@ -8154,7 +8352,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_archive without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8202,7 +8400,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_archive with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8236,8 +8434,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8286,8 +8484,8 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8322,7 +8520,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8370,7 +8568,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_book_from_absolutely_anywhere with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8404,7 +8602,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book_index without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       index_name = "default index"
       index_map_item = ''
       index_map = { "default_key" => index_map_item }
@@ -8452,7 +8650,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes update_book_index with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       index_name = "default index"
       index_map_item = ''
       index_map = { "default_key" => index_map_item }
@@ -8495,7 +8693,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Create expected grpc response
       shelves_element = {}
@@ -8530,7 +8728,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -8640,7 +8838,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Create expected grpc response
@@ -8677,7 +8875,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes discuss_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -8713,7 +8911,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Create expected grpc response
@@ -8749,7 +8947,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes monolog_about_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       request = { name: formatted_name }
 
       # Mock Grpc layer
@@ -8922,7 +9120,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label without error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       label = ''
 
       # Create expected grpc response
@@ -8963,7 +9161,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label with error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       label = ''
 
       # Mock Grpc layer
@@ -8999,7 +9197,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -9047,7 +9245,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book and returns an operation error.' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       operation_error = Google::Rpc::Status.new(
@@ -9086,7 +9284,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_book with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9120,7 +9318,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing without error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       expected_response = {}
@@ -9159,7 +9357,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing and returns an operation error.' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Create expected grpc response
       operation_error = Google::Rpc::Status.new(
@@ -9198,7 +9396,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes get_big_nothing with error' do
       # Create request parameters
-      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -9241,8 +9439,8 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
@@ -9399,8 +9597,8 @@ describe Library::V1::LibraryServiceClient do
       required_singular_string = ''
       required_singular_bytes = ''
       required_singular_message = {}
-      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      formatted_required_singular_resource_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      formatted_required_singular_resource_name_oneof = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_required_singular_resource_name_common = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
       required_singular_fixed32 = 0
       required_singular_fixed64 = 0
@@ -9499,6 +9697,264 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_fixed64,
               required_map
             )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'move_books' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#move_books."
+
+    it 'invokes move_books without error' do
+      # Create expected grpc response
+      success = false
+      expected_response = { success: success }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::MoveBooksResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:move_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("move_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.move_books
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.move_books do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes move_books with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:move_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("move_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.move_books
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'archive_books' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#archive_books."
+
+    it 'invokes archive_books without error' do
+      # Create expected grpc response
+      success = false
+      expected_response = { success: success }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ArchiveBooksResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.archive_books
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.archive_books do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes archive_books with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.archive_books
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'long_running_archive_books' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#long_running_archive_books."
+
+    it 'invokes long_running_archive_books without error' do
+      # Create expected grpc response
+      name = "name3373707"
+      done = true
+      expected_response = { name: name, done: done }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Longrunning::Operation)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:long_running_archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("long_running_archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.long_running_archive_books
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.long_running_archive_books do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes long_running_archive_books with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:long_running_archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("long_running_archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.long_running_archive_books
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'streaming_archive_books' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#streaming_archive_books."
+
+    it 'invokes streaming_archive_books without error' do
+      # Create request parameters
+      request = {}
+
+      # Create expected grpc response
+      success = false
+      expected_response = { success: success }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ArchiveBooksResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do |requests|
+        request = requests.first
+        OpenStruct.new(execute: [expected_response])
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:streaming_archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("streaming_archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.streaming_archive_books([request])
+
+          # Verify the response
+          assert_equal(1, response.count)
+          assert_equal(expected_response, response.first)
+        end
+      end
+    end
+
+    it 'invokes streaming_archive_books with error' do
+      # Create request parameters
+      request = {}
+
+      # Mock Grpc layer
+      mock_method = proc do |requests|
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:streaming_archive_books, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("streaming_archive_books")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.streaming_archive_books([request])
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

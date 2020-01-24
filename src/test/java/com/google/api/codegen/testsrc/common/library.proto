@@ -32,6 +32,11 @@ option (google.api.resource_definition) = {
   pattern: "projects/{project}/locations/{location}/publishers/{publisher}"
 };
 
+option (google.api.resource_definition) = {
+  type: "library.googleapis.com/Archive",
+  pattern: "archives/{archive}"
+};
+
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
 // resource model:
@@ -255,6 +260,29 @@ service LibraryService {
     };
   }
 
+  rpc MoveBooks(MoveBooksRequest) returns (MoveBooksResponse) {
+    option (google.api.http) = {post: "/v1/{source=**}:move" body: "*"};
+    option (google.api.method_signature) = "source,destination,publishers,project";
+  }
+
+  rpc ArchiveBooks(ArchiveBooksRequest) returns (ArchiveBooksResponse) {
+    option (google.api.http) = {post: "/v1/{source=**}:archive" body: "*"};
+    option (google.api.method_signature) = "source,archive";
+  }
+
+  rpc LongRunningArchiveBooks(ArchiveBooksRequest) returns (google.longrunning.Operation) {
+    option (google.api.http) = {post: "/v1/{source=**}:longrunningmove" body: "*"};
+    option (google.api.method_signature) = "source,archive";
+    option (google.longrunning.operation_info) = {
+      response_type: "ArchiveBooksResponse",
+      metadata_type: "ArchiveBooksMetadata"
+    };
+  }
+
+  rpc StreamingArchiveBooks(stream ArchiveBooksRequest) returns (stream ArchiveBooksResponse) {
+    option (google.api.method_signature) = "source,archive";
+  }
+
   // Test optional flattening parameters of all types
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
     option (google.api.http) = { post: "/v1/testofp" body: "*" };
@@ -396,7 +424,7 @@ service LibraryService {
 message Book {
   option (google.api.resource) = {
     type: "library.googleapis.com/Book",
-    pattern: "bookShelves/{book_shelf}/books/{book}",
+    pattern: "shelves/{shelf}/books/{book}",
     pattern: "archives/{archive}/books/{book}",
     pattern: "projects/{project}/books/{book}"
     history: ORIGINALLY_SINGLE_PATTERN,
@@ -535,10 +563,10 @@ message SomeMessage2 {
 message Shelf {
   option (google.api.resource) = {
     type: "library.googleapis.com/Shelf",
-    pattern: "shelves/{shelf_id}",
+    pattern: "shelves/{shelf}",
   };
   // The resource name of the shelf.
-  // Shelf names have the form `bookShelves/{shelf_id}`.
+  // Shelf names have the form `shelves/{shelf}`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED
   ];
@@ -1103,4 +1131,34 @@ message TestOptionalRequiredFlatteningParamsRequest {
 }
 
 message TestOptionalRequiredFlatteningParamsResponse {
+}
+
+message MoveBooksRequest {
+
+  string source = 1;
+
+  string destination = 2;
+
+  repeated string publishers = 3;
+
+  string project = 4;
+}
+
+message MoveBooksResponse {
+  bool success = 1;
+}
+
+message ArchiveBooksRequest {
+
+  string source = 1;
+
+  string archive = 2;
+}
+
+message ArchiveBooksResponse {
+  bool success = 1;
+}
+
+message ArchiveBooksMetadata {
+  double percentage = 1;
 }
