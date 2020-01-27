@@ -748,8 +748,8 @@ public class FindRelatedBooksCallableCallableListOdyssey {
         .build();
       while (true) {
         FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-        for (BookName responseItem : BookName.parseList(response.getNamesList())) {
-          BookName book = responseItem;
+        for (String responseItem : response.getNamesList()) {
+          String book = responseItem;
           System.out.printf("Here's a related book: %s\n", book);
         }
         String nextPageToken = response.getNextPageToken();
@@ -794,7 +794,6 @@ public class FindRelatedBooksCallableCallableListOdyssey {
 package com.google.example.examples.library.v1;
 
 import com.google.api.core.ApiFuture;
-import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import java.util.Arrays;
@@ -806,7 +805,6 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
    * Please include the following imports to run this sample.
    *
    * import com.google.api.core.ApiFuture;
-   * import com.google.example.library.v1.BookName;
    * import com.google.example.library.v1.FindRelatedBooksResponse;
    * import com.google.example.library.v1.LibraryClient;
    * import java.util.Arrays;
@@ -824,8 +822,8 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
       // Do something
 
-      for (BookName responseItem : future.get().iterateAllAsBookName()) {
-        BookName book = responseItem;
+      for (String responseItem : future.get().iterateAll()) {
+        String book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -903,8 +901,8 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
       // Do something
 
-      for (BookName responseItem : future.get().iterateAllAsBookName()) {
-        BookName book = responseItem;
+      for (String responseItem : future.get().iterateAll()) {
+        String book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -974,8 +972,8 @@ public class FindRelatedBooksRequestPagedOdyssey {
         .addAllNames(BookName.toStringList(names))
         .addAllShelves(ShelfName.toStringList(shelves))
         .build();
-      for (BookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
-        BookName book = responseItem;
+      for (String responseItem : libraryClient.findRelatedBooks(request).iterateAll()) {
+        String book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -6259,7 +6257,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   for (ResourceName element : libraryClient.listStrings().iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6280,7 +6278,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ArchiveName.of("[ARCHIVE]");
-   *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(name).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6305,7 +6303,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ArchiveName.of("[ARCHIVE]");
-   *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(name.toString()).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6330,7 +6328,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
+   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6354,7 +6352,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6374,7 +6372,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
-   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
+   *     for (String element : response.getStringsList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -7110,7 +7108,7 @@ public class LibraryClient implements BackgroundResource {
    *   String namesElement = "";
    *   List&lt;String&gt; names = Arrays.asList(namesElement);
    *   List&lt;String&gt; formattedShelves = new ArrayList&lt;&gt;();
-   *   for (BookName element : libraryClient.findRelatedBooks(formattedNames, formattedShelves).iterateAllAsBookName()) {
+   *   for (String element : libraryClient.findRelatedBooks(formattedNames, formattedShelves).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7120,11 +7118,11 @@ public class LibraryClient implements BackgroundResource {
    * @param shelves
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
+  public final FindRelatedBooksPagedResponse findRelatedBooks(List<String> names, List<String> shelves) {
     FindRelatedBooksRequest request =
         FindRelatedBooksRequest.newBuilder()
-            .addAllNames(names == null ? null : BookName.toStringList(names))
-            .addAllShelves(shelves == null ? null : ShelfName.toStringList(shelves))
+            .addAllNames(names)
+            .addAllShelves(shelves)
             .build();
     return findRelatedBooks(request);
   }
@@ -7143,7 +7141,7 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   for (BookName element : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
+   *   for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7173,7 +7171,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (BookName element : future.get().iterateAllAsBookName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7199,7 +7197,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-   *     for (BookName element : BookName.parseList(response.getNamesList())) {
+   *     for (String element : response.getNamesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -7769,7 +7767,7 @@ public class LibraryClient implements BackgroundResource {
    * @param repeatedBytesValue
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, BookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<BookName> requiredRepeatedResourceName, List<BookName> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, Any requiredAnyValue, Struct requiredStructValue, Value requiredValueValue, ListValue requiredListValueValue, Timestamp requiredTimeValue, Duration requiredDurationValue, FieldMask requiredFieldMaskValue, Int32Value requiredInt32Value, UInt32Value requiredUint32Value, Int64Value requiredInt64Value, UInt64Value requiredUint64Value, FloatValue requiredFloatValue, DoubleValue requiredDoubleValue, StringValue requiredStringValue, BoolValue requiredBoolValue, BytesValue requiredBytesValue, List<Any> requiredRepeatedAnyValue, List<Struct> requiredRepeatedStructValue, List<Value> requiredRepeatedValueValue, List<ListValue> requiredRepeatedListValueValue, List<Timestamp> requiredRepeatedTimeValue, List<Duration> requiredRepeatedDurationValue, List<FieldMask> requiredRepeatedFieldMaskValue, List<Int32Value> requiredRepeatedInt32Value, List<UInt32Value> requiredRepeatedUint32Value, List<Int64Value> requiredRepeatedInt64Value, List<UInt64Value> requiredRepeatedUint64Value, List<FloatValue> requiredRepeatedFloatValue, List<DoubleValue> requiredRepeatedDoubleValue, List<StringValue> requiredRepeatedStringValue, List<BoolValue> requiredRepeatedBoolValue, List<BytesValue> requiredRepeatedBytesValue, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, BookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<BookName> optionalRepeatedResourceName, List<BookName> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, BookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, Any requiredAnyValue, Struct requiredStructValue, Value requiredValueValue, ListValue requiredListValueValue, Timestamp requiredTimeValue, Duration requiredDurationValue, FieldMask requiredFieldMaskValue, Int32Value requiredInt32Value, UInt32Value requiredUint32Value, Int64Value requiredInt64Value, UInt64Value requiredUint64Value, FloatValue requiredFloatValue, DoubleValue requiredDoubleValue, StringValue requiredStringValue, BoolValue requiredBoolValue, BytesValue requiredBytesValue, List<Any> requiredRepeatedAnyValue, List<Struct> requiredRepeatedStructValue, List<Value> requiredRepeatedValueValue, List<ListValue> requiredRepeatedListValueValue, List<Timestamp> requiredRepeatedTimeValue, List<Duration> requiredRepeatedDurationValue, List<FieldMask> requiredRepeatedFieldMaskValue, List<Int32Value> requiredRepeatedInt32Value, List<UInt32Value> requiredRepeatedUint32Value, List<Int64Value> requiredRepeatedInt64Value, List<UInt64Value> requiredRepeatedUint64Value, List<FloatValue> requiredRepeatedFloatValue, List<DoubleValue> requiredRepeatedDoubleValue, List<StringValue> requiredRepeatedStringValue, List<BoolValue> requiredRepeatedBoolValue, List<BytesValue> requiredRepeatedBytesValue, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, BookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
             .setRequiredSingularInt32(requiredSingularInt32)
@@ -7795,8 +7793,8 @@ public class LibraryClient implements BackgroundResource {
             .addAllRequiredRepeatedString(requiredRepeatedString)
             .addAllRequiredRepeatedBytes(requiredRepeatedBytes)
             .addAllRequiredRepeatedMessage(requiredRepeatedMessage)
-            .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName == null ? null : BookName.toStringList(requiredRepeatedResourceName))
-            .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof == null ? null : BookName.toStringList(requiredRepeatedResourceNameOneof))
+            .addAllRequiredRepeatedResourceName(requiredRepeatedResourceName)
+            .addAllRequiredRepeatedResourceNameOneof(requiredRepeatedResourceNameOneof)
             .addAllRequiredRepeatedResourceNameCommon(requiredRepeatedResourceNameCommon)
             .addAllRequiredRepeatedFixed32(requiredRepeatedFixed32)
             .addAllRequiredRepeatedFixed64(requiredRepeatedFixed64)
@@ -7856,8 +7854,8 @@ public class LibraryClient implements BackgroundResource {
             .addAllOptionalRepeatedString(optionalRepeatedString)
             .addAllOptionalRepeatedBytes(optionalRepeatedBytes)
             .addAllOptionalRepeatedMessage(optionalRepeatedMessage)
-            .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName == null ? null : BookName.toStringList(optionalRepeatedResourceName))
-            .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof == null ? null : BookName.toStringList(optionalRepeatedResourceNameOneof))
+            .addAllOptionalRepeatedResourceName(optionalRepeatedResourceName)
+            .addAllOptionalRepeatedResourceNameOneof(optionalRepeatedResourceNameOneof)
             .addAllOptionalRepeatedResourceNameCommon(optionalRepeatedResourceNameCommon)
             .addAllOptionalRepeatedFixed32(optionalRepeatedFixed32)
             .addAllOptionalRepeatedFixed64(optionalRepeatedFixed64)
@@ -8588,12 +8586,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8620,12 +8618,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8652,12 +8650,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8684,12 +8682,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ArchiveName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ArchiveName source, ArchiveName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8716,12 +8714,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ArchiveName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ArchiveName source, ShelfName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8748,12 +8746,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ShelfName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ShelfName source, ArchiveName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8780,12 +8778,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ShelfName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ShelfName source, ShelfName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8812,12 +8810,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ProjectName source, ArchiveName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ProjectName source, ArchiveName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -8844,12 +8842,12 @@ public class LibraryClient implements BackgroundResource {
    * @param project
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final MoveBooksResponse moveBooks(ProjectName source, ShelfName destination, List<PublisherName> publishers, ProjectName project) {
+  public final MoveBooksResponse moveBooks(ProjectName source, ShelfName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
             .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers == null ? null : PublisherName.toStringList(publishers))
+            .addAllPublishers(publishers)
             .setProject(project == null ? null : project.toString())
             .build();
     return moveBooks(request);
@@ -9540,15 +9538,7 @@ public class LibraryClient implements BackgroundResource {
     private ListStringsPagedResponse(ListStringsPage page) {
       super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -9581,25 +9571,9 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -9623,15 +9597,7 @@ public class LibraryClient implements BackgroundResource {
         List<ListStringsPage> pages, int collectionSize) {
       return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
   public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
@@ -9660,15 +9626,7 @@ public class LibraryClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -9701,25 +9659,9 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -9743,15 +9685,7 @@ public class LibraryClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 }
@@ -14810,6 +14744,7 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Comment;
+import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
@@ -15640,10 +15575,6 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -15688,10 +15619,6 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -16142,6 +16069,58 @@ public class LibraryClientTest {
       Assert.assertTrue(e.getCause() instanceof InvalidArgumentException);
       InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
       Assert.assertEquals(StatusCode.Code.INVALID_ARGUMENT, apiException.getStatusCode().getCode());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void findRelatedBooksTest() {
+    String nextPageToken = "";
+    BookName namesElement2 = ShelfBookName.of("[SHELF]", "[BOOK]");
+    List<BookName> names2 = Arrays.asList(namesElement2);
+    FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .addAllNames(BookName.toStringList(names2))
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    String namesElement = "namesElement-249113339";
+    List<String> names = Arrays.asList(namesElement);
+    List<String> formattedShelves = new ArrayList<>();
+
+    FindRelatedBooksPagedResponse pagedListResponse = client.findRelatedBooks(formattedNames, formattedShelves);
+
+    List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
+
+    Assert.assertEquals(formattedNames, actualRequest.getNamesList());
+    Assert.assertEquals(formattedShelves, actualRequest.getShelvesList());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void findRelatedBooksExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      String namesElement = "namesElement-249113339";
+      List<String> names = Arrays.asList(namesElement);
+      List<String> formattedShelves = new ArrayList<>();
+
+      client.findRelatedBooks(formattedNames, formattedShelves);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
     }
   }
 

@@ -247,8 +247,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     } else {
-      GapicMethodConfig methodConfig = builder.build();
-      return methodConfig;
+      return builder.build();
     }
   }
 

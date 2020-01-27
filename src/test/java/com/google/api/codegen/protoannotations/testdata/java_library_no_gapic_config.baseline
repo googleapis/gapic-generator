@@ -1633,7 +1633,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *
-   *   for (ResourceName element : libraryServiceClient.listStrings().iterateAllAsResourceName()) {
+   *   for (String element : libraryServiceClient.listStrings().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1653,8 +1653,8 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
-   *   for (ResourceName element : libraryServiceClient.listStrings(name).iterateAllAsResourceName()) {
+   *   ResourceName name = ArchiveName.of("[ARCHIVE]");
+   *   for (String element : libraryServiceClient.listStrings(name).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1678,8 +1678,8 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
-   *   for (ResourceName element : libraryServiceClient.listStrings(name.toString()).iterateAllAsResourceName()) {
+   *   ResourceName name = ArchiveName.of("[ARCHIVE]");
+   *   for (String element : libraryServiceClient.listStrings(name.toString()).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1704,7 +1704,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (ResourceName element : libraryServiceClient.listStrings(request).iterateAllAsResourceName()) {
+   *   for (String element : libraryServiceClient.listStrings(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1728,7 +1728,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryServiceClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -1748,7 +1748,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryServiceClient.listStringsCallable().call(request);
-   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
+   *     for (String element : response.getStringsList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2443,7 +2443,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   List&lt;String&gt; names = new ArrayList&lt;&gt;();
    *   List&lt;String&gt; formattedShelves = new ArrayList&lt;&gt;();
-   *   for (BookName element : libraryServiceClient.findRelatedBooks(names, formattedShelves).iterateAllAsBookName()) {
+   *   for (String element : libraryServiceClient.findRelatedBooks(names, formattedShelves).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2475,7 +2475,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   for (BookName element : libraryServiceClient.findRelatedBooks(request).iterateAllAsBookName()) {
+   *   for (String element : libraryServiceClient.findRelatedBooks(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2504,7 +2504,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryServiceClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (BookName element : future.get().iterateAllAsBookName()) {
+   *   for (String element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -2529,7 +2529,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryServiceClient.findRelatedBooksCallable().call(request);
-   *     for (BookName element : BookName.parseList(response.getNamesList())) {
+   *     for (String element : response.getNamesList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -2553,7 +2553,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String tag = "";
    *   AddTagResponse response = libraryServiceClient.addTag(resource, tag);
    * }
@@ -2580,7 +2580,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String tag = "";
    *   AddTagResponse response = libraryServiceClient.addTag(resource.toString(), tag);
    * }
@@ -2607,7 +2607,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(resource.toString())
@@ -2631,7 +2631,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
    *     .setResource(resource.toString())
@@ -2882,11 +2882,299 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String source = "";
-   *   String destination = "";
-   *   List&lt;String&gt; publishers = new ArrayList&lt;&gt;();
-   *   String project = "";
-   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, publishers, project);
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ArchiveName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ShelfName destination = ShelfName.of("[SHELF]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ArchiveName source, ShelfName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ShelfName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ShelfName destination = ShelfName.of("[SHELF]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ShelfName source, ShelfName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ShelfName destination = ShelfName.of("[SHELF]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ShelfName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source.toString(), destination.toString(), formattedPublishers, project.toString());
    * }
    * </code></pre>
    *
@@ -2951,9 +3239,87 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String source = "";
-   *   String archive = "";
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
    *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ArchiveName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ShelfName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(ProjectName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source.toString(), archive.toString());
    * }
    * </code></pre>
    *
@@ -3014,9 +3380,90 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
-   *   String source = "";
-   *   String archive = "";
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
    *   ArchiveBooksResponse response = libraryServiceClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ArchiveName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ShelfName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ProjectName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.longRunningArchiveBooksAsync(source.toString(), archive.toString()).get();
    * }
    * </code></pre>
    *
@@ -3261,7 +3708,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   List&lt;StringValue&gt; repeatedStringValue = new ArrayList&lt;&gt;();
    *   List&lt;BoolValue&gt; repeatedBoolValue = new ArrayList&lt;&gt;();
    *   List&lt;BytesValue&gt; repeatedBytesValue = new ArrayList&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
    * }
    * </code></pre>
    *
@@ -3389,7 +3836,7 @@ public class LibraryServiceClient implements BackgroundResource {
    * @param repeatedBytesValue
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, String requiredSingularResourceName, String requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, Any requiredAnyValue, Struct requiredStructValue, Value requiredValueValue, ListValue requiredListValueValue, Timestamp requiredTimeValue, Duration requiredDurationValue, FieldMask requiredFieldMaskValue, Int32Value requiredInt32Value, UInt32Value requiredUint32Value, Int64Value requiredInt64Value, UInt64Value requiredUint64Value, FloatValue requiredFloatValue, DoubleValue requiredDoubleValue, StringValue requiredStringValue, BoolValue requiredBoolValue, BytesValue requiredBytesValue, List<Any> requiredRepeatedAnyValue, List<Struct> requiredRepeatedStructValue, List<Value> requiredRepeatedValueValue, List<ListValue> requiredRepeatedListValueValue, List<Timestamp> requiredRepeatedTimeValue, List<Duration> requiredRepeatedDurationValue, List<FieldMask> requiredRepeatedFieldMaskValue, List<Int32Value> requiredRepeatedInt32Value, List<UInt32Value> requiredRepeatedUint32Value, List<Int64Value> requiredRepeatedInt64Value, List<UInt64Value> requiredRepeatedUint64Value, List<FloatValue> requiredRepeatedFloatValue, List<DoubleValue> requiredRepeatedDoubleValue, List<StringValue> requiredRepeatedStringValue, List<BoolValue> requiredRepeatedBoolValue, List<BytesValue> requiredRepeatedBytesValue, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, String optionalSingularResourceName, String optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
+  public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, BookName requiredSingularResourceName, BookName requiredSingularResourceNameOneof, String requiredSingularResourceNameCommon, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<String> requiredRepeatedResourceName, List<String> requiredRepeatedResourceNameOneof, List<String> requiredRepeatedResourceNameCommon, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, Any requiredAnyValue, Struct requiredStructValue, Value requiredValueValue, ListValue requiredListValueValue, Timestamp requiredTimeValue, Duration requiredDurationValue, FieldMask requiredFieldMaskValue, Int32Value requiredInt32Value, UInt32Value requiredUint32Value, Int64Value requiredInt64Value, UInt64Value requiredUint64Value, FloatValue requiredFloatValue, DoubleValue requiredDoubleValue, StringValue requiredStringValue, BoolValue requiredBoolValue, BytesValue requiredBytesValue, List<Any> requiredRepeatedAnyValue, List<Struct> requiredRepeatedStructValue, List<Value> requiredRepeatedValueValue, List<ListValue> requiredRepeatedListValueValue, List<Timestamp> requiredRepeatedTimeValue, List<Duration> requiredRepeatedDurationValue, List<FieldMask> requiredRepeatedFieldMaskValue, List<Int32Value> requiredRepeatedInt32Value, List<UInt32Value> requiredRepeatedUint32Value, List<Int64Value> requiredRepeatedInt64Value, List<UInt64Value> requiredRepeatedUint64Value, List<FloatValue> requiredRepeatedFloatValue, List<DoubleValue> requiredRepeatedDoubleValue, List<StringValue> requiredRepeatedStringValue, List<BoolValue> requiredRepeatedBoolValue, List<BytesValue> requiredRepeatedBytesValue, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, BookName optionalSingularResourceName, BookName optionalSingularResourceNameOneof, String optionalSingularResourceNameCommon, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<String> optionalRepeatedResourceName, List<String> optionalRepeatedResourceNameOneof, List<String> optionalRepeatedResourceNameCommon, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap, Any anyValue, Struct structValue, Value valueValue, ListValue listValueValue, Timestamp timeValue, Duration durationValue, FieldMask fieldMaskValue, Int32Value int32Value, UInt32Value uint32Value, Int64Value int64Value, UInt64Value uint64Value, FloatValue floatValue, DoubleValue doubleValue, StringValue stringValue, BoolValue boolValue, BytesValue bytesValue, List<Any> repeatedAnyValue, List<Struct> repeatedStructValue, List<Value> repeatedValueValue, List<ListValue> repeatedListValueValue, List<Timestamp> repeatedTimeValue, List<Duration> repeatedDurationValue, List<FieldMask> repeatedFieldMaskValue, List<Int32Value> repeatedInt32Value, List<UInt32Value> repeatedUint32Value, List<Int64Value> repeatedInt64Value, List<UInt64Value> repeatedUint64Value, List<FloatValue> repeatedFloatValue, List<DoubleValue> repeatedDoubleValue, List<StringValue> repeatedStringValue, List<BoolValue> repeatedBoolValue, List<BytesValue> repeatedBytesValue) {
     TestOptionalRequiredFlatteningParamsRequest request =
         TestOptionalRequiredFlatteningParamsRequest.newBuilder()
             .setRequiredSingularInt32(requiredSingularInt32)
@@ -3401,8 +3848,8 @@ public class LibraryServiceClient implements BackgroundResource {
             .setRequiredSingularString(requiredSingularString)
             .setRequiredSingularBytes(requiredSingularBytes)
             .setRequiredSingularMessage(requiredSingularMessage)
-            .setRequiredSingularResourceName(requiredSingularResourceName)
-            .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof)
+            .setRequiredSingularResourceName(requiredSingularResourceName == null ? null : requiredSingularResourceName.toString())
+            .setRequiredSingularResourceNameOneof(requiredSingularResourceNameOneof == null ? null : requiredSingularResourceNameOneof.toString())
             .setRequiredSingularResourceNameCommon(requiredSingularResourceNameCommon)
             .setRequiredSingularFixed32(requiredSingularFixed32)
             .setRequiredSingularFixed64(requiredSingularFixed64)
@@ -3462,8 +3909,8 @@ public class LibraryServiceClient implements BackgroundResource {
             .setOptionalSingularString(optionalSingularString)
             .setOptionalSingularBytes(optionalSingularBytes)
             .setOptionalSingularMessage(optionalSingularMessage)
-            .setOptionalSingularResourceName(optionalSingularResourceName)
-            .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof)
+            .setOptionalSingularResourceName(optionalSingularResourceName == null ? null : optionalSingularResourceName.toString())
+            .setOptionalSingularResourceNameOneof(optionalSingularResourceNameOneof == null ? null : optionalSingularResourceNameOneof.toString())
             .setOptionalSingularResourceNameCommon(optionalSingularResourceNameCommon)
             .setOptionalSingularFixed32(optionalSingularFixed32)
             .setOptionalSingularFixed64(optionalSingularFixed64)
@@ -3647,7 +4094,7 @@ public class LibraryServiceClient implements BackgroundResource {
    *   List&lt;StringValue&gt; repeatedStringValue = new ArrayList&lt;&gt;();
    *   List&lt;BoolValue&gt; repeatedBoolValue = new ArrayList&lt;&gt;();
    *   List&lt;BytesValue&gt; repeatedBytesValue = new ArrayList&lt;&gt;();
-   *   TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
+   *   TestOptionalRequiredFlatteningParamsResponse response = libraryServiceClient.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName.toString(), requiredSingularResourceNameOneof.toString(), requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName.toString(), optionalSingularResourceNameOneof.toString(), optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
    * }
    * </code></pre>
    *
@@ -4387,15 +4834,7 @@ public class LibraryServiceClient implements BackgroundResource {
     private ListStringsPagedResponse(ListStringsPage page) {
       super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -4428,25 +4867,9 @@ public class LibraryServiceClient implements BackgroundResource {
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<ResourceName> iterateAllAsResourceName() {
-      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -4470,15 +4893,7 @@ public class LibraryServiceClient implements BackgroundResource {
         List<ListStringsPage> pages, int collectionSize) {
       return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<ResourceName> getValuesAsResourceName() {
-      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
-          @Override
-          public ResourceName apply(String arg0) {
-            return UntypedResourceName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
   public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
@@ -4507,15 +4922,7 @@ public class LibraryServiceClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 
@@ -4548,25 +4955,9 @@ public class LibraryServiceClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
-    public Iterable<BookName> iterateAllAsBookName() {
-      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
 
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
+
 
   }
 
@@ -4590,15 +4981,7 @@ public class LibraryServiceClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-    public Iterable<BookName> getValuesAsBookName() {
-      return Iterables.transform(getValues(), new Function<String, BookName>() {
-          @Override
-          public BookName apply(String arg0) {
-            return BookName.parse(arg0);
-          }
-        }
-      );
-    }
+
 
   }
 }
@@ -5912,6 +6295,7 @@ import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -6098,6 +6482,7 @@ import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -7348,6 +7733,7 @@ import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
+import com.google.example.library.v1.ArchiveName;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.BookFromAnywhere;
@@ -9948,7 +10334,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10035,7 +10421,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10084,7 +10470,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10138,7 +10524,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(optionalFoo, actualRequest.getOptionalFoo());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
@@ -10195,7 +10581,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10224,7 +10610,7 @@ public class LibraryServiceClientTest {
   @SuppressWarnings("all")
   public void listStringsTest() {
     String nextPageToken = "";
-    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName stringsElement = ArchiveName.of("[ARCHIVE]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -10237,10 +10623,6 @@ public class LibraryServiceClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -10270,7 +10652,7 @@ public class LibraryServiceClientTest {
   @SuppressWarnings("all")
   public void listStringsTest2() {
     String nextPageToken = "";
-    ResourceName stringsElement = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName stringsElement = ArchiveName.of("[ARCHIVE]");
     List<ResourceName> strings = Arrays.asList(stringsElement);
     ListStringsResponse expectedResponse = ListStringsResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -10278,17 +10660,13 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName name = ArchiveName.of("[ARCHIVE]");
 
     ListStringsPagedResponse pagedListResponse = client.listStrings(name);
 
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
-    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
-        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -10308,7 +10686,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ResourceName name = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+      ResourceName name = ArchiveName.of("[ARCHIVE]");
 
       client.listStrings(name);
       Assert.fail("No exception raised");
@@ -10332,7 +10710,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(comments, actualRequest.getCommentsList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10436,8 +10814,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
-    Assert.assertEquals(altBookName, BookNames.parse(actualRequest.getAltBookName()));
+    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(altBookName, actualRequest.getAltBookName());
     Assert.assertEquals(place, LocationName.parse(actualRequest.getPlace()));
     Assert.assertEquals(folder, FolderName.parse(actualRequest.getFolder()));
     Assert.assertTrue(
@@ -10490,7 +10868,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10529,7 +10907,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMapMap());
     Assert.assertTrue(
@@ -10738,10 +11116,6 @@ public class LibraryServiceClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
-    List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
-    Assert.assertEquals(1, resourceNames.size());
-    Assert.assertEquals(BookName.parse(expectedResponse.getNamesList().get(0)),
-        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -10778,7 +11152,7 @@ public class LibraryServiceClientTest {
     AddTagResponse expectedResponse = AddTagResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+    ResourceName resource = ArchiveName.of("[ARCHIVE]");
     String tag = "tag114586";
 
     AddTagResponse actualResponse =
@@ -10804,7 +11178,7 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      ResourceName resource = ArchivedBookName.of("[ARCHIVE]", "[BOOK]");
+      ResourceName resource = ArchiveName.of("[ARCHIVE]");
       String tag = "tag114586";
 
       client.addTag(resource, tag);
@@ -10845,7 +11219,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10893,7 +11267,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(name, actualRequest.getName());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10928,23 +11302,23 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String source = "source-896505829";
-    String destination = "destination-1429847026";
-    List<String> publishers = new ArrayList<>();
-    String project = "project-309310695";
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ProjectName destination = ProjectName.of("[PROJECT]");
+    List<String> formattedPublishers = new ArrayList<>();
+    ProjectName project = ProjectName.of("[PROJECT]");
 
     MoveBooksResponse actualResponse =
-        client.moveBooks(source, destination, publishers, project);
+        client.moveBooks(source, destination, formattedPublishers, project);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
     MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(source, actualRequest.getSource());
-    Assert.assertEquals(destination, actualRequest.getDestination());
-    Assert.assertEquals(publishers, actualRequest.getPublishersList());
-    Assert.assertEquals(project, actualRequest.getProject());
+    Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
+    Assert.assertEquals(destination, ProjectName.parse(actualRequest.getDestination()));
+    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(project, ProjectName.parse(actualRequest.getProject()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10958,12 +11332,12 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String source = "source-896505829";
-      String destination = "destination-1429847026";
-      List<String> publishers = new ArrayList<>();
-      String project = "project-309310695";
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ProjectName destination = ProjectName.of("[PROJECT]");
+      List<String> formattedPublishers = new ArrayList<>();
+      ProjectName project = ProjectName.of("[PROJECT]");
 
-      client.moveBooks(source, destination, publishers, project);
+      client.moveBooks(source, destination, formattedPublishers, project);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -10979,8 +11353,8 @@ public class LibraryServiceClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    String source = "source-896505829";
-    String archive = "archive-748101438";
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
 
     ArchiveBooksResponse actualResponse =
         client.archiveBooks(source, archive);
@@ -10990,8 +11364,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(source, actualRequest.getSource());
-    Assert.assertEquals(archive, actualRequest.getArchive());
+    Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -11005,8 +11379,8 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String source = "source-896505829";
-      String archive = "archive-748101438";
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
 
       client.archiveBooks(source, archive);
       Assert.fail("No exception raised");
@@ -11030,8 +11404,8 @@ public class LibraryServiceClientTest {
             .build();
     mockLibraryService.addResponse(resultOperation);
 
-    String source = "source-896505829";
-    String archive = "archive-748101438";
+    ArchiveName source = ArchiveName.of("[ARCHIVE]");
+    ArchiveName archive = ArchiveName.of("[ARCHIVE]");
 
     ArchiveBooksResponse actualResponse =
         client.longRunningArchiveBooksAsync(source, archive).get();
@@ -11041,8 +11415,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     ArchiveBooksRequest actualRequest = (ArchiveBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(source, actualRequest.getSource());
-    Assert.assertEquals(archive, actualRequest.getArchive());
+    Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
+    Assert.assertEquals(archive, ArchiveName.parse(actualRequest.getArchive()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -11056,8 +11430,8 @@ public class LibraryServiceClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      String source = "source-896505829";
-      String archive = "archive-748101438";
+      ArchiveName source = ArchiveName.of("[ARCHIVE]");
+      ArchiveName archive = ArchiveName.of("[ARCHIVE]");
 
       client.longRunningArchiveBooksAsync(source, archive).get();
       Assert.fail("No exception raised");

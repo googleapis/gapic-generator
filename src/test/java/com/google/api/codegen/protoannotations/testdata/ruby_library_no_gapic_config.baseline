@@ -2877,6 +2877,12 @@ module Library
         self::GRPC_INTERCEPTORS = LibraryServiceClient::GRPC_INTERCEPTORS
       end
 
+      ARCHIVE_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "archives/{archive}"
+      )
+
+      private_constant :ARCHIVE_PATH_TEMPLATE
+
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "archives/{archive}/books/{book}"
       )
@@ -2912,6 +2918,15 @@ module Library
       )
 
       private_constant :SHELF_PATH_TEMPLATE
+
+      # Returns a fully-qualified archive resource name string.
+      # @param archive [String]
+      # @return [String]
+      def self.archive_path archive
+        ARCHIVE_PATH_TEMPLATE.render(
+          :"archive" => archive
+        )
+      end
 
       # Returns a fully-qualified archived_book resource name string.
       # @param archive [String]

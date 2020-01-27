@@ -1156,6 +1156,14 @@ class LibraryServiceClient(object):
 
 
     @classmethod
+    def archive_path(cls, archive):
+        """Return a fully-qualified archive string."""
+        return google.api_core.path_template.expand(
+            'archives/{archive}',
+            archive=archive,
+        )
+
+    @classmethod
     def archived_book_path(cls, archive, book):
         """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(

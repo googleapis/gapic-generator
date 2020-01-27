@@ -67,14 +67,13 @@ public abstract class FlatteningConfig {
               flatteningGroup,
               methodModel);
       if (groupConfig != null) {
+        ImmutableList.Builder<FlatteningConfig> fieldConfigs = ImmutableList.builder();
+        fieldConfigs.add(groupConfig);
+        // We always generate an overload will all resource names treated as strings
         if (hasAnyResourceNameParameter(groupConfig)) {
-          flatteningConfigs.put(
-              flatteningConfigToString(groupConfig),
-              ImmutableList.of(groupConfig, groupConfig.withResourceNamesInSamplesOnly()));
-        } else {
-          flatteningConfigs.put(
-              flatteningConfigToString(groupConfig), ImmutableList.of(groupConfig));
+          fieldConfigs.add(groupConfig.withResourceNamesInSamplesOnly());
         }
+        flatteningConfigs.put(flatteningConfigToString(groupConfig), fieldConfigs.build());
       }
     }
   }
@@ -85,6 +84,10 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
+    // As a flattened field may have multiple resource name associated, a method_signature
+    // may end up with multiple method overloads as we generate all the combinations of
+    // resource name types. Therefore we group all the FlatteningConfigs generated from
+    // one method_signature in a list.
     ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs = ImmutableMap.builder();
     insertFlatteningsFromGapicConfig(
         diagCollector,
@@ -139,11 +142,6 @@ public abstract class FlatteningConfig {
         .values()
         .stream()
         .flatMap(List::stream)
-        // .map(
-        //     f -> {
-        //       System.out.println(f);
-        //       return f;
-        //     })
         .collect(ImmutableList.toImmutableList());
   }
 
@@ -291,7 +289,9 @@ public abstract class FlatteningConfig {
       collectFieldConfigs(flatteningConfigs, fieldConfigs, parameter);
     }
 
-    // We also generate an overload that all resource names are treated as strings
+    // We also generate an overload that all singular resource names are treated as strings,
+    // if there is at least one resource name field in the method surface. Note repeated
+    // resource name fields are always treated as strings.
     if (hasSingularResourceNameParameters(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
@@ -303,11 +303,13 @@ public abstract class FlatteningConfig {
         .collect(ImmutableList.toImmutableList());
   }
 
+  /** Recursively find all the combinations of FieldConfigs for a method_signature. */
   private static void collectFieldConfigs(
       List<Map<String, FieldConfig>> flatteningConfigs,
       List<FieldConfig> fieldConfigs,
       String parameter) {
     int flatteningConfigsCount = flatteningConfigs.size();
+
     if (flatteningConfigsCount == 0) {
       for (int j = 0; j < fieldConfigs.size(); j++) {
         LinkedHashMap<String, FieldConfig> newFlattening = new LinkedHashMap<>();
@@ -315,6 +317,7 @@ public abstract class FlatteningConfig {
         flatteningConfigs.add(newFlattening);
       }
     } else {
+      // Perform a cartesian product between flatteningConfigs and fieldConfigs
       for (int i = 0; i < flatteningConfigsCount; i++) {
         for (int j = 0; j < fieldConfigs.size() - 1; j++) {
           LinkedHashMap<String, FieldConfig> newFlattening =

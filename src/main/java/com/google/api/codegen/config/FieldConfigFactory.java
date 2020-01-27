@@ -174,20 +174,6 @@ public class FieldConfigFactory {
         messageFieldEntityNames.stream().collect(Collectors.joining(",")),
         flattenedFieldEntityNames.stream().collect(Collectors.joining(",")));
 
-    // if (field.isRepeated()) {
-    //   FieldConfig fieldConfig =
-    //       createFieldConfig(
-    //           diagCollector,
-    //           messageFieldEntityNames.get(0),
-    //           messageFieldEntityNames.get(0),
-    //           messageConfigs,
-    //           resourceNameConfigs,
-    //           field,
-    //           treatment,
-    //           defaultResourceNameTreatment);
-    //   fieldConfig = fieldConfig.withResourceNameInSampleOnly();
-    //   return Collections.singletonList(fieldConfig);
-    // }
     ImmutableList.Builder<FieldConfig> fieldConfigs = ImmutableList.builder();
     for (String entityName : messageFieldEntityNames) {
       fieldConfigs.add(

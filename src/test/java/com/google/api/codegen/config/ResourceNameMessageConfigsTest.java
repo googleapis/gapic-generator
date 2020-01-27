@@ -258,7 +258,6 @@ public class ResourceNameMessageConfigsTest {
             Collections.emptyMap());
 
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
-    System.out.println(messageConfigs.getResourceTypeConfigMap());
     ResourceNameMessageConfig bookMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");
     assertThat(bookMessageConfig.fieldEntityMap().get("name")).isEqualTo("Book");
@@ -456,7 +455,6 @@ public class ResourceNameMessageConfigsTest {
             .collect(Collectors.toList());
 
     assertThat(flatteningConfigs).isNotNull();
-    System.out.println(flatteningConfigs);
     assertThat(flatteningConfigs.size()).isEqualTo(3);
 
     // Check the flattening from the Gapic config.

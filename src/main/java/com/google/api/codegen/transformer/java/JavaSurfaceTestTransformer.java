@@ -303,9 +303,9 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
+          // We only generate tests against the overload that does not expose resource name
+          // types on the surface to avoid combinatorial explosion of generated tests
           if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-            // methodContext = methodContext.withResourceNamesInSamplesOnly();
-            // flatteningGroup = methodContext.getFlatteningConfig();
             continue;
           }
           InitCodeContext initCodeContext =
