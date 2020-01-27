@@ -248,10 +248,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     } else {
       GapicMethodConfig methodConfig = builder.build();
-      if (methodConfig.getMethodModel().getSimpleName().contains("ListPublishers")) {
-        System.out.println("methodconfig");
-        System.out.println(methodConfig.getFlatteningConfigs());
-      }
       return methodConfig;
     }
   }

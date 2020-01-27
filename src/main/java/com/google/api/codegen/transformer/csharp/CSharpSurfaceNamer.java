@@ -288,7 +288,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     if (fieldConfig.getResourceNameType() == ResourceNameType.ANY) {
       resourceName = Name.from(AnyResourceNameConfig.ENTITY_NAME);
     } else {
-      resourceName = getResourceTypeNameObject(fieldConfig.getMessageResourceNameConfig());
+      resourceName = getResourceTypeNameObject(fieldConfig.getExampleResourceNameConfig());
     }
 
     Name name = Name.from();

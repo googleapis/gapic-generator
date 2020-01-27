@@ -139,6 +139,11 @@ public abstract class FlatteningConfig {
         .values()
         .stream()
         .flatMap(List::stream)
+        // .map(
+        //     f -> {
+        //       System.out.println(f);
+        //       return f;
+        //     })
         .collect(ImmutableList.toImmutableList());
   }
 
@@ -228,8 +233,8 @@ public abstract class FlatteningConfig {
         defaultResourceNameTreatment = ResourceNameTreatment.NONE;
       }
 
-      List<FieldConfig> fieldConfigs =
-          FieldConfig.createFieldConfigs(
+      FieldConfig fieldConfig =
+          FieldConfigFactory.createFlattenedFieldConfigFromGapicYaml(
               diagCollector,
               messageConfigs,
               ImmutableListMultimap.copyOf(methodConfigProto.getFieldNamePatternsMap().entrySet()),
@@ -239,10 +244,10 @@ public abstract class FlatteningConfig {
                   .getParameterResourceNameTreatmentMap()
                   .getOrDefault(parameter, ResourceNameTreatment.UNSET_TREATMENT),
               defaultResourceNameTreatment);
-      if (fieldConfigs == null || fieldConfigs.isEmpty()) {
+      if (fieldConfig == null) {
         missing = true;
       } else {
-        flattenedFieldConfigBuilder.put(parameter, fieldConfigs.get(0));
+        flattenedFieldConfigBuilder.put(parameter, fieldConfig);
       }
     }
     if (missing) {
@@ -308,7 +313,6 @@ public abstract class FlatteningConfig {
         LinkedHashMap<String, FieldConfig> newFlattening = new LinkedHashMap<>();
         newFlattening.put(parameter, fieldConfigs.get(j));
         flatteningConfigs.add(newFlattening);
-        System.out.println(j);
       }
     } else {
       for (int i = 0; i < flatteningConfigsCount; i++) {
@@ -362,7 +366,7 @@ public abstract class FlatteningConfig {
     }
 
     List<FieldConfig> fieldConfigs =
-        FieldConfig.createMessageFieldConfigs(
+        FieldConfigFactory.createFlattenedFieldConfigs(
             messageConfigs, resourceNameConfigs, parameterField, treatment);
 
     if (fieldConfigs.isEmpty()) {

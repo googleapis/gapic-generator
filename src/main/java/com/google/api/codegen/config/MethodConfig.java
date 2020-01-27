@@ -191,7 +191,7 @@ public abstract class MethodConfig {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
     for (FieldModel field : fields) {
       fieldConfigsBuilder.add(
-          FieldConfig.createFieldConfigs(
+          FieldConfigFactory.createFlattenedFieldConfigs(
                   diagCollector,
                   messageConfigs,
                   fieldNamePatterns,

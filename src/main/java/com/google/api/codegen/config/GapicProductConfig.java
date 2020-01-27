@@ -1083,9 +1083,8 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       map.put(
           field.getFullName(),
-          FieldConfig.createMessageFieldConfigs(
-                  messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES)
-              .get(0));
+          FieldConfigFactory.createMessageFieldConfig(
+              messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
     }
     builder.putAll(map);
     return builder.build();

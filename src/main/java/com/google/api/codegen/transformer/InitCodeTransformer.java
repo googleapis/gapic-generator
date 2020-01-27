@@ -510,6 +510,11 @@ public class InitCodeTransformer {
         fieldConfig = fieldConfig.getMessageFieldConfig();
       }
       if (item.getType().isRepeated()) {
+        if (fieldConfig == null) {
+          System.out.println("fieldConfig is null");
+        } else if (fieldConfig.getResourceNameConfig() == null) {
+          System.out.println("resourcenameconfig is null");
+        }
         surfaceLine.typeName(namer.getAndSaveResourceTypeName(typeTable, fieldConfig));
       } else {
         surfaceLine.typeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));
@@ -649,7 +654,7 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOptionInSample(context, fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
-        ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
+        ResourceNameConfig messageResNameConfig = fieldConfig.getExampleResourceNameConfig();
         if (messageResNameConfig == null
             || messageResNameConfig.getResourceNameType() != ResourceNameType.ANY) {
           // In a non-flattened context, we always use the resource name type set on the message

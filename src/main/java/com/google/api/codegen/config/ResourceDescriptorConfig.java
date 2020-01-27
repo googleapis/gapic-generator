@@ -178,7 +178,6 @@ public abstract class ResourceDescriptorConfig {
     ImmutableMap.Builder<String, List<ResourceDescriptorConfig>> builder = ImmutableMap.builder();
     List<ResourceDescriptorConfig> allResources =
         ImmutableList.copyOf(descriptorConfigMap.values());
-    System.out.println(allResources);
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
       ResourceDescriptorConfig childResource = entry.getValue();
       for (int i = 0; i < allResources.size(); i++) {
@@ -197,7 +196,6 @@ public abstract class ResourceDescriptorConfig {
     }
 
     Map<String, List<ResourceDescriptorConfig>> result = builder.build();
-    System.out.println(result);
     return result;
   }
 
@@ -207,12 +205,6 @@ public abstract class ResourceDescriptorConfig {
       List<ResourceDescriptorConfig> matchedParentResources,
       int unmatchedPatternsCount,
       int i) {
-    System.out.println("parentPatterns");
-    System.out.println(parentPatterns);
-    System.out.println("matchedparentresource");
-    System.out.println(matchedParentResources);
-    System.out.println("currentresource");
-    System.out.println(allResources.get(i));
     // We make a copy to advance in the depth-first search. There won't be
     // too many patterns in a resource so performance-wise it is not a problem.
     Map<String, Boolean> parentPatternsCopy = new HashMap<>(parentPatterns);

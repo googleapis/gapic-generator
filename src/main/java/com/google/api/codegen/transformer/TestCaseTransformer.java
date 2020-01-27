@@ -490,6 +490,10 @@ public class TestCaseTransformer {
 
   public FlatteningConfig getSmokeTestFlatteningGroup(MethodConfig methodConfig) {
     // Use the first flattening available for smoke testing.
+    if (methodConfig.getMethodModel().getSimpleName().equals("UpdateBook")) {
+      System.out.println("what!!!");
+      System.out.println(methodConfig.getFlatteningConfigs());
+    }
     return methodConfig
         .getFlatteningConfigs()
         .stream()
