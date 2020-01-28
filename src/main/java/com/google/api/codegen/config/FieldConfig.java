@@ -186,9 +186,6 @@ public abstract class FieldConfig {
             .setResourceNameConfig(flattenedFieldResourceNameConfig)
             .setExampleResourceNameConfig(messageFieldResourceNameConfig)
             .build();
-    if (config.getField().isRepeated()) {
-      config = config.withResourceNameInSampleOnly();
-    }
     return config;
   }
 
@@ -265,6 +262,10 @@ public abstract class FieldConfig {
             : getResourceNameTreatment(),
         getExampleResourceNameConfig(),
         getExampleResourceNameConfig());
+  }
+
+  public boolean isRepeatedResourceNameTypeField() {
+    return getField().isRepeated() && useResourceNameType();
   }
 
   /*

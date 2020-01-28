@@ -716,9 +716,9 @@ namespace Google.Example.Library.V1.Samples
             };
             PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
             // Iterate over pages (of server-defined size), performing one RPC per page
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((BookNameOneof item) =>
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             });
         }
@@ -790,9 +790,9 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over all response items, lazily performing RPCs as required
             await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
             {
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
-                    string book = item;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             });
@@ -863,10 +863,10 @@ namespace Google.Example.Library.V1.Samples
             PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(names, shelves);
             // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
-            foreach (string item in response)
+            Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -930,20 +930,20 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
             };
             PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(request);
             // Iterate over pages (of server-defined size), performing one RPC per page
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((BookNameOneof item) =>
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             });
         }
@@ -1005,11 +1005,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
@@ -1018,9 +1018,9 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over all response items, lazily performing RPCs as required
             await response.AsRawResponses().ForEachAsync((FindRelatedBooksResponse page) =>
             {
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
-                    string book = item;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             });
@@ -1082,11 +1082,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
@@ -1094,10 +1094,10 @@ namespace Google.Example.Library.V1.Samples
             PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response = await libraryServiceClient.FindRelatedBooksAsync(request);
             // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
-            foreach (string item in response)
+            Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -1168,9 +1168,9 @@ namespace Google.Example.Library.V1.Samples
             };
             PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooks(names, shelves);
             // Iterate over pages (of server-defined size), performing one RPC per page
-            foreach (string item in response)
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
         }
@@ -1241,9 +1241,9 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over all response items, lazily performing RPCs as required
             foreach (FindRelatedBooksResponse page in response.asRawResponses())
             {
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
-                    string book = item;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             }
@@ -1314,10 +1314,10 @@ namespace Google.Example.Library.V1.Samples
             PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooks(names, shelves);
             // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
-            foreach (string item in response)
+            Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -1380,20 +1380,20 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
             };
             PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooks(request);
             // Iterate over pages (of server-defined size), performing one RPC per page
-            foreach (string item in response)
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
         }
@@ -1454,11 +1454,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
@@ -1467,9 +1467,9 @@ namespace Google.Example.Library.V1.Samples
             // Iterate over all response items, lazily performing RPCs as required
             foreach (FindRelatedBooksResponse page in response.asRawResponses())
             {
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
-                    string book = item;
+                    BookNameOneof book = item;
                     Console.WriteLine($"Here's a related book: {book}");
                 }
             }
@@ -1531,11 +1531,11 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves =
+                ShelvesAsShelfNames =
                 {
                     new ShelfName("[SHELF]"),
                 },
@@ -1543,10 +1543,10 @@ namespace Google.Example.Library.V1.Samples
             PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> response = libraryServiceClient.FindRelatedBooks(request);
             // Retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
-            foreach (string item in response)
+            Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
+            foreach (BookNameOneof item in response)
             {
-                string book = item;
+                BookNameOneof book = item;
                 Console.WriteLine($"Here's a related book: {book}");
             }
             // Store the pageToken, for when the next page is required.
@@ -4224,8 +4224,8 @@ namespace Google.Example.Library.V1.Samples
                 RequiredRepeatedString = { },
                 RequiredRepeatedBytes = { },
                 RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
+                RequiredRepeatedResourceNameAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
                 RequiredRepeatedResourceNameCommon = { },
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
@@ -6447,7 +6447,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStringsAsync();
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6458,7 +6458,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6466,10 +6466,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6489,7 +6489,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStrings();
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6500,7 +6500,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6508,10 +6508,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6533,7 +6533,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStringsAsync(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6544,7 +6544,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6552,10 +6552,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6577,7 +6577,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6588,7 +6588,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6596,10 +6596,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6621,7 +6621,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStringsAsync(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6632,7 +6632,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6640,10 +6640,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6665,7 +6665,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStrings(name);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6676,7 +6676,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6684,10 +6684,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6709,7 +6709,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStringsAsync(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((IResourceName item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6720,7 +6720,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6728,10 +6728,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -6753,7 +6753,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.ListStrings(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (IResourceName item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -6764,7 +6764,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (IResourceName item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -6772,10 +6772,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<IResourceName> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (IResourceName item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -7440,7 +7440,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.FindRelatedBooksAsync(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((BookNameOneof item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -7451,7 +7451,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -7459,10 +7459,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (BookNameOneof item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -7488,7 +7488,7 @@ namespace Google.Example.Library.V1.Snippets
                 libraryServiceClient.FindRelatedBooks(names, shelves);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (BookNameOneof item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -7499,7 +7499,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -7507,10 +7507,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (BookNameOneof item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -7528,18 +7528,18 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves = { },
+                ShelvesAsShelfNames = { },
             };
             // Make the request
             PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> response =
                 libraryServiceClient.FindRelatedBooksAsync(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((string item) =>
+            await response.ForEachAsync((BookNameOneof item) =>
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -7550,7 +7550,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -7558,10 +7558,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = await response.ReadPageAsync(pageSize);
+            Page<BookNameOneof> singlePage = await response.ReadPageAsync(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (BookNameOneof item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -7579,18 +7579,18 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             FindRelatedBooksRequest request = new FindRelatedBooksRequest
             {
-                Names =
+                BookNameOneofs =
                 {
                     BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
                 },
-                Shelves = { },
+                ShelvesAsShelfNames = { },
             };
             // Make the request
             PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> response =
                 libraryServiceClient.FindRelatedBooks(request);
 
             // Iterate over all response items, lazily performing RPCs as required
-            foreach (string item in response)
+            foreach (BookNameOneof item in response)
             {
                 // Do something with each item
                 Console.WriteLine(item);
@@ -7601,7 +7601,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 // Do something with each page of items
                 Console.WriteLine("A page of results:");
-                foreach (string item in page)
+                foreach (BookNameOneof item in page)
                 {
                     Console.WriteLine(item);
                 }
@@ -7609,10 +7609,10 @@ namespace Google.Example.Library.V1.Snippets
 
             // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
             int pageSize = 10;
-            Page<string> singlePage = response.ReadPage(pageSize);
+            Page<BookNameOneof> singlePage = response.ReadPage(pageSize);
             // Do something with the page of items
             Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (string item in singlePage)
+            foreach (BookNameOneof item in singlePage)
             {
                 Console.WriteLine(item);
             }
@@ -8638,8 +8638,8 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredRepeatedString = { },
                 RequiredRepeatedBytes = { },
                 RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
+                RequiredRepeatedResourceNameAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
                 RequiredRepeatedResourceNameCommon = { },
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
@@ -8714,8 +8714,8 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredRepeatedString = { },
                 RequiredRepeatedBytes = { },
                 RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
+                RequiredRepeatedResourceNameAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
                 RequiredRepeatedResourceNameCommon = { },
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
@@ -8761,105 +8761,6 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for MoveBooksAsync</summary>
         public async Task MoveBooksAsync1()
         {
-            // Snippet: MoveBooksAsync(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Additional: MoveBooksAsync(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks1()
-        {
-            // Snippet: MoveBooks(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync2()
-        {
-            // Snippet: MoveBooksAsync(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Additional: MoveBooksAsync(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ShelfName source = new ShelfName("[SHELF]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks2()
-        {
-            // Snippet: MoveBooks(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ShelfName source = new ShelfName("[SHELF]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync3()
-        {
-            // Snippet: MoveBooksAsync(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Additional: MoveBooksAsync(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ProjectName source = new ProjectName("[PROJECT]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks3()
-        {
-            // Snippet: MoveBooks(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ProjectName source = new ProjectName("[PROJECT]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            // Make the request
-            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
-            // End snippet
-        }
-
-        /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync4()
-        {
             // Snippet: MoveBooksAsync(ArchiveName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ArchiveName,ArchiveName,IEnumerable<string>,ProjectName,CancellationToken)
             // Create client
@@ -8875,7 +8776,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks4()
+        public void MoveBooks1()
         {
             // Snippet: MoveBooks(ArchiveName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -8891,7 +8792,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync5()
+        public async Task MoveBooksAsync2()
         {
             // Snippet: MoveBooksAsync(ArchiveName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ArchiveName,ShelfName,IEnumerable<string>,ProjectName,CancellationToken)
@@ -8908,7 +8809,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks5()
+        public void MoveBooks2()
         {
             // Snippet: MoveBooks(ArchiveName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -8924,7 +8825,40 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync6()
+        public async Task MoveBooksAsync3()
+        {
+            // Snippet: MoveBooksAsync(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Additional: MoveBooksAsync(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ArchiveName source = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooks</summary>
+        public void MoveBooks3()
+        {
+            // Snippet: MoveBooks(ArchiveName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ArchiveName source = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooksAsync</summary>
+        public async Task MoveBooksAsync4()
         {
             // Snippet: MoveBooksAsync(ShelfName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ShelfName,ArchiveName,IEnumerable<string>,ProjectName,CancellationToken)
@@ -8941,7 +8875,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks6()
+        public void MoveBooks4()
         {
             // Snippet: MoveBooks(ShelfName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -8957,7 +8891,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync7()
+        public async Task MoveBooksAsync5()
         {
             // Snippet: MoveBooksAsync(ShelfName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ShelfName,ShelfName,IEnumerable<string>,ProjectName,CancellationToken)
@@ -8974,7 +8908,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks7()
+        public void MoveBooks5()
         {
             // Snippet: MoveBooks(ShelfName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -8990,7 +8924,40 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync8()
+        public async Task MoveBooksAsync6()
+        {
+            // Snippet: MoveBooksAsync(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Additional: MoveBooksAsync(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ShelfName source = new ShelfName("[SHELF]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooks</summary>
+        public void MoveBooks6()
+        {
+            // Snippet: MoveBooks(ShelfName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ShelfName source = new ShelfName("[SHELF]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooksAsync</summary>
+        public async Task MoveBooksAsync7()
         {
             // Snippet: MoveBooksAsync(ProjectName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ProjectName,ArchiveName,IEnumerable<string>,ProjectName,CancellationToken)
@@ -9007,7 +8974,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks8()
+        public void MoveBooks7()
         {
             // Snippet: MoveBooks(ProjectName,ArchiveName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -9023,7 +8990,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooksAsync</summary>
-        public async Task MoveBooksAsync9()
+        public async Task MoveBooksAsync8()
         {
             // Snippet: MoveBooksAsync(ProjectName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Additional: MoveBooksAsync(ProjectName,ShelfName,IEnumerable<string>,ProjectName,CancellationToken)
@@ -9040,7 +9007,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for MoveBooks</summary>
-        public void MoveBooks9()
+        public void MoveBooks8()
         {
             // Snippet: MoveBooks(ProjectName,ShelfName,IEnumerable<string>,ProjectName,CallSettings)
             // Create client
@@ -9048,6 +9015,39 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             ProjectName source = new ProjectName("[PROJECT]");
             ShelfName destination = new ShelfName("[SHELF]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = libraryServiceClient.MoveBooks(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooksAsync</summary>
+        public async Task MoveBooksAsync9()
+        {
+            // Snippet: MoveBooksAsync(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Additional: MoveBooksAsync(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            ProjectName source = new ProjectName("[PROJECT]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            // Make the request
+            MoveBooksResponse response = await libraryServiceClient.MoveBooksAsync(source, destination, publishers, project);
+            // End snippet
+        }
+
+        /// <summary>Snippet for MoveBooks</summary>
+        public void MoveBooks9()
+        {
+            // Snippet: MoveBooks(ProjectName,ProjectName,IEnumerable<string>,ProjectName,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            ProjectName source = new ProjectName("[PROJECT]");
+            ProjectName destination = new ProjectName("[PROJECT]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             // Make the request
@@ -9064,7 +9064,7 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<string> formattedPublishers = new List<string>();
             ProjectName project = new ProjectName("[PROJECT]");
             // Make the request
@@ -9080,7 +9080,7 @@ namespace Google.Example.Library.V1.Snippets
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<string> formattedPublishers = new List<string>();
             ProjectName project = new ProjectName("[PROJECT]");
             // Make the request
@@ -13861,8 +13861,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedString = { },
                 RequiredRepeatedBytes = { },
                 RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
+                RequiredRepeatedResourceNameAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
                 RequiredRepeatedResourceNameCommon = { },
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
@@ -13942,8 +13942,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredRepeatedString = { },
                 RequiredRepeatedBytes = { },
                 RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
+                RequiredRepeatedResourceNameAsBookNameOneofs = { },
+                RequiredRepeatedResourceNameOneofAsBookNameOneofs = { },
                 RequiredRepeatedResourceNameCommon = { },
                 RequiredRepeatedFixed32 = { },
                 RequiredRepeatedFixed64 = { },
@@ -14001,7 +14001,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14013,7 +14013,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
@@ -14032,7 +14032,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14044,7 +14044,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
@@ -14054,192 +14054,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void MoveBooks2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName source = new ShelfName("[SHELF]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task MoveBooksAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName source = new ShelfName("[SHELF]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void MoveBooks3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ProjectName source = new ProjectName("[PROJECT]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task MoveBooksAsync3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsProjectName = new ProjectName("[PROJECT]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ProjectName source = new ProjectName("[PROJECT]");
-            ProjectName destination = new ProjectName("[PROJECT]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void MoveBooks4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task MoveBooksAsync4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBooksRequest expectedRequest = new MoveBooksRequest
-            {
-                SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
-                Publishers = { },
-                ProjectAsProjectName = new ProjectName("[PROJECT]"),
-            };
-            MoveBooksResponse expectedResponse = new MoveBooksResponse
-            {
-                Success = false,
-            };
-            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
-            IEnumerable<PublisherName> publishers = new List<PublisherName>();
-            ProjectName project = new ProjectName("[PROJECT]");
-            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void MoveBooks5()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -14270,7 +14084,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task MoveBooksAsync5()
+        public async Task MoveBooksAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -14292,6 +14106,192 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchiveName source = new ArchiveName("[ARCHIVE]");
+            ShelfName destination = new ShelfName("[SHELF]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void MoveBooks3()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ArchiveName source = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task MoveBooksAsync3()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ArchiveName source = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void MoveBooks4()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ShelfName source = new ShelfName("[SHELF]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task MoveBooksAsync4()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ShelfName source = new ShelfName("[SHELF]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void MoveBooks5()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ShelfName source = new ShelfName("[SHELF]");
+            ShelfName destination = new ShelfName("[SHELF]");
+            IEnumerable<PublisherName> publishers = new List<PublisherName>();
+            ProjectName project = new ProjectName("[PROJECT]");
+            MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task MoveBooksAsync5()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            MoveBooksRequest expectedRequest = new MoveBooksRequest
+            {
+                SourceAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                Publishers = { },
+                ProjectAsProjectName = new ProjectName("[PROJECT]"),
+            };
+            MoveBooksResponse expectedResponse = new MoveBooksResponse
+            {
+                Success = false,
+            };
+            mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ShelfName source = new ShelfName("[SHELF]");
             ShelfName destination = new ShelfName("[SHELF]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
@@ -14311,7 +14311,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14323,7 +14323,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName source = new ShelfName("[SHELF]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
@@ -14342,7 +14342,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14354,7 +14354,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName source = new ShelfName("[SHELF]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            ProjectName destination = new ProjectName("[PROJECT]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
@@ -14372,8 +14372,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
-                SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                SourceAsProjectName = new ProjectName("[PROJECT]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14384,8 +14384,8 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.MoveBooks(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName source = new ShelfName("[SHELF]");
-            ShelfName destination = new ShelfName("[SHELF]");
+            ProjectName source = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
@@ -14403,8 +14403,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
-                SourceAsShelfName = new ShelfName("[SHELF]"),
-                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                SourceAsProjectName = new ProjectName("[PROJECT]"),
+                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14415,8 +14415,8 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.MoveBooksAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName source = new ShelfName("[SHELF]");
-            ShelfName destination = new ShelfName("[SHELF]");
+            ProjectName source = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
@@ -14435,7 +14435,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsShelfName = new ShelfName("[SHELF]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14447,7 +14447,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ProjectName source = new ProjectName("[PROJECT]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            ShelfName destination = new ShelfName("[SHELF]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
@@ -14466,7 +14466,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsArchiveName = new ArchiveName("[ARCHIVE]"),
+                DestinationAsShelfName = new ShelfName("[SHELF]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14478,7 +14478,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ProjectName source = new ProjectName("[PROJECT]");
-            ArchiveName destination = new ArchiveName("[ARCHIVE]");
+            ShelfName destination = new ShelfName("[SHELF]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
@@ -14497,7 +14497,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14509,7 +14509,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ProjectName source = new ProjectName("[PROJECT]");
-            ShelfName destination = new ShelfName("[SHELF]");
+            ProjectName destination = new ProjectName("[PROJECT]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, publishers, project);
@@ -14528,7 +14528,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 SourceAsProjectName = new ProjectName("[PROJECT]"),
-                DestinationAsShelfName = new ShelfName("[SHELF]"),
+                DestinationAsProjectName = new ProjectName("[PROJECT]"),
                 Publishers = { },
                 ProjectAsProjectName = new ProjectName("[PROJECT]"),
             };
@@ -14540,7 +14540,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ProjectName source = new ProjectName("[PROJECT]");
-            ShelfName destination = new ShelfName("[SHELF]");
+            ProjectName destination = new ProjectName("[PROJECT]");
             IEnumerable<PublisherName> publishers = new List<PublisherName>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, publishers, project);
@@ -14559,7 +14559,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 Source = new ArchiveName("[ARCHIVE]"),
-                Destination = new ProjectName("[PROJECT]"),
+                Destination = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 Project = new ProjectName("[PROJECT]"),
             };
@@ -14571,7 +14571,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<string> formattedPublishers = new List<string>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = client.MoveBooks(source, destination, formattedPublishers, project);
@@ -14590,7 +14590,7 @@ namespace Google.Example.Library.V1.Tests
             MoveBooksRequest expectedRequest = new MoveBooksRequest
             {
                 Source = new ArchiveName("[ARCHIVE]"),
-                Destination = new ProjectName("[PROJECT]"),
+                Destination = new ArchiveName("[ARCHIVE]"),
                 Publishers = { },
                 Project = new ProjectName("[PROJECT]"),
             };
@@ -14602,7 +14602,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MoveBooksResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ProjectName destination = new ProjectName("[PROJECT]");
+            ArchiveName destination = new ArchiveName("[ARCHIVE]");
             IEnumerable<string> formattedPublishers = new List<string>();
             ProjectName project = new ProjectName("[PROJECT]");
             MoveBooksResponse response = await client.MoveBooksAsync(source, destination, formattedPublishers, project);
@@ -20250,7 +20250,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string pageToken = null,
             int? pageSize = null,
             gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
@@ -20278,7 +20278,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string pageToken = null,
             int? pageSize = null,
             gaxgrpc::CallSettings callSettings = null) => ListStrings(
@@ -20309,7 +20309,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -20342,7 +20342,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             IResourceName name,
             string pageToken = null,
             int? pageSize = null,
@@ -20375,7 +20375,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -20408,7 +20408,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -20441,7 +20441,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -20474,7 +20474,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             string name,
             string pageToken = null,
             int? pageSize = null,
@@ -20499,7 +20499,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -20518,7 +20518,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -22163,7 +22163,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, string> FindRelatedBooksAsync(
+        public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             scg::IEnumerable<string> names,
             scg::IEnumerable<string> shelves,
             string pageToken = null,
@@ -22201,7 +22201,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<FindRelatedBooksResponse, string> FindRelatedBooks(
+        public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             scg::IEnumerable<string> names,
             scg::IEnumerable<string> shelves,
             string pageToken = null,
@@ -22228,7 +22228,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, string> FindRelatedBooksAsync(
+        public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             FindRelatedBooksRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -22247,7 +22247,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public virtual gax::PagedEnumerable<FindRelatedBooksResponse, string> FindRelatedBooks(
+        public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             FindRelatedBooksRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
@@ -28563,636 +28563,6 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
             ArchiveName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    SourceAsArchiveName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ArchiveName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            ArchiveName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    SourceAsArchiveName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ShelfName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    SourceAsShelfName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ShelfName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            ShelfName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    SourceAsShelfName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ProjectName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    SourceAsProjectName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ProjectName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            ProjectName source,
-            ProjectName destination,
-            scg::IEnumerable<string> publishers,
-            ProjectName project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    SourceAsProjectName = source, // Optional
-                    DestinationAsProjectName = destination, // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    ProjectAsProjectName = project, // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="cancellationToken">
-        /// A <see cref="st::CancellationToken"/> to use for this RPC.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            st::CancellationToken cancellationToken) => MoveBooksAsync(
-                source,
-                destination,
-                publishers,
-                project,
-                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// The RPC response.
-        /// </returns>
-        public virtual MoveBooksResponse MoveBooks(
-            string source,
-            string destination,
-            scg::IEnumerable<string> publishers,
-            string project,
-            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
-                new MoveBooksRequest
-                {
-                    Source = source ?? "", // Optional
-                    Destination = destination ?? "", // Optional
-                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
-                    Project = project ?? "", // Optional
-                },
-                callSettings);
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="source">
-        ///
-        /// </param>
-        /// <param name="destination">
-        ///
-        /// </param>
-        /// <param name="publishers">
-        ///
-        /// </param>
-        /// <param name="project">
-        ///
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A Task containing the RPC response.
-        /// </returns>
-        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
-            ArchiveName source,
             ArchiveName destination,
             scg::IEnumerable<string> publishers,
             ProjectName project,
@@ -29480,6 +28850,216 @@ namespace Google.Example.Library.V1
                 {
                     SourceAsArchiveName = source, // Optional
                     DestinationAsShelfName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ArchiveName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsArchiveName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ArchiveName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ArchiveName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsArchiveName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
                     Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
                     ProjectAsProjectName = project, // Optional
                 },
@@ -30032,6 +29612,216 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ShelfName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsShelfName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ShelfName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ShelfName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsShelfName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
             ProjectName source,
             ArchiveName destination,
             scg::IEnumerable<string> publishers,
@@ -30320,6 +30110,216 @@ namespace Google.Example.Library.V1
                 {
                     SourceAsProjectName = source, // Optional
                     DestinationAsShelfName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            string source,
+            string destination,
+            scg::IEnumerable<string> publishers,
+            string project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    Source = source ?? "", // Optional
+                    Destination = destination ?? "", // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    Project = project ?? "", // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ProjectName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsProjectName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ProjectName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ProjectName source,
+            ProjectName destination,
+            scg::IEnumerable<string> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsProjectName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
                     Publishers = { publishers ?? linq::Enumerable.Empty<string>() }, // Optional
                     ProjectAsProjectName = project, // Optional
                 },
@@ -32755,12 +32755,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedAsyncEnumerable<ListStringsResponse, string> ListStringsAsync(
+        public override gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -32775,12 +32775,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedEnumerable<ListStringsResponse, string> ListStrings(
+        public override gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
             ListStringsRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, string>(_callListStrings, request, callSettings);
+            return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
         }
 
         /// <summary>
@@ -33154,12 +33154,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedAsyncEnumerable<FindRelatedBooksResponse, string> FindRelatedBooksAsync(
+        public override gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             FindRelatedBooksRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_FindRelatedBooksRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(_callFindRelatedBooks, request, callSettings);
+            return new gaxgrpc::GrpcPagedAsyncEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookNameOneof>(_callFindRelatedBooks, request, callSettings);
         }
 
         /// <summary>
@@ -33174,12 +33174,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A pageable sequence of <see cref="string"/> resources.
         /// </returns>
-        public override gax::PagedEnumerable<FindRelatedBooksResponse, string> FindRelatedBooks(
+        public override gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             FindRelatedBooksRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             Modify_FindRelatedBooksRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, string>(_callFindRelatedBooks, request, callSettings);
+            return new gaxgrpc::GrpcPagedEnumerable<FindRelatedBooksRequest, FindRelatedBooksResponse, BookNameOneof>(_callFindRelatedBooks, request, callSettings);
         }
 
         /// <summary>
@@ -33639,24 +33639,24 @@ namespace Google.Example.Library.V1
     }
 
     public partial class ListStringsRequest : gaxgrpc::IPageRequest { }
-    public partial class ListStringsResponse : gaxgrpc::IPageResponse<string>
+    public partial class ListStringsResponse : gaxgrpc::IPageResponse<IResourceName>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public scg::IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        public scg::IEnumerator<IResourceName> GetEnumerator() => StringsAsResourceNames.GetEnumerator();
 
         /// <inheritdoc/>
         sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public partial class FindRelatedBooksRequest : gaxgrpc::IPageRequest { }
-    public partial class FindRelatedBooksResponse : gaxgrpc::IPageResponse<string>
+    public partial class FindRelatedBooksResponse : gaxgrpc::IPageResponse<BookNameOneof>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public scg::IEnumerator<string> GetEnumerator() => Names.GetEnumerator();
+        public scg::IEnumerator<BookNameOneof> GetEnumerator() => BookNameOneofs.GetEnumerator();
 
         /// <inheritdoc/>
         sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();

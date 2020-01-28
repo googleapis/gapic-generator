@@ -748,8 +748,8 @@ public class FindRelatedBooksCallableCallableListOdyssey {
         .build();
       while (true) {
         FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-        for (String responseItem : response.getNamesList()) {
-          String book = responseItem;
+        for (BookName responseItem : BookName.parseList(response.getNamesList())) {
+          BookName book = responseItem;
           System.out.printf("Here's a related book: %s\n", book);
         }
         String nextPageToken = response.getNextPageToken();
@@ -794,6 +794,7 @@ public class FindRelatedBooksCallableCallableListOdyssey {
 package com.google.example.examples.library.v1;
 
 import com.google.api.core.ApiFuture;
+import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.LibraryClient;
 import java.util.Arrays;
@@ -805,6 +806,7 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
    * Please include the following imports to run this sample.
    *
    * import com.google.api.core.ApiFuture;
+   * import com.google.example.library.v1.BookName;
    * import com.google.example.library.v1.FindRelatedBooksResponse;
    * import com.google.example.library.v1.LibraryClient;
    * import java.util.Arrays;
@@ -822,8 +824,8 @@ public class FindRelatedBooksFlattenedPagedOdyssey {
 
       // Do something
 
-      for (String responseItem : future.get().iterateAll()) {
-        String book = responseItem;
+      for (BookName responseItem : future.get().iterateAllAsBookName()) {
+        BookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -901,8 +903,8 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
 
       // Do something
 
-      for (String responseItem : future.get().iterateAll()) {
-        String book = responseItem;
+      for (BookName responseItem : future.get().iterateAllAsBookName()) {
+        BookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -972,8 +974,8 @@ public class FindRelatedBooksRequestPagedOdyssey {
         .addAllNames(BookName.toStringList(names))
         .addAllShelves(ShelfName.toStringList(shelves))
         .build();
-      for (String responseItem : libraryClient.findRelatedBooks(request).iterateAll()) {
-        String book = responseItem;
+      for (BookName responseItem : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
+        BookName book = responseItem;
         System.out.printf("Here's a related book: %s\n", book);
       }
     } catch (Exception exception) {
@@ -6257,7 +6259,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
-   *   for (String element : libraryClient.listStrings().iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6278,7 +6280,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ArchiveName.of("[ARCHIVE]");
-   *   for (String element : libraryClient.listStrings(name).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6303,7 +6305,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ArchiveName.of("[ARCHIVE]");
-   *   for (String element : libraryClient.listStrings(name.toString()).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(name.toString()).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6328,7 +6330,7 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
-   *   for (String element : libraryClient.listStrings(request).iterateAll()) {
+   *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6352,7 +6354,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAll()) {
+   *   for (ResourceName element : future.get().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -6372,7 +6374,7 @@ public class LibraryClient implements BackgroundResource {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
-   *     for (String element : response.getStringsList()) {
+   *     for (ResourceName element : UntypedResourceName.parseList(response.getStringsList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -7108,7 +7110,7 @@ public class LibraryClient implements BackgroundResource {
    *   String namesElement = "";
    *   List&lt;String&gt; names = Arrays.asList(namesElement);
    *   List&lt;String&gt; formattedShelves = new ArrayList&lt;&gt;();
-   *   for (String element : libraryClient.findRelatedBooks(formattedNames, formattedShelves).iterateAll()) {
+   *   for (BookName element : libraryClient.findRelatedBooks(formattedNames, formattedShelves).iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7141,7 +7143,7 @@ public class LibraryClient implements BackgroundResource {
    *     .addAllNames(BookName.toStringList(names))
    *     .addAllShelves(ShelfName.toStringList(shelves))
    *     .build();
-   *   for (String element : libraryClient.findRelatedBooks(request).iterateAll()) {
+   *   for (BookName element : libraryClient.findRelatedBooks(request).iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7171,7 +7173,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   ApiFuture&lt;FindRelatedBooksPagedResponse&gt; future = libraryClient.findRelatedBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String element : future.get().iterateAll()) {
+   *   for (BookName element : future.get().iterateAllAsBookName()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -7197,7 +7199,7 @@ public class LibraryClient implements BackgroundResource {
    *     .build();
    *   while (true) {
    *     FindRelatedBooksResponse response = libraryClient.findRelatedBooksCallable().call(request);
-   *     for (String element : response.getNamesList()) {
+   *     for (BookName element : BookName.parseList(response.getNamesList())) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -8573,102 +8575,6 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
-   *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
-   *   ProjectName project = ProjectName.of("[PROJECT]");
-   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
-   * }
-   * </code></pre>
-   *
-   * @param source
-   * @param destination
-   * @param publishers
-   * @param project
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<String> publishers, ProjectName project) {
-    MoveBooksRequest request =
-        MoveBooksRequest.newBuilder()
-            .setSource(source == null ? null : source.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers)
-            .setProject(project == null ? null : project.toString())
-            .build();
-    return moveBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ShelfName source = ShelfName.of("[SHELF]");
-   *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
-   *   ProjectName project = ProjectName.of("[PROJECT]");
-   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
-   * }
-   * </code></pre>
-   *
-   * @param source
-   * @param destination
-   * @param publishers
-   * @param project
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<String> publishers, ProjectName project) {
-    MoveBooksRequest request =
-        MoveBooksRequest.newBuilder()
-            .setSource(source == null ? null : source.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers)
-            .setProject(project == null ? null : project.toString())
-            .build();
-    return moveBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ProjectName source = ProjectName.of("[PROJECT]");
-   *   ProjectName destination = ProjectName.of("[PROJECT]");
-   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
-   *   ProjectName project = ProjectName.of("[PROJECT]");
-   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
-   * }
-   * </code></pre>
-   *
-   * @param source
-   * @param destination
-   * @param publishers
-   * @param project
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<String> publishers, ProjectName project) {
-    MoveBooksRequest request =
-        MoveBooksRequest.newBuilder()
-            .setSource(source == null ? null : source.toString())
-            .setDestination(destination == null ? null : destination.toString())
-            .addAllPublishers(publishers)
-            .setProject(project == null ? null : project.toString())
-            .build();
-    return moveBooks(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   *
-   *
-   * Sample code:
-   * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
    *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
    *   ProjectName project = ProjectName.of("[PROJECT]");
@@ -8715,6 +8621,38 @@ public class LibraryClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final MoveBooksResponse moveBooks(ArchiveName source, ShelfName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ArchiveName source, ProjectName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
@@ -8796,6 +8734,38 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ShelfName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ProjectName source = ProjectName.of("[PROJECT]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
    *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
@@ -8860,8 +8830,40 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ProjectName source = ProjectName.of("[PROJECT]");
    *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
    *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
    *   ProjectName project = ProjectName.of("[PROJECT]");
    *   MoveBooksResponse response = libraryClient.moveBooks(source.toString(), destination.toString(), formattedPublishers, project.toString());
@@ -9538,7 +9540,15 @@ public class LibraryClient implements BackgroundResource {
     private ListStringsPagedResponse(ListStringsPage page) {
       super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
-
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -9571,9 +9581,25 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
+    public Iterable<ResourceName> iterateAllAsResourceName() {
+      return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
-
-
+    public Iterable<ResourceName> getValuesAsResourceName() {
+      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -9597,7 +9623,15 @@ public class LibraryClient implements BackgroundResource {
         List<ListStringsPage> pages, int collectionSize) {
       return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
-
+    public Iterable<ResourceName> getValuesAsResourceName() {
+      return Iterables.transform(getValues(), new Function<String, ResourceName>() {
+          @Override
+          public ResourceName apply(String arg0) {
+            return UntypedResourceName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
   public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
@@ -9626,7 +9660,15 @@ public class LibraryClient implements BackgroundResource {
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
       super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
-
+    public Iterable<BookName> iterateAllAsBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -9659,9 +9701,25 @@ public class LibraryClient implements BackgroundResource {
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
+    public Iterable<BookName> iterateAllAsBookName() {
+      return Iterables.transform(iterateAll(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
 
-
-
+    public Iterable<BookName> getValuesAsBookName() {
+      return Iterables.transform(getValues(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 
@@ -9685,7 +9743,15 @@ public class LibraryClient implements BackgroundResource {
         List<FindRelatedBooksPage> pages, int collectionSize) {
       return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
-
+    public Iterable<BookName> getValuesAsBookName() {
+      return Iterables.transform(getValues(), new Function<String, BookName>() {
+          @Override
+          public BookName apply(String arg0) {
+            return BookName.parse(arg0);
+          }
+        }
+      );
+    }
 
   }
 }
@@ -15575,6 +15641,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -15619,6 +15689,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getStringsList().get(0), resources.get(0));
+    List<ResourceName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsResourceName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(UntypedResourceName.parse(expectedResponse.getStringsList().get(0)),
+        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -16093,6 +16167,10 @@ public class LibraryClientTest {
     List<String> resources = Lists.newArrayList(pagedListResponse.iterateAll());
     Assert.assertEquals(1, resources.size());
     Assert.assertEquals(expectedResponse.getNamesList().get(0), resources.get(0));
+    List<BookName> resourceNames = Lists.newArrayList(pagedListResponse.iterateAllAsBookName());
+    Assert.assertEquals(1, resourceNames.size());
+    Assert.assertEquals(BookName.parse(expectedResponse.getNamesList().get(0)),
+        resourceNames.get(0));
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
     Assert.assertEquals(1, actualRequests.size());
@@ -16675,7 +16753,7 @@ public class LibraryClientTest {
     mockLibraryService.addResponse(expectedResponse);
 
     ArchiveName source = ArchiveName.of("[ARCHIVE]");
-    ProjectName destination = ProjectName.of("[PROJECT]");
+    ArchiveName destination = ArchiveName.of("[ARCHIVE]");
     List<String> formattedPublishers = new ArrayList<>();
     ProjectName project = ProjectName.of("[PROJECT]");
 
@@ -16688,7 +16766,7 @@ public class LibraryClientTest {
     MoveBooksRequest actualRequest = (MoveBooksRequest)actualRequests.get(0);
 
     Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
-    Assert.assertEquals(destination, ProjectName.parse(actualRequest.getDestination()));
+    Assert.assertEquals(destination, ArchiveName.parse(actualRequest.getDestination()));
     Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
     Assert.assertEquals(project, ProjectName.parse(actualRequest.getProject()));
     Assert.assertTrue(
@@ -16705,7 +16783,7 @@ public class LibraryClientTest {
 
     try {
       ArchiveName source = ArchiveName.of("[ARCHIVE]");
-      ProjectName destination = ProjectName.of("[PROJECT]");
+      ArchiveName destination = ArchiveName.of("[ARCHIVE]");
       List<String> formattedPublishers = new ArrayList<>();
       ProjectName project = ProjectName.of("[PROJECT]");
 

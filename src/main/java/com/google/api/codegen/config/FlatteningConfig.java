@@ -286,7 +286,7 @@ public abstract class FlatteningConfig {
               protoParser.hasResourceReference(method.getInputField(parameter).getProtoField())
                   ? ResourceNameTreatment.STATIC_TYPES
                   : ResourceNameTreatment.NONE);
-      collectFieldConfigs(flatteningConfigs, fieldConfigs, parameter);
+      flatteningConfigs = collectFieldConfigs(flatteningConfigs, fieldConfigs, parameter);
     }
 
     // We also generate an overload that all singular resource names are treated as strings,
@@ -303,31 +303,42 @@ public abstract class FlatteningConfig {
         .collect(ImmutableList.toImmutableList());
   }
 
-  /** Recursively find all the combinations of FieldConfigs for a method_signature. */
-  private static void collectFieldConfigs(
+  /**
+   * Find all the combinations of FieldConfigs for a method_signature in a breadth-first search way.
+   */
+  private static List<Map<String, FieldConfig>> collectFieldConfigs(
       List<Map<String, FieldConfig>> flatteningConfigs,
       List<FieldConfig> fieldConfigs,
       String parameter) {
-    int flatteningConfigsCount = flatteningConfigs.size();
+    // We always make a deep copy in each round of BFS. This will make the code much cleaner;
+    // Performance-wise this is not ideal but should be fine because there won't be too
+    // many flatteningConfigs (should be almost always fewer than 5):
+    //
+    // O(method_signatures * resource_name_fields_in_message * resources_per_field)
+    List<Map<String, FieldConfig>> newFlatteningConfigs = new ArrayList<>();
 
-    if (flatteningConfigsCount == 0) {
-      for (int j = 0; j < fieldConfigs.size(); j++) {
-        LinkedHashMap<String, FieldConfig> newFlattening = new LinkedHashMap<>();
-        newFlattening.put(parameter, fieldConfigs.get(j));
-        flatteningConfigs.add(newFlattening);
-      }
-    } else {
-      // Perform a cartesian product between flatteningConfigs and fieldConfigs
-      for (int i = 0; i < flatteningConfigsCount; i++) {
-        for (int j = 0; j < fieldConfigs.size() - 1; j++) {
-          LinkedHashMap<String, FieldConfig> newFlattening =
-              new LinkedHashMap<>(flatteningConfigs.get(i));
-          newFlattening.put(parameter, fieldConfigs.get(j));
-          flatteningConfigs.add(newFlattening);
+    // Inserts a dumb element to kick of the search
+    if (flatteningConfigs.size() == 0) {
+      flatteningConfigs.add(new LinkedHashMap<>());
+    }
+
+    for (Map<String, FieldConfig> flattening : flatteningConfigs) {
+      for (FieldConfig fieldConfig : fieldConfigs) {
+        Map<String, FieldConfig> newFlattening = new LinkedHashMap<>(flattening);
+
+        // Types like List<ResourceName> will have the same erasure as List<String>,
+        // so we ignore resource name types on repeated field from API surfaces in Java and
+        // treat them as normal strings
+        if (fieldConfig.isRepeatedResourceNameTypeField()) {
+          newFlattening.put(parameter, fieldConfig.withResourceNameInSampleOnly());
+          newFlatteningConfigs.add(newFlattening);
+          break;
         }
-        flatteningConfigs.get(i).put(parameter, fieldConfigs.get(fieldConfigs.size() - 1));
+        newFlattening.put(parameter, fieldConfig);
+        newFlatteningConfigs.add(newFlattening);
       }
     }
+    return newFlatteningConfigs;
   }
 
   private static List<FieldConfig> createFieldConfigsForParameter(
