@@ -112,7 +112,7 @@ public class GapicConfigProducerTest {
             null,
             TargetLanguage.GO,
             serviceConfig);
-    System.out.println(model.getDiagReporter().getDiagCollector().getDiags());
+
     assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isFalse();
     assertThat(product).isNotNull();
 
