@@ -555,24 +555,6 @@ interfaces:
     field_name_patterns:
       name: book
       other_shelf_name: shelf
-  - name: ListStrings
-    flattening:
-      groups:
-      - parameters: []
-      - parameters:
-        - name
-    page_streaming:
-      request:
-        page_size_field: page_size
-        token_field: page_token
-      response:
-        token_field: next_page_token
-        resources_field: strings
-    retry_codes_name: idempotent
-    retry_params_name: default
-    timeout_millis: 10000
-    field_name_patterns:
-      name: "*"
   - name: AddComments
     flattening:
       groups:
@@ -903,7 +885,7 @@ interfaces:
         page_size_field: page_size
       response:
         token_field: next_page_token
-        resources_field: names
+        resources_field: books
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 3000
@@ -1322,12 +1304,6 @@ resource_name_generation:
   field_entity_map:
     name: book
     other_shelf_name: shelf
-- message_name: ListStringsRequest
-  field_entity_map:
-    name: "*"
-- message_name: ListStringsResponse
-  field_entity_map:
-    strings: "*"
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book
@@ -1348,9 +1324,6 @@ resource_name_generation:
   field_entity_map:
     names: book
     shelves: shelf
-- message_name: FindRelatedBooksResponse
-  field_entity_map:
-    names: book
 - message_name: BabbleAboutBookRequest # message type does not exist
   field_entity_map:
     name: book

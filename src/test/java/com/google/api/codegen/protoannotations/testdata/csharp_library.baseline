@@ -5986,266 +5986,6 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
-        /// <summary>Snippet for ListStringsAsync</summary>
-        public async Task ListStringsAsync1()
-        {
-            // Snippet: ListStringsAsync(string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStringsAsync();
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((IResourceName item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStrings</summary>
-        public void ListStrings1()
-        {
-            // Snippet: ListStrings(string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Make the request
-            PagedEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStrings();
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (IResourceName item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListStringsResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStringsAsync</summary>
-        public async Task ListStringsAsync2()
-        {
-            // Snippet: ListStringsAsync(IResourceName,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            IResourceName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStringsAsync(name);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((IResourceName item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStrings</summary>
-        public void ListStrings2()
-        {
-            // Snippet: ListStrings(IResourceName,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            IResourceName name = new ArchivedBookName("[ARCHIVE]", "[BOOK]");
-            // Make the request
-            PagedEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStrings(name);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (IResourceName item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListStringsResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStringsAsync</summary>
-        public async Task ListStringsAsync_RequestObject()
-        {
-            // Snippet: ListStringsAsync(ListStringsRequest,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ListStringsRequest request = new ListStringsRequest();
-            // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStringsAsync(request);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((IResourceName item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStrings</summary>
-        public void ListStrings_RequestObject()
-        {
-            // Snippet: ListStrings(ListStringsRequest,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ListStringsRequest request = new ListStringsRequest();
-            // Make the request
-            PagedEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStrings(request);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (IResourceName item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListStringsResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
         /// <summary>Snippet for AddCommentsAsync</summary>
         public async Task AddCommentsAsync()
         {
@@ -11233,7 +10973,6 @@ namespace Google.Example.Library.V1
             DeleteBookSettings = existing.DeleteBookSettings;
             UpdateBookSettings = existing.UpdateBookSettings;
             MoveBookSettings = existing.MoveBookSettings;
-            ListStringsSettings = existing.ListStringsSettings;
             AddCommentsSettings = existing.AddCommentsSettings;
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
             GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
@@ -11679,36 +11418,6 @@ namespace Google.Example.Library.V1
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
                 totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
                 retryFilter: NonIdempotentRetryFilter
-            )));
-
-        /// <summary>
-        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
-        /// <c>LibraryServiceClient.ListStrings</c> and <c>LibraryServiceClient.ListStringsAsync</c>.
-        /// </summary>
-        /// <remarks>
-        /// The default <c>LibraryServiceClient.ListStrings</c> and
-        /// <c>LibraryServiceClient.ListStringsAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
-        /// <list type="bullet">
-        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
-        /// <item><description>Retry delay multiplier: 1.2</description></item>
-        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
-        /// <item><description>Initial timeout: 300 milliseconds</description></item>
-        /// <item><description>Timeout multiplier: 1.3</description></item>
-        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
-        /// </list>
-        /// Retry will be attempted on the following response status codes:
-        /// <list>
-        /// <item><description><see cref="grpccore::StatusCode.DeadlineExceeded"/></description></item>
-        /// <item><description><see cref="grpccore::StatusCode.Unavailable"/></description></item>
-        /// </list>
-        /// Default RPC expiration is 30000 milliseconds.
-        /// </remarks>
-        public gaxgrpc::CallSettings ListStringsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
-            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
-                retryBackoff: GetDefaultRetryBackoff(),
-                timeoutBackoff: GetDefaultTimeoutBackoff(),
-                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
-                retryFilter: IdempotentRetryFilter
             )));
 
         /// <summary>
@@ -15244,232 +14953,6 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
-                new ListStringsRequest
-                {
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStrings(
-                new ListStringsRequest
-                {
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
-            IResourceName name,
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
-                new ListStringsRequest
-                {
-                    AsResourceName = name, // Optional
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
-            IResourceName name,
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStrings(
-                new ListStringsRequest
-                {
-                    AsResourceName = name, // Optional
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
-            string name,
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStringsAsync(
-                new ListStringsRequest
-                {
-                    Name = name ?? "", // Optional
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="name">
-        ///
-        /// </param>
-        /// <param name="pageToken">
-        /// The token returned from the previous request.
-        /// A value of <c>null</c> or an empty string retrieves the first page.
-        /// </param>
-        /// <param name="pageSize">
-        /// The size of page to request. The response will not be larger than this, but may be smaller.
-        /// A value of <c>null</c> or 0 uses a server-defined page size.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
-            string name,
-            string pageToken = null,
-            int? pageSize = null,
-            gaxgrpc::CallSettings callSettings = null) => ListStrings(
-                new ListStringsRequest
-                {
-                    Name = name ?? "", // Optional
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
-            ListStringsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
-        /// </returns>
-        public virtual gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
-            ListStringsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            throw new sys::NotImplementedException();
-        }
-
-        /// <summary>
         /// Adds comments to a book
         /// </summary>
         /// <param name="name">
@@ -16692,7 +16175,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             scg::IEnumerable<BookNameOneof> names,
@@ -16730,7 +16213,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
+        /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             scg::IEnumerable<BookNameOneof> names,
@@ -16768,7 +16251,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             scg::IEnumerable<string> names,
@@ -16806,7 +16289,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
+        /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             scg::IEnumerable<string> names,
@@ -16833,7 +16316,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             FindRelatedBooksRequest request,
@@ -16852,7 +16335,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
+        /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
         public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             FindRelatedBooksRequest request,
@@ -21748,7 +21231,6 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<DeleteBookRequest, pbwkt::Empty> _callDeleteBook;
         private readonly gaxgrpc::ApiCall<UpdateBookRequest, Book> _callUpdateBook;
         private readonly gaxgrpc::ApiCall<MoveBookRequest, Book> _callMoveBook;
-        private readonly gaxgrpc::ApiCall<ListStringsRequest, ListStringsResponse> _callListStrings;
         private readonly gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> _callAddComments;
         private readonly gaxgrpc::ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
         private readonly gaxgrpc::ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
@@ -21819,8 +21301,6 @@ namespace Google.Example.Library.V1
             _callMoveBook = clientHelper.BuildApiCall<MoveBookRequest, Book>(
                 GrpcClient.MoveBookAsync, GrpcClient.MoveBook, effectiveSettings.MoveBookSettings)
                 .WithGoogleRequestParam("name", request => request.Name);
-            _callListStrings = clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
-                GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
             _callAddComments = clientHelper.BuildApiCall<AddCommentsRequest, pbwkt::Empty>(
                 GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings)
                 .WithGoogleRequestParam("name", request => request.Name);
@@ -21893,8 +21373,6 @@ namespace Google.Example.Library.V1
             Modify_UpdateBookApiCall(ref _callUpdateBook);
             Modify_ApiCall(ref _callMoveBook);
             Modify_MoveBookApiCall(ref _callMoveBook);
-            Modify_ApiCall(ref _callListStrings);
-            Modify_ListStringsApiCall(ref _callListStrings);
             Modify_ApiCall(ref _callAddComments);
             Modify_AddCommentsApiCall(ref _callAddComments);
             Modify_ApiCall(ref _callGetBookFromArchive);
@@ -21962,7 +21440,6 @@ namespace Google.Example.Library.V1
         partial void Modify_DeleteBookApiCall(ref gaxgrpc::ApiCall<DeleteBookRequest, pbwkt::Empty> call);
         partial void Modify_UpdateBookApiCall(ref gaxgrpc::ApiCall<UpdateBookRequest, Book> call);
         partial void Modify_MoveBookApiCall(ref gaxgrpc::ApiCall<MoveBookRequest, Book> call);
-        partial void Modify_ListStringsApiCall(ref gaxgrpc::ApiCall<ListStringsRequest, ListStringsResponse> call);
         partial void Modify_AddCommentsApiCall(ref gaxgrpc::ApiCall<AddCommentsRequest, pbwkt::Empty> call);
         partial void Modify_GetBookFromArchiveApiCall(ref gaxgrpc::ApiCall<GetBookFromArchiveRequest, BookFromArchive> call);
         partial void Modify_GetBookFromAnywhereApiCall(ref gaxgrpc::ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> call);
@@ -22003,7 +21480,6 @@ namespace Google.Example.Library.V1
         partial void Modify_DeleteBookRequest(ref DeleteBookRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_UpdateBookRequest(ref UpdateBookRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_MoveBookRequest(ref MoveBookRequest request, ref gaxgrpc::CallSettings settings);
-        partial void Modify_ListStringsRequest(ref ListStringsRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref gaxgrpc::CallSettings settings);
@@ -22500,46 +21976,6 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
-        /// </returns>
-        public override gax::PagedAsyncEnumerable<ListStringsResponse, IResourceName> ListStringsAsync(
-            ListStringsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
-        }
-
-        /// <summary>
-        /// Lists a primitive resource. To test go page streaming.
-        /// </summary>
-        /// <param name="request">
-        /// The request object containing all of the parameters for the API call.
-        /// </param>
-        /// <param name="callSettings">
-        /// If not null, applies overrides to this RPC call.
-        /// </param>
-        /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
-        /// </returns>
-        public override gax::PagedEnumerable<ListStringsResponse, IResourceName> ListStrings(
-            ListStringsRequest request,
-            gaxgrpc::CallSettings callSettings = null)
-        {
-            Modify_ListStringsRequest(ref request, ref callSettings);
-            return new gaxgrpc::GrpcPagedEnumerable<ListStringsRequest, ListStringsResponse, IResourceName>(_callListStrings, request, callSettings);
-        }
-
-        /// <summary>
         /// Adds comments to a book
         /// </summary>
         /// <param name="request">
@@ -22908,7 +22344,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// A pageable asynchronous sequence of <see cref="Book"/> resources.
         /// </returns>
         public override gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooksAsync(
             FindRelatedBooksRequest request,
@@ -22928,7 +22364,7 @@ namespace Google.Example.Library.V1
         /// If not null, applies overrides to this RPC call.
         /// </param>
         /// <returns>
-        /// A pageable sequence of <see cref="string"/> resources.
+        /// A pageable sequence of <see cref="Book"/> resources.
         /// </returns>
         public override gax::PagedEnumerable<FindRelatedBooksResponse, BookNameOneof> FindRelatedBooks(
             FindRelatedBooksRequest request,
@@ -23394,25 +22830,13 @@ namespace Google.Example.Library.V1
         sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    public partial class ListStringsRequest : gaxgrpc::IPageRequest { }
-    public partial class ListStringsResponse : gaxgrpc::IPageResponse<IResourceName>
-    {
-        /// <summary>
-        /// Returns an enumerator that iterates through the resources in this response.
-        /// </summary>
-        public scg::IEnumerator<IResourceName> GetEnumerator() => StringsAsResourceNames.GetEnumerator();
-
-        /// <inheritdoc/>
-        sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
     public partial class FindRelatedBooksRequest : gaxgrpc::IPageRequest { }
     public partial class FindRelatedBooksResponse : gaxgrpc::IPageResponse<BookNameOneof>
     {
         /// <summary>
         /// Returns an enumerator that iterates through the resources in this response.
         /// </summary>
-        public scg::IEnumerator<BookNameOneof> GetEnumerator() => BookNameOneofs.GetEnumerator();
+        public scg::IEnumerator<BookNameOneof> GetEnumerator() => BooksAsBookNameOneofs.GetEnumerator();
 
         /// <inheritdoc/>
         sc::IEnumerator sc::IEnumerable.GetEnumerator() => GetEnumerator();
@@ -25212,10 +24636,10 @@ namespace Google.Example.Library.V1
     public partial class FindRelatedBooksResponse
     {
         /// <summary>
-        /// <see cref="gax::ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="Names"/> resource name property.
+        /// <see cref="gax::ResourceNameList{BookNameOneof}"/>-typed view over the <see cref="Books"/> resource name property.
         /// </summary>
-        public gax::ResourceNameList<BookNameOneof> BookNameOneofs =>
-            new gax::ResourceNameList<BookNameOneof>(Names,
+        public gax::ResourceNameList<BookNameOneof> BooksAsBookNameOneofs =>
+            new gax::ResourceNameList<BookNameOneof>(Books,
                 str => BookNameOneof.Parse(str, true));
 
     }
@@ -25331,30 +24755,6 @@ namespace Google.Example.Library.V1
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
         }
-
-    }
-
-    public partial class ListStringsRequest
-    {
-        /// <summary>
-        /// <see cref="gax::IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
-        /// </summary>
-        public gax::IResourceName AsResourceName
-        {
-            get { return string.IsNullOrEmpty(Name) ? null : gax::UnknownResourceName.Parse(Name); }
-            set { Name = value != null ? value.ToString() : ""; }
-        }
-
-    }
-
-    public partial class ListStringsResponse
-    {
-        /// <summary>
-        /// <see cref="gax::ResourceNameList{gax::IResourceName}"/>-typed view over the <see cref="Strings"/> resource name property.
-        /// </summary>
-        public gax::ResourceNameList<gax::IResourceName> StringsAsResourceNames =>
-            new gax::ResourceNameList<gax::IResourceName>(Strings,
-                str => gax::UnknownResourceName.Parse(str));
 
     }
 

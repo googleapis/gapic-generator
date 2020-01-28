@@ -2432,20 +2432,6 @@ module Google
 
         # @!attribute [rw] name
         #   @return [String]
-        # @!attribute [rw] page_size
-        #   @return [Integer]
-        # @!attribute [rw] page_token
-        #   @return [String]
-        class ListStringsRequest; end
-
-        # @!attribute [rw] strings
-        #   @return [Array<String>]
-        # @!attribute [rw] next_page_token
-        #   @return [String]
-        class ListStringsResponse; end
-
-        # @!attribute [rw] name
-        #   @return [String]
         # @!attribute [rw] comments
         #   @return [Array<Google::Example::Library::V1::Comment>]
         class AddCommentsRequest; end
@@ -2541,9 +2527,8 @@ module Google
         #   @return [String]
         class FindRelatedBooksRequest; end
 
-        # Test repeated field with resource name format in page streaming response
-        # @!attribute [rw] names
-        #   @return [Array<String>]
+        # @!attribute [rw] books
+        #   @return [Array<Google::Example::Library::V1::Book>]
         # @!attribute [rw] next_page_token
         #   @return [String]
         class FindRelatedBooksResponse; end
@@ -2976,14 +2961,10 @@ module Library
           "page_token",
           "next_page_token",
           "books"),
-        "list_strings" => Google::Gax::PageDescriptor.new(
-          "page_token",
-          "next_page_token",
-          "strings"),
         "find_related_books" => Google::Gax::PageDescriptor.new(
           "page_token",
           "next_page_token",
-          "names")
+          "books")
       }.freeze
 
       private_constant :PAGE_DESCRIPTORS
@@ -3295,11 +3276,6 @@ module Library
           params_extractor: proc do |request|
             {'name' => request.name}
           end
-        )
-        @list_strings = Google::Gax.create_api_call(
-          @library_service_stub.method(:list_strings),
-          defaults["list_strings"],
-          exception_transformer: exception_transformer
         )
         @add_comments = Google::Gax.create_api_call(
           @library_service_stub.method(:add_comments),
@@ -3936,58 +3912,6 @@ module Library
         @move_book.call(req, options, &block)
       end
 
-      # Lists a primitive resource. To test go page streaming.
-      #
-      # @param name [String]
-      # @param page_size [Integer]
-      #   The maximum number of resources contained in the underlying API
-      #   response. If page streaming is performed per-resource, this
-      #   parameter does not affect the return value. If page streaming is
-      #   performed per-page, this determines the maximum number of
-      #   resources in a page.
-      # @param options [Google::Gax::CallOptions]
-      #   Overrides the default settings for this call, e.g, timeout,
-      #   retries, etc.
-      # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Gax::PagedEnumerable<String>]
-      # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Gax::PagedEnumerable<String>]
-      #   An enumerable of String instances.
-      #   See Google::Gax::PagedEnumerable documentation for other
-      #   operations such as per-page iteration or access to the response
-      #   object.
-      # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      # @example
-      #   require "library"
-      #
-      #   library_client = Library::Library.new(version: :v1)
-      #
-      #   # Iterate over all results.
-      #   library_client.list_strings.each do |element|
-      #     # Process element.
-      #   end
-      #
-      #   # Or iterate over results one page at a time.
-      #   library_client.list_strings.each_page do |page|
-      #     # Process each page at a time.
-      #     page.each do |element|
-      #       # Process element.
-      #     end
-      #   end
-
-      def list_strings \
-          name: nil,
-          page_size: nil,
-          options: nil,
-          &block
-        req = {
-          name: name,
-          page_size: page_size
-        }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListStringsRequest)
-        @list_strings.call(req, options, &block)
-      end
-
       # Adds comments to a book
       #
       # @param name [String]
@@ -4357,10 +4281,10 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Gax::PagedEnumerable<String>]
+      # @yieldparam result [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
       # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Gax::PagedEnumerable<String>]
-      #   An enumerable of String instances.
+      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
+      #   An enumerable of Google::Example::Library::V1::Book instances.
       #   See Google::Gax::PagedEnumerable documentation for other
       #   operations such as per-page iteration or access to the response
       #   object.
@@ -5421,11 +5345,6 @@ end
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
-        "ListStrings": {
-          "timeout_millis": 10000,
-          "retry_codes_name": "idempotent",
-          "retry_params_name": "default"
-        },
         "AddComments": {
           "timeout_millis": 10000,
           "retry_codes_name": "non_idempotent",
@@ -6163,7 +6082,7 @@ def sample_find_related_books
   # Iterate over all results.
   library_client.find_related_books(formatted_names, formatted_shelves).each do |element|
     book = element
-    puts "Here's a related book: #{book}"
+    puts "Here's a related book: #{book.inspect}"
   end
 end
 # [END find_related_books_odyssey]
@@ -8190,68 +8109,6 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
-  describe 'list_strings' do
-    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#list_strings."
-
-    it 'invokes list_strings without error' do
-      # Create expected grpc response
-      next_page_token = ""
-      strings_element = "stringsElement474465855"
-      strings = [strings_element]
-      expected_response = { next_page_token: next_page_token, strings: strings }
-      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListStringsResponse)
-
-      # Mock Grpc layer
-      mock_method = proc do
-        OpenStruct.new(execute: expected_response)
-      end
-      mock_stub = MockGrpcClientStub_v1.new(:list_strings, mock_method)
-
-      # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("list_strings")
-
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library::Library.new(version: :v1)
-
-          # Call method
-          response = client.list_strings
-
-          # Verify the response
-          assert(response.instance_of?(Google::Gax::PagedEnumerable))
-          assert_equal(expected_response, response.page.response)
-          assert_nil(response.next_page)
-          assert_equal(expected_response.strings.to_a, response.to_a)
-        end
-      end
-    end
-
-    it 'invokes list_strings with error' do
-      # Mock Grpc layer
-      mock_method = proc do
-        raise custom_error
-      end
-      mock_stub = MockGrpcClientStub_v1.new(:list_strings, mock_method)
-
-      # Mock auth layer
-      mock_credentials = MockLibraryServiceCredentials_v1.new("list_strings")
-
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        Library::V1::Credentials.stub(:default, mock_credentials) do
-          client = Library::Library.new(version: :v1)
-
-          # Call method
-          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.list_strings
-          end
-
-          # Verify the GaxError wrapped the custom error that was raised.
-          assert_match(custom_error.message, err.message)
-        end
-      end
-    end
-  end
-
   describe 'add_comments' do
     custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#add_comments."
 
@@ -9048,9 +8905,9 @@ describe Library::V1::LibraryServiceClient do
 
       # Create expected grpc response
       next_page_token = ""
-      names_element_2 = "namesElement21120252792"
-      names_2 = [names_element_2]
-      expected_response = { next_page_token: next_page_token, names: names_2 }
+      books_element = {}
+      books = [books_element]
+      expected_response = { next_page_token: next_page_token, books: books }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::FindRelatedBooksResponse)
 
       # Mock Grpc layer
@@ -9076,7 +8933,7 @@ describe Library::V1::LibraryServiceClient do
           assert(response.instance_of?(Google::Gax::PagedEnumerable))
           assert_equal(expected_response, response.page.response)
           assert_nil(response.next_page)
-          assert_equal(expected_response.names.to_a, response.to_a)
+          assert_equal(expected_response.books.to_a, response.to_a)
         end
       end
     end

@@ -229,7 +229,6 @@ type CallOptions struct {
     DeleteBook []gax.CallOption
     UpdateBook []gax.CallOption
     MoveBook []gax.CallOption
-    ListStrings []gax.CallOption
     AddComments []gax.CallOption
     GetBookFromAnywhere []gax.CallOption
     GetBookFromAbsolutelyAnywhere []gax.CallOption
@@ -288,7 +287,6 @@ func defaultCallOptions() *CallOptions {
         DeleteBook: retry[[2]string{"default", "idempotent"}],
         UpdateBook: retry[[2]string{"default", "idempotent"}],
         MoveBook: retry[[2]string{"default", "non_idempotent"}],
-        ListStrings: retry[[2]string{"default", "idempotent"}],
         AddComments: retry[[2]string{"default", "non_idempotent"}],
         GetBookFromAnywhere: retry[[2]string{"default", "idempotent"}],
         GetBookFromAbsolutelyAnywhere: retry[[2]string{"default", "idempotent"}],
@@ -640,44 +638,6 @@ func (c *LibClient) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest
     return resp, nil
 }
 
-// ListStrings lists a primitive resource. To test go page streaming.
-func (c *LibClient) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest, opts ...gax.CallOption) *StringIterator {
-    ctx = insertMetadata(ctx, c.xGoogMetadata)
-    opts = append(c.CallOptions.ListStrings[0:len(c.CallOptions.ListStrings):len(c.CallOptions.ListStrings)], opts...)
-    it := &StringIterator{}
-    req = proto.Clone(req).(*librarypb.ListStringsRequest)
-    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
-        var resp *librarypb.ListStringsResponse
-        req.PageToken = pageToken
-        if pageSize > math.MaxInt32 {
-            req.PageSize = math.MaxInt32
-        } else {
-            req.PageSize = int32(pageSize)
-        }
-        err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
-            var err error
-            resp, err = c.client.ListStrings(ctx, req, settings.GRPC...)
-            return err
-        }, opts...)
-        if err != nil {
-            return nil, "", err
-        }
-        return resp.Strings, resp.NextPageToken, nil
-    }
-    fetch := func(pageSize int, pageToken string) (string, error) {
-        items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
-        if err != nil {
-            return "", err
-        }
-        it.items = append(it.items, items...)
-        return nextPageToken, nil
-    }
-    it.pageInfo, it.nextFunc = iterator.NewPageInfo(fetch, it.bufLen, it.takeBuf)
-    it.pageInfo.MaxSize = int(req.PageSize)
-    it.pageInfo.Token = req.PageToken
-    return it
-}
-
 // AddComments adds comments to a book
 func (c *LibClient) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest, opts ...gax.CallOption) error {
     md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "name", url.QueryEscape(req.GetName())))
@@ -822,12 +782,12 @@ func (c *LibClient) BabbleAboutBook(ctx context.Context, opts ...gax.CallOption)
 }
 
 // FindRelatedBooks
-func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest, opts ...gax.CallOption) *StringIterator {
+func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest, opts ...gax.CallOption) *BookIterator {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.FindRelatedBooks[0:len(c.CallOptions.FindRelatedBooks):len(c.CallOptions.FindRelatedBooks)], opts...)
-    it := &StringIterator{}
+    it := &BookIterator{}
     req = proto.Clone(req).(*librarypb.FindRelatedBooksRequest)
-    it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
+    it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
         var resp *librarypb.FindRelatedBooksResponse
         req.PageToken = pageToken
         if pageSize > math.MaxInt32 {
@@ -843,7 +803,7 @@ func (c *LibClient) FindRelatedBooks(ctx context.Context, req *librarypb.FindRel
         if err != nil {
             return nil, "", err
         }
-        return resp.Names, resp.NextPageToken, nil
+        return resp.Books, resp.NextPageToken, nil
     }
     fetch := func(pageSize int, pageToken string) (string, error) {
         items, nextPageToken, err := it.InternalFetch(pageSize, pageToken)
@@ -1095,48 +1055,6 @@ func (it *ShelfIterator) bufLen() int {
 }
 
 func (it *ShelfIterator) takeBuf() interface{} {
-    b := it.items
-    it.items = nil
-    return b
-}
-
-// StringIterator manages a stream of string.
-type StringIterator struct {
-    items    []string
-    pageInfo *iterator.PageInfo
-    nextFunc func() error
-
-    // InternalFetch is for use by the Google Cloud Libraries only.
-    // It is not part of the stable interface of this package.
-    //
-    // InternalFetch returns results from a single call to the underlying RPC.
-    // The number of results is no greater than pageSize.
-    // If there are no more results, nextPageToken is empty and err is nil.
-    InternalFetch func(pageSize int, pageToken string) (results []string, nextPageToken string, err error)
-}
-
-// PageInfo supports pagination. See the google.golang.org/api/iterator package for details.
-func (it *StringIterator) PageInfo() *iterator.PageInfo {
-    return it.pageInfo
-}
-
-// Next returns the next result. Its second return value is iterator.Done if there are no more
-// results. Once Next returns Done, all subsequent calls will return Done.
-func (it *StringIterator) Next() (string, error) {
-    var item string
-    if err := it.nextFunc(); err != nil {
-        return item, err
-    }
-    item = it.items[0]
-    it.items = it.items[1:]
-    return item, nil
-}
-
-func (it *StringIterator) bufLen() int {
-    return len(it.items)
-}
-
-func (it *StringIterator) takeBuf() interface{} {
     b := it.items
     it.items = nil
     return b
@@ -1597,30 +1515,6 @@ func ExampleClient_MoveBook() {
     }
     // TODO: Use resp.
     _ = resp
-}
-
-func ExampleClient_ListStrings() {
-    ctx := context.Background()
-    c, err := library.NewClient(ctx)
-    if err != nil {
-        // TODO: Handle error.
-    }
-
-    req := &librarypb.ListStringsRequest{
-        // TODO: Fill request struct fields.
-    }
-    it := c.ListStrings(ctx, req)
-    for {
-        resp, err := it.Next()
-        if err == iterator.Done {
-            break
-        }
-        if err != nil {
-            // TODO: Handle error.
-        }
-        // TODO: Use resp.
-        _ = resp
-    }
 }
 
 func ExampleClient_AddComments() {
@@ -2243,18 +2137,6 @@ func (s *mockLibraryServer) MoveBook(ctx context.Context, req *librarypb.MoveBoo
         return nil, s.err
     }
     return s.resps[0].(*librarypb.Book), nil
-}
-
-func (s *mockLibraryServer) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest) (*librarypb.ListStringsResponse, error) {
-    md, _ := metadata.FromIncomingContext(ctx)
-    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
-        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
-    }
-    s.reqs = append(s.reqs, req)
-    if s.err != nil {
-        return nil, s.err
-    }
-    return s.resps[0].(*librarypb.ListStringsResponse), nil
 }
 
 func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
@@ -3406,72 +3288,6 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
     }
     _ = resp
 }
-func TestLibraryServiceListStrings(t *testing.T) {
-    var nextPageToken string = ""
-    var stringsElement string = "stringsElement474465855"
-    var strings = []string{stringsElement}
-    var expectedResponse = &librarypb.ListStringsResponse{
-        NextPageToken: nextPageToken,
-        Strings: strings,
-    }
-
-    mockLibrary.err = nil
-    mockLibrary.reqs = nil
-
-    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
-
-    var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
-
-    c, err := NewClient(context.Background(), clientOpt)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    resp, err := c.ListStrings(context.Background(), request).Next()
-
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
-        t.Errorf("wrong request %q, want %q", got, want)
-    }
-
-    want := (interface{})(expectedResponse.Strings[0])
-    got := (interface{})(resp)
-    var ok bool
-
-    switch want := (want).(type) {
-    case proto.Message:
-        ok = proto.Equal(want, got.(proto.Message))
-    default:
-        ok = want == got
-    }
-    if !ok {
-        t.Errorf("wrong response %q, want %q)", got, want)
-    }
-}
-
-func TestLibraryServiceListStringsError(t *testing.T) {
-    errCode := codes.PermissionDenied
-    mockLibrary.err = gstatus.Error(errCode, "test error")
-
-    var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
-
-    c, err := NewClient(context.Background(), clientOpt)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    resp, err := c.ListStrings(context.Background(), request).Next()
-
-    if st, ok := gstatus.FromError(err); !ok {
-        t.Errorf("got error %v, expected grpc error", err)
-    } else if c := st.Code(); c != errCode {
-        t.Errorf("got error code %q, want %q", c, errCode)
-    }
-    _ = resp
-}
 func TestLibraryServiceAddComments(t *testing.T) {
     var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
@@ -4117,11 +3933,11 @@ func TestLibraryServiceBabbleAboutBookError(t *testing.T) {
 }
 func TestLibraryServiceFindRelatedBooks(t *testing.T) {
     var nextPageToken string = ""
-    var namesElement2 string = "namesElement21120252792"
-    var names2 = []string{namesElement2}
+    var booksElement *librarypb.Book = &librarypb.Book{}
+    var books = []*librarypb.Book{booksElement}
     var expectedResponse = &librarypb.FindRelatedBooksResponse{
         NextPageToken: nextPageToken,
-        Names: names2,
+        Books: books,
     }
 
     mockLibrary.err = nil
@@ -4152,7 +3968,7 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
         t.Errorf("wrong request %q, want %q", got, want)
     }
 
-    want := (interface{})(expectedResponse.Names[0])
+    want := (interface{})(expectedResponse.Books[0])
     got := (interface{})(resp)
     var ok bool
 

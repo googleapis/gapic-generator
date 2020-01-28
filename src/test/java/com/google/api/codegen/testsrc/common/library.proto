@@ -150,13 +150,6 @@ service LibraryService {
     option (google.api.method_signature) = "name,other_shelf_name";
   }
 
-  // Lists a primitive resource. To test go page streaming.
-  rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
-    option (google.api.http) = { get: "/v1/strings" };
-    option (google.api.method_signature) = "";
-    option (google.api.method_signature) = "name";
-  }
-
   // Adds comments to a book
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*}/comments" body: "*" };
@@ -821,21 +814,6 @@ message MoveBookRequest {
     (google.api.resource_reference).type = "library.googleapis.com/Shelf"];
 }
 
-message ListStringsRequest {
-  string name = 1 [
-    (google.api.resource_reference).type = "*"
-  ];
-  int32 page_size = 2;
-  string page_token = 3;
-}
-
-message ListStringsResponse {
-  repeated string strings = 1 [
-    (google.api.resource_reference).type = "*"
-  ];
-  string next_page_token = 2;
-}
-
 message AddCommentsRequest {
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
@@ -954,9 +932,8 @@ message FindRelatedBooksRequest {
   string page_token = 5;
 }
 
-// Test repeated field with resource name format in page streaming response
 message FindRelatedBooksResponse {
-  repeated string names = 1 [
+  repeated Book books = 1 [
     (google.api.resource_reference).type = "library.googleapis.com/Book"];
   string next_page_token = 2;
 }
