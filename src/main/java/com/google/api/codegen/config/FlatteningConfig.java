@@ -245,6 +245,9 @@ public abstract class FlatteningConfig {
       if (fieldConfig == null) {
         missing = true;
       } else {
+        if (fieldConfig.isRepeatedResourceNameTypeField()) {
+          fieldConfig = fieldConfig.withResourceNameInSampleOnly();
+        }
         flattenedFieldConfigBuilder.put(parameter, fieldConfig);
       }
     }
@@ -290,12 +293,19 @@ public abstract class FlatteningConfig {
     }
 
     // We also generate an overload that all singular resource names are treated as strings,
-    // if there is at least one resource name field in the method surface. Note repeated
+    // if there is at least one singular resource name field in the method surface. Note repeated
     // resource name fields are always treated as strings.
     if (hasSingularResourceNameParameters(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
-
+    if (method.getFullName().contains("OptionalRequired")) {
+      System.out.println(
+          flatteningConfigs
+              .stream()
+              .map(ImmutableMap::copyOf)
+              .map(map -> new AutoValue_FlatteningConfig(map))
+              .collect(ImmutableList.toImmutableList()));
+    }
     return flatteningConfigs
         .stream()
         .map(ImmutableMap::copyOf)
