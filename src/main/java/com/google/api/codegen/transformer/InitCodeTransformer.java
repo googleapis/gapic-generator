@@ -510,11 +510,6 @@ public class InitCodeTransformer {
         fieldConfig = fieldConfig.getMessageFieldConfig();
       }
       if (item.getType().isRepeated()) {
-        if (fieldConfig == null) {
-          System.out.println("fieldConfig is null");
-        } else if (fieldConfig.getResourceNameConfig() == null) {
-          System.out.println("resourcenameconfig is null");
-        }
         surfaceLine.typeName(namer.getAndSaveResourceTypeName(typeTable, fieldConfig));
       } else {
         surfaceLine.typeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig));

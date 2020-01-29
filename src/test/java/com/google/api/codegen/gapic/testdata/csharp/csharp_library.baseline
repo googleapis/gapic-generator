@@ -9100,7 +9100,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9127,7 +9127,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9155,6 +9155,7 @@ namespace Google.Example.Library.V1.Tests
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
                 Name = new ShelfName("[SHELF]"),
+                Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9166,7 +9167,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName name = new ShelfName("[SHELF]");
-            Shelf response = client.GetShelf(name);
+            SomeMessage message = new SomeMessage();
+            Shelf response = client.GetShelf(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9182,6 +9184,7 @@ namespace Google.Example.Library.V1.Tests
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
                 Name = new ShelfName("[SHELF]"),
+                Message = new SomeMessage(),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9193,7 +9196,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName name = new ShelfName("[SHELF]");
-            Shelf response = await client.GetShelfAsync(name);
+            SomeMessage message = new SomeMessage();
+            Shelf response = await client.GetShelfAsync(name, message);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9208,8 +9212,9 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
                 Message = new SomeMessage(),
+                StringBuilder = new StringBuilder(),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9222,7 +9227,8 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName name = new ShelfName("[SHELF]");
             SomeMessage message = new SomeMessage();
-            Shelf response = client.GetShelf(name, message);
+            StringBuilder stringBuilder = new StringBuilder();
+            Shelf response = client.GetShelf(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -9237,8 +9243,9 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetShelfRequest expectedRequest = new GetShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
                 Message = new SomeMessage(),
+                StringBuilder = new StringBuilder(),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9251,195 +9258,14 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             ShelfName name = new ShelfName("[SHELF]");
             SomeMessage message = new SomeMessage();
-            Shelf response = await client.GetShelfAsync(name, message);
+            StringBuilder stringBuilder = new StringBuilder();
+            Shelf response = await client.GetShelfAsync(name, message, stringBuilder);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
 
         [Fact]
         public void GetShelf4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            Shelf response = client.GetShelf(name, message);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetShelfAsync4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            Shelf response = await client.GetShelfAsync(name, message);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetShelf5()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-                StringBuilder = new StringBuilder(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = client.GetShelf(name, message, stringBuilder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetShelfAsync5()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-                StringBuilder = new StringBuilder(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = await client.GetShelfAsync(name, message, stringBuilder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetShelf6()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-                StringBuilder = new StringBuilder(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelf(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = client.GetShelf(name, message, stringBuilder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetShelfAsync6()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetShelfRequest expectedRequest = new GetShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Message = new SomeMessage(),
-                StringBuilder = new StringBuilder(),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.GetShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            SomeMessage message = new SomeMessage();
-            StringBuilder stringBuilder = new StringBuilder();
-            Shelf response = await client.GetShelfAsync(name, message, stringBuilder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetShelf7()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9466,7 +9292,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task GetShelfAsync7()
+        public async Task GetShelfAsync4()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9502,7 +9328,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteShelfRequest expectedRequest = new DeleteShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteShelf(expectedRequest, It.IsAny<CallOptions>()))
@@ -9523,7 +9349,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteShelfRequest expectedRequest = new DeleteShelfRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
@@ -9536,48 +9362,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void DeleteShelf2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            DeleteShelfRequest expectedRequest = new DeleteShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.DeleteShelf(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            client.DeleteShelf(name);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task DeleteShelfAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            DeleteShelfRequest expectedRequest = new DeleteShelfRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.DeleteShelfAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            await client.DeleteShelfAsync(name);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void DeleteShelf3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9597,7 +9381,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task DeleteShelfAsync3()
+        public async Task DeleteShelfAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9626,8 +9410,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MergeShelvesRequest expectedRequest = new MergeShelvesRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
-                OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
+                OtherShelfName = new ShelfName("[SHELF]"),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9655,8 +9439,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MergeShelvesRequest expectedRequest = new MergeShelvesRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
-                OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
+                OtherShelfName = new ShelfName("[SHELF]"),
             };
             Shelf expectedResponse = new Shelf
             {
@@ -9676,64 +9460,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void MergeShelves2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MergeShelvesRequest expectedRequest = new MergeShelvesRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                OtherShelfName = new ShelfName("[SHELF]"),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.MergeShelves(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            ShelfName otherShelfName = new ShelfName("[SHELF]");
-            Shelf response = client.MergeShelves(name, otherShelfName);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task MergeShelvesAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MergeShelvesRequest expectedRequest = new MergeShelvesRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                OtherShelfName = new ShelfName("[SHELF]"),
-            };
-            Shelf expectedResponse = new Shelf
-            {
-                ShelfName = new ShelfName("[SHELF]"),
-                Theme = "theme110327241",
-                InternalTheme = "internalTheme792518087",
-            };
-            mockGrpcClient.Setup(x => x.MergeShelvesAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Shelf>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            ShelfName otherShelfName = new ShelfName("[SHELF]");
-            Shelf response = await client.MergeShelvesAsync(name, otherShelfName);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void MergeShelves3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9760,7 +9486,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task MergeShelvesAsync3()
+        public async Task MergeShelvesAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -9796,7 +9522,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -9826,7 +9552,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest expectedRequest = new CreateBookRequest
             {
-                ShelfName = new ShelfName("[SHELF]"),
+                Name = new ShelfName("[SHELF]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -9854,66 +9580,6 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            CreateBookRequest expectedRequest = new CreateBookRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Book = new Book(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.CreateBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            Book book = new Book();
-            Book response = client.CreateBook(name, book);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task CreateBookAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            CreateBookRequest expectedRequest = new CreateBookRequest
-            {
-                Name = new ShelfName("[SHELF]"),
-                Book = new Book(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.CreateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ShelfName name = new ShelfName("[SHELF]");
-            Book book = new Book();
-            Book response = await client.CreateBookAsync(name, book);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void CreateBook3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
             CreateBookRequest request = new CreateBookRequest
             {
                 ShelfName = new ShelfName("[SHELF]"),
@@ -9935,7 +9601,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task CreateBookAsync3()
+        public async Task CreateBookAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10116,7 +9782,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest expectedRequest = new GetBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
             };
             Book expectedResponse = new Book
             {
@@ -10144,7 +9810,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest expectedRequest = new GetBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
             };
             Book expectedResponse = new Book
             {
@@ -10164,62 +9830,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void GetBook2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookRequest expectedRequest = new GetBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            Book response = client.GetBook(name);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetBookAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookRequest expectedRequest = new GetBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            Book response = await client.GetBookAsync(name);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetBook3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10246,7 +9856,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task GetBookAsync3()
+        public async Task GetBookAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10282,7 +9892,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest expectedRequest = new DeleteBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBook(expectedRequest, It.IsAny<CallOptions>()))
@@ -10303,7 +9913,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest expectedRequest = new DeleteBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBookAsync(expectedRequest, It.IsAny<CallOptions>()))
@@ -10316,48 +9926,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void DeleteBook2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            DeleteBookRequest expectedRequest = new DeleteBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.DeleteBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            client.DeleteBook(name);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task DeleteBookAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            DeleteBookRequest expectedRequest = new DeleteBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.DeleteBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            await client.DeleteBookAsync(name);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void DeleteBook3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10377,7 +9945,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task DeleteBookAsync3()
+        public async Task DeleteBookAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10406,7 +9974,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -10436,7 +10004,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
@@ -10467,7 +10035,10 @@ namespace Google.Example.Library.V1.Tests
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
                 Name = new BookName("[SHELF]", "[BOOK]"),
+                OptionalFoo = "optionalFoo1822578535",
                 Book = new Book(),
+                UpdateMask = new FieldMask(),
+                PhysicalMask = new apis::FieldMask(),
             };
             Book expectedResponse = new Book
             {
@@ -10480,8 +10051,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookName name = new BookName("[SHELF]", "[BOOK]");
+            string optionalFoo = "optionalFoo1822578535";
             Book book = new Book();
-            Book response = client.UpdateBook(name, book);
+            FieldMask updateMask = new FieldMask();
+            apis::FieldMask physicalMask = new apis::FieldMask();
+            Book response = client.UpdateBook(name, optionalFoo, book, updateMask, physicalMask);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -10497,7 +10071,10 @@ namespace Google.Example.Library.V1.Tests
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
                 Name = new BookName("[SHELF]", "[BOOK]"),
+                OptionalFoo = "optionalFoo1822578535",
                 Book = new Book(),
+                UpdateMask = new FieldMask(),
+                PhysicalMask = new apis::FieldMask(),
             };
             Book expectedResponse = new Book
             {
@@ -10510,158 +10087,17 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             BookName name = new BookName("[SHELF]", "[BOOK]");
+            string optionalFoo = "optionalFoo1822578535";
             Book book = new Book();
-            Book response = await client.UpdateBookAsync(name, book);
+            FieldMask updateMask = new FieldMask();
+            apis::FieldMask physicalMask = new apis::FieldMask();
+            Book response = await client.UpdateBookAsync(name, optionalFoo, book, updateMask, physicalMask);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
 
         [Fact]
         public void UpdateBook3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookRequest expectedRequest = new UpdateBookRequest
-            {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
-                OptionalFoo = "optionalFoo1822578535",
-                Book = new Book(),
-                UpdateMask = new FieldMask(),
-                PhysicalMask = new apis::FieldMask(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.UpdateBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string optionalFoo = "optionalFoo1822578535";
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            apis::FieldMask physicalMask = new apis::FieldMask();
-            Book response = client.UpdateBook(name, optionalFoo, book, updateMask, physicalMask);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task UpdateBookAsync3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookRequest expectedRequest = new UpdateBookRequest
-            {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
-                OptionalFoo = "optionalFoo1822578535",
-                Book = new Book(),
-                UpdateMask = new FieldMask(),
-                PhysicalMask = new apis::FieldMask(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.UpdateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string optionalFoo = "optionalFoo1822578535";
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            apis::FieldMask physicalMask = new apis::FieldMask();
-            Book response = await client.UpdateBookAsync(name, optionalFoo, book, updateMask, physicalMask);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void UpdateBook4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookRequest expectedRequest = new UpdateBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                OptionalFoo = "optionalFoo1822578535",
-                Book = new Book(),
-                UpdateMask = new FieldMask(),
-                PhysicalMask = new apis::FieldMask(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.UpdateBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string optionalFoo = "optionalFoo1822578535";
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            apis::FieldMask physicalMask = new apis::FieldMask();
-            Book response = client.UpdateBook(name, optionalFoo, book, updateMask, physicalMask);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task UpdateBookAsync4()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookRequest expectedRequest = new UpdateBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                OptionalFoo = "optionalFoo1822578535",
-                Book = new Book(),
-                UpdateMask = new FieldMask(),
-                PhysicalMask = new apis::FieldMask(),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.UpdateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string optionalFoo = "optionalFoo1822578535";
-            Book book = new Book();
-            FieldMask updateMask = new FieldMask();
-            apis::FieldMask physicalMask = new apis::FieldMask();
-            Book response = await client.UpdateBookAsync(name, optionalFoo, book, updateMask, physicalMask);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void UpdateBook5()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10689,7 +10125,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task UpdateBookAsync5()
+        public async Task UpdateBookAsync3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10726,8 +10162,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest expectedRequest = new MoveBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
-                OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
+                OtherShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
@@ -10756,8 +10192,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest expectedRequest = new MoveBookRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
-                OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
+                OtherShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
@@ -10778,66 +10214,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void MoveBook2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBookRequest expectedRequest = new MoveBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                OtherShelfName = new ShelfName("[SHELF]"),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.MoveBook(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            ShelfName otherShelfName = new ShelfName("[SHELF]");
-            Book response = client.MoveBook(name, otherShelfName);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task MoveBookAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            MoveBookRequest expectedRequest = new MoveBookRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                OtherShelfName = new ShelfName("[SHELF]"),
-            };
-            Book expectedResponse = new Book
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.MoveBookAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            ShelfName otherShelfName = new ShelfName("[SHELF]");
-            Book response = await client.MoveBookAsync(name, otherShelfName);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void MoveBook3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10865,7 +10241,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task MoveBookAsync3()
+        public async Task MoveBookAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -10902,7 +10278,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 Comments =
                 {
                     new Comment
@@ -10941,7 +10317,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 Comments =
                 {
                     new Comment
@@ -10978,84 +10354,6 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest expectedRequest = new AddCommentsRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.CopyFromUtf8("95"),
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            client.AddComments(name, comments);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task AddCommentsAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            AddCommentsRequest expectedRequest = new AddCommentsRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                Comments =
-                {
-                    new Comment
-                    {
-                        Comment = ByteString.CopyFromUtf8("95"),
-                        Stage = Comment.Types.Stage.Unset,
-                        Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                    },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            IEnumerable<Comment> comments = new[]
-            {
-                new Comment
-                {
-                    Comment = ByteString.CopyFromUtf8("95"),
-                    Stage = Comment.Types.Stage.Unset,
-                    Alignment = SomeMessage2.Types.SomeMessage3.Types.Alignment.Char,
-                },
-            };
-            await client.AddCommentsAsync(name, comments);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void AddComments3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
                 BookName = new BookName("[SHELF]", "[BOOK]"),
@@ -11078,7 +10376,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task AddCommentsAsync3()
+        public async Task AddCommentsAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11116,8 +10414,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
-                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                ParentAsLocationParentNameOneof = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
+                Name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
+                Parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -11146,8 +10444,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
             {
-                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                ParentAsLocationParentNameOneof = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
+                Name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
+                Parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
             };
             BookFromArchive expectedResponse = new BookFromArchive
             {
@@ -11168,66 +10466,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void GetBookFromArchive2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
-            {
-                Name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                Parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
-            };
-            BookFromArchive expectedResponse = new BookFromArchive
-            {
-                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromArchive(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ArchivedBookName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
-            LocationParentNameOneof parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]"));
-            BookFromArchive response = client.GetBookFromArchive(name, parent);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetBookFromArchiveAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromArchiveRequest expectedRequest = new GetBookFromArchiveRequest
-            {
-                Name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                Parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]")),
-            };
-            BookFromArchive expectedResponse = new BookFromArchive
-            {
-                ArchivedBookName = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]"),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromArchiveAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<BookFromArchive>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ArchivedBookName name = new ArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
-            LocationParentNameOneof parent = LocationParentNameOneof.From(new ProjectName("[PROJECT]"));
-            BookFromArchive response = await client.GetBookFromArchiveAsync(name, parent);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetBookFromArchive3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11255,7 +10493,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task GetBookFromArchiveAsync3()
+        public async Task GetBookFromArchiveAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11292,10 +10530,10 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
-                FolderAsFolderName = new FolderName("[FOLDER]"),
+                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                AltBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                Place = new LocationName("[PROJECT]", "[LOCATION]"),
+                Folder = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -11326,10 +10564,10 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
-                FolderAsFolderName = new FolderName("[FOLDER]"),
+                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                AltBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                Place = new LocationName("[PROJECT]", "[LOCATION]"),
+                Folder = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -11352,74 +10590,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void GetBookFromAnywhere2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
-            {
-                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Place = new LocationName("[PROJECT]", "[LOCATION]"),
-                Folder = new FolderName("[FOLDER]"),
-            };
-            BookFromAnywhere expectedResponse = new BookFromAnywhere
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromAnywhere(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookName altBookName = new BookName("[SHELF]", "[BOOK]");
-            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
-            FolderName folder = new FolderName("[FOLDER]");
-            BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName, place, folder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetBookFromAnywhereAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
-            {
-                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Place = new LocationName("[PROJECT]", "[LOCATION]"),
-                Folder = new FolderName("[FOLDER]"),
-            };
-            BookFromAnywhere expectedResponse = new BookFromAnywhere
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromAnywhereAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<BookFromAnywhere>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookName altBookName = new BookName("[SHELF]", "[BOOK]");
-            LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
-            FolderName folder = new FolderName("[FOLDER]");
-            BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName, place, folder);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetBookFromAnywhere3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11449,7 +10619,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task GetBookFromAnywhereAsync3()
+        public async Task GetBookFromAnywhereAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11488,7 +10658,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
             {
-                AsResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -11516,7 +10686,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
             {
-                AsResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
@@ -11536,62 +10706,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void GetBookFromAbsolutelyAnywhere2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
-            {
-                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-            };
-            BookFromAnywhere expectedResponse = new BookFromAnywhere
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromAbsolutelyAnywhere(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookFromAnywhere response = client.GetBookFromAbsolutelyAnywhere(name);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task GetBookFromAbsolutelyAnywhereAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
-            {
-                Name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-            };
-            BookFromAnywhere expectedResponse = new BookFromAnywhere
-            {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                Author = "author-1406328437",
-                Title = "title110371416",
-                Read = true,
-            };
-            mockGrpcClient.Setup(x => x.GetBookFromAbsolutelyAnywhereAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<BookFromAnywhere>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookFromAnywhere response = await client.GetBookFromAbsolutelyAnywhereAsync(name);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void GetBookFromAbsolutelyAnywhere3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11618,7 +10732,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task GetBookFromAbsolutelyAnywhereAsync3()
+        public async Task GetBookFromAbsolutelyAnywhereAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11654,7 +10768,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -11685,7 +10799,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
             {
-                BookName = new BookName("[SHELF]", "[BOOK]"),
+                Name = new BookName("[SHELF]", "[BOOK]"),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -11714,68 +10828,6 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                IndexName = "default index",
-                IndexMap =
-                {
-                    { "default_key", "indexMapItem1918721251" },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.UpdateBookIndex(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string indexName = "default index";
-            IDictionary<string, string> indexMap = new Dictionary<string, string>
-            {
-                { "default_key", "indexMapItem1918721251" },
-            };
-            client.UpdateBookIndex(name, indexName, indexMap);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task UpdateBookIndexAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
-            {
-                Name = new BookName("[SHELF]", "[BOOK]"),
-                IndexName = "default index",
-                IndexMap =
-                {
-                    { "default_key", "indexMapItem1918721251" },
-                },
-            };
-            Empty expectedResponse = new Empty();
-            mockGrpcClient.Setup(x => x.UpdateBookIndexAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookName name = new BookName("[SHELF]", "[BOOK]");
-            string indexName = "default index";
-            IDictionary<string, string> indexMap = new Dictionary<string, string>
-            {
-                { "default_key", "indexMapItem1918721251" },
-            };
-            await client.UpdateBookIndexAsync(name, indexName, indexMap);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void UpdateBookIndex3()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest request = new UpdateBookIndexRequest
             {
                 BookName = new BookName("[SHELF]", "[BOOK]"),
@@ -11794,7 +10846,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task UpdateBookIndexAsync3()
+        public async Task UpdateBookIndexAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -11858,534 +10910,6 @@ namespace Google.Example.Library.V1.Tests
 
         [Fact]
         public void TestOptionalRequiredFlatteningParams2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            TestOptionalRequiredFlatteningParamsRequest expectedRequest = new TestOptionalRequiredFlatteningParamsRequest
-            {
-                RequiredSingularInt32 = 72313594,
-                RequiredSingularInt64 = 72313499L,
-                RequiredSingularFloat = -7514705.0f,
-                RequiredSingularDouble = 1.9111005E8,
-                RequiredSingularBool = true,
-                RequiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero,
-                RequiredSingularString = "requiredSingularString-1949894503",
-                RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
-                RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookName = new BookName("[SHELF]", "[BOOK]"),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameCommonAsProjectName = new ProjectName("[PROJECT]"),
-                RequiredSingularFixed32 = 720656715,
-                RequiredSingularFixed64 = 720656810,
-                RequiredRepeatedInt32 = { },
-                RequiredRepeatedInt64 = { },
-                RequiredRepeatedFloat = { },
-                RequiredRepeatedDouble = { },
-                RequiredRepeatedBool = { },
-                RequiredRepeatedEnum = { },
-                RequiredRepeatedString = { },
-                RequiredRepeatedBytes = { },
-                RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
-                RequiredRepeatedResourceNameCommon = { },
-                RequiredRepeatedFixed32 = { },
-                RequiredRepeatedFixed64 = { },
-                RequiredMap = { },
-                RequiredAnyValue = new Any(),
-                RequiredStructValue = new Struct(),
-                RequiredValueValue = new Value(),
-                RequiredListValueValue = new ListValue(),
-                RequiredTimeValue = new Timestamp(),
-                RequiredDurationValue = new Duration(),
-                RequiredFieldMaskValue = new FieldMask(),
-                RequiredInt32Value = null,
-                RequiredUint32Value = null,
-                RequiredInt64Value = null,
-                RequiredUint64Value = null,
-                RequiredFloatValue = null,
-                RequiredDoubleValue = null,
-                RequiredStringValue = null,
-                RequiredBoolValue = null,
-                RequiredBytesValue = null,
-                RequiredRepeatedAnyValue = { },
-                RequiredRepeatedStructValue = { },
-                RequiredRepeatedValueValue = { },
-                RequiredRepeatedListValueValue = { },
-                RequiredRepeatedTimeValue = { },
-                RequiredRepeatedDurationValue = { },
-                RequiredRepeatedFieldMaskValue = { },
-                RequiredRepeatedInt32Value = { },
-                RequiredRepeatedUint32Value = { },
-                RequiredRepeatedInt64Value = { },
-                RequiredRepeatedUint64Value = { },
-                RequiredRepeatedFloatValue = { },
-                RequiredRepeatedDoubleValue = { },
-                RequiredRepeatedStringValue = { },
-                RequiredRepeatedBoolValue = { },
-                RequiredRepeatedBytesValue = { },
-                OptionalSingularInt32 = 1196565723,
-                OptionalSingularInt64 = 1196565628L,
-                OptionalSingularFloat = -1.19939918E8f,
-                OptionalSingularDouble = 1.41902287E8,
-                OptionalSingularBool = false,
-                OptionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero,
-                OptionalSingularString = "optionalSingularString1852995162",
-                OptionalSingularBytes = ByteString.CopyFromUtf8("2"),
-                OptionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                OptionalSingularResourceNameAsBookName = new BookName("[SHELF]", "[BOOK]"),
-                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                OptionalSingularResourceNameCommonAsProjectName = new ProjectName("[PROJECT]"),
-                OptionalSingularFixed32 = 1648847958,
-                OptionalSingularFixed64 = 1648847863,
-                OptionalRepeatedInt32 = { },
-                OptionalRepeatedInt64 = { },
-                OptionalRepeatedFloat = { },
-                OptionalRepeatedDouble = { },
-                OptionalRepeatedBool = { },
-                OptionalRepeatedEnum = { },
-                OptionalRepeatedString = { },
-                OptionalRepeatedBytes = { },
-                OptionalRepeatedMessage = { },
-                OptionalRepeatedResourceName = { },
-                OptionalRepeatedResourceNameOneof = { },
-                OptionalRepeatedResourceNameCommon = { },
-                OptionalRepeatedFixed32 = { },
-                OptionalRepeatedFixed64 = { },
-                OptionalMap = { },
-                AnyValue = new Any(),
-                StructValue = new Struct(),
-                ValueValue = new Value(),
-                ListValueValue = new ListValue(),
-                TimeValue = new Timestamp(),
-                DurationValue = new Duration(),
-                FieldMaskValue = new FieldMask(),
-                Int32Value = null,
-                Uint32Value = null,
-                Int64Value = null,
-                Uint64Value = null,
-                FloatValue = null,
-                DoubleValue = null,
-                StringValue = null,
-                BoolValue = null,
-                BytesValue = null,
-                RepeatedAnyValue = { },
-                RepeatedStructValue = { },
-                RepeatedValueValue = { },
-                RepeatedListValueValue = { },
-                RepeatedTimeValue = { },
-                RepeatedDurationValue = { },
-                RepeatedFieldMaskValue = { },
-                RepeatedInt32Value = { },
-                RepeatedUint32Value = { },
-                RepeatedInt64Value = { },
-                RepeatedUint64Value = { },
-                RepeatedFloatValue = { },
-                RepeatedDoubleValue = { },
-                RepeatedStringValue = { },
-                RepeatedBoolValue = { },
-                RepeatedBytesValue = { },
-            };
-            TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
-            mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParams(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(expectedResponse);
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            int requiredSingularInt32 = 72313594;
-            long requiredSingularInt64 = 72313499L;
-            float requiredSingularFloat = -7514705.0f;
-            double requiredSingularDouble = 1.9111005E8;
-            bool requiredSingularBool = true;
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero;
-            string requiredSingularString = "requiredSingularString-1949894503";
-            ByteString requiredSingularBytes = ByteString.CopyFromUtf8("-29");
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookName requiredSingularResourceName = new BookName("[SHELF]", "[BOOK]");
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            ProjectName requiredSingularResourceNameCommon = new ProjectName("[PROJECT]");
-            int requiredSingularFixed32 = 720656715;
-            long requiredSingularFixed64 = 720656810;
-            IEnumerable<int> requiredRepeatedInt32 = new List<int>();
-            IEnumerable<long> requiredRepeatedInt64 = new List<long>();
-            IEnumerable<float> requiredRepeatedFloat = new List<float>();
-            IEnumerable<double> requiredRepeatedDouble = new List<double>();
-            IEnumerable<bool> requiredRepeatedBool = new List<bool>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> requiredRepeatedEnum = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>();
-            IEnumerable<string> requiredRepeatedString = new List<string>();
-            IEnumerable<ByteString> requiredRepeatedBytes = new List<ByteString>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>();
-            IEnumerable<BookName> requiredRepeatedResourceName = new List<BookName>();
-            IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof = new List<BookNameOneof>();
-            IEnumerable<ProjectName> requiredRepeatedResourceNameCommon = new List<ProjectName>();
-            IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
-            IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
-            IDictionary<int, string> requiredMap = new Dictionary<int, string>();
-            Any requiredAnyValue = new Any();
-            Struct requiredStructValue = new Struct();
-            Value requiredValueValue = new Value();
-            ListValue requiredListValueValue = new ListValue();
-            Timestamp requiredTimeValue = new Timestamp();
-            Duration requiredDurationValue = new Duration();
-            FieldMask requiredFieldMaskValue = new FieldMask();
-            int? requiredInt32Value = null;
-            uint? requiredUint32Value = null;
-            long? requiredInt64Value = null;
-            ulong? requiredUint64Value = null;
-            float? requiredFloatValue = null;
-            double? requiredDoubleValue = null;
-            string requiredStringValue = null;
-            bool? requiredBoolValue = null;
-            ByteString requiredBytesValue = null;
-            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
-            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
-            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
-            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
-            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
-            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
-            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
-            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
-            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
-            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
-            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
-            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
-            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
-            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
-            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
-            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
-            int optionalSingularInt32 = 1196565723;
-            long optionalSingularInt64 = 1196565628L;
-            float optionalSingularFloat = -1.19939918E8f;
-            double optionalSingularDouble = 1.41902287E8;
-            bool optionalSingularBool = false;
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum optionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero;
-            string optionalSingularString = "optionalSingularString1852995162";
-            ByteString optionalSingularBytes = ByteString.CopyFromUtf8("2");
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookName optionalSingularResourceName = new BookName("[SHELF]", "[BOOK]");
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            ProjectName optionalSingularResourceNameCommon = new ProjectName("[PROJECT]");
-            int optionalSingularFixed32 = 1648847958;
-            long optionalSingularFixed64 = 1648847863;
-            IEnumerable<int> optionalRepeatedInt32 = new List<int>();
-            IEnumerable<long> optionalRepeatedInt64 = new List<long>();
-            IEnumerable<float> optionalRepeatedFloat = new List<float>();
-            IEnumerable<double> optionalRepeatedDouble = new List<double>();
-            IEnumerable<bool> optionalRepeatedBool = new List<bool>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> optionalRepeatedEnum = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>();
-            IEnumerable<string> optionalRepeatedString = new List<string>();
-            IEnumerable<ByteString> optionalRepeatedBytes = new List<ByteString>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>();
-            IEnumerable<BookName> optionalRepeatedResourceName = new List<BookName>();
-            IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof = new List<BookNameOneof>();
-            IEnumerable<ProjectName> optionalRepeatedResourceNameCommon = new List<ProjectName>();
-            IEnumerable<int> optionalRepeatedFixed32 = new List<int>();
-            IEnumerable<long> optionalRepeatedFixed64 = new List<long>();
-            IDictionary<int, string> optionalMap = new Dictionary<int, string>();
-            Any anyValue = new Any();
-            Struct structValue = new Struct();
-            Value valueValue = new Value();
-            ListValue listValueValue = new ListValue();
-            Timestamp timeValue = new Timestamp();
-            Duration durationValue = new Duration();
-            FieldMask fieldMaskValue = new FieldMask();
-            int? int32Value = null;
-            uint? uint32Value = null;
-            long? int64Value = null;
-            ulong? uint64Value = null;
-            float? floatValue = null;
-            double? doubleValue = null;
-            string stringValue = null;
-            bool? boolValue = null;
-            ByteString bytesValue = null;
-            IEnumerable<Any> repeatedAnyValue = new List<Any>();
-            IEnumerable<Struct> repeatedStructValue = new List<Struct>();
-            IEnumerable<Value> repeatedValueValue = new List<Value>();
-            IEnumerable<ListValue> repeatedListValueValue = new List<ListValue>();
-            IEnumerable<Timestamp> repeatedTimeValue = new List<Timestamp>();
-            IEnumerable<Duration> repeatedDurationValue = new List<Duration>();
-            IEnumerable<FieldMask> repeatedFieldMaskValue = new List<FieldMask>();
-            IEnumerable<int?> repeatedInt32Value = new List<int?>();
-            IEnumerable<uint?> repeatedUint32Value = new List<uint?>();
-            IEnumerable<long?> repeatedInt64Value = new List<long?>();
-            IEnumerable<ulong?> repeatedUint64Value = new List<ulong?>();
-            IEnumerable<float?> repeatedFloatValue = new List<float?>();
-            IEnumerable<double?> repeatedDoubleValue = new List<double?>();
-            IEnumerable<string> repeatedStringValue = new List<string>();
-            IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
-            IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
-            TestOptionalRequiredFlatteningParamsResponse response = client.TestOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public async Task TestOptionalRequiredFlatteningParamsAsync2()
-        {
-            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
-            mockGrpcClient.Setup(x => x.CreateLabelerClient())
-                .Returns(new Mock<Labeler.LabelerClient>().Object);
-            mockGrpcClient.Setup(x => x.CreateOperationsClient())
-                .Returns(new Mock<Operations.OperationsClient>().Object);
-            TestOptionalRequiredFlatteningParamsRequest expectedRequest = new TestOptionalRequiredFlatteningParamsRequest
-            {
-                RequiredSingularInt32 = 72313594,
-                RequiredSingularInt64 = 72313499L,
-                RequiredSingularFloat = -7514705.0f,
-                RequiredSingularDouble = 1.9111005E8,
-                RequiredSingularBool = true,
-                RequiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero,
-                RequiredSingularString = "requiredSingularString-1949894503",
-                RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
-                RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookName = new BookName("[SHELF]", "[BOOK]"),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameCommonAsProjectName = new ProjectName("[PROJECT]"),
-                RequiredSingularFixed32 = 720656715,
-                RequiredSingularFixed64 = 720656810,
-                RequiredRepeatedInt32 = { },
-                RequiredRepeatedInt64 = { },
-                RequiredRepeatedFloat = { },
-                RequiredRepeatedDouble = { },
-                RequiredRepeatedBool = { },
-                RequiredRepeatedEnum = { },
-                RequiredRepeatedString = { },
-                RequiredRepeatedBytes = { },
-                RequiredRepeatedMessage = { },
-                RequiredRepeatedResourceName = { },
-                RequiredRepeatedResourceNameOneof = { },
-                RequiredRepeatedResourceNameCommon = { },
-                RequiredRepeatedFixed32 = { },
-                RequiredRepeatedFixed64 = { },
-                RequiredMap = { },
-                RequiredAnyValue = new Any(),
-                RequiredStructValue = new Struct(),
-                RequiredValueValue = new Value(),
-                RequiredListValueValue = new ListValue(),
-                RequiredTimeValue = new Timestamp(),
-                RequiredDurationValue = new Duration(),
-                RequiredFieldMaskValue = new FieldMask(),
-                RequiredInt32Value = null,
-                RequiredUint32Value = null,
-                RequiredInt64Value = null,
-                RequiredUint64Value = null,
-                RequiredFloatValue = null,
-                RequiredDoubleValue = null,
-                RequiredStringValue = null,
-                RequiredBoolValue = null,
-                RequiredBytesValue = null,
-                RequiredRepeatedAnyValue = { },
-                RequiredRepeatedStructValue = { },
-                RequiredRepeatedValueValue = { },
-                RequiredRepeatedListValueValue = { },
-                RequiredRepeatedTimeValue = { },
-                RequiredRepeatedDurationValue = { },
-                RequiredRepeatedFieldMaskValue = { },
-                RequiredRepeatedInt32Value = { },
-                RequiredRepeatedUint32Value = { },
-                RequiredRepeatedInt64Value = { },
-                RequiredRepeatedUint64Value = { },
-                RequiredRepeatedFloatValue = { },
-                RequiredRepeatedDoubleValue = { },
-                RequiredRepeatedStringValue = { },
-                RequiredRepeatedBoolValue = { },
-                RequiredRepeatedBytesValue = { },
-                OptionalSingularInt32 = 1196565723,
-                OptionalSingularInt64 = 1196565628L,
-                OptionalSingularFloat = -1.19939918E8f,
-                OptionalSingularDouble = 1.41902287E8,
-                OptionalSingularBool = false,
-                OptionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero,
-                OptionalSingularString = "optionalSingularString1852995162",
-                OptionalSingularBytes = ByteString.CopyFromUtf8("2"),
-                OptionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                OptionalSingularResourceNameAsBookName = new BookName("[SHELF]", "[BOOK]"),
-                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                OptionalSingularResourceNameCommonAsProjectName = new ProjectName("[PROJECT]"),
-                OptionalSingularFixed32 = 1648847958,
-                OptionalSingularFixed64 = 1648847863,
-                OptionalRepeatedInt32 = { },
-                OptionalRepeatedInt64 = { },
-                OptionalRepeatedFloat = { },
-                OptionalRepeatedDouble = { },
-                OptionalRepeatedBool = { },
-                OptionalRepeatedEnum = { },
-                OptionalRepeatedString = { },
-                OptionalRepeatedBytes = { },
-                OptionalRepeatedMessage = { },
-                OptionalRepeatedResourceName = { },
-                OptionalRepeatedResourceNameOneof = { },
-                OptionalRepeatedResourceNameCommon = { },
-                OptionalRepeatedFixed32 = { },
-                OptionalRepeatedFixed64 = { },
-                OptionalMap = { },
-                AnyValue = new Any(),
-                StructValue = new Struct(),
-                ValueValue = new Value(),
-                ListValueValue = new ListValue(),
-                TimeValue = new Timestamp(),
-                DurationValue = new Duration(),
-                FieldMaskValue = new FieldMask(),
-                Int32Value = null,
-                Uint32Value = null,
-                Int64Value = null,
-                Uint64Value = null,
-                FloatValue = null,
-                DoubleValue = null,
-                StringValue = null,
-                BoolValue = null,
-                BytesValue = null,
-                RepeatedAnyValue = { },
-                RepeatedStructValue = { },
-                RepeatedValueValue = { },
-                RepeatedListValueValue = { },
-                RepeatedTimeValue = { },
-                RepeatedDurationValue = { },
-                RepeatedFieldMaskValue = { },
-                RepeatedInt32Value = { },
-                RepeatedUint32Value = { },
-                RepeatedInt64Value = { },
-                RepeatedUint64Value = { },
-                RepeatedFloatValue = { },
-                RepeatedDoubleValue = { },
-                RepeatedStringValue = { },
-                RepeatedBoolValue = { },
-                RepeatedBytesValue = { },
-            };
-            TestOptionalRequiredFlatteningParamsResponse expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
-            mockGrpcClient.Setup(x => x.TestOptionalRequiredFlatteningParamsAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<TestOptionalRequiredFlatteningParamsResponse>(Task.FromResult(expectedResponse), null, null, null, null));
-            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            int requiredSingularInt32 = 72313594;
-            long requiredSingularInt64 = 72313499L;
-            float requiredSingularFloat = -7514705.0f;
-            double requiredSingularDouble = 1.9111005E8;
-            bool requiredSingularBool = true;
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum requiredSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero;
-            string requiredSingularString = "requiredSingularString-1949894503";
-            ByteString requiredSingularBytes = ByteString.CopyFromUtf8("-29");
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookName requiredSingularResourceName = new BookName("[SHELF]", "[BOOK]");
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            ProjectName requiredSingularResourceNameCommon = new ProjectName("[PROJECT]");
-            int requiredSingularFixed32 = 720656715;
-            long requiredSingularFixed64 = 720656810;
-            IEnumerable<int> requiredRepeatedInt32 = new List<int>();
-            IEnumerable<long> requiredRepeatedInt64 = new List<long>();
-            IEnumerable<float> requiredRepeatedFloat = new List<float>();
-            IEnumerable<double> requiredRepeatedDouble = new List<double>();
-            IEnumerable<bool> requiredRepeatedBool = new List<bool>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> requiredRepeatedEnum = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>();
-            IEnumerable<string> requiredRepeatedString = new List<string>();
-            IEnumerable<ByteString> requiredRepeatedBytes = new List<ByteString>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>();
-            IEnumerable<BookName> requiredRepeatedResourceName = new List<BookName>();
-            IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof = new List<BookNameOneof>();
-            IEnumerable<ProjectName> requiredRepeatedResourceNameCommon = new List<ProjectName>();
-            IEnumerable<int> requiredRepeatedFixed32 = new List<int>();
-            IEnumerable<long> requiredRepeatedFixed64 = new List<long>();
-            IDictionary<int, string> requiredMap = new Dictionary<int, string>();
-            Any requiredAnyValue = new Any();
-            Struct requiredStructValue = new Struct();
-            Value requiredValueValue = new Value();
-            ListValue requiredListValueValue = new ListValue();
-            Timestamp requiredTimeValue = new Timestamp();
-            Duration requiredDurationValue = new Duration();
-            FieldMask requiredFieldMaskValue = new FieldMask();
-            int? requiredInt32Value = null;
-            uint? requiredUint32Value = null;
-            long? requiredInt64Value = null;
-            ulong? requiredUint64Value = null;
-            float? requiredFloatValue = null;
-            double? requiredDoubleValue = null;
-            string requiredStringValue = null;
-            bool? requiredBoolValue = null;
-            ByteString requiredBytesValue = null;
-            IEnumerable<Any> requiredRepeatedAnyValue = new List<Any>();
-            IEnumerable<Struct> requiredRepeatedStructValue = new List<Struct>();
-            IEnumerable<Value> requiredRepeatedValueValue = new List<Value>();
-            IEnumerable<ListValue> requiredRepeatedListValueValue = new List<ListValue>();
-            IEnumerable<Timestamp> requiredRepeatedTimeValue = new List<Timestamp>();
-            IEnumerable<Duration> requiredRepeatedDurationValue = new List<Duration>();
-            IEnumerable<FieldMask> requiredRepeatedFieldMaskValue = new List<FieldMask>();
-            IEnumerable<int?> requiredRepeatedInt32Value = new List<int?>();
-            IEnumerable<uint?> requiredRepeatedUint32Value = new List<uint?>();
-            IEnumerable<long?> requiredRepeatedInt64Value = new List<long?>();
-            IEnumerable<ulong?> requiredRepeatedUint64Value = new List<ulong?>();
-            IEnumerable<float?> requiredRepeatedFloatValue = new List<float?>();
-            IEnumerable<double?> requiredRepeatedDoubleValue = new List<double?>();
-            IEnumerable<string> requiredRepeatedStringValue = new List<string>();
-            IEnumerable<bool?> requiredRepeatedBoolValue = new List<bool?>();
-            IEnumerable<ByteString> requiredRepeatedBytesValue = new List<ByteString>();
-            int optionalSingularInt32 = 1196565723;
-            long optionalSingularInt64 = 1196565628L;
-            float optionalSingularFloat = -1.19939918E8f;
-            double optionalSingularDouble = 1.41902287E8;
-            bool optionalSingularBool = false;
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum optionalSingularEnum = TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero;
-            string optionalSingularString = "optionalSingularString1852995162";
-            ByteString optionalSingularBytes = ByteString.CopyFromUtf8("2");
-            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookName optionalSingularResourceName = new BookName("[SHELF]", "[BOOK]");
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            ProjectName optionalSingularResourceNameCommon = new ProjectName("[PROJECT]");
-            int optionalSingularFixed32 = 1648847958;
-            long optionalSingularFixed64 = 1648847863;
-            IEnumerable<int> optionalRepeatedInt32 = new List<int>();
-            IEnumerable<long> optionalRepeatedInt64 = new List<long>();
-            IEnumerable<float> optionalRepeatedFloat = new List<float>();
-            IEnumerable<double> optionalRepeatedDouble = new List<double>();
-            IEnumerable<bool> optionalRepeatedBool = new List<bool>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> optionalRepeatedEnum = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>();
-            IEnumerable<string> optionalRepeatedString = new List<string>();
-            IEnumerable<ByteString> optionalRepeatedBytes = new List<ByteString>();
-            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage = new List<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>();
-            IEnumerable<BookName> optionalRepeatedResourceName = new List<BookName>();
-            IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof = new List<BookNameOneof>();
-            IEnumerable<ProjectName> optionalRepeatedResourceNameCommon = new List<ProjectName>();
-            IEnumerable<int> optionalRepeatedFixed32 = new List<int>();
-            IEnumerable<long> optionalRepeatedFixed64 = new List<long>();
-            IDictionary<int, string> optionalMap = new Dictionary<int, string>();
-            Any anyValue = new Any();
-            Struct structValue = new Struct();
-            Value valueValue = new Value();
-            ListValue listValueValue = new ListValue();
-            Timestamp timeValue = new Timestamp();
-            Duration durationValue = new Duration();
-            FieldMask fieldMaskValue = new FieldMask();
-            int? int32Value = null;
-            uint? uint32Value = null;
-            long? int64Value = null;
-            ulong? uint64Value = null;
-            float? floatValue = null;
-            double? doubleValue = null;
-            string stringValue = null;
-            bool? boolValue = null;
-            ByteString bytesValue = null;
-            IEnumerable<Any> repeatedAnyValue = new List<Any>();
-            IEnumerable<Struct> repeatedStructValue = new List<Struct>();
-            IEnumerable<Value> repeatedValueValue = new List<Value>();
-            IEnumerable<ListValue> repeatedListValueValue = new List<ListValue>();
-            IEnumerable<Timestamp> repeatedTimeValue = new List<Timestamp>();
-            IEnumerable<Duration> repeatedDurationValue = new List<Duration>();
-            IEnumerable<FieldMask> repeatedFieldMaskValue = new List<FieldMask>();
-            IEnumerable<int?> repeatedInt32Value = new List<int?>();
-            IEnumerable<uint?> repeatedUint32Value = new List<uint?>();
-            IEnumerable<long?> repeatedInt64Value = new List<long?>();
-            IEnumerable<ulong?> repeatedUint64Value = new List<ulong?>();
-            IEnumerable<float?> repeatedFloatValue = new List<float?>();
-            IEnumerable<double?> repeatedDoubleValue = new List<double?>();
-            IEnumerable<string> repeatedStringValue = new List<string>();
-            IEnumerable<bool?> repeatedBoolValue = new List<bool?>();
-            IEnumerable<ByteString> repeatedBytesValue = new List<ByteString>();
-            TestOptionalRequiredFlatteningParamsResponse response = await client.TestOptionalRequiredFlatteningParamsAsync(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularResourceNameCommon, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedResourceNameCommon, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, requiredAnyValue, requiredStructValue, requiredValueValue, requiredListValueValue, requiredTimeValue, requiredDurationValue, requiredFieldMaskValue, requiredInt32Value, requiredUint32Value, requiredInt64Value, requiredUint64Value, requiredFloatValue, requiredDoubleValue, requiredStringValue, requiredBoolValue, requiredBytesValue, requiredRepeatedAnyValue, requiredRepeatedStructValue, requiredRepeatedValueValue, requiredRepeatedListValueValue, requiredRepeatedTimeValue, requiredRepeatedDurationValue, requiredRepeatedFieldMaskValue, requiredRepeatedInt32Value, requiredRepeatedUint32Value, requiredRepeatedInt64Value, requiredRepeatedUint64Value, requiredRepeatedFloatValue, requiredRepeatedDoubleValue, requiredRepeatedStringValue, requiredRepeatedBoolValue, requiredRepeatedBytesValue, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularResourceNameCommon, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedResourceNameCommon, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap, anyValue, structValue, valueValue, listValueValue, timeValue, durationValue, fieldMaskValue, int32Value, uint32Value, int64Value, uint64Value, floatValue, doubleValue, stringValue, boolValue, bytesValue, repeatedAnyValue, repeatedStructValue, repeatedValueValue, repeatedListValueValue, repeatedTimeValue, repeatedDurationValue, repeatedFieldMaskValue, repeatedInt32Value, repeatedUint32Value, repeatedInt64Value, repeatedUint64Value, repeatedFloatValue, repeatedDoubleValue, repeatedStringValue, repeatedBoolValue, repeatedBytesValue);
-            Assert.Same(expectedResponse, response);
-            mockGrpcClient.VerifyAll();
-        }
-
-        [Fact]
-        public void TestOptionalRequiredFlatteningParams3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -12649,7 +11173,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task TestOptionalRequiredFlatteningParamsAsync3()
+        public async Task TestOptionalRequiredFlatteningParamsAsync2()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -12913,7 +11437,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public void TestOptionalRequiredFlatteningParams4()
+        public void TestOptionalRequiredFlatteningParams3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())
@@ -12994,7 +11518,7 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
-        public async Task TestOptionalRequiredFlatteningParamsAsync4()
+        public async Task TestOptionalRequiredFlatteningParamsAsync3()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
             mockGrpcClient.Setup(x => x.CreateLabelerClient())

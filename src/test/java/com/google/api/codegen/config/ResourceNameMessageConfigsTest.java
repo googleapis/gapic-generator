@@ -256,7 +256,7 @@ public class ResourceNameMessageConfigsTest {
             protoParser,
             resourceDescriptorConfigMap,
             Collections.emptyMap());
-
+    System.out.println(messageConfigs.getResourceTypeConfigMap());
     assertThat(messageConfigs.getResourceTypeConfigMap().size()).isEqualTo(2);
     ResourceNameMessageConfig bookMessageConfig =
         messageConfigs.getResourceTypeConfigMap().get("library.Book");

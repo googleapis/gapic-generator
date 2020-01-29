@@ -344,6 +344,7 @@ public abstract class FieldConfig {
             : getExampleResourceNameConfig().getEntityId();
 
     return MoreObjects.toStringHelper(this)
+        .add("fieldName", getField().getSimpleName())
         .add("resourceNameEntityId", resourceNameEntityId)
         .add("exampleResourceNameEntityId", exampleResourceNameEntityId)
         .add("resourceTreatment", getResourceNameTreatment())

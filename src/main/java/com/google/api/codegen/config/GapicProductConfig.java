@@ -256,17 +256,8 @@ public abstract class GapicProductConfig implements ProductConfig {
                       DeprecatedCollectionConfigProto::getNamePattern, c -> c));
 
       // Create a pattern-to-resource map to make looking up parent resources easier.
-      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
-      for (ResourceDescriptorConfig resourceDescriptor : descriptorConfigMap.values()) {
-        for (String pattern : resourceDescriptor.getPatterns()) {
-          List<ResourceDescriptorConfig> resources = patternResourceDescriptorMap.get(pattern);
-          if (resources == null) {
-            resources = new ArrayList<>();
-            patternResourceDescriptorMap.put(pattern, resources);
-          }
-          resources.add(resourceDescriptor);
-        }
-      }
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap =
+          ResourceDescriptorConfig.getPatternResourceMap(descriptorConfigMap.values());
 
       // Create a child-to-parent map to make resolving child_type easier.
       Map<String, List<ResourceDescriptorConfig>> childParentResourceMap =

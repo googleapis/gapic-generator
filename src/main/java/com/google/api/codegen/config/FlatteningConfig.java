@@ -298,14 +298,6 @@ public abstract class FlatteningConfig {
     if (hasSingularResourceNameParameters(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
-    if (method.getFullName().contains("OptionalRequired")) {
-      System.out.println(
-          flatteningConfigs
-              .stream()
-              .map(ImmutableMap::copyOf)
-              .map(map -> new AutoValue_FlatteningConfig(map))
-              .collect(ImmutableList.toImmutableList()));
-    }
     return flatteningConfigs
         .stream()
         .map(ImmutableMap::copyOf)

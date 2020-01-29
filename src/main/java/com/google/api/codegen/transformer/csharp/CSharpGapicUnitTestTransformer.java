@@ -179,6 +179,9 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         }
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+          if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
+            continue;
+          }
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           testCaseViews.add(

@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -165,6 +166,33 @@ public abstract class ResourceDescriptorConfig {
   }
 
   /**
+   * Returns a map from resource name patterns to resources.
+   *
+   * <p>Package private for use in GapicProductConfig.
+   */
+  static Map<String, List<ResourceDescriptorConfig>> getPatternResourceMap(
+      Collection<ResourceDescriptorConfig> resourceDescriptors) {
+    // Create a pattern-to-resource map to make looking up parent resources easier.
+    Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
+    for (ResourceDescriptorConfig resourceDescriptor : resourceDescriptors) {
+      for (String pattern : resourceDescriptor.getPatterns()) {
+        List<ResourceDescriptorConfig> resources = patternResourceDescriptorMap.get(pattern);
+        if (resources == null) {
+          resources = new ArrayList<>();
+          patternResourceDescriptorMap.put(pattern, resources);
+        }
+        resources.add(resourceDescriptor);
+      }
+    }
+    return patternResourceDescriptorMap
+        .entrySet()
+        .stream()
+        .collect(
+            ImmutableMap.toImmutableMap(
+                entry -> entry.getKey(), entry -> ImmutableList.copyOf(entry.getValue())));
+  }
+
+  /**
    * Returns a map from unified resource types to parent resources.
    *
    * <p>We consider the list of resources to be another resource Bar's parents if the union of all
@@ -255,6 +283,7 @@ public abstract class ResourceDescriptorConfig {
         .getPatterns()
         .stream()
         .map(ResourceDescriptorConfig::getParentPattern)
+        .filter(p -> !p.isEmpty())
         .collect(ImmutableMap.toImmutableMap(p -> p, p -> false));
   }
 
