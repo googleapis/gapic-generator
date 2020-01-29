@@ -19,11 +19,12 @@ def _php_impl(ctx):
     root_path = ctx.path(".")
 
     build_bazel = """
-exports_files(glob(include = ["bin/*", "lib/**", "etc/*"], exclude_directories = 0))
+exports_files(glob(include = ["bin/*", "lib/**"], exclude_directories = 0))
      """.format(
     )
 
     os_name = ctx.os.name
+
     # First try using the prebuilt version
     for prebuilt_php in ctx.attr.prebuilt_phps:
         if prebuilt_php.name.find(os_name) < 0:
@@ -48,7 +49,7 @@ exports_files(glob(include = ["bin/*", "lib/**", "etc/*"], exclude_directories =
     )
     _execute_and_check_result(
         ctx,
-        ["./configure", "--prefix=%s" % root_path.realpath],
+        ["./configure", "--enable-static", "--without-pear", "--prefix=%s" % root_path.realpath],
         working_directory = srcs_dir,
         quiet = False,
     )
