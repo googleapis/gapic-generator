@@ -2,9 +2,11 @@
 
 There are no specific requirements on how to build the PHP interpreter, a typical build should work.
 
+Note, the prebuilt PHP distributions are optional, if no appropriate prebuilt distribution is specified during the build, PHP will be built on-the fly. The prebuilt distributions should be treated as a way to optimize the overall `bazel build` speed.
+
 The recommended (tested) way of doing it is as follows:
 
-1. Do the build on the oldest OS distribution you want to support (you can add prebuilt binaries for any number of operating systems and their distributions, the first one in the list which is able to complete `bin/php --version` command without errors will be picked during the `bazel build`). For example `Ubuntu 16.04 LTE`. 
+1. Do the build on the oldest OS distribution you want to support (you can add prebuilt binaries for any number of operating systems and their distributions, the first one in the list which is able to complete `bin/php --version` command without errors will be picked during the `bazel build`). For example `Ubuntu 16.04 LTS`. 
 2. Make sure that `libxml2-dev` and `build-essential` packages are installed on the machine:  
     ```
     sudo apt-get install \
