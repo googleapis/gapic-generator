@@ -967,10 +967,6 @@ public class InitCodeTransformer {
     // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
     if (matchingConfigs.isEmpty()) {
-      if (oneofConfig.getSingleResourceNameConfigs().size() == 0) {
-        System.out.println("Hahahahha");
-        System.out.println(oneofConfig);
-      }
       return oneofConfig.getSingleResourceNameConfigs().get(0);
     }
     return matchingConfigs.get(0);
