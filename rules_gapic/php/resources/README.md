@@ -2,7 +2,7 @@
 
 There are no specific requirements on how to build the PHP interpreter, a typical build should work.
 
-Note, the prebuilt PHP distributions are optional, if no appropriate prebuilt distribution is specified during the build, PHP will be built on-the fly. The prebuilt distributions should be treated as a way to optimize the overall `bazel build` speed.
+Note, the prebuilt PHP distributions are optional, if no appropriate prebuilt distribution is specified during the build, PHP will be built on the fly. The prebuilt distributions should be treated as a way to optimize the overall `bazel build` speed.
 
 The recommended (tested) way of doing it is as follows:
 
