@@ -236,7 +236,8 @@ public abstract class FieldConfig {
 
   public FieldConfig withResourceNameInSampleOnly() {
     ResourceNameTreatment newTreatment = ResourceNameTreatment.NONE;
-    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())) {
+    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())
+        || ResourceNameTreatment.SAMPLE_ONLY.equals(getResourceNameTreatment())) {
       newTreatment = ResourceNameTreatment.SAMPLE_ONLY;
     }
     return FieldConfig.createFieldConfig(

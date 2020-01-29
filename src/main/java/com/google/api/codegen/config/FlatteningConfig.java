@@ -263,7 +263,8 @@ public abstract class FlatteningConfig {
    * proto annotations, linking it up with the provided method.
    */
   @Nullable
-  private static List<FlatteningConfig> createFlatteningsFromProtoFile(
+  @VisibleForTesting
+  static List<FlatteningConfig> createFlatteningsFromProtoFile(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
