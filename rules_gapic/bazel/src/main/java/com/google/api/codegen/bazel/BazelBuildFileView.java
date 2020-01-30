@@ -169,7 +169,7 @@ class BazelBuildFileView {
         goImports.add(replaceLabelName(protoImport, ":iam_go_proto"));
       } else if (protoImport.endsWith(":config_change_proto")) {
         goImports.add(replaceLabelName(protoImport, ":configchange_go_proto"));
-      } else if (protoImport.endsWith(":service_proto")) {
+      } else if (protoImport.endsWith(":service_proto") || protoImport.endsWith(":quota_proto")) {
         goImports.add(replaceLabelName(protoImport, ":serviceconfig_go_proto"));
       } else if (protoImport.endsWith(":postal_address_proto")) {
         goImports.add(replaceLabelName(protoImport, ":postaladdress_go_proto"));
