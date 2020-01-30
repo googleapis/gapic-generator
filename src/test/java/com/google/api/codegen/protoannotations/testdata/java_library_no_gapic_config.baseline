@@ -10398,7 +10398,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10485,7 +10485,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     DeleteBookRequest actualRequest = (DeleteBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10534,7 +10534,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10588,7 +10588,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(optionalFoo, actualRequest.getOptionalFoo());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
@@ -10645,7 +10645,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     MoveBookRequest actualRequest = (MoveBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(otherShelfName, ShelfName.parse(actualRequest.getOtherShelfName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10782,7 +10782,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     AddCommentsRequest actualRequest = (AddCommentsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(comments, actualRequest.getCommentsList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -10886,8 +10886,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
-    Assert.assertEquals(altBookName, actualRequest.getAltBookName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
+    Assert.assertEquals(altBookName, BookNames.parse(actualRequest.getAltBookName()));
     Assert.assertEquals(place, LocationName.parse(actualRequest.getPlace()));
     Assert.assertEquals(folder, FolderName.parse(actualRequest.getFolder()));
     Assert.assertTrue(
@@ -10940,7 +10940,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -10979,7 +10979,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     UpdateBookIndexRequest actualRequest = (UpdateBookIndexRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertEquals(indexName, actualRequest.getIndexName());
     Assert.assertEquals(indexMap, actualRequest.getIndexMapMap());
     Assert.assertTrue(
@@ -11197,8 +11197,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(names, actualRequest.getNamesList());
-    Assert.assertEquals(formattedShelves, actualRequest.getShelvesList());
+    Assert.assertEquals(names, BookName.parseList(actualRequest.getNamesList()));
+    Assert.assertEquals(formattedShelves, ShelfName.parseList(actualRequest.getShelvesList()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -11295,7 +11295,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -11343,7 +11343,7 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookRequest actualRequest = (GetBookRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getName());
+    Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -11393,7 +11393,7 @@ public class LibraryServiceClientTest {
 
     Assert.assertEquals(source, ArchiveName.parse(actualRequest.getSource()));
     Assert.assertEquals(destination, ArchiveName.parse(actualRequest.getDestination()));
-    Assert.assertEquals(formattedPublishers, actualRequest.getPublishersList());
+    Assert.assertEquals(formattedPublishers, PublisherName.parseList(actualRequest.getPublishersList()));
     Assert.assertEquals(project, ProjectName.parse(actualRequest.getProject()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -11750,8 +11750,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(requiredSingularString, actualRequest.getRequiredSingularString());
     Assert.assertEquals(requiredSingularBytes, actualRequest.getRequiredSingularBytes());
     Assert.assertEquals(requiredSingularMessage, actualRequest.getRequiredSingularMessage());
-    Assert.assertEquals(requiredSingularResourceName, actualRequest.getRequiredSingularResourceName());
-    Assert.assertEquals(requiredSingularResourceNameOneof, actualRequest.getRequiredSingularResourceNameOneof());
+    Assert.assertEquals(requiredSingularResourceName, BookNames.parse(actualRequest.getRequiredSingularResourceName()));
+    Assert.assertEquals(requiredSingularResourceNameOneof, BookNames.parse(actualRequest.getRequiredSingularResourceNameOneof()));
     Assert.assertEquals(requiredSingularResourceNameCommon, actualRequest.getRequiredSingularResourceNameCommon());
     Assert.assertEquals(requiredSingularFixed32, actualRequest.getRequiredSingularFixed32());
     Assert.assertEquals(requiredSingularFixed64, actualRequest.getRequiredSingularFixed64());
@@ -11764,8 +11764,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(requiredRepeatedString, actualRequest.getRequiredRepeatedStringList());
     Assert.assertEquals(requiredRepeatedBytes, actualRequest.getRequiredRepeatedBytesList());
     Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
-    Assert.assertEquals(requiredRepeatedResourceName, actualRequest.getRequiredRepeatedResourceNameList());
-    Assert.assertEquals(requiredRepeatedResourceNameOneof, actualRequest.getRequiredRepeatedResourceNameOneofList());
+    Assert.assertEquals(requiredRepeatedResourceName, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
+    Assert.assertEquals(requiredRepeatedResourceNameOneof, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
     Assert.assertEquals(requiredRepeatedResourceNameCommon, actualRequest.getRequiredRepeatedResourceNameCommonList());
     Assert.assertEquals(requiredRepeatedFixed32, actualRequest.getRequiredRepeatedFixed32List());
     Assert.assertEquals(requiredRepeatedFixed64, actualRequest.getRequiredRepeatedFixed64List());
@@ -11811,8 +11811,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(optionalSingularString, actualRequest.getOptionalSingularString());
     Assert.assertEquals(optionalSingularBytes, actualRequest.getOptionalSingularBytes());
     Assert.assertEquals(optionalSingularMessage, actualRequest.getOptionalSingularMessage());
-    Assert.assertEquals(optionalSingularResourceName, actualRequest.getOptionalSingularResourceName());
-    Assert.assertEquals(optionalSingularResourceNameOneof, actualRequest.getOptionalSingularResourceNameOneof());
+    Assert.assertEquals(optionalSingularResourceName, BookNames.parse(actualRequest.getOptionalSingularResourceName()));
+    Assert.assertEquals(optionalSingularResourceNameOneof, BookNames.parse(actualRequest.getOptionalSingularResourceNameOneof()));
     Assert.assertEquals(optionalSingularResourceNameCommon, actualRequest.getOptionalSingularResourceNameCommon());
     Assert.assertEquals(optionalSingularFixed32, actualRequest.getOptionalSingularFixed32());
     Assert.assertEquals(optionalSingularFixed64, actualRequest.getOptionalSingularFixed64());
@@ -11825,8 +11825,8 @@ public class LibraryServiceClientTest {
     Assert.assertEquals(optionalRepeatedString, actualRequest.getOptionalRepeatedStringList());
     Assert.assertEquals(optionalRepeatedBytes, actualRequest.getOptionalRepeatedBytesList());
     Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
-    Assert.assertEquals(optionalRepeatedResourceName, actualRequest.getOptionalRepeatedResourceNameList());
-    Assert.assertEquals(optionalRepeatedResourceNameOneof, actualRequest.getOptionalRepeatedResourceNameOneofList());
+    Assert.assertEquals(optionalRepeatedResourceName, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
+    Assert.assertEquals(optionalRepeatedResourceNameOneof, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
     Assert.assertEquals(optionalRepeatedResourceNameCommon, actualRequest.getOptionalRepeatedResourceNameCommonList());
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());

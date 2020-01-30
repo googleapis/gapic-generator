@@ -15065,7 +15065,7 @@ public class LibraryClientTest {
     GetBookFromAnywhereRequest actualRequest = (GetBookFromAnywhereRequest)actualRequests.get(0);
 
     Assert.assertEquals(name, BookNames.parse(actualRequest.getName()));
-    Assert.assertEquals(BookName.from(altBookName), actualRequest.getAltBookName());
+    Assert.assertEquals(Objects.toString(altBookName), actualRequest.getAltBookName());
     Assert.assertEquals(place, LocationName.parse(actualRequest.getPlace()));
     Assert.assertEquals(folder, FolderName.parse(actualRequest.getFolder()));
     Assert.assertTrue(
@@ -15384,8 +15384,8 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     FindRelatedBooksRequest actualRequest = (FindRelatedBooksRequest)actualRequests.get(0);
 
-    Assert.assertEquals(formattedNames, actualRequest.getNamesList());
-    Assert.assertEquals(formattedShelves, actualRequest.getShelvesList());
+    Assert.assertEquals(formattedNames, ShelfBookName.parseList(actualRequest.getNamesList()));
+    Assert.assertEquals(formattedShelves, ShelfName.parseList(actualRequest.getShelvesList()));
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -15751,9 +15751,9 @@ public class LibraryClientTest {
     Assert.assertEquals(requiredRepeatedString, actualRequest.getRequiredRepeatedStringList());
     Assert.assertEquals(requiredRepeatedBytes, actualRequest.getRequiredRepeatedBytesList());
     Assert.assertEquals(requiredRepeatedMessage, actualRequest.getRequiredRepeatedMessageList());
-    Assert.assertEquals(formattedRequiredRepeatedResourceName, actualRequest.getRequiredRepeatedResourceNameList());
-    Assert.assertEquals(formattedRequiredRepeatedResourceNameOneof, actualRequest.getRequiredRepeatedResourceNameOneofList());
-    Assert.assertEquals(formattedRequiredRepeatedResourceNameCommon, actualRequest.getRequiredRepeatedResourceNameCommonList());
+    Assert.assertEquals(formattedRequiredRepeatedResourceName, ShelfBookName.parseList(actualRequest.getRequiredRepeatedResourceNameList()));
+    Assert.assertEquals(formattedRequiredRepeatedResourceNameOneof, BookName.parseList(actualRequest.getRequiredRepeatedResourceNameOneofList()));
+    Assert.assertEquals(formattedRequiredRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getRequiredRepeatedResourceNameCommonList()));
     Assert.assertEquals(requiredRepeatedFixed32, actualRequest.getRequiredRepeatedFixed32List());
     Assert.assertEquals(requiredRepeatedFixed64, actualRequest.getRequiredRepeatedFixed64List());
     Assert.assertEquals(requiredMap, actualRequest.getRequiredMapMap());
@@ -15812,9 +15812,9 @@ public class LibraryClientTest {
     Assert.assertEquals(optionalRepeatedString, actualRequest.getOptionalRepeatedStringList());
     Assert.assertEquals(optionalRepeatedBytes, actualRequest.getOptionalRepeatedBytesList());
     Assert.assertEquals(optionalRepeatedMessage, actualRequest.getOptionalRepeatedMessageList());
-    Assert.assertEquals(formattedOptionalRepeatedResourceName, actualRequest.getOptionalRepeatedResourceNameList());
-    Assert.assertEquals(formattedOptionalRepeatedResourceNameOneof, actualRequest.getOptionalRepeatedResourceNameOneofList());
-    Assert.assertEquals(formattedOptionalRepeatedResourceNameCommon, actualRequest.getOptionalRepeatedResourceNameCommonList());
+    Assert.assertEquals(formattedOptionalRepeatedResourceName, ShelfBookName.parseList(actualRequest.getOptionalRepeatedResourceNameList()));
+    Assert.assertEquals(formattedOptionalRepeatedResourceNameOneof, BookName.parseList(actualRequest.getOptionalRepeatedResourceNameOneofList()));
+    Assert.assertEquals(formattedOptionalRepeatedResourceNameCommon, ProjectName.parseList(actualRequest.getOptionalRepeatedResourceNameCommonList()));
     Assert.assertEquals(optionalRepeatedFixed32, actualRequest.getOptionalRepeatedFixed32List());
     Assert.assertEquals(optionalRepeatedFixed64, actualRequest.getOptionalRepeatedFixed64List());
     Assert.assertEquals(optionalMap, actualRequest.getOptionalMapMap());

@@ -48,6 +48,8 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimaps;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,10 +180,9 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           continue;
         }
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
-        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-          if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-            continue;
-          }
+        for (FlatteningConfig flatteningGroup :
+            getFlatteningConfigsForTests(methodConfig.getFlatteningConfigs())) {
+
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           testCaseViews.add(
@@ -289,5 +290,15 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         synchronicity,
         initCodeRequestObjectContext,
         requestContext);
+  }
+
+  private static List<FlatteningConfig> getFlatteningConfigsForTests(
+      List<FlatteningConfig> flatteningConfigs) {
+    Collection<List<FlatteningConfig>> flatteningGroups =
+        Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
+    return flatteningGroups
+        .stream()
+        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
+        .collect(ImmutableList.toImmutableList());
   }
 }

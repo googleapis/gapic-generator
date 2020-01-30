@@ -54,7 +54,10 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates an ApiModel into API tests in Java. */
@@ -301,15 +304,9 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup :
-            FlatteningConfig.withRepeatedResourceInSampleOnly(
-                methodConfig.getFlatteningConfigs())) {
+            getFlatteningConfigsForTests(methodConfig.getFlatteningConfigs())) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
-          // We only generate tests against the overload that does not expose resource name
-          // types on the surface to avoid combinatorial explosion of generated tests
-          if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-            continue;
-          }
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
@@ -507,5 +504,15 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           throw new IllegalArgumentException("Invalid streaming type: " + streamingType);
       }
     }
+  }
+
+  private static List<FlatteningConfig> getFlatteningConfigsForTests(
+      List<FlatteningConfig> flatteningConfigs) {
+    Collection<List<FlatteningConfig>> flatteningGroups =
+        Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
+    return flatteningGroups
+        .stream()
+        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
+        .collect(ImmutableList.toImmutableList());
   }
 }

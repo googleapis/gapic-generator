@@ -25,6 +25,7 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -35,7 +36,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /** FlatteningConfig represents a specific flattening configuration for a method. */
@@ -387,6 +390,32 @@ public abstract class FlatteningConfig {
 
   public Iterable<FieldModel> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
+  }
+
+  /** Returns a multimap from google.api.method_signature string to flattening configs. */
+  public static ImmutableListMultimap<String, FlatteningConfig> groupByMethodSignature(
+      List<FlatteningConfig> flatteningConfigs) {
+    return flatteningConfigs
+        .stream()
+        .collect(
+            ImmutableListMultimap.toImmutableListMultimap(
+                FlatteningConfig::getMethodSignature, f -> f));
+  }
+
+  /**
+   * Returns a flattening config for samples. Choose one with resource name types in API surface if
+   * possible.
+   */
+  public static FlatteningConfig getFlatteningConfigForUnitTests(
+      List<FlatteningConfig> flatteningConfigs) {
+    Preconditions.checkArgument(flatteningConfigs.size() > 0, "empty flattening configs");
+    Optional<FlatteningConfig> flattening =
+        flatteningConfigs.stream().filter(FlatteningConfig::hasAnyResourceNameParameter).findAny();
+    return flattening.isPresent() ? flattening.get() : flatteningConfigs.get(0);
+  }
+
+  private String getMethodSignature() {
+    return getFlattenedFieldConfigs().keySet().stream().collect(Collectors.joining(","));
   }
 
   public FlatteningConfig withResourceNamesInSamplesOnly() {
