@@ -403,15 +403,30 @@ public abstract class FlatteningConfig {
   }
 
   /**
-   * Returns a flattening config for samples and unit tests. Choose one with resource name types in
-   * API surface if possible.
+   * Returns a flattening config for unit tests. Choose one with resource name types in API surface
+   * if possible.
    */
-  public static FlatteningConfig getFlatteningConfigForSnippetsOrUnitTests(
+  public static FlatteningConfig getFlatteningConfigForUnitTests(
       List<FlatteningConfig> flatteningConfigs) {
     Preconditions.checkArgument(flatteningConfigs.size() > 0, "empty flattening configs");
     Optional<FlatteningConfig> flattening =
         flatteningConfigs.stream().filter(FlatteningConfig::hasAnyResourceNameParameter).findAny();
     return flattening.isPresent() ? flattening.get() : flatteningConfigs.get(0);
+  }
+
+  /**
+   * Returns flattening configs for samples. Eliminate those will only raw strings if there are
+   * other flattenings with resource name types that have the same method signature.
+   */
+  public static List<FlatteningConfig> getFlatteningConfigsForSnippets(
+      List<FlatteningConfig> flatteningConfigs) {
+    Preconditions.checkArgument(flatteningConfigs.size() > 0, "empty flattening configs");
+    List<FlatteningConfig> flatteningWithResourceTypes =
+        flatteningConfigs
+            .stream()
+            .filter(FlatteningConfig::hasAnyResourceNameParameter)
+            .collect(ImmutableList.toImmutableList());
+    return flatteningWithResourceTypes.isEmpty() ? flatteningConfigs : flatteningWithResourceTypes;
   }
 
   private String getMethodSignature() {

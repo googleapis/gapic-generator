@@ -132,7 +132,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         methods.add(generateGrpcStreamingRequestMethod(methodContext));
       } else if (methodContext.isLongRunningMethodContext()) {
         if (methodConfig.isFlattening()) {
-          ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          List<FlatteningConfig> flatteningGroups =
+              getFlatteningConfigsForSnippets(methodConfig.getFlatteningConfigs());
 
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
           for (int i = 0; i < flatteningGroups.size(); i++) {
@@ -205,7 +206,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         methods.add(generatePagedRequestMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {
-          ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          List<FlatteningConfig> flatteningGroups =
+              getFlatteningConfigsForSnippets(methodConfig.getFlatteningConfigs());
           flatteningGroups =
               flatteningGroups
                   .stream()
@@ -545,7 +547,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
     return flatteningGroups
         .stream()
-        .map(FlatteningConfig::getFlatteningConfigForSnippetsOrUnitTests)
+        .map(FlatteningConfig::getFlatteningConfigsForSnippets)
+        .flatMap(List::stream)
         .collect(ImmutableList.toImmutableList());
   }
 }

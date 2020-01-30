@@ -298,7 +298,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
     return flatteningGroups
         .stream()
-        .map(FlatteningConfig::getFlatteningConfigForSnippetsOrUnitTests)
+        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
         .collect(ImmutableList.toImmutableList());
   }
 }

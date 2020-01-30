@@ -513,7 +513,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
     return flatteningGroups
         .stream()
-        .map(FlatteningConfig::getFlatteningConfigForSnippetsOrUnitTests)
+        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
         .collect(ImmutableList.toImmutableList());
   }
 }
