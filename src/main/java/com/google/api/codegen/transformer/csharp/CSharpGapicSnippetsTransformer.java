@@ -542,8 +542,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
     return flatteningGroups
         .stream()
-        .map(FlatteningConfig::getFlatteningConfigsForSnippets)
-        .flatMap(List::stream)
+        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
+        // .flatMap(List::stream)
         .collect(ImmutableList.toImmutableList());
   }
 }
