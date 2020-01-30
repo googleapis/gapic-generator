@@ -162,7 +162,7 @@ public class FlatteningConfigTest {
     FieldConfig sourceFieldStateResource =
         FieldConfig.newBuilder()
             .setResourceNameConfig(state)
-            .setExampleResourceNameConfig(state)
+            .setMessageResourceNameConfig(state)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(source)
             .build();
@@ -170,7 +170,7 @@ public class FlatteningConfigTest {
     FieldConfig sourceFieldCountyResource =
         FieldConfig.newBuilder()
             .setResourceNameConfig(county)
-            .setExampleResourceNameConfig(county)
+            .setMessageResourceNameConfig(county)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(source)
             .build();
@@ -178,7 +178,7 @@ public class FlatteningConfigTest {
     FieldConfig sourceFieldSampleOnly =
         FieldConfig.newBuilder()
             .setResourceNameConfig(county)
-            .setExampleResourceNameConfig(county)
+            .setMessageResourceNameConfig(county)
             .setResourceNameTreatment(ResourceNameTreatment.SAMPLE_ONLY)
             .setField(source)
             .build();
@@ -186,7 +186,7 @@ public class FlatteningConfigTest {
     FieldConfig destinationFieldStateResource =
         FieldConfig.newBuilder()
             .setResourceNameConfig(state)
-            .setExampleResourceNameConfig(state)
+            .setMessageResourceNameConfig(state)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(destination)
             .build();
@@ -194,7 +194,7 @@ public class FlatteningConfigTest {
     FieldConfig destinationFieldCountyResource =
         FieldConfig.newBuilder()
             .setResourceNameConfig(county)
-            .setExampleResourceNameConfig(county)
+            .setMessageResourceNameConfig(county)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(destination)
             .build();
@@ -202,7 +202,7 @@ public class FlatteningConfigTest {
     FieldConfig destinationFieldSampleOnly =
         FieldConfig.newBuilder()
             .setResourceNameConfig(county)
-            .setExampleResourceNameConfig(county)
+            .setMessageResourceNameConfig(county)
             .setResourceNameTreatment(ResourceNameTreatment.SAMPLE_ONLY)
             .setField(destination)
             .build();
@@ -210,7 +210,7 @@ public class FlatteningConfigTest {
     FieldConfig animalsField =
         FieldConfig.newBuilder()
             .setResourceNameConfig(fish)
-            .setExampleResourceNameConfig(fish)
+            .setMessageResourceNameConfig(fish)
             .setResourceNameTreatment(ResourceNameTreatment.SAMPLE_ONLY)
             .setField(animals)
             .build();

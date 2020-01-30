@@ -649,7 +649,7 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOptionInSample(context, fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
-        ResourceNameConfig messageResNameConfig = fieldConfig.getExampleResourceNameConfig();
+        ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
         if (messageResNameConfig == null
             || messageResNameConfig.getResourceNameType() != ResourceNameType.ANY) {
           // In a non-flattened context, we always use the resource name type set on the message

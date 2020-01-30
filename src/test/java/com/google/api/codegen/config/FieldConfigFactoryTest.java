@@ -97,14 +97,14 @@ public class FieldConfigFactoryTest {
     FieldConfig parentConfig1 =
         FieldConfig.newBuilder()
             .setResourceNameConfig(archive)
-            .setExampleResourceNameConfig(archive)
+            .setMessageResourceNameConfig(archive)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(parent)
             .build();
     FieldConfig parentConfig2 =
         FieldConfig.newBuilder()
             .setResourceNameConfig(shelf)
-            .setExampleResourceNameConfig(shelf)
+            .setMessageResourceNameConfig(shelf)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(parent)
             .build();
@@ -119,14 +119,14 @@ public class FieldConfigFactoryTest {
     FieldConfig moreParentConfig1 =
         FieldConfig.newBuilder()
             .setResourceNameConfig(archive)
-            .setExampleResourceNameConfig(archive)
+            .setMessageResourceNameConfig(archive)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(moreParents)
             .build();
     FieldConfig moreParentConfig2 =
         FieldConfig.newBuilder()
             .setResourceNameConfig(shelf)
-            .setExampleResourceNameConfig(shelf)
+            .setMessageResourceNameConfig(shelf)
             .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
             .setField(moreParents)
             .build();

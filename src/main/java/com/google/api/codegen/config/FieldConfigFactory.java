@@ -32,7 +32,7 @@ public class FieldConfigFactory {
   /*
    * Create a FieldConfig for a field in a message. If the field is associated
    * with multiple resource names through child_type resource reference,
-   * the created FieldConfig will pick one for its exampleResourceNameConfig.
+   * the created FieldConfig will pick one for its messageResourceNameConfig.
    */
   static FieldConfig createMessageFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
