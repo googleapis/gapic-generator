@@ -508,6 +508,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
 
   private static List<FlatteningConfig> getFlatteningConfigsForTests(
       List<FlatteningConfig> flatteningConfigs) {
+    flatteningConfigs = FlatteningConfig.withRepeatedResourceInSampleOnly(flatteningConfigs);
     Collection<List<FlatteningConfig>> flatteningGroups =
         Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
     return flatteningGroups
