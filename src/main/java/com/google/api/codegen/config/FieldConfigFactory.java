@@ -153,9 +153,11 @@ public class FieldConfigFactory {
             defaultResourceNameTreatment));
   }
 
-  /** Create a FieldConfig for a flattened field in a GAPIC config backed API.
-   * Because GAPIC YAML does not support configuring multiple resource names
-   * to fields, one field will always have only one FieldConfig. */
+  /**
+   * Create a FieldConfig for a flattened field in a GAPIC config backed API. Because GAPIC YAML
+   * does not support configuring multiple resource names to fields, one field will always have only
+   * one FieldConfig.
+   */
   static FieldConfig createFlattenedFieldConfigFromGapicYaml(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
