@@ -12630,6 +12630,82 @@ namespace Google.Example.Library.V1
         /// A pageable asynchronous sequence of <see cref="string"/> resources.
         /// </returns>
         public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
+            scg::IEnumerable<BookName> names,
+            scg::IEnumerable<ShelfName> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            gaxgrpc::CallSettings callSettings = null) => FindRelatedBooksAsync(
+                new FindRelatedBooksRequest
+                {
+                    BookNames = { gax::GaxPreconditions.CheckNotNull(names, nameof(names)) },
+                    ShelvesAsShelfNames = { gax::GaxPreconditions.CheckNotNull(shelves, nameof(shelves)) },
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names">
+        ///
+        /// </param>
+        /// <param name="shelves">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual gax::PagedEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooks(
+            scg::IEnumerable<BookName> names,
+            scg::IEnumerable<ShelfName> shelves,
+            string pageToken = null,
+            int? pageSize = null,
+            gaxgrpc::CallSettings callSettings = null) => FindRelatedBooks(
+                new FindRelatedBooksRequest
+                {
+                    BookNames = { gax::GaxPreconditions.CheckNotNull(names, nameof(names)) },
+                    ShelvesAsShelfNames = { gax::GaxPreconditions.CheckNotNull(shelves, nameof(shelves)) },
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="names">
+        ///
+        /// </param>
+        /// <param name="shelves">
+        ///
+        /// </param>
+        /// <param name="pageToken">
+        /// The token returned from the previous request.
+        /// A value of <c>null</c> or an empty string retrieves the first page.
+        /// </param>
+        /// <param name="pageSize">
+        /// The size of page to request. The response will not be larger than this, but may be smaller.
+        /// A value of <c>null</c> or 0 uses a server-defined page size.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A pageable asynchronous sequence of <see cref="string"/> resources.
+        /// </returns>
+        public virtual gax::PagedAsyncEnumerable<FindRelatedBooksResponse, BookName> FindRelatedBooksAsync(
             scg::IEnumerable<string> names,
             scg::IEnumerable<string> shelves,
             string pageToken = null,
@@ -13586,9 +13662,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> requiredRepeatedString,
             scg::IEnumerable<pb::ByteString> requiredRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
-            scg::IEnumerable<string> requiredRepeatedResourceName,
-            scg::IEnumerable<string> requiredRepeatedResourceNameOneof,
-            scg::IEnumerable<string> requiredRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> requiredRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> requiredRepeatedResourceNameCommon,
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
@@ -13615,9 +13691,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> optionalRepeatedString,
             scg::IEnumerable<pb::ByteString> optionalRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
-            scg::IEnumerable<string> optionalRepeatedResourceName,
-            scg::IEnumerable<string> optionalRepeatedResourceNameOneof,
-            scg::IEnumerable<string> optionalRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> optionalRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> optionalRepeatedResourceNameCommon,
             scg::IEnumerable<int> optionalRepeatedFixed32,
             scg::IEnumerable<long> optionalRepeatedFixed64,
             scg::IDictionary<int, string> optionalMap,
@@ -13679,9 +13755,9 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedString = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedString, nameof(requiredRepeatedString)) },
                     RequiredRepeatedBytes = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytes, nameof(requiredRepeatedBytes)) },
                     RequiredRepeatedMessage = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedMessage, nameof(requiredRepeatedMessage)) },
-                    RequiredRepeatedResourceName = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
-                    RequiredRepeatedResourceNameOneof = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
-                    RequiredRepeatedResourceNameCommon = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameCommon, nameof(requiredRepeatedResourceNameCommon)) },
+                    RequiredRepeatedResourceNameAsBookNames = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
+                    RequiredRepeatedResourceNameOneofAsBookNameOneofs = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
+                    RequiredRepeatedResourceNameCommonAsProjectNames = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameCommon, nameof(requiredRepeatedResourceNameCommon)) },
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
@@ -13708,9 +13784,9 @@ namespace Google.Example.Library.V1
                     OptionalRepeatedString = { optionalRepeatedString ?? linq::Enumerable.Empty<string>() }, // Optional
                     OptionalRepeatedBytes = { optionalRepeatedBytes ?? linq::Enumerable.Empty<pb::ByteString>() }, // Optional
                     OptionalRepeatedMessage = { optionalRepeatedMessage ?? linq::Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>() }, // Optional
-                    OptionalRepeatedResourceName = { optionalRepeatedResourceName ?? linq::Enumerable.Empty<string>() }, // Optional
-                    OptionalRepeatedResourceNameOneof = { optionalRepeatedResourceNameOneof ?? linq::Enumerable.Empty<string>() }, // Optional
-                    OptionalRepeatedResourceNameCommon = { optionalRepeatedResourceNameCommon ?? linq::Enumerable.Empty<string>() }, // Optional
+                    OptionalRepeatedResourceNameAsBookNames = { optionalRepeatedResourceName ?? linq::Enumerable.Empty<BookName>() }, // Optional
+                    OptionalRepeatedResourceNameOneofAsBookNameOneofs = { optionalRepeatedResourceNameOneof ?? linq::Enumerable.Empty<BookNameOneof>() }, // Optional
+                    OptionalRepeatedResourceNameCommonAsProjectNames = { optionalRepeatedResourceNameCommon ?? linq::Enumerable.Empty<gaxres::ProjectName>() }, // Optional
                     OptionalRepeatedFixed32 = { optionalRepeatedFixed32 ?? linq::Enumerable.Empty<int>() }, // Optional
                     OptionalRepeatedFixed64 = { optionalRepeatedFixed64 ?? linq::Enumerable.Empty<long>() }, // Optional
                     OptionalMap = { optionalMap ?? gax::EmptyDictionary<int, string>.Instance }, // Optional
@@ -14052,9 +14128,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> requiredRepeatedString,
             scg::IEnumerable<pb::ByteString> requiredRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
-            scg::IEnumerable<string> requiredRepeatedResourceName,
-            scg::IEnumerable<string> requiredRepeatedResourceNameOneof,
-            scg::IEnumerable<string> requiredRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> requiredRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> requiredRepeatedResourceNameCommon,
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
@@ -14081,9 +14157,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> optionalRepeatedString,
             scg::IEnumerable<pb::ByteString> optionalRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
-            scg::IEnumerable<string> optionalRepeatedResourceName,
-            scg::IEnumerable<string> optionalRepeatedResourceNameOneof,
-            scg::IEnumerable<string> optionalRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> optionalRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> optionalRepeatedResourceNameCommon,
             scg::IEnumerable<int> optionalRepeatedFixed32,
             scg::IEnumerable<long> optionalRepeatedFixed64,
             scg::IDictionary<int, string> optionalMap,
@@ -14515,9 +14591,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> requiredRepeatedString,
             scg::IEnumerable<pb::ByteString> requiredRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
-            scg::IEnumerable<string> requiredRepeatedResourceName,
-            scg::IEnumerable<string> requiredRepeatedResourceNameOneof,
-            scg::IEnumerable<string> requiredRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> requiredRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> requiredRepeatedResourceNameCommon,
             scg::IEnumerable<int> requiredRepeatedFixed32,
             scg::IEnumerable<long> requiredRepeatedFixed64,
             scg::IDictionary<int, string> requiredMap,
@@ -14544,9 +14620,9 @@ namespace Google.Example.Library.V1
             scg::IEnumerable<string> optionalRepeatedString,
             scg::IEnumerable<pb::ByteString> optionalRepeatedBytes,
             scg::IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
-            scg::IEnumerable<string> optionalRepeatedResourceName,
-            scg::IEnumerable<string> optionalRepeatedResourceNameOneof,
-            scg::IEnumerable<string> optionalRepeatedResourceNameCommon,
+            scg::IEnumerable<BookName> optionalRepeatedResourceName,
+            scg::IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            scg::IEnumerable<gaxres::ProjectName> optionalRepeatedResourceNameCommon,
             scg::IEnumerable<int> optionalRepeatedFixed32,
             scg::IEnumerable<long> optionalRepeatedFixed64,
             scg::IDictionary<int, string> optionalMap,
@@ -14608,9 +14684,9 @@ namespace Google.Example.Library.V1
                     RequiredRepeatedString = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedString, nameof(requiredRepeatedString)) },
                     RequiredRepeatedBytes = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedBytes, nameof(requiredRepeatedBytes)) },
                     RequiredRepeatedMessage = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedMessage, nameof(requiredRepeatedMessage)) },
-                    RequiredRepeatedResourceName = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
-                    RequiredRepeatedResourceNameOneof = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
-                    RequiredRepeatedResourceNameCommon = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameCommon, nameof(requiredRepeatedResourceNameCommon)) },
+                    RequiredRepeatedResourceNameAsBookNames = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
+                    RequiredRepeatedResourceNameOneofAsBookNameOneofs = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
+                    RequiredRepeatedResourceNameCommonAsProjectNames = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameCommon, nameof(requiredRepeatedResourceNameCommon)) },
                     RequiredRepeatedFixed32 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
                     RequiredRepeatedFixed64 = { gax::GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
                     RequiredMap = { gax::GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
@@ -14637,9 +14713,9 @@ namespace Google.Example.Library.V1
                     OptionalRepeatedString = { optionalRepeatedString ?? linq::Enumerable.Empty<string>() }, // Optional
                     OptionalRepeatedBytes = { optionalRepeatedBytes ?? linq::Enumerable.Empty<pb::ByteString>() }, // Optional
                     OptionalRepeatedMessage = { optionalRepeatedMessage ?? linq::Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>() }, // Optional
-                    OptionalRepeatedResourceName = { optionalRepeatedResourceName ?? linq::Enumerable.Empty<string>() }, // Optional
-                    OptionalRepeatedResourceNameOneof = { optionalRepeatedResourceNameOneof ?? linq::Enumerable.Empty<string>() }, // Optional
-                    OptionalRepeatedResourceNameCommon = { optionalRepeatedResourceNameCommon ?? linq::Enumerable.Empty<string>() }, // Optional
+                    OptionalRepeatedResourceNameAsBookNames = { optionalRepeatedResourceName ?? linq::Enumerable.Empty<BookName>() }, // Optional
+                    OptionalRepeatedResourceNameOneofAsBookNameOneofs = { optionalRepeatedResourceNameOneof ?? linq::Enumerable.Empty<BookNameOneof>() }, // Optional
+                    OptionalRepeatedResourceNameCommonAsProjectNames = { optionalRepeatedResourceNameCommon ?? linq::Enumerable.Empty<gaxres::ProjectName>() }, // Optional
                     OptionalRepeatedFixed32 = { optionalRepeatedFixed32 ?? linq::Enumerable.Empty<int>() }, // Optional
                     OptionalRepeatedFixed64 = { optionalRepeatedFixed64 ?? linq::Enumerable.Empty<long>() }, // Optional
                     OptionalMap = { optionalMap ?? gax::EmptyDictionary<int, string>.Instance }, // Optional

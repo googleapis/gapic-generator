@@ -45,24 +45,6 @@ public abstract class FlatteningConfig {
   // Maps the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
-  // Returns the map from field names to the respective resource entity name, or empty string if the
-  // field
-  // is a repeated field or is not a resource type.
-  public Map<String, String> getFieldResourceNameMap() {
-    return getFlattenedFieldConfigs()
-        .entrySet()
-        .stream()
-        .collect(
-            ImmutableMap.toImmutableMap(
-                entry -> entry.getKey(),
-                entry ->
-                    entry.getValue().getField().isRepeated()
-                        ? ""
-                        : (entry.getValue().getResourceNameConfig() == null
-                            ? ""
-                            : entry.getValue().getResourceNameConfig().getEntityId())));
-  }
-
   /**
    * Appends to a map of a string representing a list of the fields in a flattening, to the
    * flattening config created from a method in the gapic config.
@@ -263,9 +245,6 @@ public abstract class FlatteningConfig {
       if (fieldConfig == null) {
         missing = true;
       } else {
-        if (fieldConfig.isRepeatedResourceNameTypeField()) {
-          fieldConfig = fieldConfig.withResourceNameInSampleOnly();
-        }
         flattenedFieldConfigBuilder.put(parameter, fieldConfig);
       }
     }
@@ -314,7 +293,7 @@ public abstract class FlatteningConfig {
     // We also generate an overload that all singular resource names are treated as strings,
     // if there is at least one singular resource name field in the method surface. Note repeated
     // resource name fields are always treated as strings.
-    if (hasSingularResourceNameParameters(flatteningConfigs)) {
+    if (hasAnyResourceNameParameter(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
     return flatteningConfigs
@@ -469,20 +448,38 @@ public abstract class FlatteningConfig {
     // For example, listFoos(List<String> parent) and listFoos(List<ShelfName> parent)
     // will have the same method signature after type erasure in Java. In such cases
     // we only keep the one that takes raw strings.
-    Set<Map<String, String>> existingTypeErasures = new HashSet<>();
+    Set<Map<String, String>> existingSignatures = new HashSet<>();
     ImmutableList.Builder<FlatteningConfig> newFlattenings = ImmutableList.builder();
     for (FlatteningConfig flattening : flatteningConfigs) {
-      if (!hasAnyRepeatedResourceNameParameter(flattening)) {
-        newFlattenings.add(flattening);
+      Map<String, String> signature = flattening.getFieldResourceNameMap();
+      if (existingSignatures.contains(signature)) {
         continue;
       }
-      Map<String, String> erasure = flattening.getFieldResourceNameMap();
-      if (!existingTypeErasures.contains(erasure)) {
-        existingTypeErasures.add(erasure);
-        newFlattenings.add(withRepeatedResourceInSampleOnly(flattening));
+      existingSignatures.add(signature);
+      if (hasAnyRepeatedResourceNameParameter(flattening)) {
+        flattening = withRepeatedResourceInSampleOnly(flattening);
       }
+      newFlattenings.add(flattening);
     }
     return newFlattenings.build();
+  }
+
+  // Returns the map from field names to resource entity names, or empty string if the
+  // field has no resource name config, uses resource config in samples only, or is
+  // a repeated field.
+  private Map<String, String> getFieldResourceNameMap() {
+    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    for (Map.Entry<String, FieldConfig> entry : getFlattenedFieldConfigs().entrySet()) {
+      FieldConfig fieldConfig = entry.getValue();
+      if (fieldConfig.getField().isRepeated()
+          || fieldConfig.getResourceNameConfig() == null
+          || fieldConfig.useResourceNameTypeInSampleOnly()) {
+        builder.put(entry.getKey(), "");
+        continue;
+      }
+      builder.put(entry.getKey(), fieldConfig.getResourceNameConfig().getEntityId());
+    }
+    return builder.build();
   }
 
   private static FlatteningConfig withRepeatedResourceInSampleOnly(
