@@ -5578,97 +5578,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for ListBooksAsync</summary>
-        public async Task ListBooksAsync1()
-        {
-            // Snippet: ListBooksAsync(ShelfName,string,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ShelfName name = new ShelfName("[SHELF]");
-            string filter = "book-filter-string";
-            // Make the request
-            PagedAsyncEnumerable<ListBooksResponse, Book> response =
-                libraryServiceClient.ListBooksAsync(name, filter);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((Book item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListBooksResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Book item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Book> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Book item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListBooks</summary>
-        public void ListBooks1()
-        {
-            // Snippet: ListBooks(ShelfName,string,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ShelfName name = new ShelfName("[SHELF]");
-            string filter = "book-filter-string";
-            // Make the request
-            PagedEnumerable<ListBooksResponse, Book> response =
-                libraryServiceClient.ListBooks(name, filter);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (Book item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListBooksResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (Book item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<Book> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (Book item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListBooksAsync</summary>
-        public async Task ListBooksAsync2()
+        public async Task ListBooksAsync()
         {
             // Snippet: ListBooksAsync(string,string,string,int?,CallSettings)
             // Create client
@@ -5713,7 +5623,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for ListBooks</summary>
-        public void ListBooks2()
+        public void ListBooks()
         {
             // Snippet: ListBooks(string,string,string,int?,CallSettings)
             // Create client
@@ -6163,94 +6073,6 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for ListStringsAsync</summary>
         public async Task ListStringsAsync2()
         {
-            // Snippet: ListStringsAsync(IResourceName,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            IResourceName name = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            PagedAsyncEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStringsAsync(name);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            await response.ForEachAsync((IResourceName item) =>
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            });
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            await response.AsRawResponses().ForEachAsync((ListStringsResponse page) =>
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            });
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = await response.ReadPageAsync(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStrings</summary>
-        public void ListStrings2()
-        {
-            // Snippet: ListStrings(IResourceName,string,int?,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            IResourceName name = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            PagedEnumerable<ListStringsResponse, IResourceName> response =
-                libraryServiceClient.ListStrings(name);
-
-            // Iterate over all response items, lazily performing RPCs as required
-            foreach (IResourceName item in response)
-            {
-                // Do something with each item
-                Console.WriteLine(item);
-            }
-
-            // Or iterate over pages (of server-defined size), performing one RPC per page
-            foreach (ListStringsResponse page in response.AsRawResponses())
-            {
-                // Do something with each page of items
-                Console.WriteLine("A page of results:");
-                foreach (IResourceName item in page)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // Or retrieve a single page of known size (unless it's the final page), performing as many RPCs as required
-            int pageSize = 10;
-            Page<IResourceName> singlePage = response.ReadPage(pageSize);
-            // Do something with the page of items
-            Console.WriteLine($"A page of {pageSize} results (unless it's the final page):");
-            foreach (IResourceName item in singlePage)
-            {
-                Console.WriteLine(item);
-            }
-            // Store the pageToken, for when the next page is required.
-            string nextPageToken = singlePage.NextPageToken;
-            // End snippet
-        }
-
-        /// <summary>Snippet for ListStringsAsync</summary>
-        public async Task ListStringsAsync3()
-        {
             // Snippet: ListStringsAsync(string,string,int?,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
@@ -6293,7 +6115,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for ListStrings</summary>
-        public void ListStrings3()
+        public void ListStrings2()
         {
             // Snippet: ListStrings(string,string,int?,CallSettings)
             // Create client
@@ -7126,72 +6948,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for GetBigBookAsync</summary>
-        public async Task GetBigBookAsync1()
-        {
-            // Snippet: GetBigBookAsync(BookNameOneof,CallSettings)
-            // Additional: GetBigBookAsync(BookNameOneof,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            // Make the request
-            Operation<Book, GetBigBookMetadata> response =
-                await libraryServiceClient.GetBigBookAsync(name);
-
-            // Poll until the returned long-running operation is complete
-            Operation<Book, GetBigBookMetadata> completedResponse =
-                await response.PollUntilCompletedAsync();
-            // Retrieve the operation result
-            Book result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<Book, GetBigBookMetadata> retrievedResponse =
-                await libraryServiceClient.PollOnceGetBigBookAsync(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                Book retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for GetBigBook</summary>
-        public void GetBigBook1()
-        {
-            // Snippet: GetBigBook(BookNameOneof,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            // Make the request
-            Operation<Book, GetBigBookMetadata> response =
-                libraryServiceClient.GetBigBook(name);
-
-            // Poll until the returned long-running operation is complete
-            Operation<Book, GetBigBookMetadata> completedResponse =
-                response.PollUntilCompleted();
-            // Retrieve the operation result
-            Book result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<Book, GetBigBookMetadata> retrievedResponse =
-                libraryServiceClient.PollOnceGetBigBook(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                Book retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for GetBigBookAsync</summary>
-        public async Task GetBigBookAsync2()
+        public async Task GetBigBookAsync()
         {
             // Snippet: GetBigBookAsync(string,CallSettings)
             // Additional: GetBigBookAsync(string,CancellationToken)
@@ -7224,7 +6981,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for GetBigBook</summary>
-        public void GetBigBook2()
+        public void GetBigBook()
         {
             // Snippet: GetBigBook(string,CallSettings)
             // Create client
@@ -7326,68 +7083,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for GetBigNothingAsync</summary>
-        public async Task GetBigNothingAsync1()
-        {
-            // Snippet: GetBigNothingAsync(BookNameOneof,CallSettings)
-            // Additional: GetBigNothingAsync(BookNameOneof,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            // Make the request
-            Operation<Empty, GetBigBookMetadata> response =
-                await libraryServiceClient.GetBigNothingAsync(name);
-
-            // Poll until the returned long-running operation is complete
-            Operation<Empty, GetBigBookMetadata> completedResponse =
-                await response.PollUntilCompletedAsync();
-            // The long-running operation is now complete.
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<Empty, GetBigBookMetadata> retrievedResponse =
-                await libraryServiceClient.PollOnceGetBigNothingAsync(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // The long-running operation is now complete.
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for GetBigNothing</summary>
-        public void GetBigNothing1()
-        {
-            // Snippet: GetBigNothing(BookNameOneof,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            // Make the request
-            Operation<Empty, GetBigBookMetadata> response =
-                libraryServiceClient.GetBigNothing(name);
-
-            // Poll until the returned long-running operation is complete
-            Operation<Empty, GetBigBookMetadata> completedResponse =
-                response.PollUntilCompleted();
-            // The long-running operation is now complete.
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<Empty, GetBigBookMetadata> retrievedResponse =
-                libraryServiceClient.PollOnceGetBigNothing(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // The long-running operation is now complete.
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for GetBigNothingAsync</summary>
-        public async Task GetBigNothingAsync2()
+        public async Task GetBigNothingAsync()
         {
             // Snippet: GetBigNothingAsync(string,CallSettings)
             // Additional: GetBigNothingAsync(string,CancellationToken)
@@ -7418,7 +7114,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for GetBigNothing</summary>
-        public void GetBigNothing2()
+        public void GetBigNothing()
         {
             // Snippet: GetBigNothing(string,CallSettings)
             // Create client
@@ -8075,208 +7771,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for LongRunningArchiveBooksAsync</summary>
-        public async Task LongRunningArchiveBooksAsync1()
-        {
-            // Snippet: LongRunningArchiveBooksAsync(ArchiveName,ArchiveName,CallSettings)
-            // Additional: LongRunningArchiveBooksAsync(ArchiveName,ArchiveName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                await libraryServiceClient.LongRunningArchiveBooksAsync(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                await response.PollUntilCompletedAsync();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                await libraryServiceClient.PollOnceLongRunningArchiveBooksAsync(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooks</summary>
-        public void LongRunningArchiveBooks1()
-        {
-            // Snippet: LongRunningArchiveBooks(ArchiveName,ArchiveName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ArchiveName source = new ArchiveName("[ARCHIVE]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                libraryServiceClient.LongRunningArchiveBooks(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                response.PollUntilCompleted();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                libraryServiceClient.PollOnceLongRunningArchiveBooks(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooksAsync</summary>
-        public async Task LongRunningArchiveBooksAsync2()
-        {
-            // Snippet: LongRunningArchiveBooksAsync(ShelfName,ArchiveName,CallSettings)
-            // Additional: LongRunningArchiveBooksAsync(ShelfName,ArchiveName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ShelfName source = new ShelfName("[SHELF]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                await libraryServiceClient.LongRunningArchiveBooksAsync(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                await response.PollUntilCompletedAsync();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                await libraryServiceClient.PollOnceLongRunningArchiveBooksAsync(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooks</summary>
-        public void LongRunningArchiveBooks2()
-        {
-            // Snippet: LongRunningArchiveBooks(ShelfName,ArchiveName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ShelfName source = new ShelfName("[SHELF]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                libraryServiceClient.LongRunningArchiveBooks(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                response.PollUntilCompleted();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                libraryServiceClient.PollOnceLongRunningArchiveBooks(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooksAsync</summary>
-        public async Task LongRunningArchiveBooksAsync3()
-        {
-            // Snippet: LongRunningArchiveBooksAsync(ProjectName,ArchiveName,CallSettings)
-            // Additional: LongRunningArchiveBooksAsync(ProjectName,ArchiveName,CancellationToken)
-            // Create client
-            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            // Initialize request argument(s)
-            ProjectName source = new ProjectName("[PROJECT]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                await libraryServiceClient.LongRunningArchiveBooksAsync(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                await response.PollUntilCompletedAsync();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                await libraryServiceClient.PollOnceLongRunningArchiveBooksAsync(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooks</summary>
-        public void LongRunningArchiveBooks3()
-        {
-            // Snippet: LongRunningArchiveBooks(ProjectName,ArchiveName,CallSettings)
-            // Create client
-            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            // Initialize request argument(s)
-            ProjectName source = new ProjectName("[PROJECT]");
-            ArchiveName archive = new ArchiveName("[ARCHIVE]");
-            // Make the request
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> response =
-                libraryServiceClient.LongRunningArchiveBooks(source, archive);
-
-            // Poll until the returned long-running operation is complete
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> completedResponse =
-                response.PollUntilCompleted();
-            // Retrieve the operation result
-            ArchiveBooksResponse result = completedResponse.Result;
-
-            // Or get the name of the operation
-            string operationName = response.Name;
-            // This name can be stored, then the long-running operation retrieved later by name
-            Operation<ArchiveBooksResponse, ArchiveBooksMetadata> retrievedResponse =
-                libraryServiceClient.PollOnceLongRunningArchiveBooks(operationName);
-            // Check if the retrieved long-running operation has completed
-            if (retrievedResponse.IsCompleted)
-            {
-                // If it has completed, then access the result
-                ArchiveBooksResponse retrievedResult = retrievedResponse.Result;
-            }
-            // End snippet
-        }
-
-        /// <summary>Snippet for LongRunningArchiveBooksAsync</summary>
-        public async Task LongRunningArchiveBooksAsync4()
+        public async Task LongRunningArchiveBooksAsync()
         {
             // Snippet: LongRunningArchiveBooksAsync(string,string,CallSettings)
             // Additional: LongRunningArchiveBooksAsync(string,string,CancellationToken)
@@ -8310,7 +7805,7 @@ namespace Google.Example.Library.V1.Snippets
         }
 
         /// <summary>Snippet for LongRunningArchiveBooks</summary>
-        public void LongRunningArchiveBooks4()
+        public void LongRunningArchiveBooks()
         {
             // Snippet: LongRunningArchiveBooks(string,string,CallSettings)
             // Create client
