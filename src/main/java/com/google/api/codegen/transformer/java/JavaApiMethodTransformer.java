@@ -113,7 +113,9 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
     InterfaceContext interfaceContext = methodContext.getSurfaceInterfaceContext();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext.asFlattenedMethodContext(methodContext, flatteningGroup);
 
@@ -175,7 +177,9 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
         .saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)
@@ -207,7 +211,9 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
     InterfaceContext interfaceContext = methodContext.getSurfaceInterfaceContext();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)

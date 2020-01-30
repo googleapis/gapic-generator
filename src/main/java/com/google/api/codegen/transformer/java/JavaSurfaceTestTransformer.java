@@ -300,7 +300,9 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         } else {
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
-        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        for (FlatteningConfig flatteningGroup :
+            FlatteningConfig.withRepeatedResourceInSampleOnly(
+                methodConfig.getFlatteningConfigs())) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           // We only generate tests against the overload that does not expose resource name

@@ -45,6 +45,24 @@ public abstract class FlatteningConfig {
   // Maps the name of the parameter in this flattening to its FieldConfig.
   public abstract ImmutableMap<String, FieldConfig> getFlattenedFieldConfigs();
 
+  // Returns the map from field names to the respective resource entity name, or empty string if the
+  // field
+  // is a repeated field or is not a resource type.
+  public Map<String, String> getFieldResourceNameMap() {
+    return getFlattenedFieldConfigs()
+        .entrySet()
+        .stream()
+        .collect(
+            ImmutableMap.toImmutableMap(
+                entry -> entry.getKey(),
+                entry ->
+                    entry.getValue().getField().isRepeated()
+                        ? ""
+                        : (entry.getValue().getResourceNameConfig() == null
+                            ? ""
+                            : entry.getValue().getResourceNameConfig().getEntityId())));
+  }
+
   /**
    * Appends to a map of a string representing a list of the fields in a flattening, to the
    * flattening config created from a method in the gapic config.
@@ -328,15 +346,6 @@ public abstract class FlatteningConfig {
     for (Map<String, FieldConfig> flattening : flatteningConfigs) {
       for (FieldConfig fieldConfig : fieldConfigs) {
         Map<String, FieldConfig> newFlattening = new LinkedHashMap<>(flattening);
-
-        // Types like List<ResourceName> will have the same erasure as List<String>,
-        // so we ignore resource name types on repeated field from API surfaces in Java and
-        // treat them as normal strings
-        if (fieldConfig.isRepeatedResourceNameTypeField()) {
-          newFlattening.put(parameter, fieldConfig.withResourceNameInSampleOnly());
-          newFlatteningConfigs.add(newFlattening);
-          break;
-        }
         newFlattening.put(parameter, fieldConfig);
         newFlatteningConfigs.add(newFlattening);
       }
@@ -446,6 +455,48 @@ public abstract class FlatteningConfig {
   /** Return if the flattening config contains a parameter that is a resource name. */
   public static boolean hasAnyResourceNameParameter(FlatteningConfig flatteningGroup) {
     return hasAnyResourceNameParameter(flatteningGroup.getFlattenedFieldConfigs());
+  }
+
+  /**
+   * Convert all repeated fields to use resource name configs in samples only, and remove any
+   * possible duplicates during the process.
+   */
+  public static List<FlatteningConfig> withRepeatedResourceInSampleOnly(
+      List<FlatteningConfig> flatteningConfigs) {
+    // This method removes all flattening configs that have the same method signature
+    // with another method after type erasure.
+    //
+    // For example, listFoos(List<String> parent) and listFoos(List<ShelfName> parent)
+    // will have the same method signature after type erasure in Java. In such cases
+    // we only keep the one that takes raw strings.
+    Set<Map<String, String>> existingTypeErasures = new HashSet<>();
+    ImmutableList.Builder<FlatteningConfig> newFlattenings = ImmutableList.builder();
+    for (FlatteningConfig flattening : flatteningConfigs) {
+      if (!hasAnyRepeatedResourceNameParameter(flattening)) {
+        newFlattenings.add(flattening);
+        continue;
+      }
+      Map<String, String> erasure = flattening.getFieldResourceNameMap();
+      if (!existingTypeErasures.contains(erasure)) {
+        existingTypeErasures.add(erasure);
+        newFlattenings.add(withRepeatedResourceInSampleOnly(flattening));
+      }
+    }
+    return newFlattenings.build();
+  }
+
+  private static FlatteningConfig withRepeatedResourceInSampleOnly(
+      FlatteningConfig flatteningGroup) {
+    ImmutableMap.Builder<String, FieldConfig> newFlattening = ImmutableMap.builder();
+    for (Map.Entry<String, FieldConfig> entry :
+        flatteningGroup.getFlattenedFieldConfigs().entrySet()) {
+      FieldConfig fieldConfig = entry.getValue();
+      if (fieldConfig.isRepeatedResourceNameTypeField()) {
+        fieldConfig = fieldConfig.withResourceNameInSampleOnly();
+      }
+      newFlattening.put(entry.getKey(), fieldConfig);
+    }
+    return new AutoValue_FlatteningConfig(newFlattening.build());
   }
 
   private static boolean hasAnyResourceNameParameter(
