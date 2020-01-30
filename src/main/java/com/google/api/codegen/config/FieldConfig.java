@@ -36,45 +36,14 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
-  /**
-   * The resource name config used in API surfaces. For resource name fields in a message,
-   * getResourceNameConfig() always returns null. For flattened resource name fields,
-   * getResourceNameConfigs() returns the resource name config in the API surface.
-   *
-   * <p>Note a field can have multiple resource names the field has child_type resource reference.
-   * For example, consider the following case: <code>
-   *
-   * option (google.api.resource_defintion) = {
-   *  type: "library.googleapis.com/Book",
-   *  pattern: "projects/{project}/books/{book}",
-   *  pattern: "projects/{project}/locations/{location}/books/{book}"
-   * };
-   *
-   * rpc ListFoos(ListFoosRequest) returns (ListFoosResponse) {
-   *   option (google.api.method_signature) = "parent";
-   * }
-   *
-   * message ListFoosRequest {
-   *   string parent = 1 [
-   *     (google.api.resource_reference).child_type = "library.googleapis.com/Book"]
-   * }
-   * </code>
-   *
-   * <p>The field `parent` will have two resource name configs: Project and Location. In this case,
-   * we need to generate three flattening overloads for the method ListFoos. The method signatures
-   * and the FieldConfig for the field `parent` has the following mapping:
-   * <li>method_signature -> (resourceNameConfig, messageResourceNameConfig, resourceNameTreatment)
-   * <li>ListFoos(ProjectName parent) -> ("Project", "Project", STATIC_TYPE);
-   * <li>ListFoos(LocationName parent) -> ("Location", "Location", STATIC_TYPE);
-   * <li>ListFoos(String parent) -> ("Project", "Project", SAMPLE_ONLY);
-   * <li>ListFoos(ListFoosRequest request); -> (null, "Project", SAMPLE_ONLY);
-   */
+  /** The resource name config used in API surfaces. Used to generate flattened API methods. */
   @Nullable
   public abstract ResourceNameConfig getResourceNameConfig();
 
   /**
-   * The resource name config used in samples and tests. For flattened resource name fields,
-   * getExampleResourceConfig() and getResourceNameConfig() always return the same config.
+   * The resource name associated to the field in a proto message. Used to generate samples and
+   * tests in API methods that take request objects, and iterator methods (e.g.,
+   * iterateAllAsBookName) in page streaming responses.
    */
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();

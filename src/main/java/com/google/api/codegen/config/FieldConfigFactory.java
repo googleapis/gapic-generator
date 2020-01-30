@@ -73,6 +73,37 @@ public class FieldConfigFactory {
    * Create a list of FieldConfigs for a flattened field in the API surface. If the field is
    * associated with multiple resource names through child_type resource reference, each created
    * FieldConfig will have one of these resource name configs.
+   *
+   * <p>For example, consider the following case: <code>
+   * option (google.api.resource_defintion) = {
+   *  type: "library.googleapis.com/Book",
+   *  pattern: "projects/{project}/books/{book}",
+   *  pattern: "projects/{project}/locations/{location}/books/{book}"
+   * };
+   *
+   * rpc ListFoos(ListFoosRequest) returns (ListFoosResponse) {
+   *   option (google.api.method_signature) = "parent";
+   * }
+   *
+   * message ListFoosRequest {
+   *   string parent = 1 [
+   *     (google.api.resource_reference).child_type = "library.googleapis.com/Book"]
+   * }
+   * </code>
+   *
+   * <p>The field `parent` will have two resource name configs: Project and Location. In this case,
+   * we need to generate three flattening overloads for the method ListFoos. The method signatures
+   * and the created FieldConfigs for the field `parent` has the following mapping:
+   *
+   * <p>
+   *
+   * <ul>
+   *   <li>method_signature -> (resourceNameConfig, messageResourceNameConfig,
+   *       resourceNameTreatment)
+   *   <li>ListFoos(ProjectName parent) -> ("Project", "Project", STATIC_TYPE);
+   *   <li>ListFoos(LocationName parent) -> ("Location", "Location", STATIC_TYPE);
+   *   <li>ListFoos(String parent) -> ("Project", "Project", SAMPLE_ONLY);
+   * </ul>
    */
   static List<FieldConfig> createFlattenedFieldConfigs(
       DiagCollector diagCollector,
@@ -122,6 +153,9 @@ public class FieldConfigFactory {
             defaultResourceNameTreatment));
   }
 
+  /** Create a FieldConfig for a flattened field in a GAPIC config backed API.
+   * Because GAPIC YAML does not support configuring multiple resource names
+   * to fields, one field will always have only one FieldConfig. */
   static FieldConfig createFlattenedFieldConfigFromGapicYaml(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
