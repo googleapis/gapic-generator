@@ -38,11 +38,7 @@ public class FlatteningConfigTest {
 
   @Mock private ProtoParser protoParser;
   @Mock private DiagCollector diagCollector;
-  // @Mock private Method createMigrationRoutesRpc;
-  // @Mock private TypeRef createMigrationRoutesRequestTypeRef;
-  // @Mock private MessageType createMigrationRoutesRequestMessage;
   @Mock private Field dummyField;
-  // @Mock private TypeRef dummyTypeRef;
   @Mock private ProtoField source;
   @Mock private ProtoField destination;
   @Mock private ProtoField animals;
@@ -63,14 +59,6 @@ public class FlatteningConfigTest {
     doThrow(new IllegalStateException("expect no errors"))
         .when(diagCollector)
         .addDiag(any(Diag.class));
-
-    // when(createMigrationRoutesRpc.getInputType()).thenReturn(createMigrationRoutesRequestTypeRef);
-    // when(createMigrationRoutesRpc.getOutputType()).thenReturn(createMigrationRoutesRequestTypeRef);
-    // when(createMigrationRoutesRequestTypeRef.getMessageType())
-    //     .thenReturn(createMigrationRoutesRequestMessage);
-    // when(createMigrationRoutesRequestMessage.lookupField(anyString())).thenReturn(dummyField);
-    // when(dummyField.getType()).thenReturn(dummyTypeRef);
-    // createMigrationRoutes = new ProtoMethodModel(createMigrationRoutesRpc);
 
     when(createMigrationRoutes.getInputField("source")).thenReturn(source);
     when(createMigrationRoutes.getInputField("destination")).thenReturn(destination);

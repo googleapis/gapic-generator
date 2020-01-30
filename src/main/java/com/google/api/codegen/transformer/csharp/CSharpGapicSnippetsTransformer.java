@@ -147,6 +147,11 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          flatteningGroups =
+              flatteningGroups
+                  .stream()
+                  .filter(FlatteningConfig::hasAnyResourceNameParameter)
+                  .collect(ImmutableList.toImmutableList());
           // Find flattenings that have ambiguous parameters, and mark them to use named arguments.
           // Ambiguity occurs in a page-stream flattening that has one or two extra string
           // parameters (that are not resource-names) compared to any other flattening of this same

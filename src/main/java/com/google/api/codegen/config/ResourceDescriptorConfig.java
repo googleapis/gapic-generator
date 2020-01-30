@@ -278,7 +278,7 @@ public abstract class ResourceDescriptorConfig {
     return String.join("/", segments.subList(0, index));
   }
 
-  static Map<String, Boolean> getParentPatternsMap(ResourceDescriptorConfig resource) {
+  private static Map<String, Boolean> getParentPatternsMap(ResourceDescriptorConfig resource) {
     return resource
         .getPatterns()
         .stream()
