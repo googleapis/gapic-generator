@@ -208,11 +208,6 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         if (methodConfig.isFlattening()) {
           List<FlatteningConfig> flatteningGroups =
               getFlatteningConfigsForSnippets(methodConfig.getFlatteningConfigs());
-          flatteningGroups =
-              flatteningGroups
-                  .stream()
-                  .filter(f -> !FlatteningConfig.hasAnyResourceNameParameter(f))
-                  .collect(ImmutableList.toImmutableList());
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
           for (int i = 0; i < flatteningGroups.size(); i++) {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
