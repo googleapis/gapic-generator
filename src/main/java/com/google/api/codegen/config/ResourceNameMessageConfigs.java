@@ -30,6 +30,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import java.util.*;
@@ -54,12 +55,13 @@ public abstract class ResourceNameMessageConfigs {
       Map<String, ResourceNameConfig> resourceNameConfigs,
       ProtoParser parser,
       Map<String, ResourceDescriptorConfig> descriptorConfigMap,
-      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
 
     for (ProtoFile protoFile : protoFiles) {
       for (MessageType message : protoFile.getMessages()) {
-        ImmutableMap.Builder<String, String> fieldEntityMapBuilder = ImmutableMap.builder();
+        ImmutableListMultimap.Builder<String, String> fieldEntityMapBuilder =
+            ImmutableListMultimap.builder();
 
         // Handle resource definitions.
         ResourceDescriptor resourceDescriptor = parser.getResourceDescriptor(message);
@@ -72,7 +74,7 @@ public abstract class ResourceNameMessageConfigs {
         loadFieldEntityPairFromResourceReferenceAnnotation(
             fieldEntityMapBuilder, parser, message, resourceNameConfigs, childParentResourceMap);
 
-        ImmutableMap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
+        ImmutableListMultimap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
         if (fieldEntityMap.size() > 0) {
           ResourceNameMessageConfig messageConfig =
               new AutoValue_ResourceNameMessageConfig(message.getFullName(), fieldEntityMap);
@@ -89,7 +91,7 @@ public abstract class ResourceNameMessageConfigs {
    * to fieldEntityMap.
    */
   private static void loadFieldEntityPairFromResourceAnnotation(
-      ImmutableMap.Builder<String, String> fieldEntityMap,
+      ImmutableListMultimap.Builder<String, String> fieldEntityMap,
       ResourceDescriptor resourceDescriptor,
       MessageType message) {
     String resourceFieldName = resourceDescriptor.getNameField();
@@ -110,11 +112,11 @@ public abstract class ResourceNameMessageConfigs {
    * annotations and put them to fieldEntityMap.
    */
   private static void loadFieldEntityPairFromResourceReferenceAnnotation(
-      ImmutableMap.Builder<String, String> fieldEntityMap,
+      ImmutableListMultimap.Builder<String, String> fieldEntityMap,
       ProtoParser parser,
       MessageType message,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Map<String, ResourceDescriptorConfig> childParentResourceMap) {
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap) {
     for (Field field : message.getFields()) {
       ResourceReference reference = parser.getResourceReference(field);
       if (reference == null) {
@@ -133,11 +135,15 @@ public abstract class ResourceNameMessageConfigs {
           field);
 
       if (!childType.isEmpty()) {
-        ResourceNameConfig parentResource =
-            resourceNameConfigs.get(childParentResourceMap.get(childType).getDerivedEntityName());
-        Preconditions.checkArgument(
-            parentResource != null, "Referencing non-existing parent resource: %s", childType);
-        fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
+        List<ResourceDescriptorConfig> parents =
+            childParentResourceMap.getOrDefault(childType, Collections.emptyList());
+        for (ResourceDescriptorConfig parentResourceDescriptor : parents) {
+          String derivedEntityName = parentResourceDescriptor.getDerivedEntityName();
+          ResourceNameConfig parentResource = resourceNameConfigs.get(derivedEntityName);
+          Preconditions.checkArgument(
+              parentResource != null, "Referencing non-existing parent resource: %s", childType);
+          fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
+        }
         continue;
       }
 
@@ -184,7 +190,7 @@ public abstract class ResourceNameMessageConfigs {
             continue;
           }
           for (Field field : msg.getFields()) {
-            if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
+            if (!messageConfig.getEntityNamesForField(field.getSimpleName()).isEmpty()) {
               fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }
@@ -222,7 +228,7 @@ public abstract class ResourceNameMessageConfigs {
         continue;
       }
       for (Schema property : method.parameters().values()) {
-        if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
+        if (!messageConfig.getEntityNamesForField(property.getIdentifier()).isEmpty()) {
           fieldsByMessage.put(fullName, DiscoveryField.create(property, model));
         }
       }
@@ -239,31 +245,29 @@ public abstract class ResourceNameMessageConfigs {
   }
 
   public boolean fieldHasResourceName(String messageFullName, String fieldSimpleName) {
-    return getResourceNameOrNullForField(messageFullName, fieldSimpleName) != null;
+    return !getResourceNamesForField(messageFullName, fieldSimpleName).isEmpty();
   }
 
-  String getFieldResourceName(FieldModel field) {
-    return getFieldResourceName(field.getParentFullName(), field.getSimpleName());
+  List<String> getFieldResourceNames(FieldModel field) {
+    return getFieldResourceNames(field.getParentFullName(), field.getSimpleName());
   }
 
-  public String getFieldResourceName(String messageSimpleName, String fieldSimpleName) {
-    if (!fieldHasResourceName(messageSimpleName, fieldSimpleName)) {
-      throw new IllegalArgumentException(
-          "Field "
-              + fieldSimpleName
-              + " of message "
-              + messageSimpleName
-              + " does not have a resource name.");
-    }
-    return getResourceNameOrNullForField(messageSimpleName, fieldSimpleName);
+  public List<String> getFieldResourceNames(String messageSimpleName, String fieldSimpleName) {
+    List<String> resourceNames = getResourceNamesForField(messageSimpleName, fieldSimpleName);
+    Preconditions.checkArgument(
+        !resourceNames.isEmpty(),
+        "Field %s of message %s does not have a resource name.",
+        fieldSimpleName,
+        messageSimpleName);
+    return resourceNames;
   }
 
-  private String getResourceNameOrNullForField(String messageSimpleName, String fieldSimpleName) {
+  private List<String> getResourceNamesForField(String messageSimpleName, String fieldSimpleName) {
     ResourceNameMessageConfig messageResourceTypeConfig =
         getResourceTypeConfigMap().get(messageSimpleName);
     if (messageResourceTypeConfig == null) {
-      return null;
+      return Collections.emptyList();
     }
-    return messageResourceTypeConfig.getEntityNameForField(fieldSimpleName);
+    return messageResourceTypeConfig.getEntityNamesForField(fieldSimpleName);
   }
 }

@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -178,7 +179,10 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
           continue;
         }
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
-        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        for (FlatteningConfig flatteningGroup :
+            FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                methodConfig.getFlatteningConfigs())) {
+
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           testCaseViews.add(

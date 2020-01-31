@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceContext;
@@ -42,7 +43,6 @@ import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +131,10 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         methods.add(generateGrpcStreamingRequestMethod(methodContext));
       } else if (methodContext.isLongRunningMethodContext()) {
         if (methodConfig.isFlattening()) {
-          ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          List<FlatteningConfig> flatteningGroups =
+              FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                  methodConfig.getFlatteningConfigs());
+
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
           for (int i = 0; i < flatteningGroups.size(); i++) {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
@@ -146,7 +149,9 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         methods.add(generateOperationRequestMethod(methodContext));
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
-          ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          List<FlatteningConfig> flatteningGroups =
+              FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                  methodConfig.getFlatteningConfigs());
           // Find flattenings that have ambiguous parameters, and mark them to use named arguments.
           // Ambiguity occurs in a page-stream flattening that has one or two extra string
           // parameters (that are not resource-names) compared to any other flattening of this same
@@ -202,7 +207,9 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer<Pr
         methods.add(generatePagedRequestMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {
-          ImmutableList<FlatteningConfig> flatteningGroups = methodConfig.getFlatteningConfigs();
+          List<FlatteningConfig> flatteningGroups =
+              FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                  methodConfig.getFlatteningConfigs());
           boolean requiresNameSuffix = flatteningGroups.size() > 1;
           for (int i = 0; i < flatteningGroups.size(); i++) {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);

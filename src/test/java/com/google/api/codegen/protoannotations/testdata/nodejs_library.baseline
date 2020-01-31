@@ -5105,6 +5105,9 @@ class LibraryServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
+      archivePathTemplate: new gaxModule.PathTemplate(
+        'archives/{archive}'
+      ),
       archivedBookPathTemplate: new gaxModule.PathTemplate(
         'archives/{archive}/books/{book}'
       ),
@@ -7997,6 +8000,18 @@ class LibraryServiceClient {
   // --------------------
 
   /**
+   * Return a fully-qualified archive resource name string.
+   *
+   * @param {String} archive
+   * @returns {String}
+   */
+  archivePath(archive) {
+    return this._pathTemplates.archivePathTemplate.render({
+      archive: archive,
+    });
+  }
+
+  /**
    * Return a fully-qualified archived_book resource name string.
    *
    * @param {String} archive
@@ -8119,6 +8134,19 @@ class LibraryServiceClient {
     return this._pathTemplates.shelfPathTemplate.render({
       shelf: shelf,
     });
+  }
+
+  /**
+   * Parse the archiveName from a archive resource.
+   *
+   * @param {String} archiveName
+   *   A fully-qualified path representing a archive resources.
+   * @returns {String} - A string representing the archive.
+   */
+  matchArchiveFromArchiveName(archiveName) {
+    return this._pathTemplates.archivePathTemplate
+      .match(archiveName)
+      .archive;
   }
 
   /**

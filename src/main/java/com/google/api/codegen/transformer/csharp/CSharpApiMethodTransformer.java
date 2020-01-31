@@ -145,13 +145,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             apiMethods.add(
                 generateGrpcStreamingFlattenedMethod(
                     methodContext, csharpCommonTransformer.callSettingsParam(), null));
-            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.add(
-                  generateGrpcStreamingFlattenedMethod(
-                      methodContext.withResourceNamesInSamplesOnly(),
-                      csharpCommonTransformer.callSettingsParam(),
-                      null));
-            }
           }
         }
         requestMethodContext =
@@ -167,10 +160,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.addAll(generateFlattenedLroMethods(methodContext));
-            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.addAll(
-                  generateFlattenedLroMethods(methodContext.withResourceNamesInSamplesOnly()));
-            }
           }
         }
         apiMethods.add(
@@ -195,11 +184,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.addAll(
                 generatePageStreamingFlattenedMethods(methodContext, pagedMethodAdditionalParams));
-            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.addAll(
-                  generatePageStreamingFlattenedMethods(
-                      methodContext.withResourceNamesInSamplesOnly(), pagedMethodAdditionalParams));
-            }
           }
         }
         apiMethods.add(
@@ -228,10 +212,6 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
             GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(requestMethodContext, flatteningGroup);
             apiMethods.addAll(generateNormalFlattenedMethods(methodContext));
-            if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-              apiMethods.addAll(
-                  generateNormalFlattenedMethods(methodContext.withResourceNamesInSamplesOnly()));
-            }
           }
         }
         apiMethods.add(

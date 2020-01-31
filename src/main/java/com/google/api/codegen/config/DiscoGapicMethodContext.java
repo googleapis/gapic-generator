@@ -19,8 +19,11 @@ import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.CallingForm;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -146,5 +149,15 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   // to a separate SampleContext.
   public MethodContext withCallingForms(List<CallingForm> callingForms) {
     return this;
+  }
+
+  @Override
+  public ImmutableMap<String, String> getFieldResourceEntityMap() {
+    ImmutableMap.Builder<String, String> fieldResourceEntityMap = ImmutableMap.builder();
+    for (Map.Entry<String, Collection<String>> entry :
+        getMethodConfig().getFieldNamePatterns().asMap().entrySet()) {
+      fieldResourceEntityMap.put(entry.getKey(), ((List<String>) entry.getValue()).get(0));
+    }
+    return fieldResourceEntityMap.build();
   }
 }

@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceContext;
@@ -300,13 +301,12 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         } else {
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
-        for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        for (FlatteningConfig flatteningGroup :
+            FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                FlatteningConfig.withRepeatedResourceInSampleOnly(
+                    methodConfig.getFlatteningConfigs()))) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
-          if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-            methodContext = methodContext.withResourceNamesInSamplesOnly();
-            flatteningGroup = methodContext.getFlatteningConfig();
-          }
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,

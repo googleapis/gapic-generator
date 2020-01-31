@@ -113,26 +113,17 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
     InterfaceContext interfaceContext = methodContext.getSurfaceInterfaceContext();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext.asFlattenedMethodContext(methodContext, flatteningGroup);
-        if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-          flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
-        }
+
         apiMethods.add(
             generateFlattenedMethod(
                 flattenedMethodContext.withCallingForms(
                     Collections.singletonList(CallingForm.Flattened)),
                 sampleContext));
-
-        if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(
-              generateFlattenedMethod(
-                  flattenedMethodContext
-                      .withResourceNamesInSamplesOnly()
-                      .withCallingForms(Collections.singletonList(CallingForm.Flattened)),
-                  sampleContext));
-        }
       }
     }
     apiMethods.add(
@@ -186,22 +177,15 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
         .saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)
                 .withCallingForms(Collections.singletonList(CallingForm.LongRunningFlattenedAsync));
-        if (FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-          flattenedMethodContext = flattenedMethodContext.withResourceNamesInSamplesOnly();
-        }
         apiMethods.add(
             generateAsyncOperationFlattenedMethod(flattenedMethodContext, sampleContext));
-
-        if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(
-              generateAsyncOperationFlattenedMethod(
-                  flattenedMethodContext.withResourceNamesInSamplesOnly(), sampleContext));
-        }
       }
     }
     apiMethods.add(
@@ -227,19 +211,14 @@ public class JavaApiMethodTransformer extends StaticLangApiMethodTransformer {
     InterfaceContext interfaceContext = methodContext.getSurfaceInterfaceContext();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isFlattening()) {
-      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+      List<FlatteningConfig> flatteningConfigs =
+          FlatteningConfig.withRepeatedResourceInSampleOnly(methodConfig.getFlatteningConfigs());
+      for (FlatteningConfig flatteningGroup : flatteningConfigs) {
         MethodContext flattenedMethodContext =
             interfaceContext
                 .asFlattenedMethodContext(methodContext, flatteningGroup)
                 .withCallingForms(ImmutableList.of(CallingForm.FlattenedPaged));
-        if (!FlatteningConfig.hasAnyRepeatedResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
-        }
-        if (FlatteningConfig.hasAnyResourceNameParameter(flatteningGroup)) {
-          apiMethods.add(
-              generatePagedFlattenedMethod(
-                  flattenedMethodContext.withResourceNamesInSamplesOnly(), sampleContext));
-        }
+        apiMethods.add(generatePagedFlattenedMethod(flattenedMethodContext, sampleContext));
       }
     }
     apiMethods.add(

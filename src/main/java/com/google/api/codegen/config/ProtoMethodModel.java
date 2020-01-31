@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /** A wrapper around the model of a protobuf-defined Method. */
-public final class ProtoMethodModel implements MethodModel {
+public class ProtoMethodModel implements MethodModel {
   private final Method method;
   private List<ProtoField> inputFields;
   private List<ProtoField> outputFields;

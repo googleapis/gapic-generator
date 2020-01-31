@@ -233,7 +233,7 @@ public class InitCodeTransformer {
    */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(MethodContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
-    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
+    Map<String, String> fieldNamePatterns = context.getFieldResourceEntityMap();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
       SingleResourceNameConfig resourceNameConfig =
           context.getSingleResourceNameConfig(fieldNamePattern.getValue());

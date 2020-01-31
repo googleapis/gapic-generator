@@ -256,20 +256,11 @@ public abstract class GapicProductConfig implements ProductConfig {
                       DeprecatedCollectionConfigProto::getNamePattern, c -> c));
 
       // Create a pattern-to-resource map to make looking up parent resources easier.
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap = new HashMap<>();
-      for (ResourceDescriptorConfig resourceDescriptor : descriptorConfigMap.values()) {
-        for (String pattern : resourceDescriptor.getPatterns()) {
-          Set<ResourceDescriptorConfig> resources = patternResourceDescriptorMap.get(pattern);
-          if (resources == null) {
-            resources = new HashSet<>();
-            patternResourceDescriptorMap.put(pattern, resources);
-          }
-          resources.add(resourceDescriptor);
-        }
-      }
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap =
+          ResourceDescriptorConfig.getPatternResourceMap(descriptorConfigMap.values());
 
       // Create a child-to-parent map to make resolving child_type easier.
-      Map<String, ResourceDescriptorConfig> childParentResourceMap =
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap =
           ResourceDescriptorConfig.getChildParentResourceMap(
               descriptorConfigMap, patternResourceDescriptorMap);
       resourceNameConfigs =
@@ -812,8 +803,8 @@ public abstract class GapicProductConfig implements ProductConfig {
           Set<String> typesWithTypeReferences,
           Set<String> typesWithChildReferences,
           Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
-          Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
-          Map<String, ResourceDescriptorConfig> childParentResourceMap,
+          Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap,
+          Map<String, List<ResourceDescriptorConfig>> childParentResourceMap,
           String defaultPackage) {
 
     Map<CollectionConfigProto, Interface> allCollectionConfigProtos =
@@ -1083,7 +1074,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       map.put(
           field.getFullName(),
-          FieldConfig.createMessageFieldConfig(
+          FieldConfigFactory.createMessageFieldConfig(
               messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
     }
     builder.putAll(map);
@@ -1107,8 +1098,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       Set<String> typesWithTypeReferences,
       Set<String> typesWithChildReferences,
       Map<String, DeprecatedCollectionConfigProto> deprecatedPatternResourceMap,
-      Map<String, Set<ResourceDescriptorConfig>> patternResourceDescriptorMap,
-      Map<String, ResourceDescriptorConfig> childParentResourceMap,
+      Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap,
+      Map<String, List<ResourceDescriptorConfig>> childParentResourceMap,
       String defaultPackage,
       Map<String, SingleResourceNameConfig> singleResourceNameConfigsFromGapicConfig) {
     HashMap<String, ResourceNameConfig> annotationResourceNameConfigs = new HashMap<>();
@@ -1132,14 +1123,17 @@ public abstract class GapicProductConfig implements ProductConfig {
       }
 
       if (typesWithChildReferences.contains(unifiedResourceType)) {
-        ResourceDescriptorConfig parentResource = childParentResourceMap.get(unifiedResourceType);
-        Map<String, ResourceNameConfig> resources =
-            parentResource.buildResourceNameConfigs(
-                diagCollector,
-                singleResourceNameConfigsFromGapicConfig,
-                deprecatedPatternResourceMap,
-                language);
-        annotationResourceNameConfigs.putAll(resources);
+        List<ResourceDescriptorConfig> parentResources =
+            childParentResourceMap.getOrDefault(unifiedResourceType, Collections.emptyList());
+        for (ResourceDescriptorConfig parentResource : parentResources) {
+          Map<String, ResourceNameConfig> resources =
+              parentResource.buildResourceNameConfigs(
+                  diagCollector,
+                  singleResourceNameConfigsFromGapicConfig,
+                  deprecatedPatternResourceMap,
+                  language);
+          annotationResourceNameConfigs.putAll(resources);
+        }
       }
     }
     return annotationResourceNameConfigs;

@@ -22,6 +22,7 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -59,7 +60,7 @@ public abstract class MethodConfig {
   @Nullable
   public abstract BatchingConfig getBatching();
 
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
+  public abstract ImmutableListMultimap<String, String> getFieldNamePatterns();
 
   public abstract List<String> getSampleCodeInitFields();
 
@@ -184,13 +185,13 @@ public abstract class MethodConfig {
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
-      ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableListMultimap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
     for (FieldModel field : fields) {
       fieldConfigsBuilder.add(
-          FieldConfig.createFieldConfig(
+          FieldConfigFactory.createMessageFieldConfig(
               diagCollector,
               messageConfigs,
               fieldNamePatterns,

@@ -20,6 +20,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Collection;
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-/** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
+/** FieldConfig represents a configuration for a Field. */
 @AutoValue
 public abstract class FieldConfig {
   public abstract FieldModel getField();
@@ -35,9 +36,15 @@ public abstract class FieldConfig {
   @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
+  /** The resource name config used to generate flattened API methods. */
   @Nullable
   public abstract ResourceNameConfig getResourceNameConfig();
 
+  /**
+   * The resource name config associated to a field in a proto message. Used to generate samples and
+   * tests for non-flattened methods, and iterator methods (e.g., iterateAllAsBookName) in page
+   * streaming responses.
+   */
   @Nullable
   public abstract ResourceNameConfig getMessageResourceNameConfig();
 
@@ -48,7 +55,7 @@ public abstract class FieldConfig {
     return getResourceNameConfig().getResourceNameType();
   }
 
-  private static FieldConfig createFieldConfig(
+  static FieldConfig createFieldConfig(
       FieldModel field,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
@@ -62,50 +69,24 @@ public abstract class FieldConfig {
       throw new IllegalArgumentException(
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
-    return new AutoValue_FieldConfig(
-        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
-  }
-
-  /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
-  public static FieldConfig createDefaultFieldConfig(FieldModel field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
-  }
-
-  static FieldConfig createMessageFieldConfig(
-      ResourceNameMessageConfigs messageConfigs,
-      Map<String, ResourceNameConfig> resourceNameConfigs,
-      FieldModel field,
-      ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFieldConfig(
-        null,
-        messageConfigs,
-        null,
-        resourceNameConfigs,
-        field,
-        ResourceNameTreatment.UNSET_TREATMENT,
-        defaultResourceNameTreatment);
+    return FieldConfig.newBuilder()
+        .setField(field)
+        .setResourceNameTreatment(resourceNameTreatment)
+        .setResourceNameConfig(resourceNameConfig)
+        .setMessageResourceNameConfig(messageResourceNameConfig)
+        .build();
   }
 
   /** Package-private since this is not used outside the config package. */
   static FieldConfig createFieldConfig(
       DiagCollector diagCollector,
+      @Nullable String messageFieldEntityName,
+      @Nullable String flattenedFieldEntityName,
       ResourceNameMessageConfigs messageConfigs,
-      Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
-    String messageFieldEntityName = null;
-    String flattenedFieldEntityName = null;
-    if (messageConfigs != null && messageConfigs.fieldHasResourceName(field)) {
-      messageFieldEntityName = messageConfigs.getFieldResourceName(field);
-    }
-    if (fieldNamePatterns != null) {
-      flattenedFieldEntityName = fieldNamePatterns.get(field.getNameAsParameter());
-    }
-    if (flattenedFieldEntityName == null) {
-      flattenedFieldEntityName = messageFieldEntityName;
-    }
 
     if (treatment == ResourceNameTreatment.UNSET_TREATMENT) {
       // No specific resource name treatment is specified, so we infer the correct treatment from
@@ -162,8 +143,14 @@ public abstract class FieldConfig {
 
     validate(messageConfigs, field, treatment, flattenedFieldResourceNameConfig);
 
-    return createFieldConfig(
-        field, treatment, flattenedFieldResourceNameConfig, messageFieldResourceNameConfig);
+    FieldConfig config =
+        newBuilder()
+            .setField(field)
+            .setResourceNameTreatment(treatment)
+            .setResourceNameConfig(flattenedFieldResourceNameConfig)
+            .setMessageResourceNameConfig(messageFieldResourceNameConfig)
+            .build();
+    return config;
   }
 
   private static ResourceNameConfig getResourceNameConfig(
@@ -213,7 +200,8 @@ public abstract class FieldConfig {
 
   public FieldConfig withResourceNameInSampleOnly() {
     ResourceNameTreatment newTreatment = ResourceNameTreatment.NONE;
-    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())) {
+    if (ResourceNameTreatment.STATIC_TYPES.equals(getResourceNameTreatment())
+        || ResourceNameTreatment.SAMPLE_ONLY.equals(getResourceNameTreatment())) {
       newTreatment = ResourceNameTreatment.SAMPLE_ONLY;
     }
     return FieldConfig.createFieldConfig(
@@ -239,6 +227,10 @@ public abstract class FieldConfig {
             : getResourceNameTreatment(),
         getMessageResourceNameConfig(),
         getMessageResourceNameConfig());
+  }
+
+  public boolean isRepeatedResourceNameTypeField() {
+    return getField().isRepeated() && useResourceNameType();
   }
 
   /*
@@ -287,5 +279,44 @@ public abstract class FieldConfig {
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
     return Maps.uniqueIndex(fieldConfigs, f -> f.getField().getFullName());
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder setField(FieldModel val);
+
+    public abstract Builder setResourceNameTreatment(ResourceNameTreatment val);
+
+    public abstract Builder setResourceNameConfig(ResourceNameConfig val);
+
+    public abstract Builder setMessageResourceNameConfig(ResourceNameConfig val);
+
+    public abstract FieldConfig build();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_FieldConfig.Builder();
+  }
+
+  /**
+   * The string returned that the default toString() method generated by AutoValue is too verbose.
+   * Override it to provide just key information.
+   */
+  @Override
+  public String toString() {
+    String resourceNameEntityId =
+        getResourceNameConfig() == null ? "null" : getResourceNameConfig().getEntityId();
+    String exampleResourceNameEntityId =
+        getMessageResourceNameConfig() == null
+            ? "null"
+            : getMessageResourceNameConfig().getEntityId();
+
+    return MoreObjects.toStringHelper(this)
+        .add("fieldName", getField().getSimpleName())
+        .add("resourceNameEntityId", resourceNameEntityId)
+        .add("exampleResourceNameEntityId", exampleResourceNameEntityId)
+        .add("resourceTreatment", getResourceNameTreatment())
+        .toString();
   }
 }

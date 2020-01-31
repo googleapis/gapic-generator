@@ -39,6 +39,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -191,7 +192,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    ImmutableMap<String, String> fieldNamePatterns = getFieldNamePatterns(method, messageConfigs);
+    ImmutableListMultimap<String, String> fieldNamePatterns =
+        getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
 
@@ -242,7 +244,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
             .setLroConfig(
                 LongRunningConfig.createLongRunningConfig(
                     method, diagCollector, methodConfigProto.getLongRunning(), protoParser));
-
     if (diagCollector.getErrorCount() - previousErrors > 0) {
       return null;
     } else {
@@ -264,8 +265,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
     List<String> requiredFields = methodConfigProto.getRequiredFieldsList();
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableListMultimap<String, String> fieldNamePatterns =
+        ImmutableListMultimap.copyOf(methodConfigProto.getFieldNamePatterns().entrySet());
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();
 
@@ -344,9 +345,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
   }
 
-  public static ImmutableMap<String, String> getFieldNamePatterns(
+  public static ImmutableListMultimap<String, String> getFieldNamePatterns(
       Method method, ResourceNameMessageConfigs messageConfigs) {
-    ImmutableMap.Builder<String, String> resultCollector = ImmutableMap.builder();
+    ImmutableListMultimap.Builder<String, String> resultCollector = ImmutableListMultimap.builder();
     // Only look two levels deep in the request object, so fields of fields of the request object.
     getFieldNamePatterns(messageConfigs, method.getInputMessage(), resultCollector, "", 2);
     return resultCollector.build();
@@ -370,7 +371,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   private static void getFieldNamePatterns(
       ResourceNameMessageConfigs messageConfigs,
       MessageType messageType,
-      ImmutableMap.Builder<String, String> resultCollector,
+      ImmutableListMultimap.Builder<String, String> resultCollector,
       String fieldNamePrefix,
       int depth) {
     if (depth < 1) throw new IllegalStateException("depth must be positive");
@@ -387,9 +388,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
       }
 
       if (messageConfigs.fieldHasResourceName(messageType.getFullName(), field.getSimpleName())) {
-        resultCollector.put(
+        resultCollector.putAll(
             fieldNameKey,
-            messageConfigs.getFieldResourceName(messageType.getFullName(), field.getSimpleName()));
+            messageConfigs.getFieldResourceNames(messageType.getFullName(), field.getSimpleName()));
       }
     }
   }
@@ -424,7 +425,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
     public abstract Builder setBatching(@Nullable BatchingConfig val);
 
-    public abstract Builder setFieldNamePatterns(ImmutableMap<String, String> val);
+    public abstract Builder setFieldNamePatterns(ImmutableListMultimap<String, String> val);
 
     public abstract Builder setSampleCodeInitFields(List<String> val);
 

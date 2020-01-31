@@ -1135,13 +1135,21 @@ message TestOptionalRequiredFlatteningParamsResponse {
 
 message MoveBooksRequest {
 
-  string source = 1;
+  string source = 1 [
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"
+  ];
 
-  string destination = 2;
+  string destination = 2 [
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"
+  ];
 
-  repeated string publishers = 3;
+  repeated string publishers = 3 [
+    (google.api.resource_reference).type = "library.googleapis.com/Publisher"
+  ];
 
-  string project = 4;
+  string project = 4 [
+    (google.api.resource_reference).type = "cloudresourcemanager.googleapis.com/Project"
+  ];
 }
 
 message MoveBooksResponse {
@@ -1150,9 +1158,13 @@ message MoveBooksResponse {
 
 message ArchiveBooksRequest {
 
-  string source = 1;
+  string source = 1 [
+    (google.api.resource_reference).child_type = "library.googleapis.com/Book"
+  ];
 
-  string archive = 2;
+  string archive = 2 [
+    (google.api.resource_reference).type = "library.googleapis.com/Archive"
+  ];
 }
 
 message ArchiveBooksResponse {
