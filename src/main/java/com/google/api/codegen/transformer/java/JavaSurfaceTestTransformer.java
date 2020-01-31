@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceContext;
@@ -54,10 +55,7 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimaps;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates an ApiModel into API tests in Java. */
@@ -304,7 +302,9 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           clientMethodType = ClientMethodType.FlattenedMethod;
         }
         for (FlatteningConfig flatteningGroup :
-            getFlatteningConfigsForTests(methodConfig.getFlatteningConfigs())) {
+            FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                FlatteningConfig.withRepeatedResourceInSampleOnly(
+                    methodConfig.getFlatteningConfigs()))) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
           InitCodeContext initCodeContext =
@@ -504,16 +504,5 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
           throw new IllegalArgumentException("Invalid streaming type: " + streamingType);
       }
     }
-  }
-
-  private static List<FlatteningConfig> getFlatteningConfigsForTests(
-      List<FlatteningConfig> flatteningConfigs) {
-    flatteningConfigs = FlatteningConfig.withRepeatedResourceInSampleOnly(flatteningConfigs);
-    Collection<List<FlatteningConfig>> flatteningGroups =
-        Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
-    return flatteningGroups
-        .stream()
-        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
-        .collect(ImmutableList.toImmutableList());
   }
 }

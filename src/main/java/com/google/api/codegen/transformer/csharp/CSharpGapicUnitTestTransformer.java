@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicMethodContext;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -48,8 +49,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimaps;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,7 +180,8 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         }
         GapicMethodContext requestContext = context.asRequestMethodContext(method);
         for (FlatteningConfig flatteningGroup :
-            getFlatteningConfigsForTests(methodConfig.getFlatteningConfigs())) {
+            FlatteningConfigs.getRepresentativeFlatteningConfigs(
+                methodConfig.getFlatteningConfigs())) {
 
           GapicMethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
@@ -290,15 +290,5 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         synchronicity,
         initCodeRequestObjectContext,
         requestContext);
-  }
-
-  private static List<FlatteningConfig> getFlatteningConfigsForTests(
-      List<FlatteningConfig> flatteningConfigs) {
-    Collection<List<FlatteningConfig>> flatteningGroups =
-        Multimaps.asMap(FlatteningConfig.groupByMethodSignature(flatteningConfigs)).values();
-    return flatteningGroups
-        .stream()
-        .map(FlatteningConfig::getFlatteningConfigForUnitTests)
-        .collect(ImmutableList.toImmutableList());
   }
 }

@@ -195,7 +195,23 @@ public class FlatteningConfigTest {
             .setField(destination)
             .build();
 
-    FieldConfig animalsField =
+    FieldConfig animalsFieldFishResource =
+        FieldConfig.newBuilder()
+            .setResourceNameConfig(fish)
+            .setMessageResourceNameConfig(fish)
+            .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
+            .setField(animals)
+            .build();
+
+    FieldConfig animalsFieldBirdResource =
+        FieldConfig.newBuilder()
+            .setResourceNameConfig(bird)
+            .setMessageResourceNameConfig(bird)
+            .setResourceNameTreatment(ResourceNameTreatment.STATIC_TYPES)
+            .setField(animals)
+            .build();
+
+    FieldConfig animalsFieldSampleOnly =
         FieldConfig.newBuilder()
             .setResourceNameConfig(fish)
             .setMessageResourceNameConfig(fish)
@@ -212,7 +228,7 @@ public class FlatteningConfigTest {
                     "destination",
                     destinationFieldStateResource,
                     "animals",
-                    animalsField)),
+                    animalsFieldFishResource)),
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
                     "source",
@@ -220,7 +236,7 @@ public class FlatteningConfigTest {
                     "destination",
                     destinationFieldStateResource,
                     "animals",
-                    animalsField)),
+                    animalsFieldFishResource)),
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
                     "source",
@@ -228,7 +244,7 @@ public class FlatteningConfigTest {
                     "destination",
                     destinationFieldCountyResource,
                     "animals",
-                    animalsField)),
+                    animalsFieldFishResource)),
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
                     "source",
@@ -236,7 +252,39 @@ public class FlatteningConfigTest {
                     "destination",
                     destinationFieldCountyResource,
                     "animals",
-                    animalsField)),
+                    animalsFieldFishResource)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldBirdResource)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldBirdResource)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldBirdResource)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldBirdResource)),
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
                     "source",
@@ -244,8 +292,54 @@ public class FlatteningConfigTest {
                     "destination",
                     destinationFieldSampleOnly,
                     "animals",
-                    animalsField)));
+                    animalsFieldSampleOnly)));
 
     assertThat(flatteningConfigs).containsExactlyElementsIn(expectedFlatteningConfigs);
+
+    List<FlatteningConfig> expectedFlatteningConfigs2 =
+        ImmutableList.of(
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldSampleOnly)));
+
+    assertThat(FlatteningConfig.withRepeatedResourceInSampleOnly(flatteningConfigs))
+        .containsExactlyElementsIn(expectedFlatteningConfigs2);
   }
 }

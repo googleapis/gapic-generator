@@ -29,10 +29,18 @@ public class FieldConfigFactory {
 
   private FieldConfigFactory() {}
 
-  /*
-   * Create a FieldConfig for a field in a message. If the field is associated
-   * with multiple resource names through child_type resource reference,
-   * the created FieldConfig will pick one for its messageResourceNameConfig.
+  /**
+   * Create a FieldConfig for a field in a message. If the field is associated with multiple
+   * resource names through child_type resource reference, the created FieldConfig will pick one for
+   * its messageResourceNameConfig.
+   *
+   * <p>It is safe to create just one FieldConfig for the purpose of generating samples and unit
+   * tests because we may use any resource name type in samples and tests.
+   *
+   * <p>It is safe to create just one FieldConfig for the purpose of generating page streaming
+   * response helper methods because we only support paging over primitive fields in order not to
+   * break existing APIs (Logging, PubSub and Firestore) and will respect automatic pagination in
+   * https://aip.dev/client-libraries/4233.
    */
   static FieldConfig createMessageFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
@@ -54,19 +62,27 @@ public class FieldConfigFactory {
     return null;
   }
 
-  static List<FieldConfig> createFlattenedFieldConfigs(
+  static FieldConfig createMessageFieldConfig(
+      DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
+      ImmutableListMultimap<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       FieldModel field,
+      ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFlattenedFieldConfigs(
-        null,
-        messageConfigs,
-        null,
-        resourceNameConfigs,
-        field,
-        ResourceNameTreatment.UNSET_TREATMENT,
-        defaultResourceNameTreatment);
+    List<FieldConfig> configs =
+        createFlattenedFieldConfigs(
+            diagCollector,
+            messageConfigs,
+            fieldNamePatterns,
+            resourceNameConfigs,
+            field,
+            ResourceNameTreatment.UNSET_TREATMENT,
+            defaultResourceNameTreatment);
+    if (configs.size() >= 1) {
+      return configs.get(0);
+    }
+    return null;
   }
 
   /**
@@ -105,6 +121,21 @@ public class FieldConfigFactory {
    *   <li>ListFoos(String parent) -> ("Project", "Project", SAMPLE_ONLY);
    * </ul>
    */
+  static List<FieldConfig> createFlattenedFieldConfigs(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldModel field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFlattenedFieldConfigs(
+        null,
+        messageConfigs,
+        null,
+        resourceNameConfigs,
+        field,
+        ResourceNameTreatment.UNSET_TREATMENT,
+        defaultResourceNameTreatment);
+  }
+
   static List<FieldConfig> createFlattenedFieldConfigs(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
@@ -224,5 +255,10 @@ public class FieldConfigFactory {
               defaultResourceNameTreatment));
     }
     return fieldConfigs.build();
+  }
+
+  /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
+  public static FieldConfig createDefaultFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 }

@@ -191,15 +191,14 @@ public abstract class MethodConfig {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
     for (FieldModel field : fields) {
       fieldConfigsBuilder.add(
-          FieldConfigFactory.createFlattenedFieldConfigs(
-                  diagCollector,
-                  messageConfigs,
-                  fieldNamePatterns,
-                  resourceNameConfigs,
-                  field,
-                  ResourceNameTreatment.UNSET_TREATMENT,
-                  defaultResourceNameTreatment)
-              .get(0));
+          FieldConfigFactory.createMessageFieldConfig(
+              diagCollector,
+              messageConfigs,
+              fieldNamePatterns,
+              resourceNameConfigs,
+              field,
+              ResourceNameTreatment.UNSET_TREATMENT,
+              defaultResourceNameTreatment));
     }
     return fieldConfigsBuilder.build();
   }

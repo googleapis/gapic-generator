@@ -25,7 +25,6 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -36,7 +35,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -58,7 +56,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel,
-      ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs) {
+      ImmutableList.Builder<FlatteningConfig> flatteningConfigs) {
 
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
@@ -70,13 +68,11 @@ public abstract class FlatteningConfig {
               flatteningGroup,
               methodModel);
       if (groupConfig != null) {
-        ImmutableList.Builder<FlatteningConfig> fieldConfigs = ImmutableList.builder();
-        fieldConfigs.add(groupConfig);
+        flatteningConfigs.add(groupConfig);
         // We always generate an overload will all resource names treated as strings
         if (hasAnyResourceNameParameter(groupConfig)) {
-          fieldConfigs.add(groupConfig.withResourceNamesInSamplesOnly());
+          flatteningConfigs.add(groupConfig.withResourceNamesInSamplesOnly());
         }
-        flatteningConfigs.put(flatteningConfigToString(groupConfig), fieldConfigs.build());
       }
     }
   }
@@ -87,11 +83,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       MethodModel methodModel) {
-    // As a flattened field may have multiple resource name associated, a method_signature
-    // may end up with multiple method overloads as we generate all the combinations of
-    // resource name types. Therefore we group all the FlatteningConfigs generated from
-    // one method_signature in a list.
-    ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs = ImmutableMap.builder();
+    ImmutableList.Builder<FlatteningConfig> flatteningConfigs = ImmutableList.builder();
     insertFlatteningsFromGapicConfig(
         diagCollector,
         messageConfigs,
@@ -102,12 +94,7 @@ public abstract class FlatteningConfig {
     if (diagCollector.hasErrors()) {
       return null;
     }
-    return flatteningConfigs
-        .build()
-        .values()
-        .stream()
-        .flatMap(List::stream)
-        .collect(ImmutableList.toImmutableList());
+    return flatteningConfigs.build();
   }
 
   @VisibleForTesting
@@ -120,7 +107,7 @@ public abstract class FlatteningConfig {
       ProtoMethodModel methodModel,
       ProtoParser protoParser) {
 
-    ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs = ImmutableMap.builder();
+    ImmutableList.Builder<FlatteningConfig> flatteningConfigs = ImmutableList.builder();
 
     insertFlatteningsFromGapicConfig(
         diagCollector,
@@ -140,12 +127,7 @@ public abstract class FlatteningConfig {
     if (diagCollector.hasErrors()) {
       return null;
     }
-    return flatteningConfigs
-        .build()
-        .values()
-        .stream()
-        .flatMap(List::stream)
-        .collect(ImmutableList.toImmutableList());
+    return flatteningConfigs.build();
   }
 
   /**
@@ -158,7 +140,7 @@ public abstract class FlatteningConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ProtoMethodModel methodModel,
       ProtoParser protoParser,
-      ImmutableMap.Builder<String, List<FlatteningConfig>> flatteningConfigs) {
+      ImmutableList.Builder<FlatteningConfig> flatteningConfigs) {
     // Get flattenings from protofile annotations, let these override flattenings from GAPIC config.
     List<List<String>> methodSignatures =
         protoParser.getMethodSignatures(methodModel.getProtoMethod());
@@ -172,7 +154,7 @@ public abstract class FlatteningConfig {
               methodModel,
               protoParser);
       if (groupConfigs != null && !groupConfigs.isEmpty()) {
-        flatteningConfigs.put(flatteningConfigToString(groupConfigs.get(0)), groupConfigs);
+        flatteningConfigs.addAll(groupConfigs);
       }
     }
   }
@@ -293,9 +275,8 @@ public abstract class FlatteningConfig {
       flatteningConfigs = collectFieldConfigs(flatteningConfigs, fieldConfigs, parameter);
     }
 
-    // We also generate an overload that all singular resource names are treated as strings,
-    // if there is at least one singular resource name field in the method surface. Note repeated
-    // resource name fields are always treated as strings.
+    // We also generate an overload that all resource names are treated as strings,
+    // if there is at least one resource name field in the method surface.
     if (hasAnyResourceNameParameter(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
@@ -307,7 +288,7 @@ public abstract class FlatteningConfig {
   }
 
   /**
-   * Find all the combinations of FieldConfigs for a method_signature in a breadth-first search way.
+   * Find all the combinations of FieldConfigs for a method_signature using breadth-first search.
    */
   private static List<Map<String, FieldConfig>> collectFieldConfigs(
       List<Map<String, FieldConfig>> flatteningConfigs,
@@ -317,7 +298,10 @@ public abstract class FlatteningConfig {
     // Performance-wise this is not ideal but should be fine because there won't be too
     // many flatteningConfigs (should be almost always fewer than 5):
     //
-    // O(method_signatures * resource_name_fields_in_message * resources_per_field)
+    // O(flatteningConfigs) =
+    //   O(method_signatures)
+    //   * O(resource_name_fields_in_message)
+    //   * O(resources_per_field)
     List<Map<String, FieldConfig>> newFlatteningConfigs = new ArrayList<>();
 
     // Inserts a dumb element to kick of the search
@@ -392,44 +376,7 @@ public abstract class FlatteningConfig {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 
-  /** Returns a multimap from google.api.method_signature string to flattening configs. */
-  public static ImmutableListMultimap<String, FlatteningConfig> groupByMethodSignature(
-      List<FlatteningConfig> flatteningConfigs) {
-    return flatteningConfigs
-        .stream()
-        .collect(
-            ImmutableListMultimap.toImmutableListMultimap(
-                FlatteningConfig::getMethodSignature, f -> f));
-  }
-
-  /**
-   * Returns a flattening config for unit tests. Choose one with resource name types in API surface
-   * if possible.
-   */
-  public static FlatteningConfig getFlatteningConfigForUnitTests(
-      List<FlatteningConfig> flatteningConfigs) {
-    Preconditions.checkArgument(flatteningConfigs.size() > 0, "empty flattening configs");
-    Optional<FlatteningConfig> flattening =
-        flatteningConfigs.stream().filter(FlatteningConfig::hasAnyResourceNameParameter).findAny();
-    return flattening.isPresent() ? flattening.get() : flatteningConfigs.get(0);
-  }
-
-  /**
-   * Returns flattening configs for samples. Eliminate those will only raw strings if there are
-   * other flattenings with resource name types that have the same method signature.
-   */
-  public static List<FlatteningConfig> getFlatteningConfigsForSnippets(
-      List<FlatteningConfig> flatteningConfigs) {
-    Preconditions.checkArgument(flatteningConfigs.size() > 0, "empty flattening configs");
-    List<FlatteningConfig> flatteningWithResourceTypes =
-        flatteningConfigs
-            .stream()
-            .filter(FlatteningConfig::hasAnyResourceNameParameter)
-            .collect(ImmutableList.toImmutableList());
-    return flatteningWithResourceTypes.isEmpty() ? flatteningConfigs : flatteningWithResourceTypes;
-  }
-
-  private String getMethodSignature() {
+  public String getMethodSignature() {
     return getFlattenedFieldConfigs().keySet().stream().collect(Collectors.joining(","));
   }
 
