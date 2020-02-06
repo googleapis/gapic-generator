@@ -117,7 +117,7 @@ public abstract class MethodConfig {
 
   /** Returns true if this method has flattening configured. */
   public boolean isFlattening() {
-    return getFlatteningConfigs() != null;
+    return getFlatteningConfigs() != null && !getFlatteningConfigs().isEmpty();
   }
 
   /** Returns true if this method has batching configured. */

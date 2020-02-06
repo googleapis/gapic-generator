@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -55,6 +56,7 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -293,20 +295,13 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
                 methodContext, testNameTable, initCodeContext, ClientMethodType.CallableMethod));
       } else if (methodConfig.isFlattening()) {
         MethodContext defaultMethodContext = context.asRequestMethodContext(method);
-        ClientMethodType clientMethodType;
-        if (methodConfig.isPageStreaming()) {
-          clientMethodType = ClientMethodType.PagedFlattenedMethod;
-        } else if (defaultMethodContext.isLongRunningMethodContext()) {
-          clientMethodType = ClientMethodType.AsyncOperationFlattenedMethod;
-        } else {
-          clientMethodType = ClientMethodType.FlattenedMethod;
-        }
         for (FlatteningConfig flatteningGroup :
             FlatteningConfigs.getRepresentativeFlatteningConfigs(
                 FlatteningConfig.withRepeatedResourceInSampleOnly(
                     methodConfig.getFlatteningConfigs()))) {
           MethodContext methodContext =
               context.asFlattenedMethodContext(defaultMethodContext, flatteningGroup);
+          ClientMethodType clientMethodType = getClientMethodType(methodContext);
           InitCodeContext initCodeContext =
               initCodeTransformer.createRequestInitCodeContext(
                   methodContext,
@@ -319,10 +314,22 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
                   methodContext, testNameTable, initCodeContext, clientMethodType));
         }
       } else {
-        // TODO: Add support of non-flattening method
-        // Github issue: https://github.com/googleapis/toolkit/issues/393
-        System.err.println(
-            "Non-flattening method test is not supported yet for " + method.getSimpleName());
+        MethodContext methodContext = context.asRequestMethodContext(method);
+        ClientMethodType clientMethodType = getClientMethodType(methodContext);
+        InitCodeContext initCodeContext =
+            initCodeTransformer.createRequestInitCodeContext(
+                methodContext,
+                new SymbolTable(),
+                ImmutableList.<FieldConfig>builder()
+                    .addAll(methodConfig.getRequiredFieldConfigs())
+                    .addAll(methodConfig.getOptionalFieldConfigs())
+                    .build(),
+                InitCodeOutputType.SingleObject,
+                valueGenerator);
+        TestCaseView testCaseView =
+            testCaseTransformer.createTestCaseView(
+                methodContext, testNameTable, initCodeContext, clientMethodType);
+        testCaseViews.add(testCaseView);
       }
     }
     return testCaseViews;
@@ -503,6 +510,28 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         default:
           throw new IllegalArgumentException("Invalid streaming type: " + streamingType);
       }
+    }
+  }
+
+  private ClientMethodType getClientMethodType(MethodContext context) {
+    MethodConfig config = context.getMethodConfig();
+
+    if (context.isFlattenedMethodContext()) {
+      if (context.getMethodConfig().isPageStreaming()) {
+        return ClientMethodType.PagedFlattenedMethod;
+      } else if (context.isLongRunningMethodContext()) {
+        return ClientMethodType.AsyncOperationFlattenedMethod;
+      } else {
+        return ClientMethodType.FlattenedMethod;
+      }
+    }
+
+    if (context.getMethodConfig().isPageStreaming()) {
+      return ClientMethodType.PagedRequestObjectMethod;
+    } else if (context.isLongRunningMethodContext()) {
+      return ClientMethodType.AsyncOperationFlattenedMethod;
+    } else {
+      return ClientMethodType.RequestObjectMethod;
     }
   }
 }

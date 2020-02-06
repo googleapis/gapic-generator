@@ -72,6 +72,12 @@
           {@unaryTestCase(test)}
       @case "AsyncOperationFlattenedMethod"
           {@longRunningMethodTestCase(test)}
+      @case "RequestObjectMethod"
+          {@unaryTestCase(test)}
+      @case "PagedRequestObjectMethod"
+          {@unaryTestCase(test)}
+      @case "AsyncOperationRequestObjectMethod"
+          {@longRunningMethodTestCase(test)}
       @end
   @end
 @end
@@ -86,7 +92,18 @@
       {@initCode(test.testCaseInitCode)}
 
     @end
-    {@methodCall(test)}
+    @switch test.clientMethodType
+    @case "PagedFlattenedMethod"
+      {@pagedMethodCall(test)}
+    @case "PagedRequestObjectMethod"
+      {@pagedMethodCall(test)}
+    @case "FlattenedMethod"
+      {@methodCall(test)}
+    @case "RequestObjectMethod"
+      {@methodCall(test)}
+    @default
+      $unhandledCase: {@test.clientMethodType}
+    @end
 
     {@unarySuccessAsserts(test)}
   }
@@ -243,35 +260,32 @@
   {@test.mockServiceVarName}.addException(exception);
 @end
 
-@private methodCall(test)
-  @switch test.clientMethodType
-  @case "PagedFlattenedMethod"
-    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
-      {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+@private pagedMethodCall(test)
+  {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
+    {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
 
-    @join pageStreamingResponseView : test.pageStreamingResponseViews
-      List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
-      Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      @if pageStreamingResponseView.hasExpectedValueTransformFunction
-        Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
-            expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0)),
-            {@pageStreamingResponseView.resourcesVarName}.get(0));
-      @else
-        Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
-      @end
-    @end
-  @case "FlattenedMethod"
-    @if test.hasReturnValue
-      {@test.responseTypeName} actualResponse =
-          client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
-      Assert.assertEquals(expectedResponse, actualResponse);
+  @join pageStreamingResponseView : test.pageStreamingResponseViews
+    List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
+    Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
+    @if pageStreamingResponseView.hasExpectedValueTransformFunction
+      Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
+          expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0)),
+          {@pageStreamingResponseView.resourcesVarName}.get(0));
     @else
-      client.{@test.clientMethodName}(\
-            {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
-  @default
-    $unhandledCase: {@test.clientMethodType}$
+  @end
+@end
+
+@private methodCall(test)
+  @if test.hasReturnValue
+    {@test.responseTypeName} actualResponse =
+        client.{@test.clientMethodName}(\
+        {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+    Assert.assertEquals(expectedResponse, actualResponse);
+  @else
+    client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
   @end
 @end
 
