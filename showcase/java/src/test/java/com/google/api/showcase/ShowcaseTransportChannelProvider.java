@@ -86,6 +86,11 @@ public class ShowcaseTransportChannelProvider implements TransportChannelProvide
   }
 
   @Override
+  public boolean needsCredentials() {
+    return false;
+  }
+
+  @Override
   public TransportChannelProvider withCredentials(Credentials credentials) {
     return this;
   }
