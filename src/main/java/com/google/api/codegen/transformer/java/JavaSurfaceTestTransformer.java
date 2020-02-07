@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.ApiModel;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.FlatteningConfigs;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -56,7 +55,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -320,10 +318,7 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
             initCodeTransformer.createRequestInitCodeContext(
                 methodContext,
                 new SymbolTable(),
-                ImmutableList.<FieldConfig>builder()
-                    .addAll(methodConfig.getRequiredFieldConfigs())
-                    .addAll(methodConfig.getOptionalFieldConfigs())
-                    .build(),
+                methodConfig.getRequiredFieldConfigs(),
                 InitCodeOutputType.SingleObject,
                 valueGenerator);
         TestCaseView testCaseView =
