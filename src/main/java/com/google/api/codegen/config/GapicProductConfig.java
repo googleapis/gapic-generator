@@ -167,15 +167,18 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (protoPackage != null) {
       // Default to using --package option for value of default package and first API protoFile.
       defaultPackage = protoPackage;
-    } else if (configProto != null) {
+    } else if (configProto != null && configProto.getInterfacesCount() > 0) {
       // Otherwise use configProto to get the proto file containing the first interface listed in
-      // the config proto, and use it as
-      // the assigned file for generated resource names, and to get the default message namespace.
+      // the config proto, and use it as the assigned file for generated resource names, and to get
+      // the default message namespace.
       ProtoFile file =
           symbolTable.lookupInterface(configProto.getInterfaces(0).getName()).getFile();
       defaultPackage = file.getProto().getPackage();
     } else {
-      throw new NullPointerException("configProto and protoPackage cannot both be null.");
+      throw new NullPointerException(
+          "configProto and protoPackage cannot both be null. "
+              + "If using artman, please add the proto_package field to artman config, "
+              + "or switch to bazel.");
     }
 
     List<ProtoFile> sourceProtos =
