@@ -302,7 +302,11 @@
   {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
   @join assert : test.asserts
-    Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
+    @if assert.isFloatingPointNumber
+      Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)}, 0.001);
+    @else
+      Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
+    @end
   @end
   @if test.clientHasDefaultInstance
     Assert.assertTrue(

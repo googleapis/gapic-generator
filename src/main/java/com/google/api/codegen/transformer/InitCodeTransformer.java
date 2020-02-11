@@ -207,7 +207,9 @@ public class InitCodeTransformer {
 
       boolean isMap = fieldConfig.getField().isMap();
       boolean isArray = fieldConfig.getField().isRepeated() && !isMap;
-
+      boolean isFloatingPointNumber =
+          fieldConfig.getField().getType().isFloatType()
+              || fieldConfig.getField().getType().isDoubleType();
       TypeModel fieldType = fieldItemTree.getType();
       String messageTypeName = null;
       if (fieldType.isMessage()) {
@@ -221,6 +223,7 @@ public class InitCodeTransformer {
               actualTransformFunction,
               isMap,
               isArray,
+              isFloatingPointNumber,
               getterMethod,
               messageTypeName));
     }
@@ -252,12 +255,14 @@ public class InitCodeTransformer {
       String actualTransformFunction,
       boolean isMap,
       boolean isArray,
+      boolean isFloatingPointNumber,
       String actual,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .isMap(isMap)
         .isArray(isArray)
+        .isFloatingPointNumber(isFloatingPointNumber)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
