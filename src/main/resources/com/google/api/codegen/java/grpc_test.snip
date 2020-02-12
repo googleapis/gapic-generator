@@ -302,7 +302,7 @@
   {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
   @join assert : test.asserts
-    @if assert.isFloatingPointNumber
+    @if and(assert.isFloatingPointNumber, not(assert.isArray))
       Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)}, 0.001);
     @else
       Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
