@@ -28,6 +28,9 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   public abstract boolean enableStringFormatFunctions();
 
   @Override
+  public abstract boolean useStaticCreateMethodForOneofs();
+
+  @Override
   public boolean resourceNameTypesEnabled() {
     return true;
   }
@@ -71,6 +74,8 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
 
     abstract Builder enableStringFormatFunctions(boolean value);
 
+    abstract Builder useStaticCreateMethodForOneofs(boolean value);
+
     abstract JavaFeatureConfig build();
   }
 
@@ -88,6 +93,7 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
     }
     return JavaFeatureConfig.newBuilder()
         .enableStringFormatFunctions(enableStringFormatFunctions)
+        .useStaticCreateMethodForOneofs(productConfig.getProtoParser().isProtoAnnotationsEnabled())
         .build();
   }
 }

@@ -60,6 +60,12 @@ public interface FeatureConfig {
    */
   boolean useResourceNameFormatOptionInSampleOnly(FieldConfig fieldConfig);
 
+  /**
+   * Returns true if the clients support static create methods for multi-pattern resource names.
+   * Returns true only when the client is generated from proto annotations. Only used in Java.
+   */
+  boolean useStaticCreateMethodForOneofs();
+
   boolean useInheritanceForOneofs();
 
   /** Returns true if mixin APIs are supported. */

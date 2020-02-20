@@ -113,6 +113,11 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
+  public boolean useStaticCreateMethodForOneofs() {
+    return false;
+  }
+
+  @Override
   public boolean enableMixins() {
     return false;
   }
