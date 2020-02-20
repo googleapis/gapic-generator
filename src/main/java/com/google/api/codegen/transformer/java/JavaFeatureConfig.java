@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.auto.value.AutoValue;
 
@@ -38,8 +39,25 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean useResourceNameFormatOptionInSample(
       MethodContext context, FieldConfig fieldConfig) {
-    return super.useResourceNameFormatOptionInSample(context, fieldConfig)
-        && !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
+    boolean hasResourceNameFormatOption =
+        resourceNameTypesEnabled()
+            && fieldConfig != null
+            && (fieldConfig.useResourceNameType() || fieldConfig.useResourceNameTypeInSampleOnly());
+
+    if (!hasResourceNameFormatOption) {
+      return false;
+    }
+
+    // For an any resource name, we choose a random single resource name defined in the API for
+    // sample generation. If there are no single resource names at all in the API, we set this
+    // value to false and use a string literal to instantiate a resource name string.
+    boolean apiHasSingleResources =
+        context.getProductConfig().getSingleResourceNameConfigs().iterator().hasNext();
+    if (fieldConfig.getResourceNameType() == ResourceNameType.ANY && !apiHasSingleResources) {
+      return false;
+    }
+
+    return !(context.isFlattenedMethodContext() && fieldConfig.getField().isRepeated());
   }
 
   @Override
