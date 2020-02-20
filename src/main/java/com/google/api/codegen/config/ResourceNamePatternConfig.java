@@ -68,8 +68,8 @@ public class ResourceNamePatternConfig {
       return builder.toString();
     }
 
-    // PathTemplate uses an ImmutableMap to keep track of bindings, which
-    // preserves the correct order of binding variables
+    // PathTemplate uses an ImmutableMap to keep track of bindings, so we
+    // can count on it to give us the correct order of binding variables
     return getBindingVariables().stream().collect(Collectors.joining("_"));
   }
 }
