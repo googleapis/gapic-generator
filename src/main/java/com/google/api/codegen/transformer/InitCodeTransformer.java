@@ -199,7 +199,7 @@ public class InitCodeTransformer {
           } else if (fieldConfig.getResourceNameConfig().getResourceNameType()
               == ResourceNameType.ONEOF) {
             actualTransformFunction =
-                namer.getResourceTypeParentParseMethod(methodContext.getTypeTable(), fieldConfig);
+                namer.getResourceTypeParentParseMethod(methodContext, fieldConfig);
           } else {
             actualTransformFunction =
                 namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);

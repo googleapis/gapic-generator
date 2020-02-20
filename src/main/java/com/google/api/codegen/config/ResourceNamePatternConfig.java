@@ -38,14 +38,23 @@ public class ResourceNamePatternConfig {
     return ImmutableSet.copyOf(template.vars());
   }
 
+  /** Returns true if the pattern does not have binding variables. */
   public boolean isFixedPattern() {
     return pattern.indexOf('{') == -1 && pattern.indexOf('}') == -1;
   }
 
+  /**
+   * Returns the name of the static method that creates an instance of the resource name class
+   * representing this pattern, such as ofProjectBookName.
+   */
   public String getCreateMethodName() {
     return Name.anyLower("of", getPatternNameLowerUnderscore(), "name").toLowerCamel();
   }
 
+  /**
+   * Returns the name of the static method that returns a formatted string using this pattern, such
+   * as formatProjectBookName.
+   */
   public String getFormatMethodName() {
     return Name.anyLower("format", getPatternNameLowerUnderscore(), "name").toLowerCamel();
   }
