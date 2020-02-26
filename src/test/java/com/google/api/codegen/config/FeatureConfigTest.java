@@ -18,11 +18,13 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.codegen.transformer.csharp.CSharpFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
+import com.google.api.codegen.util.ProtoParser;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class FeatureConfigTest {
   private GapicProductConfig productConfig = Mockito.mock(GapicProductConfig.class);
+  private ProtoParser protoParser = new ProtoParser(true);
   private ResourceNameMessageConfigs resourceNameMessageConfigs =
       Mockito.mock(ResourceNameMessageConfigs.class);
 
@@ -31,6 +33,8 @@ public class FeatureConfigTest {
     Mockito.doReturn(resourceNameMessageConfigs)
         .when(productConfig)
         .getResourceNameMessageConfigs();
+
+    Mockito.doReturn(protoParser).when(productConfig).getProtoParser();
 
     Mockito.doReturn(null).when(productConfig).enableStringFormattingFunctionsOverride();
     assertThat(JavaFeatureConfig.create(productConfig).enableStringFormatFunctions()).isFalse();

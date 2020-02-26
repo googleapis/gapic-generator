@@ -21,6 +21,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,8 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
   public String getCommonResourceName() {
     return null;
   }
+
+  public abstract List<ResourceNamePatternConfig> getPatterns();
 
   public List<SingleResourceNameConfig> getSingleResourceNameConfigs() {
     return getResourceNameConfigs()
@@ -100,7 +103,11 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     }
 
     return new AutoValue_ResourceNameOneofConfig(
-        oneofName, ResourceNameMessageConfig.entityNameToName(oneofName), configList, file);
+        oneofName,
+        ResourceNameMessageConfig.entityNameToName(oneofName),
+        configList,
+        file,
+        ImmutableList.of());
   }
 
   @Override

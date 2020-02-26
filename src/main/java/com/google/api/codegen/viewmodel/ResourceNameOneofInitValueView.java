@@ -15,13 +15,26 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ResourceNameOneofInitValueView implements InitValueView {
 
   public abstract String resourceOneofTypeName();
 
+  @Nullable
   public abstract ResourceNameInitValueView specificResourceNameView();
+
+  @Nullable
+  public abstract String createMethodName();
+
+  @Nullable
+  public abstract ImmutableList<String> formatArgs();
+
+  public boolean useStaticCreateMethod() {
+    return createMethodName() != null;
+  }
 
   public String type() {
     return ResourceNameOneofInitValueView.class.getSimpleName();
@@ -37,6 +50,10 @@ public abstract class ResourceNameOneofInitValueView implements InitValueView {
     public abstract Builder resourceOneofTypeName(String val);
 
     public abstract Builder specificResourceNameView(ResourceNameInitValueView val);
+
+    public abstract Builder createMethodName(String val);
+
+    public abstract Builder formatArgs(ImmutableList<String> val);
 
     public abstract ResourceNameOneofInitValueView build();
   }

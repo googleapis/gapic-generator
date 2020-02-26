@@ -105,7 +105,11 @@
   @case "ResourceNameInitValueView"
     {@renderResourceName(initValue)}
   @case "ResourceNameOneofInitValueView"
-    {@renderResourceName(initValue.specificResourceNameView)}
+    @if initValue.useStaticCreateMethod
+      {@initValue.resourceOneofTypeName}.{@initValue.createMethodName}({@argList(initValue.formatArgs)})
+    @else
+      {@renderResourceName(initValue.specificResourceNameView)}
+    @end
   @case "RepeatedResourceNameInitValueView"
     new ArrayList<>()
   @default
