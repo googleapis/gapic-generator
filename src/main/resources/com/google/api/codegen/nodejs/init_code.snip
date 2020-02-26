@@ -1,20 +1,15 @@
 @extends "nodejs/common.snip"
 
-@snippet initCode(apiMethod, init)
-  @if init.argDefaultLines
-    @join line : util.pretty(initCodeLines(init.argDefaultLines))
-      // {@line}
-    @end
-
-
-  @end
-  {@initCodeLinesWithDescriptions(init.lines)}
+# Options for sampleType are: "standalone" or "method"
+# See standalone_sample.snip and method_sample.snip
+@snippet initCode(apiMethod, init, sampleType)
+  {@initCodeLinesWithDescriptions(init.lines, sampleType)}
   @if initializeRequestObject(apiMethod, init)
     {@initializeRequestObject(apiMethod, init)}
   @end
 @end
 
-@private initCodeLinesWithDescriptions(lines)
+@private initCodeLinesWithDescriptions(lines, sampleType)
   @join line : lines
     @if line.descriptions
 
@@ -29,7 +24,7 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line)}
+      {@initLineSimple(line, sampleType)}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -38,6 +33,7 @@
   @end
 @end
 
+# Code Lines (without descriptions) only called from test.snip
 @snippet initCodeLines(lines)
   @join line : lines
     @switch line.lineType.toString
@@ -48,7 +44,8 @@
     @case "MapInitLine"
       {@initLineMap(line)}
     @case "SimpleInitLine"
-      {@initLineSimple(line)}
+      # Standalone samples do not use this snippet, so use "method" sample.
+      {@initLineSimple(line, "method")}
     @case "ReadFileInitLine"
       {@initLineReadFile(line)}
     @default
@@ -58,7 +55,7 @@
 @end
 
 @private initLineReadFile(line)
-  const {@line.identifier} = fs.readFileSync({@renderInitValue(line.fileName)}).toString('base64');
+  const {@line.identifier} = fs.readFileSync({@renderInitValue(line.fileName, "standalone")}).toString('base64');
 @end
 
 @private initLineStructure(line)
@@ -99,16 +96,26 @@
   @end
 @end
 
-@private initLineSimple(line)
-  const {@line.identifier} = {@renderInitValue(line.initValue)};
+@private initLineSimple(line, sampleType)
+  # Support writing strings to bytes fields
+  @if line.typeName == "Buffer"
+    const {@line.identifier} = Buffer.from({@renderInitValue(line.initValue, sampleType)});
+  @else
+    const {@line.identifier} = {@renderInitValue(line.initValue, sampleType)};
+  @end
 @end
 
-@snippet renderInitValue(initValue)
+@snippet renderInitValue(initValue, sampleType)
   @switch initValue.type
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
-    client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @if sampleType == "standalone"
+      {@initValue.apiVariableName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @else
+      # method samples hardcode variable name for service object as `client`
+      client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+    @end
   @default
     $unhandledCase: {@initValue.type}$
   @end
@@ -119,6 +126,8 @@
     @case "0"
     @case "1"
     @default
+
+      // Construct request
       const request = {
         @join fieldSetting : init.fieldSettings on BREAK
           {@fieldSetting.fieldName}: {@fieldSetting.identifier},
