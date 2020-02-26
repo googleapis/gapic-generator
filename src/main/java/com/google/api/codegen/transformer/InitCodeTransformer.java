@@ -77,6 +77,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -815,15 +816,17 @@ public class InitCodeTransformer {
     ImportTypeTable typeTable = context.getTypeTable();
     if (context.getFeatureConfig().useStaticCreateMethodForOneofs()) {
       ResourceNamePatternConfig pattern = getMatchingResourceNamePattern(item, oneofConfig);
+      String createMethod =
+          convertToString ? pattern.getFormatMethodName() : pattern.getCreateMethodName();
+      ImmutableList<String> formatArgs =
+          getFormatFunctionArgs(
+              context,
+              ImmutableList.copyOf(pattern.getBindingVariables()),
+              item.getInitValueConfig());
       return ResourceNameOneofInitValueView.newBuilder()
           .resourceOneofTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
-          .createMethodName(
-              convertToString ? pattern.getFormatMethodName() : pattern.getCreateMethodName())
-          .formatArgs(
-              getFormatFunctionArgs(
-                  context,
-                  ImmutableList.copyOf(pattern.getBindingVariables()),
-                  item.getInitValueConfig()))
+          .createMethodName(createMethod)
+          .formatArgs(formatArgs)
           .build();
     } else {
       SingleResourceNameConfig singleResourceNameConfig =
@@ -983,15 +986,12 @@ public class InitCodeTransformer {
 
   private static SingleResourceNameConfig getMatchingSingleResourceNameConfig(
       InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+    Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
     List<SingleResourceNameConfig> matchingConfigs =
         oneofConfig
             .getSingleResourceNameConfigs()
             .stream()
-            .filter(
-                c ->
-                    c.getNameTemplate()
-                        .vars()
-                        .equals(node.getInitValueConfig().getResourceNameBindingValues().keySet()))
+            .filter(c -> c.getNameTemplate().vars().equals(bindingValues))
             .collect(Collectors.toList());
     // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
@@ -1003,14 +1003,12 @@ public class InitCodeTransformer {
 
   private static ResourceNamePatternConfig getMatchingResourceNamePattern(
       InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+    Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
     Optional<ResourceNamePatternConfig> pattern =
         oneofConfig
             .getPatterns()
             .stream()
-            .filter(
-                p ->
-                    p.getBindingVariables()
-                        .equals(node.getInitValueConfig().getResourceNameBindingValues().keySet()))
+            .filter(p -> p.getBindingVariables().equals(bindingValues))
             .findAny();
     return pattern.isPresent() ? pattern.get() : oneofConfig.getPatterns().get(0);
   }

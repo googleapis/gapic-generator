@@ -31,6 +31,7 @@ public class ResourceNamePatternConfig {
     this.template = PathTemplate.create(pattern);
   }
 
+  /** The binding variables of the pattern, usually in curly braces. */
   public ImmutableSet<String> getBindingVariables() {
     if (isFixedPattern()) {
       return ImmutableSet.of();
@@ -61,20 +62,10 @@ public class ResourceNamePatternConfig {
 
   private String getPatternNameLowerUnderscore() {
     if (isFixedPattern()) {
-      StringBuilder builder = new StringBuilder();
-      boolean requiresUnderscore = false;
-      for (char c : pattern.toCharArray()) {
-        if (!Character.isAlphabetic((int) c)) {
-          requiresUnderscore = true;
-          continue;
-        }
-        if (requiresUnderscore) {
-          builder.append('_');
-          requiresUnderscore = false;
-        }
-        builder.append(c);
-      }
-      return builder.toString();
+      String name = pattern.replaceAll("^[^a-zA-Z]+", "");
+      name = name.replaceAll("[^a-zA-Z]$", "");
+      name = name.replaceAll("[^a-zA-Z]+", "_");
+      return name;
     }
 
     // PathTemplate uses an ImmutableMap to keep track of bindings, so we
