@@ -24,6 +24,7 @@ import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNamePatternConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SampleParameterConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -75,6 +76,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -197,7 +200,7 @@ public class InitCodeTransformer {
           } else if (fieldConfig.getResourceNameConfig().getResourceNameType()
               == ResourceNameType.ONEOF) {
             actualTransformFunction =
-                namer.getResourceTypeParentParseMethod(methodContext.getTypeTable(), fieldConfig);
+                namer.getResourceTypeParentParseMethod(methodContext, fieldConfig);
           } else {
             actualTransformFunction =
                 namer.getResourceTypeParseMethodName(methodContext.getTypeTable(), fieldConfig);
@@ -792,19 +795,7 @@ public class InitCodeTransformer {
       case FIXED:
         throw new UnsupportedOperationException("entity name invalid");
       case ONEOF:
-        ResourceNameOneofConfig oneofConfig =
-            (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-        singleResourceNameConfig = getMatchingSingleResourceNameConfig(item, oneofConfig);
-        FieldConfig singleResourceNameFieldConfig =
-            fieldConfig.withResourceNameConfig(singleResourceNameConfig);
-        ResourceNameInitValueView initView =
-            createResourceNameInitValueView(context, singleResourceNameFieldConfig, item)
-                .convertToString(convertToString)
-                .build();
-        return ResourceNameOneofInitValueView.newBuilder()
-            .resourceOneofTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
-            .specificResourceNameView(initView)
-            .build();
+        return createResourceNameOneofInitValueView(context, fieldConfig, item, convertToString);
       case SINGLE:
         return createResourceNameInitValueView(context, fieldConfig, item)
             .convertToString(convertToString)
@@ -814,6 +805,42 @@ public class InitCodeTransformer {
       default:
         throw new UnsupportedOperationException(
             "unexpected entity name type '" + fieldConfig.getResourceNameType() + "'");
+    }
+  }
+
+  private ResourceNameOneofInitValueView createResourceNameOneofInitValueView(
+      MethodContext context, FieldConfig fieldConfig, InitCodeNode item, boolean convertToString) {
+    ResourceNameOneofConfig oneofConfig =
+        (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
+    SurfaceNamer namer = context.getNamer();
+    ImportTypeTable typeTable = context.getTypeTable();
+    if (context.getFeatureConfig().useStaticCreateMethodForOneofs()) {
+      ResourceNamePatternConfig pattern = getMatchingResourceNamePattern(item, oneofConfig);
+      String createMethod =
+          convertToString ? pattern.getFormatMethodName() : pattern.getCreateMethodName();
+      ImmutableList<String> formatArgs =
+          getFormatFunctionArgs(
+              context,
+              ImmutableList.copyOf(pattern.getBindingVariables()),
+              item.getInitValueConfig());
+      return ResourceNameOneofInitValueView.newBuilder()
+          .resourceOneofTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
+          .createMethodName(createMethod)
+          .formatArgs(formatArgs)
+          .build();
+    } else {
+      SingleResourceNameConfig singleResourceNameConfig =
+          getMatchingSingleResourceNameConfig(item, oneofConfig);
+      FieldConfig singleResourceNameFieldConfig =
+          fieldConfig.withResourceNameConfig(singleResourceNameConfig);
+      ResourceNameInitValueView initView =
+          createResourceNameInitValueView(context, singleResourceNameFieldConfig, item)
+              .convertToString(convertToString)
+              .build();
+      return ResourceNameOneofInitValueView.newBuilder()
+          .resourceOneofTypeName(namer.getAndSaveElementResourceTypeName(typeTable, fieldConfig))
+          .specificResourceNameView(initView)
+          .build();
     }
   }
 
@@ -830,9 +857,9 @@ public class InitCodeTransformer {
         .formatArgs(getFormatFunctionArgs(context, varList, item.getInitValueConfig()));
   }
 
-  private static List<String> getFormatFunctionArgs(
+  private static ImmutableList<String> getFormatFunctionArgs(
       MethodContext context, List<String> varList, InitValueConfig initValueConfig) {
-    List<String> formatFunctionArgs = new ArrayList<>();
+    ImmutableList.Builder<String> formatFunctionArgs = ImmutableList.builder();
     for (String entityName : varList) {
       String entityValue =
           context
@@ -862,7 +889,7 @@ public class InitCodeTransformer {
       }
       formatFunctionArgs.add(entityValue);
     }
-    return formatFunctionArgs;
+    return formatFunctionArgs.build();
   }
 
   private List<FieldSettingView> getFieldSettings(
@@ -959,15 +986,12 @@ public class InitCodeTransformer {
 
   private static SingleResourceNameConfig getMatchingSingleResourceNameConfig(
       InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+    Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
     List<SingleResourceNameConfig> matchingConfigs =
         oneofConfig
             .getSingleResourceNameConfigs()
             .stream()
-            .filter(
-                c ->
-                    c.getNameTemplate()
-                        .vars()
-                        .equals(node.getInitValueConfig().getResourceNameBindingValues().keySet()))
+            .filter(c -> c.getNameTemplate().vars().equals(bindingValues))
             .collect(Collectors.toList());
     // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
@@ -975,6 +999,18 @@ public class InitCodeTransformer {
       return oneofConfig.getSingleResourceNameConfigs().get(0);
     }
     return matchingConfigs.get(0);
+  }
+
+  private static ResourceNamePatternConfig getMatchingResourceNamePattern(
+      InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+    Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
+    Optional<ResourceNamePatternConfig> pattern =
+        oneofConfig
+            .getPatterns()
+            .stream()
+            .filter(p -> p.getBindingVariables().equals(bindingValues))
+            .findAny();
+    return pattern.isPresent() ? pattern.get() : oneofConfig.getPatterns().get(0);
   }
 
   private static String getCliFlagDefaultValue(InitCodeNode item) {

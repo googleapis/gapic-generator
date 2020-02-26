@@ -160,7 +160,11 @@ public abstract class ResourceDescriptorConfig {
             oneOfId,
             Name.anyCamel(oneOfId),
             ImmutableList.copyOf(resourceNameConfigs.build().values()),
-            getAssignedProtoFile());
+            getAssignedProtoFile(),
+            getPatterns()
+                .stream()
+                .map(ResourceNamePatternConfig::new)
+                .collect(ImmutableList.toImmutableList()));
     resourceNameConfigs.put(oneOfId, oneofConfig);
     return resourceNameConfigs.build();
   }

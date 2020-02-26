@@ -60,20 +60,15 @@ public class DefaultFeatureConfig implements FeatureConfig {
     // TODO: support creating resource name strings in tests and samples using creation methods
     // in the new multi-pattern resource classes.
     //
-    // This check has to be here for the following purposes:
-    // - make generating new APIs with multi-pattern resource but no gapic config v2 for Java work
-    //   (including java_library_no_gapic_config baseline test).
-    //   We can remove the check for this case after we implement generating samples and tests
-    //   using the new multi-pattern resource class for Java
+    // This check has to be here for the following purpose:
     // - make generating new APIs with multi-pattern resource but no gapic config v2 for C# work
-    //   Note such a case does not exist in production as all multi-pattern resource support
+    //   Note such a case does not exist in production as all. Multi-pattern resource support
     //   for C# will only be implemented in the micro-generator, but for the time being bazel
     //   and artman tests still use gapic-generator to generate C# GAPICs.
     //
     // Note This check is not needed for generating Java gapics with gapic config v2, because for
-    // those
-    // we can put multi-pattern resource name in deprecated_collections in gapic config v2 so that
-    // the generator can create resource name strings in the old wayg.
+    // those we can put multi-pattern resource name in deprecated_collections in gapic config v2
+    // so that the generator can create resource name strings in the old way.
     boolean requiresMultiPatternResourceSupport =
         fieldConfig.getResourceNameType() == ResourceNameType.ONEOF
             && ((ResourceNameOneofConfig) fieldConfig.getResourceNameConfig())
@@ -109,6 +104,11 @@ public class DefaultFeatureConfig implements FeatureConfig {
 
   @Override
   public boolean useInheritanceForOneofs() {
+    return false;
+  }
+
+  @Override
+  public boolean useStaticCreateMethodForOneofs() {
     return false;
   }
 
