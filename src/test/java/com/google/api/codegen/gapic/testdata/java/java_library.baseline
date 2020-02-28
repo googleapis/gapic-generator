@@ -9762,6 +9762,7 @@ import com.google.example.library.v1.stub.MyProtoStub;
 import com.google.example.library.v1.stub.MyProtoStubSettings;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
@@ -9979,6 +9980,43 @@ public class MyProtoClient implements BackgroundResource {
     return stub.myMethodCallable();
   }
 
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Define a service with a reserved name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+   *   MethodRequest request = MethodRequest.newBuilder().build();
+   *   Namespace response = myProtoClient.getNamespace(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Namespace getNamespace(MethodRequest request) {
+    return getNamespaceCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Define a service with a reserved name
+   *
+   * Sample code:
+   * <pre><code>
+   * try (MyProtoClient myProtoClient = MyProtoClient.create()) {
+   *   MethodRequest request = MethodRequest.newBuilder().build();
+   *   ApiFuture&lt;Namespace&gt; future = myProtoClient.getNamespaceCallable().futureCall(request);
+   *   // Do something
+   *   Namespace response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<MethodRequest, Namespace> getNamespaceCallable() {
+    return stub.getNamespaceCallable();
+  }
+
   @Override
   public final void close() {
     stub.close();
@@ -10057,6 +10095,7 @@ import com.google.common.collect.Sets;
 import com.google.example.library.v1.stub.MyProtoStubSettings;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import com.google.protos.google.example.library.v1.MyProtoGrpc;
 import java.io.IOException;
 import java.util.List;
@@ -10104,6 +10143,13 @@ public class MyProtoSettings extends ClientSettings<MyProtoSettings> {
    */
   public UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings() {
     return ((MyProtoStubSettings) getStubSettings()).myMethodSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getNamespace.
+   */
+  public UnaryCallSettings<MethodRequest, Namespace> getNamespaceSettings() {
+    return ((MyProtoStubSettings) getStubSettings()).getNamespaceSettings();
   }
 
 
@@ -10225,6 +10271,13 @@ public class MyProtoSettings extends ClientSettings<MyProtoSettings> {
      */
     public UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings() {
       return getStubSettingsBuilder().myMethodSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getNamespace.
+     */
+    public UnaryCallSettings.Builder<MethodRequest, Namespace> getNamespaceSettings() {
+      return getStubSettingsBuilder().getNamespaceSettings();
     }
 
     @Override
@@ -11545,6 +11598,7 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -11649,6 +11703,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.MyProtoSettings;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import java.io.IOException;
@@ -11675,11 +11730,19 @@ public class GrpcMyProtoStub extends MyProtoStub {
           .setRequestMarshaller(ProtoUtils.marshaller(MethodRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(MethodResponse.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<MethodRequest, Namespace> getNamespaceMethodDescriptor =
+      MethodDescriptor.<MethodRequest, Namespace>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.MyProto/GetNamespace")
+          .setRequestMarshaller(ProtoUtils.marshaller(MethodRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Namespace.getDefaultInstance()))
+          .build();
 
 
   private final BackgroundResource backgroundResources;
 
   private final UnaryCallable<MethodRequest, MethodResponse> myMethodCallable;
+  private final UnaryCallable<MethodRequest, Namespace> getNamespaceCallable;
 
   private final GrpcStubCallableFactory callableFactory;
 
@@ -11716,8 +11779,13 @@ public class GrpcMyProtoStub extends MyProtoStub {
         GrpcCallSettings.<MethodRequest, MethodResponse>newBuilder()
             .setMethodDescriptor(myMethodMethodDescriptor)
             .build();
+    GrpcCallSettings<MethodRequest, Namespace> getNamespaceTransportSettings =
+        GrpcCallSettings.<MethodRequest, Namespace>newBuilder()
+            .setMethodDescriptor(getNamespaceMethodDescriptor)
+            .build();
 
     this.myMethodCallable = callableFactory.createUnaryCallable(myMethodTransportSettings,settings.myMethodSettings(), clientContext);
+    this.getNamespaceCallable = callableFactory.createUnaryCallable(getNamespaceTransportSettings,settings.getNamespaceSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -11725,6 +11793,10 @@ public class GrpcMyProtoStub extends MyProtoStub {
 
   public UnaryCallable<MethodRequest, MethodResponse> myMethodCallable() {
     return myMethodCallable;
+  }
+
+  public UnaryCallable<MethodRequest, Namespace> getNamespaceCallable() {
+    return getNamespaceCallable;
   }
 
   @Override
@@ -13673,6 +13745,7 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -13688,6 +13761,10 @@ public abstract class MyProtoStub implements BackgroundResource {
 
   public UnaryCallable<MethodRequest, MethodResponse> myMethodCallable() {
     throw new UnsupportedOperationException("Not implemented: myMethodCallable()");
+  }
+
+  public UnaryCallable<MethodRequest, Namespace> getNamespaceCallable() {
+    throw new UnsupportedOperationException("Not implemented: getNamespaceCallable()");
   }
 
   @Override
@@ -13738,6 +13815,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import com.google.protos.google.example.library.v1.MyProtoGrpc;
 import java.io.IOException;
 import java.util.List;
@@ -13789,12 +13867,20 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
       .build();
 
   private final UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings;
+  private final UnaryCallSettings<MethodRequest, Namespace> getNamespaceSettings;
 
   /**
    * Returns the object with the settings used for calls to myMethod.
    */
   public UnaryCallSettings<MethodRequest, MethodResponse> myMethodSettings() {
     return myMethodSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getNamespace.
+   */
+  public UnaryCallSettings<MethodRequest, Namespace> getNamespaceSettings() {
+    return getNamespaceSettings;
   }
 
 
@@ -13884,6 +13970,7 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
     super(settingsBuilder);
 
     myMethodSettings = settingsBuilder.myMethodSettings().build();
+    getNamespaceSettings = settingsBuilder.getNamespaceSettings().build();
   }
 
 
@@ -13896,6 +13983,7 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
     private final ImmutableList<UnaryCallSettings.Builder<?, ?>> unaryMethodSettingsBuilders;
 
     private final UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings;
+    private final UnaryCallSettings.Builder<MethodRequest, Namespace> getNamespaceSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -13937,8 +14025,11 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
 
       myMethodSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      getNamespaceSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
-          myMethodSettings
+          myMethodSettings,
+          getNamespaceSettings
       );
 
       initDefaults(this);
@@ -13959,6 +14050,10 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.getNamespaceSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
@@ -13966,9 +14061,11 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
       super(settings);
 
       myMethodSettings = settings.myMethodSettings.toBuilder();
+      getNamespaceSettings = settings.getNamespaceSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder<?, ?>>of(
-          myMethodSettings
+          myMethodSettings,
+          getNamespaceSettings
       );
     }
 
@@ -13992,6 +14089,13 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
      */
     public UnaryCallSettings.Builder<MethodRequest, MethodResponse> myMethodSettings() {
       return myMethodSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getNamespace.
+     */
+    public UnaryCallSettings.Builder<MethodRequest, Namespace> getNamespaceSettings() {
+      return getNamespaceSettings;
     }
 
     @Override
@@ -17181,6 +17285,7 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import com.google.protos.google.example.library.v1.MyProtoGrpc.MyProtoImplBase;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
@@ -17235,6 +17340,21 @@ public class MockMyProtoImpl extends MyProtoImplBase {
     }
   }
 
+  @Override
+  public void getNamespace(MethodRequest request,
+    StreamObserver<Namespace> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Namespace) {
+      requests.add(request);
+      responseObserver.onNext((Namespace) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
 }
 ============== file: src/test/java/com/google/example/library/v1/MyProtoClientTest.java ==============
 /*
@@ -17267,6 +17387,7 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.AbstractMessage;
 import com.google.protos.google.example.library.v1.AnotherService.MethodRequest;
 import com.google.protos.google.example.library.v1.AnotherService.MethodResponse;
+import com.google.protos.google.example.library.v1.AnotherService.Namespace;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -17357,6 +17478,47 @@ public class MyProtoClientTest {
       MethodRequest request = MethodRequest.newBuilder().build();
 
       client.myMethod(request);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getNamespaceTest() {
+    String value = "value111972721";
+    Namespace expectedResponse = Namespace.newBuilder()
+      .setValue(value)
+      .build();
+    mockMyProto.addResponse(expectedResponse);
+
+    MethodRequest request = MethodRequest.newBuilder().build();
+
+    Namespace actualResponse =
+        client.getNamespace(request);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockMyProto.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    MethodRequest actualRequest = (MethodRequest)actualRequests.get(0);
+
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getNamespaceExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockMyProto.addException(exception);
+
+    try {
+      MethodRequest request = MethodRequest.newBuilder().build();
+
+      client.getNamespace(request);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception

@@ -2424,6 +2424,19 @@ const SubMessage = {
 const MethodResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
+
+/**
+ * Define a message with a reserved name
+ *
+ * @property {string} value
+ *
+ * @typedef Namespace
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.Namespace definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
+ */
+const Namespace = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
 // Copyright 2020 Google LLC
 //
@@ -8520,6 +8533,7 @@ class MyProtoClient {
     // and create an API call method for each.
     const myProtoStubMethods = [
       'myMethod',
+      'getNamespace',
     ];
     for (const methodName of myProtoStubMethods) {
       const innerCallPromise = myProtoStub.then(
@@ -8633,6 +8647,57 @@ class MyProtoClient {
     return this._innerApiCalls.myMethod(request, options, callback);
   }
 
+  /**
+   * Define a service with a reserved name
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {Object[]} [request.mylist]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.myfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.secondfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Namespace]{@link google.example.library.v1.Namespace}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Namespace]{@link google.example.library.v1.Namespace}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.MyProtoClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.getNamespace({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  getNamespace(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+
+    return this._innerApiCalls.getNamespace(request, options, callback);
+  }
+
   // --------------------
   // -- Path templates --
   // --------------------
@@ -8721,6 +8786,11 @@ module.exports = MyProtoClient;
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -11075,6 +11145,60 @@ describe('MyProtoClient', () => {
       );
 
       client.myMethod(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('getNamespace', () => {
+    it('invokes getNamespace without error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const value = 'value111972721';
+      const expectedResponse = {
+        value: value,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.getNamespace = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.getNamespace(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes getNamespace with error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.getNamespace = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.getNamespace(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

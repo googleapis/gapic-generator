@@ -5287,6 +5287,7 @@ use Google\Auth\FetchAuthTokenInterface;
 use Google\Example\Library\V1\MethodRequest;
 use Google\Example\Library\V1\MethodResponse;
 use Google\Example\Library\V1\MyProtoGrpcClient;
+use Google\Example\Library\V1\PBNamespace;
 use Google\Example\Library\V1\SubMessage;
 
 /**
@@ -5465,6 +5466,57 @@ class MyProtoGapicClient
         return $this->startCall(
             'MyMethod',
             MethodResponse::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
+     * Define a service with a reserved name
+     *
+     * Sample code:
+     * ```
+     * $myProtoClient = new MyProtoClient();
+     * try {
+     *     $response = $myProtoClient->getNamespace();
+     * } finally {
+     *     $myProtoClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type SubMessage[] $mylist
+     *     @type SubMessage $myfield
+     *     @type SubMessage $secondfield
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\Example\Library\V1\Namespace
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function getNamespace(array $optionalArgs = [])
+    {
+        $request = new MethodRequest();
+        if (isset($optionalArgs['mylist'])) {
+            $request->setMylist($optionalArgs['mylist']);
+        }
+        if (isset($optionalArgs['myfield'])) {
+            $request->setMyfield($optionalArgs['myfield']);
+        }
+        if (isset($optionalArgs['secondfield'])) {
+            $request->setSecondfield($optionalArgs['secondfield']);
+        }
+
+        return $this->startCall(
+            'GetNamespace',
+            PBNamespace::class,
             $optionalArgs,
             $request
         )->wait();
@@ -6184,6 +6236,11 @@ return [
           "timeout_millis": 1000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
         }
       }
     }
@@ -6207,6 +6264,11 @@ return [
     'interfaces' => [
         'google.example.library.v1.MyProto' => [
             'MyMethod' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/myMethod',
+                'body' => '*',
+            ],
+            'GetNamespace' => [
                 'method' => 'post',
                 'uriTemplate' => '/v1/myMethod',
                 'body' => '*',
@@ -9487,6 +9549,7 @@ use Google\ApiCore\Testing\MockTransport;
 use Google\Example\Library\V1\MethodRequest;
 use Google\Example\Library\V1\MethodResponse;
 use Google\Example\Library\V1\MyProtoGrpcClient;
+use Google\Example\Library\V1\PBNamespace;
 use Google\LongRunning\GetOperationRequest;
 use Google\Protobuf\Any;
 use Google\Protobuf\GPBEmpty;
@@ -9580,6 +9643,70 @@ class MyProtoClientTest extends GeneratedTest
 
         try {
             $client->myMethod();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getNamespaceTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $value = 'value111972721';
+        $expectedResponse = new PBNamespace();
+        $expectedResponse->setValue($value);
+        $transport->addResponse($expectedResponse);
+
+        $response = $client->getNamespace();
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.MyProto/GetNamespace', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getNamespaceExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->getNamespace();
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

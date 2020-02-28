@@ -2579,6 +2579,18 @@ func (s *mockMyProtoServer) MyMethod(ctx context.Context, req *pb.MethodRequest)
     return s.resps[0].(*pb.MethodResponse), nil
 }
 
+func (s *mockMyProtoServer) GetNamespace(ctx context.Context, req *pb.MethodRequest) (*pb.Namespace, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*pb.Namespace), nil
+}
+
 
 // clientOpt is the option tests should use to connect to the test server.
 // It is initialized by TestMain.
@@ -5088,6 +5100,59 @@ func TestMyProtoMyMethodError(t *testing.T) {
     }
     _ = resp
 }
+func TestMyProtoGetNamespace(t *testing.T) {
+    var value string = "value111972721"
+    var expectedResponse = &pb.Namespace{
+        Value: value,
+    }
+
+    mockMyProto.err = nil
+    mockMyProto.reqs = nil
+
+    mockMyProto.resps = append(mockMyProto.resps[:0], expectedResponse)
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockMyProto.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestMyProtoGetNamespaceError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockMyProto.err = gstatus.Error(errCode, "test error")
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client.go ==============
 // Copyright 2020 Google LLC
 //
@@ -5122,6 +5187,7 @@ import (
 // MyProtoCallOptions contains the retry settings for each method of MyProtoClient.
 type MyProtoCallOptions struct {
     MyMethod []gax.CallOption
+    GetNamespace []gax.CallOption
 }
 
 func defaultMyProtoClientOptions() []option.ClientOption {
@@ -5138,6 +5204,7 @@ func defaultMyProtoCallOptions() *MyProtoCallOptions {
     }
     return &MyProtoCallOptions{
         MyMethod: retry[[2]string{"default", "non_idempotent"}],
+        GetNamespace: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -5212,6 +5279,22 @@ func (c *MyProtoClient) MyMethod(ctx context.Context, req *pb.MethodRequest, opt
     return resp, nil
 }
 
+// GetNamespace define a service with a reserved name
+func (c *MyProtoClient) GetNamespace(ctx context.Context, req *pb.MethodRequest, opts ...gax.CallOption) (*pb.Namespace, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetNamespace[0:len(c.CallOptions.GetNamespace):len(c.CallOptions.GetNamespace)], opts...)
+    var resp *pb.Namespace
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.myProtoClient.GetNamespace(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 
 
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client_example_test.go ==============
@@ -5261,6 +5344,24 @@ func ExampleMyProtoClient_MyMethod() {
         // TODO: Fill request struct fields.
     }
     resp, err := c.MyMethod(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleMyProtoClient_GetNamespace() {
+    ctx := context.Background()
+    c, err := library.NewMyProtoClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &pb.MethodRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetNamespace(ctx, req)
     if err != nil {
         // TODO: Handle error.
     }

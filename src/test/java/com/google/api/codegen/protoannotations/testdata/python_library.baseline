@@ -4769,6 +4769,69 @@ class MyProtoClient(object):
         )
         return self._inner_api_calls['my_method'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def get_namespace(
+            self,
+            mylist=None,
+            myfield=None,
+            secondfield=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Define a service with a reserved name
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.MyProtoClient()
+            >>>
+            >>> response = client.get_namespace()
+
+        Args:
+            mylist (list[Union[dict, ~google.cloud.example.library_v1.types.SubMessage]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            myfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            secondfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Namespace` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'get_namespace' not in self._inner_api_calls:
+            self._inner_api_calls['get_namespace'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.get_namespace,
+                default_retry=self._method_configs['GetNamespace'].retry,
+                default_timeout=self._method_configs['GetNamespace'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = another_service_pb2.MethodRequest(
+            mylist=mylist,
+            myfield=myfield,
+            secondfield=secondfield,
+        )
+        return self._inner_api_calls['get_namespace'](request, retry=retry, timeout=timeout, metadata=metadata)
+
 ============== file: google/cloud/example/library_v1/gapic/my_proto_client_config.py ==============
 config = {
   "interfaces": {
@@ -4794,6 +4857,11 @@ config = {
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -5487,6 +5555,19 @@ class MyProtoGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['my_proto_stub'].MyMethod
+
+    @property
+    def get_namespace(self):
+        """Return the gRPC stub for :meth:`MyProtoClient.get_namespace`.
+
+        Define a service with a reserved name
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['my_proto_stub'].GetNamespace
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -8884,4 +8965,36 @@ class TestMyProtoClient(object):
 
         with pytest.raises(CustomException):
             client.my_method()
+
+    def test_get_namespace(self):
+        # Setup Expected Response
+        value = 'value111972721'
+        expected_response = {'value': value}
+        expected_response = another_service_pb2.Namespace(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        response = client.get_namespace()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = another_service_pb2.MethodRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_get_namespace_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        with pytest.raises(CustomException):
+            client.get_namespace()
 

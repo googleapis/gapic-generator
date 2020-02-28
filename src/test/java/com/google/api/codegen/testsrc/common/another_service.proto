@@ -10,6 +10,11 @@ service MyProto {
   rpc MyMethod(MethodRequest) returns (MethodResponse) {
     option (google.api.http) = { post: "/v1/myMethod" body: "*" };
   };
+
+  // Define a service with a reserved name
+  rpc GetNamespace(MethodRequest) returns (Namespace) {
+    option (google.api.http) = { post: "/v1/myMethod" body: "*" };
+  }
 }
 
 message MethodRequest {
@@ -26,4 +31,9 @@ message SubMessage {
 
 message MethodResponse {
   string myfield = 1;
+}
+
+// Define a message with a reserved name
+message Namespace {
+  string value = 1;
 }
