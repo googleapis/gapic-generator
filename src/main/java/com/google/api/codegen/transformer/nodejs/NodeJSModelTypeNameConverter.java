@@ -66,7 +66,7 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
-          .put(Type.TYPE_BYTES, "Buffer.from(\'\')")
+          .put(Type.TYPE_BYTES, "\'\'")
           .build();
 
   private TypeNameConverter typeNameConverter;
