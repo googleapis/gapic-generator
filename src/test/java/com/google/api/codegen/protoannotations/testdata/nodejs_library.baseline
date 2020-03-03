@@ -110,7 +110,7 @@ function main() {
       // No one replied
       console.log(`No one replied.`);
     });
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const request = {
       name: formattedName,
     };
@@ -162,7 +162,7 @@ function main() {
         return;
       }
     });
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const request = {
       name: formattedName,
     };
@@ -313,7 +313,7 @@ function main() {
     };
 
     // Run request
-    const [response] = libraryServiceClient.findRelatedBooks(request);
+    const [response] = await libraryServiceClient.findRelatedBooks(request);
 
     // Iterate over paged response (uses auto pagination by default)
     for (const resource of response) {
@@ -439,7 +439,7 @@ function main(shelf = 'Novel\\"`\b\t\n\r') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, 'War and Peace');
 
     // Handle the operation using the event emitter pattern.
     libraryServiceClient.getBigBook({name: formattedName});
@@ -534,7 +534,7 @@ function main(shelf = 'Novel', bigBookName = 'War and Peace') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, bigBookName);
 
     // Handle the operation using the event emitter pattern.
     libraryServiceClient.getBigBook({name: formattedName});
@@ -616,7 +616,7 @@ function main(shelf = 'Novel\\"`\b\t\n\r') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, 'War and Peace');
 
     // Start long-running operation. You can wait for now or get results later.
     const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
@@ -693,7 +693,7 @@ function main(shelf = 'Novel', bigBookName = 'War and Peace') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, bigBookName);
 
     // Start long-running operation. You can wait for now or get results later.
     const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
@@ -757,7 +757,7 @@ function main(shelf = 'Novel\\"`\b\t\n\r') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, 'War and Peace');
 
     // Handle the operation using the promise pattern.
     libraryServiceClient.getBigBook({name: formattedName});
@@ -845,7 +845,7 @@ function main(shelf = 'Novel', bigBookName = 'War and Peace') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, bigBookName);
 
     // Handle the operation using the promise pattern.
     libraryServiceClient.getBigBook({name: formattedName});
@@ -916,7 +916,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Handle the operation using the event emitter pattern.
     libraryServiceClient.getBigNothing({name: formattedName});
@@ -984,7 +984,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Handle the operation using the event emitter pattern.
     libraryServiceClient.getBigNothing({name: formattedName});
@@ -1050,7 +1050,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Start long-running operation. You can wait for now or get results later.
     const [operation] = await libraryServiceClient.getBigNothing({name: formattedName});;
@@ -1100,7 +1100,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Start long-running operation. You can wait for now or get results later.
     const [operation] = await libraryServiceClient.getBigNothing({name: formattedName});;
@@ -1148,7 +1148,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Handle the operation using the promise pattern.
     libraryServiceClient.getBigNothing({name: formattedName});
@@ -1209,7 +1209,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigNothing() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Handle the operation using the promise pattern.
     libraryServiceClient.getBigNothing({name: formattedName});
@@ -1269,7 +1269,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
 
     // Run request
     const [response] = await libraryServiceClient.getBook({name: formattedName});
@@ -1370,7 +1370,7 @@ function main() {
       }
       console.log(`The stage of the comment is: ${response.stage}`);
     });
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const request = {
       name: formattedName,
     };
@@ -1814,7 +1814,7 @@ function main() {
   async function sampleListShelves() {
 
     // Run request
-    const [response] = libraryServiceClient.listShelves({});
+    const [response] = await libraryServiceClient.listShelves({});
 
     // Iterate over paged response (uses auto pagination by default)
     for (const resource of response) {
@@ -1869,10 +1869,10 @@ function main(paramFloat = 1.2345, paramLong = 67890) {
     const requiredSingularBool = false;
     const requiredSingularEnum = 'ZERO';
     const requiredSingularString = '';
-    const requiredSingularBytes = Buffer.from('');
+    const requiredSingularBytes = Buffer.from(Buffer.from(''));
     const requiredSingularMessage = {};
-    const formattedRequiredSingularResourceName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
-    const formattedRequiredSingularResourceNameOneof = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedRequiredSingularResourceName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
+    const formattedRequiredSingularResourceNameOneof = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const requiredSingularResourceNameCommon = '';
     const requiredSingularFixed32 = 0;
     const requiredSingularFixed64 = 0;
@@ -2043,7 +2043,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBookFromAbsolutelyAnywhere() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', 'The ID of the book');
 
     // Run request
     const [response] = await libraryServiceClient.getBookFromAbsolutelyAnywhere({name: formattedName});
@@ -2088,7 +2088,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBookFromAbsolutelyAnywhere() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('The Shelf to search for the book', 'The ID of the book');
 
     // Run request
     const [response] = await libraryServiceClient.getBookFromAbsolutelyAnywhere({name: formattedName});
@@ -2197,7 +2197,7 @@ function main(shelf = 'Novel\\"`\b\t\n\r') {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBigBook() {
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath(shelf, 'War and Peace');
 
     // Start long-running operation. You can wait for now or get results later.
     const [operation] = await libraryServiceClient.getBigBook({name: formattedName});;
@@ -2280,7 +2280,7 @@ function main(imageFileName = 'image_file.jpg', stage = 'DRAFT') {
     const stream = libraryServiceClient.discussBook().on('data', response => {
       console.log(response);
     });
-    const formattedName = libraryServiceClient.bookPath('[BOOK_SHELF]', '[BOOK]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const comment = fs.readFileSync('comment_file').toString('base64');
     const comment2 = {
       comment: comment,
@@ -5830,6 +5830,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -6388,6 +6390,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -6587,7 +6591,7 @@ class LibraryServiceClient {
    * });
    *
    * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-   * const comment = Buffer.from('');
+   * const comment = Buffer.from(Buffer.from(''));
    * const stage = 'UNSET';
    * const alignment = 'CHAR';
    * const commentsElement = {
@@ -7714,7 +7718,7 @@ class LibraryServiceClient {
    * const requiredSingularBool = false;
    * const requiredSingularEnum = 'ZERO';
    * const requiredSingularString = '';
-   * const requiredSingularBytes = Buffer.from('');
+   * const requiredSingularBytes = Buffer.from(Buffer.from(''));
    * const requiredSingularMessage = {};
    * const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
    * const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');
@@ -9909,7 +9913,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-      const comment = '95';
+      const comment = Buffer.from('95');
       const stage = 'UNSET';
       const alignment = 'CHAR';
       const commentsElement = {
@@ -9940,7 +9944,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-      const comment = '95';
+      const comment = Buffer.from('95');
       const stage = 'UNSET';
       const alignment = 'CHAR';
       const commentsElement = {
@@ -10390,7 +10394,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock response
       const userName = 'userName339340927';
-      const comment = '95';
+      const comment = Buffer.from('95');
       const expectedResponse = {
         userName: userName,
         comment: comment,
@@ -10724,7 +10728,7 @@ describe('LibraryServiceClient', () => {
       const requiredSingularBool = true;
       const requiredSingularEnum = 'ZERO';
       const requiredSingularString = 'requiredSingularString-1949894503';
-      const requiredSingularBytes = '-29';
+      const requiredSingularBytes = Buffer.from('-29');
       const requiredSingularMessage = {};
       const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
       const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');
@@ -10872,7 +10876,7 @@ describe('LibraryServiceClient', () => {
       const requiredSingularBool = true;
       const requiredSingularEnum = 'ZERO';
       const requiredSingularString = 'requiredSingularString-1949894503';
-      const requiredSingularBytes = '-29';
+      const requiredSingularBytes = Buffer.from('-29');
       const requiredSingularMessage = {};
       const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
       const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');

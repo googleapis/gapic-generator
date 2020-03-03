@@ -405,7 +405,7 @@ function main() {
     };
 
     // Run request
-    const [response] = libraryServiceClient.findRelatedBooks(request);
+    const [response] = await libraryServiceClient.findRelatedBooks(request);
 
     // Iterate over paged response (uses auto pagination by default)
     for (const resource of response) {
@@ -1030,7 +1030,7 @@ function main() {
   async function sampleListShelves() {
 
     // Run request
-    const [response] = libraryServiceClient.listShelves({});
+    const [response] = await libraryServiceClient.listShelves({});
 
     // Iterate over paged response (uses auto pagination by default)
     for (const resource of response) {
@@ -1085,7 +1085,7 @@ function main(paramFloat = 1.2345, paramLong = 67890) {
     const requiredSingularBool = false;
     const requiredSingularEnum = 'ZERO';
     const requiredSingularString = '';
-    const requiredSingularBytes = Buffer.from('');
+    const requiredSingularBytes = Buffer.from(Buffer.from(''));
     const requiredSingularMessage = {};
     const formattedRequiredSingularResourceName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const formattedRequiredSingularResourceNameOneof = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
@@ -1195,7 +1195,7 @@ function main() {
   const libraryServiceClient = new LibraryServiceClient();
 
   async function sampleGetBookFromAbsolutelyAnywhere() {
-    const formattedName = libraryServiceClient.archivedBookPath('The archive to search for the book', 'The ID of the book');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', 'The ID of the book');
 
     // Run request
     const [response] = await libraryServiceClient.getBookFromAbsolutelyAnywhere({name: formattedName});
@@ -1484,7 +1484,7 @@ function main(imageFileName = 'image_file.jpg', stage = 'DRAFT') {
     const stream = libraryServiceClient.discussBook().on('data', response => {
       console.log(response);
     });
-    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK_ID]');
+    const formattedName = libraryServiceClient.bookPath('[SHELF]', '[BOOK]');
     const comment = fs.readFileSync('comment_file').toString('base64');
     const comment2 = {
       comment: comment,
@@ -4994,6 +4994,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.shelfPath('[SHELF]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -5552,6 +5554,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
    * const formattedOtherShelfName = client.shelfPath('[SHELF]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -5751,7 +5755,7 @@ class LibraryServiceClient {
    * });
    *
    * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-   * const comment = Buffer.from('');
+   * const comment = Buffer.from(Buffer.from(''));
    * const stage = 'UNSET';
    * const alignment = 'CHAR';
    * const commentsElement = {
@@ -5874,6 +5878,8 @@ class LibraryServiceClient {
    *
    * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
    * const formattedAltBookName = client.bookPath('[SHELF]', '[BOOK]');
+   *
+   * // Construct request
    * const request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -6862,7 +6868,7 @@ class LibraryServiceClient {
    * const requiredSingularBool = false;
    * const requiredSingularEnum = 'ZERO';
    * const requiredSingularString = '';
-   * const requiredSingularBytes = Buffer.from('');
+   * const requiredSingularBytes = Buffer.from(Buffer.from(''));
    * const requiredSingularMessage = {};
    * const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
    * const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');
@@ -8783,7 +8789,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-      const comment = '95';
+      const comment = Buffer.from('95');
       const stage = 'UNSET';
       const alignment = 'CHAR';
       const commentsElement = {
@@ -8814,7 +8820,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedName = client.bookPath('[SHELF]', '[BOOK]');
-      const comment = '95';
+      const comment = Buffer.from('95');
       const stage = 'UNSET';
       const alignment = 'CHAR';
       const commentsElement = {
@@ -9252,7 +9258,7 @@ describe('LibraryServiceClient', () => {
 
       // Mock response
       const userName = 'userName339340927';
-      const comment = '95';
+      const comment = Buffer.from('95');
       const expectedResponse = {
         userName: userName,
         comment: comment,
@@ -9586,7 +9592,7 @@ describe('LibraryServiceClient', () => {
       const requiredSingularBool = true;
       const requiredSingularEnum = 'ZERO';
       const requiredSingularString = 'requiredSingularString-1949894503';
-      const requiredSingularBytes = '-29';
+      const requiredSingularBytes = Buffer.from('-29');
       const requiredSingularMessage = {};
       const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
       const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');
@@ -9670,7 +9676,7 @@ describe('LibraryServiceClient', () => {
       const requiredSingularBool = true;
       const requiredSingularEnum = 'ZERO';
       const requiredSingularString = 'requiredSingularString-1949894503';
-      const requiredSingularBytes = '-29';
+      const requiredSingularBytes = Buffer.from('-29');
       const requiredSingularMessage = {};
       const formattedRequiredSingularResourceName = client.bookPath('[SHELF]', '[BOOK]');
       const formattedRequiredSingularResourceNameOneof = client.bookPath('[SHELF]', '[BOOK]');
