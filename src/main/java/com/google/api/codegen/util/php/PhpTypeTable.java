@@ -56,7 +56,7 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    return dynamicTypeTable.getTypeName(fullName);
+    return wrapIfKeywordOrBuiltIn(dynamicTypeTable.getTypeName(fullName));
   }
 
   @Override
@@ -76,7 +76,7 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getTypeName(fullName));
+    return dynamicTypeTable.getAndSaveNicknameFor(getTypeName(fullName));
   }
 
   @Override
