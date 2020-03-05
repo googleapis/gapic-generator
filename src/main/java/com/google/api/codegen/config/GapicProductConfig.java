@@ -297,6 +297,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           ResourceNameMessageConfigs.createFromGapicConfigOnly(
               sourceProtos, configProto, defaultPackage);
     }
+
     if (resourceNameConfigs == null) {
       return null;
     }
