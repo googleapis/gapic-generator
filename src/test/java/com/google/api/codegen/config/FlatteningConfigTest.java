@@ -55,7 +55,6 @@ public class FlatteningConfigTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    when(protoParser.hasResourceReference(any(Field.class))).thenReturn(true);
     doThrow(new IllegalStateException("expect no errors"))
         .when(diagCollector)
         .addDiag(any(Diag.class));
@@ -63,6 +62,8 @@ public class FlatteningConfigTest {
     when(createMigrationRoutes.getInputField("source")).thenReturn(source);
     when(createMigrationRoutes.getInputField("destination")).thenReturn(destination);
     when(createMigrationRoutes.getInputField("animals")).thenReturn(animals);
+    when(createMigrationRoutes.getInputFullName())
+        .thenReturn("google.animal.CreateMigrationRoutesRequest");
 
     when(source.getSimpleName()).thenReturn("source");
     when(source.getParentFullName()).thenReturn("google.animal.CreateMigrationRoutesRequest");

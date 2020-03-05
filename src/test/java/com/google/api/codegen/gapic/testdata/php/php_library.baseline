@@ -2294,6 +2294,11 @@ use Google\Example\Library\V1\ArchiveBooksResponse;
 use Google\Example\Library\V1\Book;
 use Google\Example\Library\V1\BookFromAnywhere;
 use Google\Example\Library\V1\BookFromArchive;
+use Google\Example\Library\V1\Book\MapBoolKeyEntry;
+use Google\Example\Library\V1\Book\MapListValueValueEntry;
+use Google\Example\Library\V1\Book\MapMessageValueEntry;
+use Google\Example\Library\V1\Book\MapStringValueEntry;
+use Google\Example\Library\V1\Book\Rating;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\CreateBookRequest;
 use Google\Example\Library\V1\CreateShelfRequest;
@@ -2358,6 +2363,7 @@ use Google\Protobuf\Value;
 use Google\Tagger\CustomNamespace\V1\AddLabelRequest;
 use Google\Tagger\CustomNamespace\V1\AddLabelResponse;
 use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
+use Google\Test\Shared\Data\Used;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -5070,6 +5076,170 @@ class LibraryServiceGapicClient
     }
 
     /**
+     * Test use resource message as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+     * New APIs should always create a separate message for a request.
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $libraryServiceClient->saveBook();
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type string $name
+     *          The resource name of the book.
+     *          Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+     *          Message field comment may include special characters: <>&"`'&#64;.
+     *     @type string $author
+     *          The name of the book author.
+     *     @type string $title
+     *          The title of the book.
+     *     @type bool $read
+     *          Value indicating whether the book has been read.
+     *     @type int $rating
+     *          For testing enums.
+     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\Book\Rating}
+     *     @type Any $anyValue
+     *          For testing all well-known types.
+     *     @type Struct $structValue
+     *     @type Value $valueValue
+     *     @type ListValue $listValueValue
+     *     @type array $mapListValueValue
+     *     @type Timestamp $timeValue
+     *     @type Duration $durationValue
+     *     @type FieldMask $fieldMaskValue
+     *     @type Int32Value $int32Value
+     *     @type UInt32Value $uint32Value
+     *     @type Int64Value $int64Value
+     *     @type UInt64Value $uint64Value
+     *     @type FloatValue $floatValue
+     *     @type DoubleValue $doubleValue
+     *     @type StringValue $stringValue
+     *     @type BoolValue $boolValue
+     *     @type BytesValue $bytesValue
+     *     @type array $mapStringValue
+     *          Test doc generation of lists:
+     *
+     *          +   Here is a sentence about the first element of the list that continues
+     *              into a second line.
+     *          +   The second element of the list.
+     *          +   Another element of the list where the indentation isn't consistent
+     *          after a blank space.
+     *
+     *              The second paragraph of the list
+     *          that doesn't have a hanging indent.
+     *     @type array $mapMessageValue
+     *     @type Used $resource
+     *          Tests Python doc generation: should generate a dummy file for shared_type
+     *          resource, but *not* its import, other_shared_type
+     *     @type array $mapBoolKey
+     *          For testing accessing map fields in samplegen
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function saveBook(array $optionalArgs = [])
+    {
+        $request = new Book();
+        if (isset($optionalArgs['name'])) {
+            $request->setName($optionalArgs['name']);
+        }
+        if (isset($optionalArgs['author'])) {
+            $request->setAuthor($optionalArgs['author']);
+        }
+        if (isset($optionalArgs['title'])) {
+            $request->setTitle($optionalArgs['title']);
+        }
+        if (isset($optionalArgs['read'])) {
+            $request->setRead($optionalArgs['read']);
+        }
+        if (isset($optionalArgs['rating'])) {
+            $request->setRating($optionalArgs['rating']);
+        }
+        if (isset($optionalArgs['anyValue'])) {
+            $request->setAnyValue($optionalArgs['anyValue']);
+        }
+        if (isset($optionalArgs['structValue'])) {
+            $request->setStructValue($optionalArgs['structValue']);
+        }
+        if (isset($optionalArgs['valueValue'])) {
+            $request->setValueValue($optionalArgs['valueValue']);
+        }
+        if (isset($optionalArgs['listValueValue'])) {
+            $request->setListValueValue($optionalArgs['listValueValue']);
+        }
+        if (isset($optionalArgs['mapListValueValue'])) {
+            $request->setMapListValueValue($optionalArgs['mapListValueValue']);
+        }
+        if (isset($optionalArgs['timeValue'])) {
+            $request->setTimeValue($optionalArgs['timeValue']);
+        }
+        if (isset($optionalArgs['durationValue'])) {
+            $request->setDurationValue($optionalArgs['durationValue']);
+        }
+        if (isset($optionalArgs['fieldMaskValue'])) {
+            $request->setFieldMaskValue($optionalArgs['fieldMaskValue']);
+        }
+        if (isset($optionalArgs['int32Value'])) {
+            $request->setInt32Value($optionalArgs['int32Value']);
+        }
+        if (isset($optionalArgs['uint32Value'])) {
+            $request->setUint32Value($optionalArgs['uint32Value']);
+        }
+        if (isset($optionalArgs['int64Value'])) {
+            $request->setInt64Value($optionalArgs['int64Value']);
+        }
+        if (isset($optionalArgs['uint64Value'])) {
+            $request->setUint64Value($optionalArgs['uint64Value']);
+        }
+        if (isset($optionalArgs['floatValue'])) {
+            $request->setFloatValue($optionalArgs['floatValue']);
+        }
+        if (isset($optionalArgs['doubleValue'])) {
+            $request->setDoubleValue($optionalArgs['doubleValue']);
+        }
+        if (isset($optionalArgs['stringValue'])) {
+            $request->setStringValue($optionalArgs['stringValue']);
+        }
+        if (isset($optionalArgs['boolValue'])) {
+            $request->setBoolValue($optionalArgs['boolValue']);
+        }
+        if (isset($optionalArgs['bytesValue'])) {
+            $request->setBytesValue($optionalArgs['bytesValue']);
+        }
+        if (isset($optionalArgs['mapStringValue'])) {
+            $request->setMapStringValue($optionalArgs['mapStringValue']);
+        }
+        if (isset($optionalArgs['mapMessageValue'])) {
+            $request->setMapMessageValue($optionalArgs['mapMessageValue']);
+        }
+        if (isset($optionalArgs['resource'])) {
+            $request->setResource($optionalArgs['resource']);
+        }
+        if (isset($optionalArgs['mapBoolKey'])) {
+            $request->setMapBoolKey($optionalArgs['mapBoolKey']);
+        }
+
+        return $this->startCall(
+            'SaveBook',
+            GPBEmpty::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
      * This method is not exposed in the GAPIC config. It should be generated.
      *
      * Sample code:
@@ -5683,6 +5853,11 @@ class MyProtoClient extends MyProtoGapicClient
         "StreamingArchiveBooks": {
           "timeout_millis": 60000
         },
+        "SaveBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
@@ -6075,6 +6250,11 @@ return [
                         ],
                     ],
                 ]
+            ],
+            'SaveBook' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1:saveBook',
+                'body' => '*',
             ],
             'PrivateListShelves' => [
                 'method' => 'get',
@@ -9245,6 +9425,67 @@ class LibraryServiceClientTest extends GeneratedTest
             // If the close stream method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function saveBookTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $expectedResponse = new GPBEmpty();
+        $transport->addResponse($expectedResponse);
+
+        $client->saveBook();
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/SaveBook', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function saveBookExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->saveBook();
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
