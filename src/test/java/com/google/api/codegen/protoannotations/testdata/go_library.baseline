@@ -248,6 +248,7 @@ type CallOptions struct {
     ArchiveBooks []gax.CallOption
     LongRunningArchiveBooks []gax.CallOption
     StreamingArchiveBooks []gax.CallOption
+    SaveBook []gax.CallOption
     PrivateListShelves []gax.CallOption
 }
 
@@ -307,6 +308,7 @@ func defaultCallOptions() *CallOptions {
         ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         LongRunningArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         StreamingArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
+        SaveBook: retry[[2]string{"default", "non_idempotent"}],
         PrivateListShelves: retry[[2]string{"default", "idempotent"}],
     }
 }
@@ -997,6 +999,19 @@ func (c *LibClient) StreamingArchiveBooks(ctx context.Context, opts ...gax.CallO
         return nil, err
     }
     return resp, nil
+}
+
+// SaveBook test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+// New APIs should always create a separate message for a request.
+func (c *LibClient) SaveBook(ctx context.Context, req *librarypb.Book, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.SaveBook[0:len(c.CallOptions.SaveBook):len(c.CallOptions.SaveBook)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.SaveBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
 }
 
 // PrivateListShelves this method is not exposed in the GAPIC config. It should be generated.
@@ -2008,6 +2023,22 @@ func ExampleClient_StreamingArchiveBooks() {
     }
 }
 
+func ExampleClient_SaveBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.Book{
+        // TODO: Fill request struct fields.
+    }
+    err = c.SaveBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
 func ExampleClient_PrivateListShelves() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2499,6 +2530,18 @@ func (s *mockLibraryServer) StreamingArchiveBooks(stream librarypb.LibraryServic
         }
     }
     return nil
+}
+
+func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
@@ -4975,6 +5018,58 @@ func TestLibraryServiceStreamingArchiveBooksError(t *testing.T) {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
+}
+func TestLibraryServiceSaveBook(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var request = &librarypb.Book{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceSaveBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var request = &librarypb.Book{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
 }
 func TestLibraryServicePrivateListShelves(t *testing.T) {
     var name string = "name3373707"

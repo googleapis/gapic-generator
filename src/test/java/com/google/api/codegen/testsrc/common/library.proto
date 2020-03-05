@@ -283,6 +283,13 @@ service LibraryService {
     option (google.api.method_signature) = "source,archive";
   }
 
+  // Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+  // New APIs should always create a separate message for a request.
+  rpc SaveBook(Book) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v1:saveBook" body: "*"};
+    option (google.api.method_signature) = "name,author,title,rating";
+  }
+
   // Test optional flattening parameters of all types
   rpc TestOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest) returns (TestOptionalRequiredFlatteningParamsResponse) {
     option (google.api.http) = { post: "/v1/testofp" body: "*" };
