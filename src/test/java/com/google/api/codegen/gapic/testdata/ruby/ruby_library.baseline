@@ -3483,6 +3483,11 @@ module Library
           defaults["streaming_archive_books"],
           exception_transformer: exception_transformer
         )
+        @save_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:save_book),
+          defaults["save_book"],
+          exception_transformer: exception_transformer
+        )
         @private_list_shelves = Google::Gax.create_api_call(
           @library_service_stub.method(:private_list_shelves),
           defaults["private_list_shelves"],
@@ -5449,6 +5454,169 @@ module Library
         @streaming_archive_books.call(request_protos, options)
       end
 
+      # Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+      # New APIs should always create a separate message for a request.
+      #
+      # @param name [String]
+      #   The resource name of the book.
+      #   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+      #   Message field comment may include special characters: <>&"`'@.
+      # @param author [String]
+      #   The name of the book author.
+      # @param title [String]
+      #   The title of the book.
+      # @param read [true, false]
+      #   Value indicating whether the book has been read.
+      # @param rating [Google::Example::Library::V1::Book::Rating]
+      #   For testing enums.
+      # @param any_value [Google::Protobuf::Any | Hash]
+      #   For testing all well-known types.
+      #   A hash of the same form as `Google::Protobuf::Any`
+      #   can also be provided.
+      # @param struct_value [Google::Protobuf::Struct | Hash]
+      #   A hash of the same form as `Google::Protobuf::Struct`
+      #   can also be provided.
+      # @param value_value [Google::Protobuf::Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Value`
+      #   can also be provided.
+      # @param list_value_value [Google::Protobuf::ListValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param map_list_value_value [Hash{String => Google::Protobuf::ListValue | Hash}]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param time_value [Google::Protobuf::Timestamp | Hash]
+      #   A hash of the same form as `Google::Protobuf::Timestamp`
+      #   can also be provided.
+      # @param duration_value [Google::Protobuf::Duration | Hash]
+      #   A hash of the same form as `Google::Protobuf::Duration`
+      #   can also be provided.
+      # @param field_mask_value [Google::Protobuf::FieldMask | Hash]
+      #   A hash of the same form as `Google::Protobuf::FieldMask`
+      #   can also be provided.
+      # @param int32_value [Google::Protobuf::Int32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int32Value`
+      #   can also be provided.
+      # @param uint32_value [Google::Protobuf::UInt32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt32Value`
+      #   can also be provided.
+      # @param int64_value [Google::Protobuf::Int64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int64Value`
+      #   can also be provided.
+      # @param uint64_value [Google::Protobuf::UInt64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt64Value`
+      #   can also be provided.
+      # @param float_value [Google::Protobuf::FloatValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::FloatValue`
+      #   can also be provided.
+      # @param double_value [Google::Protobuf::DoubleValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::DoubleValue`
+      #   can also be provided.
+      # @param string_value [Google::Protobuf::StringValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::StringValue`
+      #   can also be provided.
+      # @param bool_value [Google::Protobuf::BoolValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BoolValue`
+      #   can also be provided.
+      # @param bytes_value [Google::Protobuf::BytesValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BytesValue`
+      #   can also be provided.
+      # @param map_string_value [Hash{Integer => String}]
+      #   Test doc generation of lists:
+      #
+      #   * Here is a sentence about the first element of the list that continues
+      #     into a second line.
+      #   * The second element of the list.
+      #   * Another element of the list where the indentation isn't consistent
+      #     after a blank space.
+      #
+      #     The second paragraph of the list
+      #     that doesn't have a hanging indent.
+      # @param map_message_value [Hash{String => Google::Example::Library::V1::SomeMessage | Hash}]
+      #   A hash of the same form as `Google::Example::Library::V1::SomeMessage`
+      #   can also be provided.
+      # @param resource [Google::Test::Shared::Data::Used | Hash]
+      #   Tests Python doc generation: should generate a dummy file for shared_type
+      #   resource, but *not* its import, other_shared_type
+      #   A hash of the same form as `Google::Test::Shared::Data::Used`
+      #   can also be provided.
+      # @param map_bool_key [Hash{true, false => String}]
+      #   For testing accessing map fields in samplegen
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   library_client.save_book
+
+      def save_book \
+          name: nil,
+          author: nil,
+          title: nil,
+          read: nil,
+          rating: nil,
+          any_value: nil,
+          struct_value: nil,
+          value_value: nil,
+          list_value_value: nil,
+          map_list_value_value: nil,
+          time_value: nil,
+          duration_value: nil,
+          field_mask_value: nil,
+          int32_value: nil,
+          uint32_value: nil,
+          int64_value: nil,
+          uint64_value: nil,
+          float_value: nil,
+          double_value: nil,
+          string_value: nil,
+          bool_value: nil,
+          bytes_value: nil,
+          map_string_value: nil,
+          map_message_value: nil,
+          resource: nil,
+          map_bool_key: nil,
+          options: nil,
+          &block
+        req = {
+          name: name,
+          author: author,
+          title: title,
+          read: read,
+          rating: rating,
+          any_value: any_value,
+          struct_value: struct_value,
+          value_value: value_value,
+          list_value_value: list_value_value,
+          map_list_value_value: map_list_value_value,
+          time_value: time_value,
+          duration_value: duration_value,
+          field_mask_value: field_mask_value,
+          int32_value: int32_value,
+          uint32_value: uint32_value,
+          int64_value: int64_value,
+          uint64_value: uint64_value,
+          float_value: float_value,
+          double_value: double_value,
+          string_value: string_value,
+          bool_value: bool_value,
+          bytes_value: bytes_value,
+          map_string_value: map_string_value,
+          map_message_value: map_message_value,
+          resource: resource,
+          map_bool_key: map_bool_key
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::Book)
+        @save_book.call(req, options, &block)
+        nil
+      end
+
       # This method is not exposed in the GAPIC config. It should be generated.
       #
       # @param page_token [String]
@@ -5675,6 +5843,11 @@ end
           "retry_params_name": "default"
         },
         "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -10665,6 +10838,66 @@ describe Library::V1::LibraryServiceClient do
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
             client.streaming_archive_books([request])
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'save_book' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#save_book."
+
+    it 'invokes save_book without error' do
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: nil)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:save_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("save_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.save_book
+
+          # Verify the response
+          assert_nil(response)
+
+          # Call method with block
+          client.save_book do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes save_book with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:save_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("save_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.save_book
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
