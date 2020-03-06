@@ -1008,6 +1008,7 @@ public class InitCodeTransformer {
         oneofConfig
             .getPatterns()
             .stream()
+            .filter(p -> !p.getBindingVariables().isEmpty())
             .filter(p -> p.getBindingVariables().equals(bindingValues))
             .findAny();
     return pattern.isPresent() ? pattern.get() : oneofConfig.getPatterns().get(0);
