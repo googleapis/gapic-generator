@@ -74,11 +74,14 @@ _csharp_gapic_src_pkg = rule(
     implementation = _csharp_gapic_src_pkg_impl,
 )
 
-def csharp_gapic_assembly_pkg(name, deps, **kwargs):
+def csharp_gapic_assembly_pkg(name, deps, assembly_name = None, **kwargs):
+    package_dir = name
+    if assembly_name:
+        package_dir = "google-cloud-%s-%s" % (assembly_name, name)
     _csharp_gapic_src_pkg(
         name = name,
         deps = deps,
-        package_dir = name,
+        package_dir = package_dir,
         **kwargs
     )
 
