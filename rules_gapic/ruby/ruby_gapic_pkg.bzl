@@ -68,11 +68,14 @@ _ruby_gapic_src_pkg = rule(
     implementation = _ruby_gapic_src_pkg_impl,
 )
 
-def ruby_gapic_assembly_pkg(name, deps, **kwargs):
+def ruby_gapic_assembly_pkg(name, deps, assembly_name = None, **kwargs):
+    package_dir = name
+    if assembly_name:
+        package_dir = "google-cloud-%s-%s" % (assembly_name, name)
     _ruby_gapic_src_pkg(
         name = name,
         deps = deps,
-        package_dir = name,
+        package_dir = package_dir,
         **kwargs
     )
 

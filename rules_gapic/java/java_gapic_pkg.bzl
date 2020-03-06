@@ -158,12 +158,16 @@ java_gapic_srcs_pkg = rule(
 def java_gapic_assembly_gradle_pkg(
         name,
         deps,
+        assembly_name = None,
         **kwargs):
-    proto_target = "proto-%s" % name
+    package_dir = name
+    if assembly_name:
+        package_dir = "google-cloud-%s-%s" % (assembly_name, name)
+    proto_target = "proto-%s" % package_dir
     proto_target_dep = []
-    grpc_target = "grpc-%s" % name
+    grpc_target = "grpc-%s" % package_dir
     grpc_target_dep = []
-    client_target = "gapic-%s" % name
+    client_target = "gapic-%s" % package_dir
     client_target_dep = []
 
     client_deps = []
@@ -212,6 +216,7 @@ def java_gapic_assembly_gradle_pkg(
 
     _java_gapic_assembly_gradle_pkg(
         name = name,
+        assembly_name = package_dir,
         deps = proto_target_dep + grpc_target_dep + client_target_dep,
     )
 
@@ -258,8 +263,8 @@ def _java_gapic_gradle_pkg(
         **kwargs
     )
 
-def _java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
-    resource_target_name = "%s-resources" % name
+def _java_gapic_assembly_gradle_pkg(name, assembly_name, deps, visibility = None):
+    resource_target_name = "%s-resources" % assembly_name
     java_gapic_build_configs_pkg(
         name = resource_target_name,
         deps = deps,
@@ -276,7 +281,7 @@ def _java_gapic_assembly_gradle_pkg(name, deps, visibility = None):
             Label("//rules_gapic/java:gradlew"),
             resource_target_name,
         ] + deps,
-        package_dir = name,
+        package_dir = assembly_name,
         visibility = visibility,
     )
 
