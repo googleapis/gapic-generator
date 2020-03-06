@@ -5264,6 +5264,7 @@ class LibraryServiceClient {
       'archiveBooks',
       'longRunningArchiveBooks',
       'streamingArchiveBooks',
+      'saveBook',
       'privateListShelves',
     ];
     for (const methodName of libraryServiceStubMethods) {
@@ -7862,6 +7863,112 @@ class LibraryServiceClient {
   }
 
   /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.name]
+   *   The resource name of the book.
+   *   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+   *   Message field comment may include special characters: <>&"`'@.
+   * @param {string} [request.author]
+   *   The name of the book author.
+   * @param {string} [request.title]
+   *   The title of the book.
+   * @param {boolean} [request.read]
+   *   Value indicating whether the book has been read.
+   * @param {number} [request.rating]
+   *   For testing enums.
+   *
+   *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
+   * @param {Object} [request.anyValue]
+   *   For testing all well-known types.
+   *
+   *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+   * @param {Object} [request.structValue]
+   *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+   * @param {Object} [request.valueValue]
+   *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+   * @param {Object} [request.listValueValue]
+   *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+   * @param {Object.<string, Object>} [request.mapListValueValue]
+   * @param {Object} [request.timeValue]
+   *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+   * @param {Object} [request.durationValue]
+   *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+   * @param {Object} [request.fieldMaskValue]
+   *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+   * @param {Object} [request.int32Value]
+   *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+   * @param {Object} [request.uint32Value]
+   *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+   * @param {Object} [request.int64Value]
+   *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+   * @param {Object} [request.uint64Value]
+   *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+   * @param {Object} [request.floatValue]
+   *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+   * @param {Object} [request.doubleValue]
+   *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+   * @param {Object} [request.stringValue]
+   *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+   * @param {Object} [request.boolValue]
+   *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+   * @param {Object} [request.bytesValue]
+   *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+   * @param {Object.<number, string>} [request.mapStringValue]
+   *   Test doc generation of lists:
+   *
+   *   +   Here is a sentence about the first element of the list that continues
+   *       into a second line.
+   *   +   The second element of the list.
+   *   +   Another element of the list where the indentation isn't consistent
+   *   after a blank space.
+   *
+   *       The second paragraph of the list
+   *   that doesn't have a hanging indent.
+   * @param {Object.<string, Object>} [request.mapMessageValue]
+   * @param {Object} [request.resource]
+   *   Tests Python doc generation: should generate a dummy file for shared_type
+   *   resource, but *not* its import, other_shared_type
+   *
+   *   This object should have the same structure as [Used]{@link google.test.shared.data.Used}
+   * @param {Object.<boolean, string>} [request.mapBoolKey]
+   *   For testing accessing map fields in samplegen
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error)} [callback]
+   *   The function which will be called with the result of the API call.
+   * @returns {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.saveBook({}).catch(err => {
+   *   console.error(err);
+   * });
+   */
+  saveBook(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+
+    return this._innerApiCalls.saveBook(request, options, callback);
+  }
+
+  /**
    * This method is not exposed in the GAPIC config. It should be generated.
    *
    * @param {Object} request
@@ -8345,6 +8452,11 @@ module.exports = LibraryServiceClient;
           "retry_params_name": "default"
         },
         "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -10938,6 +11050,49 @@ describe('LibraryServiceClient', () => {
       });
 
       stream.write(request);
+    });
+  });
+
+  describe('saveBook', () => {
+    it('invokes saveBook without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.saveBook = mockSimpleGrpcMethod(request);
+
+      client.saveBook(request, err => {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes saveBook with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.saveBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.saveBook(request, err => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        done();
+      });
     });
   });
 

@@ -117,6 +117,7 @@ import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.example.library.v1.Book;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage;
 import com.google.example.library.v1.stub.LibraryServiceStub;
@@ -3562,6 +3563,121 @@ public class LibraryServiceClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   String author = "";
+   *   String title = "";
+   *   Book.Rating rating = Book.Rating.GOOD;
+   *   libraryServiceClient.saveBook(name, author, title, rating);
+   * }
+   * </code></pre>
+   *
+   * @param name The resource name of the book.
+   * Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+   * Message field comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
+   * @param author The name of the book author.
+   * @param title The title of the book.
+   * @param rating For testing enums.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void saveBook(BookName name, String author, String title, Book.Rating rating) {
+    Book request =
+        Book.newBuilder()
+            .setName(name == null ? null : name.toString())
+            .setAuthor(author)
+            .setTitle(title)
+            .setRating(rating)
+            .build();
+    saveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   String author = "";
+   *   String title = "";
+   *   Book.Rating rating = Book.Rating.GOOD;
+   *   libraryServiceClient.saveBook(name.toString(), author, title, rating);
+   * }
+   * </code></pre>
+   *
+   * @param name The resource name of the book.
+   * Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+   * Message field comment may include special characters: &lt;&gt;&amp;"`'{@literal @}.
+   * @param author The name of the book author.
+   * @param title The title of the book.
+   * @param rating For testing enums.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void saveBook(String name, String author, String title, Book.Rating rating) {
+    Book request =
+        Book.newBuilder()
+            .setName(name)
+            .setAuthor(author)
+            .setTitle(title)
+            .setRating(rating)
+            .build();
+    saveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   Book request = Book.newBuilder()
+   *     .setName(name.toString())
+   *     .build();
+   *   libraryServiceClient.saveBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void saveBook(Book request) {
+    saveBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   Book request = Book.newBuilder()
+   *     .setName(name.toString())
+   *     .build();
+   *   ApiFuture&lt;Void&gt; future = libraryServiceClient.saveBookCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<Book, Empty> saveBookCallable() {
+    return stub.saveBookCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * Test optional flattening parameters of all types
    *
    * Sample code:
@@ -5398,6 +5514,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   }
 
   /**
+   * Returns the object with the settings used for calls to saveBook.
+   */
+  public UnaryCallSettings<Book, Empty> saveBookSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).saveBookSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to testOptionalRequiredFlatteningParams.
    */
   public UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
@@ -5764,6 +5887,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
      */
     public StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
       return getStubSettingsBuilder().streamingArchiveBooksSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to saveBook.
+     */
+    public UnaryCallSettings.Builder<Book, Empty> saveBookSettings() {
+      return getStubSettingsBuilder().saveBookSettings();
     }
 
     /**
@@ -6864,6 +6994,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(ArchiveBooksRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(ArchiveBooksResponse.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<Book, Empty> saveBookMethodDescriptor =
+      MethodDescriptor.<Book, Empty>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/SaveBook")
+          .setRequestMarshaller(ProtoUtils.marshaller(Book.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsMethodDescriptor =
       MethodDescriptor.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -6920,6 +7057,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<ArchiveBooksRequest, Operation> longRunningArchiveBooksCallable;
   private final OperationCallable<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationCallable;
   private final BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable;
+  private final UnaryCallable<Book, Empty> saveBookCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
   private final UnaryCallable<ListShelvesRequest, Book> privateListShelvesCallable;
 
@@ -7269,6 +7407,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<ArchiveBooksRequest, ArchiveBooksResponse>newBuilder()
             .setMethodDescriptor(streamingArchiveBooksMethodDescriptor)
             .build();
+    GrpcCallSettings<Book, Empty> saveBookTransportSettings =
+        GrpcCallSettings.<Book, Empty>newBuilder()
+            .setMethodDescriptor(saveBookMethodDescriptor)
+            .build();
     GrpcCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsTransportSettings =
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
@@ -7318,6 +7460,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.longRunningArchiveBooksOperationCallable = callableFactory.createOperationCallable(
         longRunningArchiveBooksTransportSettings,settings.longRunningArchiveBooksOperationSettings(), clientContext, this.operationsStub);
     this.streamingArchiveBooksCallable = callableFactory.createBidiStreamingCallable(streamingArchiveBooksTransportSettings,settings.streamingArchiveBooksSettings(), clientContext);
+    this.saveBookCallable = callableFactory.createUnaryCallable(saveBookTransportSettings,settings.saveBookSettings(), clientContext);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
     this.privateListShelvesCallable = callableFactory.createUnaryCallable(privateListShelvesTransportSettings,settings.privateListShelvesSettings(), clientContext);
 
@@ -7477,6 +7620,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public BidiStreamingCallable<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksCallable() {
     return streamingArchiveBooksCallable;
+  }
+
+  public UnaryCallable<Book, Empty> saveBookCallable() {
+    return saveBookCallable;
   }
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
@@ -8048,6 +8195,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: streamingArchiveBooksCallable()");
   }
 
+  public UnaryCallable<Book, Empty> saveBookCallable() {
+    throw new UnsupportedOperationException("Not implemented: saveBookCallable()");
+  }
+
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
@@ -8249,6 +8400,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings;
   private final OperationCallSettings<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings;
   private final StreamingCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings;
+  private final UnaryCallSettings<Book, Empty> saveBookSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
   private final UnaryCallSettings<ListShelvesRequest, Book> privateListShelvesSettings;
 
@@ -8494,6 +8646,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
+   * Returns the object with the settings used for calls to saveBook.
+   */
+  public UnaryCallSettings<Book, Empty> saveBookSettings() {
+    return saveBookSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to testOptionalRequiredFlatteningParams.
    */
   public UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
@@ -8627,6 +8786,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     longRunningArchiveBooksSettings = settingsBuilder.longRunningArchiveBooksSettings().build();
     longRunningArchiveBooksOperationSettings = settingsBuilder.longRunningArchiveBooksOperationSettings().build();
     streamingArchiveBooksSettings = settingsBuilder.streamingArchiveBooksSettings().build();
+    saveBookSettings = settingsBuilder.saveBookSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
     privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
@@ -8819,6 +8979,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<ArchiveBooksRequest, Operation> longRunningArchiveBooksSettings;
     private final OperationCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksOperationSettings;
     private final StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings;
+    private final UnaryCallSettings.Builder<Book, Empty> saveBookSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
     private final UnaryCallSettings.Builder<ListShelvesRequest, Book> privateListShelvesSettings;
 
@@ -8931,6 +9092,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       streamingArchiveBooksSettings = StreamingCallSettings.newBuilder();
 
+      saveBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       privateListShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -8961,6 +9124,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           moveBooksSettings,
           archiveBooksSettings,
           longRunningArchiveBooksSettings,
+          saveBookSettings,
           testOptionalRequiredFlatteningParamsSettings,
           privateListShelvesSettings
       );
@@ -9087,6 +9251,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.saveBookSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
       builder.testOptionalRequiredFlatteningParamsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -9195,6 +9363,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       longRunningArchiveBooksSettings = settings.longRunningArchiveBooksSettings.toBuilder();
       longRunningArchiveBooksOperationSettings = settings.longRunningArchiveBooksOperationSettings.toBuilder();
       streamingArchiveBooksSettings = settings.streamingArchiveBooksSettings.toBuilder();
+      saveBookSettings = settings.saveBookSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
       privateListShelvesSettings = settings.privateListShelvesSettings.toBuilder();
 
@@ -9224,6 +9393,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           moveBooksSettings,
           archiveBooksSettings,
           longRunningArchiveBooksSettings,
+          saveBookSettings,
           testOptionalRequiredFlatteningParamsSettings,
           privateListShelvesSettings
       );
@@ -9483,6 +9653,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public StreamingCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> streamingArchiveBooksSettings() {
       return streamingArchiveBooksSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to saveBook.
+     */
+    public UnaryCallSettings.Builder<Book, Empty> saveBookSettings() {
+      return saveBookSettings;
     }
 
     /**
@@ -9889,6 +10066,7 @@ import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.StatusCode;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.Lists;
+import com.google.example.library.v1.Book;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
@@ -11588,6 +11766,52 @@ public class LibraryServiceClientTest {
 
   @Test
   @SuppressWarnings("all")
+  public void saveBookTest() {
+    Empty expectedResponse = Empty.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    String author = "author-1406328437";
+    String title = "title110371416";
+    Book.Rating rating = Book.Rating.GOOD;
+
+    client.saveBook(name, author, title, rating);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    Book actualRequest = (Book)actualRequests.get(0);
+
+    Assert.assertEquals(name, BookName.parse(actualRequest.getName()));
+    Assert.assertEquals(author, actualRequest.getAuthor());
+    Assert.assertEquals(title, actualRequest.getTitle());
+    Assert.assertEquals(rating, actualRequest.getRating());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void saveBookExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      String author = "author-1406328437";
+      String title = "title110371416";
+      Book.Rating rating = Book.Rating.GOOD;
+
+      client.saveBook(name, author, title, rating);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void testOptionalRequiredFlatteningParamsTest() {
     TestOptionalRequiredFlatteningParamsResponse expectedResponse = TestOptionalRequiredFlatteningParamsResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
@@ -12711,6 +12935,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
       }
     };
     return requestObserver;
+  }
+
+  @Override
+  public void saveBook(Book request,
+    StreamObserver<Empty> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Empty) {
+      requests.add(request);
+      responseObserver.onNext((Empty) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
   }
 
   @Override
