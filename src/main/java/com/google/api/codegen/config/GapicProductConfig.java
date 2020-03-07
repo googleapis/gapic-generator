@@ -254,6 +254,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               .getInterfacesList()
               .stream()
               .flatMap(i -> i.getDeprecatedCollectionsList().stream())
+              .distinct()
               .collect(
                   ImmutableMap.toImmutableMap(
                       DeprecatedCollectionConfigProto::getNamePattern, c -> c));
