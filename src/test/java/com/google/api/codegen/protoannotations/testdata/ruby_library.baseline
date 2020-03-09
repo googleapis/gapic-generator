@@ -1080,6 +1080,11 @@ module Google
         # @!attribute [rw] myfield
         #   @return [String]
         class MethodResponse; end
+
+        # Define a message with a reserved name
+        # @!attribute [rw] value
+        #   @return [String]
+        class Namespace; end
       end
     end
   end
@@ -6121,6 +6126,11 @@ module Library
           defaults["my_method"],
           exception_transformer: exception_transformer
         )
+        @get_namespace = Google::Gax.create_api_call(
+          @my_proto_stub.method(:get_namespace),
+          defaults["get_namespace"],
+          exception_transformer: exception_transformer
+        )
       end
 
       # Service calls
@@ -6162,6 +6172,46 @@ module Library
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MethodRequest)
         @my_method.call(req, options, &block)
       end
+
+      # Define a service with a reserved name
+      #
+      # @param mylist [Array<Google::Example::Library::V1::SubMessage | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param myfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param secondfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Namespace]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::Namespace]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   my_proto_client = Library::MyProto.new(version: :v1)
+      #   response = my_proto_client.get_namespace
+
+      def get_namespace \
+          mylist: nil,
+          myfield: nil,
+          secondfield: nil,
+          options: nil,
+          &block
+        req = {
+          mylist: mylist,
+          myfield: myfield,
+          secondfield: secondfield
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MethodRequest)
+        @get_namespace.call(req, options, &block)
+      end
     end
   end
 end
@@ -6191,6 +6241,11 @@ end
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -11183,6 +11238,70 @@ describe Library::V1::MyProtoClient do
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
             client.my_method
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'get_namespace' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::MyProtoClient#get_namespace."
+
+    it 'invokes get_namespace without error' do
+      # Create expected grpc response
+      value = "value111972721"
+      expected_response = { value: value }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Namespace)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_namespace, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("get_namespace")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          response = client.get_namespace
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_namespace do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes get_namespace with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_namespace, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("get_namespace")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.get_namespace
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

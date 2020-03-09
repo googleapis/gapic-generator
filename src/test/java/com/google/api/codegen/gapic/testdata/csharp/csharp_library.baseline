@@ -7884,6 +7884,33 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        /// <summary>Snippet for GetNamespaceAsync</summary>
+        public async Task GetNamespaceAsync_RequestObject()
+        {
+            // Snippet: GetNamespaceAsync(MethodRequest,CallSettings)
+            // Additional: GetNamespaceAsync(MethodRequest,CancellationToken)
+            // Create client
+            MyProtoClient myProtoClient = await MyProtoClient.CreateAsync();
+            // Initialize request argument(s)
+            MethodRequest request = new MethodRequest();
+            // Make the request
+            Namespace response = await myProtoClient.GetNamespaceAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for GetNamespace</summary>
+        public void GetNamespace_RequestObject()
+        {
+            // Snippet: GetNamespace(MethodRequest,CallSettings)
+            // Create client
+            MyProtoClient myProtoClient = MyProtoClient.Create();
+            // Initialize request argument(s)
+            MethodRequest request = new MethodRequest();
+            // Make the request
+            Namespace response = myProtoClient.GetNamespace(request);
+            // End snippet
+        }
+
     }
 }
 
@@ -10841,6 +10868,40 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Grpc.Core.AsyncUnaryCall<MethodResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             MyProtoClient client = new MyProtoClientImpl(mockGrpcClient.Object, null);
             MethodResponse response = await client.MyMethodAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void GetNamespace()
+        {
+            Mock<MyProto.MyProtoClient> mockGrpcClient = new Mock<MyProto.MyProtoClient>(MockBehavior.Strict);
+            MethodRequest request = new MethodRequest();
+            Namespace expectedResponse = new Namespace
+            {
+                Value = "value111972721",
+            };
+            mockGrpcClient.Setup(x => x.GetNamespace(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            MyProtoClient client = new MyProtoClientImpl(mockGrpcClient.Object, null);
+            Namespace response = client.GetNamespace(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task GetNamespaceAsync()
+        {
+            Mock<MyProto.MyProtoClient> mockGrpcClient = new Mock<MyProto.MyProtoClient>(MockBehavior.Strict);
+            MethodRequest request = new MethodRequest();
+            Namespace expectedResponse = new Namespace
+            {
+                Value = "value111972721",
+            };
+            mockGrpcClient.Setup(x => x.GetNamespaceAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Namespace>(Task.FromResult(expectedResponse), null, null, null, null));
+            MyProtoClient client = new MyProtoClientImpl(mockGrpcClient.Object, null);
+            Namespace response = await client.GetNamespaceAsync(request);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -22973,6 +23034,7 @@ namespace Google.Example.Library.V1
         {
             gax::GaxPreconditions.CheckNotNull(existing, nameof(existing));
             MyMethodSettings = existing.MyMethodSettings;
+            GetNamespaceSettings = existing.GetNamespaceSettings;
             OnCopy(existing);
         }
 
@@ -23064,6 +23126,35 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 600000 milliseconds.
         /// </remarks>
         public gaxgrpc::CallSettings MyMethodSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(600000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>MyProtoClient.GetNamespace</c> and <c>MyProtoClient.GetNamespaceAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>MyProtoClient.GetNamespace</c> and
+        /// <c>MyProtoClient.GetNamespaceAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.3</description></item>
+        /// <item><description>Retry maximum delay: 60000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 20000 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.0</description></item>
+        /// <item><description>Timeout maximum delay: 20000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 600000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings GetNamespaceSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
             gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -23328,6 +23419,62 @@ namespace Google.Example.Library.V1
             throw new sys::NotImplementedException();
         }
 
+        /// <summary>
+        /// Define a service with a reserved name
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Namespace> GetNamespaceAsync(
+            MethodRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Define a service with a reserved name
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Namespace> GetNamespaceAsync(
+            MethodRequest request,
+            st::CancellationToken cancellationToken) => GetNamespaceAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Define a service with a reserved name
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Namespace GetNamespace(
+            MethodRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
     }
 
     /// <summary>
@@ -23336,6 +23483,7 @@ namespace Google.Example.Library.V1
     public sealed partial class MyProtoClientImpl : MyProtoClient
     {
         private readonly gaxgrpc::ApiCall<MethodRequest, MethodResponse> _callMyMethod;
+        private readonly gaxgrpc::ApiCall<MethodRequest, Namespace> _callGetNamespace;
 
         /// <summary>
         /// Constructs a client wrapper for the MyProto service, with the specified gRPC client and settings.
@@ -23349,8 +23497,12 @@ namespace Google.Example.Library.V1
             gaxgrpc::ClientHelper clientHelper = new gaxgrpc::ClientHelper(effectiveSettings);
             _callMyMethod = clientHelper.BuildApiCall<MethodRequest, MethodResponse>(
                 GrpcClient.MyMethodAsync, GrpcClient.MyMethod, effectiveSettings.MyMethodSettings);
+            _callGetNamespace = clientHelper.BuildApiCall<MethodRequest, Namespace>(
+                GrpcClient.GetNamespaceAsync, GrpcClient.GetNamespace, effectiveSettings.GetNamespaceSettings);
             Modify_ApiCall(ref _callMyMethod);
             Modify_MyMethodApiCall(ref _callMyMethod);
+            Modify_ApiCall(ref _callGetNamespace);
+            Modify_GetNamespaceApiCall(ref _callGetNamespace);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
@@ -23365,6 +23517,7 @@ namespace Google.Example.Library.V1
         // Partial methods called for each ApiCall on construction.
         // Allows per-RPC-method modification of the underlying ApiCall object.
         partial void Modify_MyMethodApiCall(ref gaxgrpc::ApiCall<MethodRequest, MethodResponse> call);
+        partial void Modify_GetNamespaceApiCall(ref gaxgrpc::ApiCall<MethodRequest, Namespace> call);
         partial void OnConstruction(MyProto.MyProtoClient grpcClient, MyProtoSettings effectiveSettings, gaxgrpc::ClientHelper clientHelper);
 
         /// <summary>
@@ -23415,6 +23568,46 @@ namespace Google.Example.Library.V1
         {
             Modify_MethodRequest(ref request, ref callSettings);
             return _callMyMethod.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Define a service with a reserved name
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<Namespace> GetNamespaceAsync(
+            MethodRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_MethodRequest(ref request, ref callSettings);
+            return _callGetNamespace.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Define a service with a reserved name
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override Namespace GetNamespace(
+            MethodRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_MethodRequest(ref request, ref callSettings);
+            return _callGetNamespace.Sync(request, callSettings);
         }
 
     }

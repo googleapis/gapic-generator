@@ -28,6 +28,18 @@ public class PhpTypeTable implements TypeTable {
 
   private final DynamicLangTypeTable dynamicTypeTable;
 
+  private TypeName wrapIfKeywordOrBuiltIn(TypeName typeName) {
+    if (RESERVED_IDENTIFIER_SET.contains(typeName.getNickname().toLowerCase())) {
+      int lastSeparatorIndex = typeName.getFullName().lastIndexOf(dynamicTypeTable.getSeparator());
+      if (lastSeparatorIndex > 0) {
+        String namespace = typeName.getFullName().substring(0, lastSeparatorIndex);
+        String nickname = "PB" + typeName.getNickname();
+        return new TypeName(namespace + dynamicTypeTable.getSeparator() + nickname, nickname);
+      }
+    }
+    return typeName;
+  }
+
   public PhpTypeTable(String implicitPackageName) {
     dynamicTypeTable = new DynamicLangTypeTable(implicitPackageName, "\\");
   }
@@ -44,7 +56,7 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    return dynamicTypeTable.getTypeName(fullName);
+    return wrapIfKeywordOrBuiltIn(dynamicTypeTable.getTypeName(fullName));
   }
 
   @Override
@@ -64,12 +76,12 @@ public class PhpTypeTable implements TypeTable {
 
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return dynamicTypeTable.getAndSaveNicknameFor(fullName);
+    return dynamicTypeTable.getAndSaveNicknameFor(getTypeName(fullName));
   }
 
   @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
-    return dynamicTypeTable.getAndSaveNicknameFor(typeName);
+    return dynamicTypeTable.getAndSaveNicknameFor(wrapIfKeywordOrBuiltIn(typeName));
   }
 
   @Override
