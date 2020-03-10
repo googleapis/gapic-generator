@@ -665,6 +665,127 @@ interfaces:
       total_poll_timeout_millis: 300000
     # FIXME: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
+  - name: MoveBooks
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - source
+        - destination
+        - publishers
+        - project
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - source
+    - destination
+    - publishers
+    - project
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: ArchiveBooks
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - source
+        - archive
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - source
+    - archive
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: LongRunningArchiveBooks
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - source
+        - archive
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - source
+    - archive
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure long running operation.
+    long_running:
+      # FIXME: Configure return type.
+      return_type: google.protobuf.Empty
+      # FIXME: Configure metadata type.
+      metadata_type: google.protobuf.Struct
+      initial_poll_delay_millis: 500
+      poll_delay_multiplier: 1.5
+      max_poll_delay_millis: 5000
+      total_poll_timeout_millis: 300000
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: StreamingArchiveBooks
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - source
+        - archive
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - source
+    - archive
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: SaveBook
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - name
+    - author
+    - title
+    - read
+    - rating
+    - any_value
+    - struct_value
+    - value_value
+    - list_value_value
+    - map_list_value_value
+    - time_value
+    - duration_value
+    - field_mask_value
+    - int32_value
+    - uint32_value
+    - int64_value
+    - uint64_value
+    - float_value
+    - double_value
+    - string_value
+    - bool_value
+    - bytes_value
+    - map_string_value
+    - map_message_value
+    - resource
+    - map_bool_key
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
   - name: TestOptionalRequiredFlatteningParams
     # FIXME: Configure which fields are required.
     required_fields:
@@ -901,6 +1022,26 @@ interfaces:
   #   the call is retrying, refer to retry_params_name instead.
   methods:
   - name: MyMethod
+    # FIXME: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - mylist
+        - myfield
+        - secondfield
+    # FIXME: Configure which fields are required.
+    required_fields:
+    - mylist
+    - myfield
+    - secondfield
+    # FIXME: Configure the retryable codes for this method.
+    retry_codes_name: non_idempotent
+    # FIXME: Configure the retryable params for this method.
+    retry_params_name: default
+    # FIXME: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: GetNamespace
     # FIXME: Configure which groups of fields should be flattened into method
     # params.
     flattening:

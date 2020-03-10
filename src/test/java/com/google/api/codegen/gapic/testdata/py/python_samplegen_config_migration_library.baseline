@@ -284,7 +284,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+    name = client.book_path('[SHELF]', '[BOOK]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -744,7 +744,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+    name = client.book_path('[SHELF]', '[BOOK]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -774,7 +774,7 @@ Api Reference
 ============== file: google/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -798,7 +798,7 @@ except ImportError:
 ============== file: google/cloud/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -824,7 +824,7 @@ except ImportError:
 ============== file: google/cloud/example/library.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -857,7 +857,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/__init__.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -911,7 +911,7 @@ __all__ = (
 ============== file: google/cloud/example/library_v1/gapic/enums.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1048,7 +1048,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
 ============== file: google/cloud/example/library_v1/gapic/library_service_client.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1089,6 +1089,7 @@ from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import library_pb2_grpc
+from google.cloud.example.library_v1.proto import shared_type_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
@@ -1156,21 +1157,21 @@ class LibraryServiceClient(object):
 
 
     @classmethod
-    def archived_book_path(cls, archive_path, book_id):
+    def archived_book_path(cls, archive_path, book):
         """Return a fully-qualified archived_book string."""
         return google.api_core.path_template.expand(
-            'archives/{archive_path}/books/{book_id=**}',
+            'archives/{archive_path}/books/{book=**}',
             archive_path=archive_path,
-            book_id=book_id,
+            book=book,
         )
 
     @classmethod
-    def book_path(cls, shelf_id, book_id):
+    def book_path(cls, shelf, book):
         """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
-            'shelves/{shelf_id}/books/{book_id}',
-            shelf_id=shelf_id,
-            book_id=book_id,
+            'shelves/{shelf}/books/{book}',
+            shelf=shelf,
+            book=book,
         )
 
     @classmethod
@@ -1182,11 +1183,11 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
-    def shelf_path(cls, shelf_id):
+    def shelf_path(cls, shelf):
         """Return a fully-qualified shelf string."""
         return google.api_core.path_template.expand(
-            'shelves/{shelf_id}',
-            shelf_id=shelf_id,
+            'shelves/{shelf}',
+            shelf=shelf,
         )
 
     def __init__(self, transport=None, channel=None, credentials=None,
@@ -1365,7 +1366,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
             >>>
             >>> # TODO: Initialize `options_`:
             >>> options_ = ''
@@ -1512,7 +1513,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
             >>>
             >>> client.delete_shelf(name)
 
@@ -1576,8 +1577,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
-            >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
+            >>> other_shelf_name = client.shelf_path('[SHELF]')
             >>>
             >>> response = client.merge_shelves(name, other_shelf_name)
 
@@ -1644,7 +1645,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
             >>>
             >>> # TODO: Initialize `book`:
             >>> book = {}
@@ -1817,7 +1818,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> response = client.get_book(name)
 
@@ -1883,7 +1884,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
             >>> filter_ = 'book-filter-string'
             >>>
             >>> # Iterate over all results
@@ -1979,7 +1980,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> client.delete_book(name)
 
@@ -2044,7 +2045,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `book`:
             >>> book = {}
@@ -2129,8 +2130,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-            >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> other_shelf_name = client.shelf_path('[SHELF]')
             >>>
             >>> response = client.move_book(name, other_shelf_name)
 
@@ -2279,7 +2280,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>> comment = b''
             >>> stage = enums.Comment.Stage.UNSET
             >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -2350,7 +2351,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+            >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
             >>>
             >>> response = client.get_book_from_archive(name)
 
@@ -2419,8 +2420,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-            >>> alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> alt_book_name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> response = client.get_book_from_anywhere(name, alt_book_name)
 
@@ -2492,7 +2493,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> response = client.get_book_from_absolutely_anywhere(name)
 
@@ -2561,7 +2562,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>> index_name = 'default index'
             >>>
             >>> # TODO: Initialize `index_map_item`:
@@ -2632,7 +2633,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> name = client.shelf_path('[SHELF]')
             >>>
             >>> for element in client.stream_shelves(name):
             ...     # process element
@@ -2739,14 +2740,12 @@ class LibraryServiceClient(object):
         """
         Test bidi-streaming.
 
-        EXPERIMENTAL: This method interface might change in the future.
-
         Example:
             >>> from google.cloud.example import library_v1
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2796,14 +2795,12 @@ class LibraryServiceClient(object):
         """
         Test client streaming.
 
-        EXPERIMENTAL: This method interface might change in the future.
-
         Example:
             >>> from google.cloud.example import library_v1
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2851,8 +2848,6 @@ class LibraryServiceClient(object):
         """
         Test samplegen response handling when a client streaming method returns Empty.
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
-
-        EXPERIMENTAL: This method interface might change in the future.
 
         Example:
             >>> from google.cloud.example import library_v1
@@ -2999,7 +2994,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> resource = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -3069,7 +3064,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> response = client.get_big_book(name)
             >>>
@@ -3148,7 +3143,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>>
             >>> response = client.get_big_nothing(name)
             >>>
@@ -3375,8 +3370,8 @@ class LibraryServiceClient(object):
             >>>
             >>> # TODO: Initialize `required_singular_message`:
             >>> required_singular_message = {}
-            >>> required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-            >>> required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
+            >>> required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
             >>> required_singular_resource_name_common = client.project_path('[PROJECT]')
             >>>
             >>> # TODO: Initialize `required_singular_fixed32`:
@@ -3845,6 +3840,433 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def move_books(
+            self,
+            source=None,
+            destination=None,
+            publishers=None,
+            project=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> response = client.move_books()
+
+        Args:
+            source (str)
+            destination (str)
+            publishers (list[str])
+            project (str)
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.MoveBooksResponse` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'move_books' not in self._inner_api_calls:
+            self._inner_api_calls['move_books'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.move_books,
+                default_retry=self._method_configs['MoveBooks'].retry,
+                default_timeout=self._method_configs['MoveBooks'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.MoveBooksRequest(
+            source=source,
+            destination=destination,
+            publishers=publishers,
+            project=project,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('source', source)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['move_books'](request, retry=retry, timeout=timeout, metadata=metadata)
+
+    def archive_books(
+            self,
+            source=None,
+            archive=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> response = client.archive_books()
+
+        Args:
+            source (str)
+            archive (str)
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.ArchiveBooksResponse` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'archive_books' not in self._inner_api_calls:
+            self._inner_api_calls['archive_books'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.archive_books,
+                default_retry=self._method_configs['ArchiveBooks'].retry,
+                default_timeout=self._method_configs['ArchiveBooks'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.ArchiveBooksRequest(
+            source=source,
+            archive=archive,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('source', source)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['archive_books'](request, retry=retry, timeout=timeout, metadata=metadata)
+
+    def long_running_archive_books(
+            self,
+            source=None,
+            archive=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> response = client.long_running_archive_books()
+
+        Args:
+            source (str)
+            archive (str)
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Operation` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'long_running_archive_books' not in self._inner_api_calls:
+            self._inner_api_calls['long_running_archive_books'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.long_running_archive_books,
+                default_retry=self._method_configs['LongRunningArchiveBooks'].retry,
+                default_timeout=self._method_configs['LongRunningArchiveBooks'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.ArchiveBooksRequest(
+            source=source,
+            archive=archive,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('source', source)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['long_running_archive_books'](request, retry=retry, timeout=timeout, metadata=metadata)
+
+    def streaming_archive_books(
+            self,
+            requests,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> request = {}
+            >>>
+            >>> requests = [request]
+            >>> for element in client.streaming_archive_books(requests):
+            ...     # process element
+            ...     pass
+
+        Args:
+            requests (iterator[dict|google.cloud.example.library_v1.proto.library_pb2.ArchiveBooksRequest]): The input objects. If a dict is provided, it must be of the
+                same form as the protobuf message :class:`~google.cloud.example.library_v1.types.ArchiveBooksRequest`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            Iterable[~google.cloud.example.library_v1.types.ArchiveBooksResponse].
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'streaming_archive_books' not in self._inner_api_calls:
+            self._inner_api_calls['streaming_archive_books'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.streaming_archive_books,
+                default_retry=self._method_configs['StreamingArchiveBooks'].retry,
+                default_timeout=self._method_configs['StreamingArchiveBooks'].timeout,
+                client_info=self._client_info,
+            )
+
+        return self._inner_api_calls['streaming_archive_books'](requests, retry=retry, timeout=timeout, metadata=metadata)
+
+    def save_book(
+            self,
+            name=None,
+            author=None,
+            title=None,
+            read=None,
+            rating=None,
+            any_value=None,
+            struct_value=None,
+            value_value=None,
+            list_value_value=None,
+            map_list_value_value=None,
+            time_value=None,
+            duration_value=None,
+            field_mask_value=None,
+            int32_value=None,
+            uint32_value=None,
+            int64_value=None,
+            uint64_value=None,
+            float_value=None,
+            double_value=None,
+            string_value=None,
+            bool_value=None,
+            bytes_value=None,
+            map_string_value=None,
+            map_message_value=None,
+            resource=None,
+            map_bool_key=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+        New APIs should always create a separate message for a request.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> client.save_book()
+
+        Args:
+            name (str): The resource name of the book.
+                Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+                Message field comment may include special characters: <>&"`'@.
+            author (str): The name of the book author.
+            title (str): The title of the book.
+            read (bool): Value indicating whether the book has been read.
+            rating (~google.cloud.example.library_v1.types.Rating): For testing enums.
+            any_value (Union[dict, ~google.cloud.example.library_v1.types.Any]): For testing all well-known types.
+
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            struct_value (Union[dict, ~google.cloud.example.library_v1.types.Struct]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            value_value (Union[dict, ~google.cloud.example.library_v1.types.Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            list_value_value (Union[dict, ~google.cloud.example.library_v1.types.ListValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            map_list_value_value (dict[str -> Union[dict, ~google.cloud.example.library_v1.types.ListValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            time_value (Union[dict, ~google.cloud.example.library_v1.types.Timestamp]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            duration_value (Union[dict, ~google.cloud.example.library_v1.types.Duration]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            field_mask_value (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            int32_value (Union[dict, ~google.cloud.example.library_v1.types.Int32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            uint32_value (Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            int64_value (Union[dict, ~google.cloud.example.library_v1.types.Int64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            uint64_value (Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            float_value (Union[dict, ~google.cloud.example.library_v1.types.FloatValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            double_value (Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            string_value (Union[dict, ~google.cloud.example.library_v1.types.StringValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            bool_value (Union[dict, ~google.cloud.example.library_v1.types.BoolValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            bytes_value (Union[dict, ~google.cloud.example.library_v1.types.BytesValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
+            map_string_value (dict[int -> str]): Test doc generation of lists:
+
+                +   Here is a sentence about the first element of the list that continues
+                    into a second line.
+                +   The second element of the list.
+                +   Another element of the list where the indentation isn't consistent
+                after a blank space.
+
+                    The second paragraph of the list
+                that doesn't have a hanging indent.
+            map_message_value (dict[str -> Union[dict, ~google.cloud.example.library_v1.types.SomeMessage]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SomeMessage`
+            resource (Union[dict, ~google.cloud.example.library_v1.types.Used]): Tests Python doc generation: should generate a dummy file for shared_type
+                resource, but *not* its import, other_shared_type
+
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Used`
+            map_bool_key (dict[bool -> str]): For testing accessing map fields in samplegen
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'save_book' not in self._inner_api_calls:
+            self._inner_api_calls['save_book'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.save_book,
+                default_retry=self._method_configs['SaveBook'].retry,
+                default_timeout=self._method_configs['SaveBook'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.Book(
+            name=name,
+            author=author,
+            title=title,
+            read=read,
+            rating=rating,
+            any_value=any_value,
+            struct_value=struct_value,
+            value_value=value_value,
+            list_value_value=list_value_value,
+            map_list_value_value=map_list_value_value,
+            time_value=time_value,
+            duration_value=duration_value,
+            field_mask_value=field_mask_value,
+            int32_value=int32_value,
+            uint32_value=uint32_value,
+            int64_value=int64_value,
+            uint64_value=uint64_value,
+            float_value=float_value,
+            double_value=double_value,
+            string_value=string_value,
+            bool_value=bool_value,
+            bytes_value=bytes_value,
+            map_string_value=map_string_value,
+            map_message_value=map_message_value,
+            resource=resource,
+            map_bool_key=map_bool_key,
+        )
+        self._inner_api_calls['save_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+
     def private_list_shelves(
             self,
             page_token=None,
@@ -4074,6 +4496,31 @@ config = {
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "MoveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "ArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "LongRunningArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "PrivateListShelves": {
           "timeout_millis": 60000,
           "retry_codes_name": "idempotent",
@@ -4087,7 +4534,7 @@ config = {
 ============== file: google/cloud/example/library_v1/gapic/my_proto_client.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4124,6 +4571,7 @@ from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import library_pb2_grpc
+from google.cloud.example.library_v1.proto import shared_type_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
@@ -4346,6 +4794,69 @@ class MyProtoClient(object):
         )
         return self._inner_api_calls['my_method'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def get_namespace(
+            self,
+            mylist=None,
+            myfield=None,
+            secondfield=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Define a service with a reserved name
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.MyProtoClient()
+            >>>
+            >>> response = client.get_namespace()
+
+        Args:
+            mylist (list[Union[dict, ~google.cloud.example.library_v1.types.SubMessage]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            myfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            secondfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Namespace` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'get_namespace' not in self._inner_api_calls:
+            self._inner_api_calls['get_namespace'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.get_namespace,
+                default_retry=self._method_configs['GetNamespace'].retry,
+                default_timeout=self._method_configs['GetNamespace'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = another_service_pb2.MethodRequest(
+            mylist=mylist,
+            myfield=myfield,
+            secondfield=secondfield,
+        )
+        return self._inner_api_calls['get_namespace'](request, retry=retry, timeout=timeout, metadata=metadata)
+
 ============== file: google/cloud/example/library_v1/gapic/my_proto_client_config.py ==============
 config = {
   "interfaces": {
@@ -4373,6 +4884,11 @@ config = {
           "timeout_millis": 1000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
         }
       }
     }
@@ -4384,7 +4900,7 @@ config = {
 ============== file: google/cloud/example/library_v1/gapic/transports/library_service_grpc_transport.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -4876,6 +5392,68 @@ class LibraryServiceGrpcTransport(object):
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
 
     @property
+    def move_books(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.move_books`.
+
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].MoveBooks
+
+    @property
+    def archive_books(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.archive_books`.
+
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].ArchiveBooks
+
+    @property
+    def long_running_archive_books(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.long_running_archive_books`.
+
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].LongRunningArchiveBooks
+
+    @property
+    def streaming_archive_books(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.streaming_archive_books`.
+
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].StreamingArchiveBooks
+
+    @property
+    def save_book(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.save_book`.
+
+        Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+        New APIs should always create a separate message for a request.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].SaveBook
+
+    @property
     def private_list_shelves(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.private_list_shelves`.
 
@@ -4890,7 +5468,7 @@ class LibraryServiceGrpcTransport(object):
 ============== file: google/cloud/example/library_v1/gapic/transports/my_proto_grpc_transport.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5016,10 +5594,23 @@ class MyProtoGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['my_proto_stub'].MyMethod
+
+    @property
+    def get_namespace(self):
+        """Return the gRPC stub for :meth:`MyProtoClient.get_namespace`.
+
+        Define a service with a reserved name
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['my_proto_stub'].GetNamespace
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5097,7 +5688,7 @@ __all__ = tuple(sorted(names))
 ============== file: nox.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5181,7 +5772,7 @@ def lint_setup_py(session):
 ============== file: samples/v1/babble_about_book_1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5229,7 +5820,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/babble_about_book_2.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5275,7 +5866,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/delete_shelf_request_empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5307,7 +5898,7 @@ def sample_delete_shelf():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('[SHELF_ID]')
+  name = client.shelf_path('[SHELF]')
 
   client.delete_shelf(name)
   # Shelf deleted
@@ -5322,7 +5913,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/delete_shelf_request_empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5354,7 +5945,7 @@ def sample_delete_shelf():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('[SHELF_ID]')
+  name = client.shelf_path('[SHELF]')
 
   client.delete_shelf(name)
 # [END sample]
@@ -5367,7 +5958,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5399,7 +5990,7 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF]', '[BOOK]')
 
   operation = client.get_big_nothing(name)
 
@@ -5418,7 +6009,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/empty_response_type_without_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5450,7 +6041,7 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF]', '[BOOK]')
 
   operation = client.get_big_nothing(name)
 
@@ -5467,7 +6058,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/find_related_books_odyssey.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5518,7 +6109,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/get_book_request_test_on_success_map.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5551,7 +6142,7 @@ def sample_get_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF]', '[BOOK]')
 
   response = client.get_book(name)
   int_key_val = response.map_string_value[123]
@@ -5569,7 +6160,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/hopper.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5639,7 +6230,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5685,7 +6276,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5766,7 +6357,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_request_second_edition.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5815,7 +6406,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5885,7 +6476,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/publish_series_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5938,7 +6529,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/sample_get_shelf.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5985,7 +6576,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/sample_monolog_about_book.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6018,7 +6609,7 @@ def sample_monolog_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF]', '[BOOK]')
   request = {'name': name}
 
   requests = [request]
@@ -6034,7 +6625,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_default_calling_form_for_paging.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6079,7 +6670,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_float_and_int64.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6119,8 +6710,8 @@ def sample_test_optional_required_flattening_params(param_float, param_long):
   required_singular_string = ''
   required_singular_bytes = b''
   required_singular_message = {}
-  required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-  required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
+  required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
   required_singular_resource_name_common = client.project_path('[PROJECT]')
   required_singular_fixed32 = 0
   required_singular_fixed64 = 0
@@ -6159,7 +6750,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_resource_name_oneof.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6189,7 +6780,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.archived_book_path('The archive to search for the book', 'The ID of the book')
+  name = client.book_path('[SHELF]', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Archived book found.')
@@ -6203,7 +6794,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_resource_name_oneof_2.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6247,7 +6838,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/test_setting_up_empty_objects_in_request.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6298,7 +6889,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/testing_map.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6350,7 +6941,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6416,7 +7007,7 @@ if __name__ == '__main__':
 ============== file: samples/v1/turing.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6452,7 +7043,7 @@ def sample_discuss_book(image_file_name, stage):
 
   # image_file_name = 'image_file.jpg'
   # stage = enums.Comment.Stage.DRAFT
-  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  name = client.book_path('[SHELF]', '[BOOK]')
   with io.open('comment_file', 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment, 'stage': stage}
@@ -6484,7 +7075,7 @@ universal = 1
 ============== file: setup.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6566,7 +7157,7 @@ setuptools.setup(
 ============== file: tests/system/gapic/v1/test_system_library_service_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6603,7 +7194,7 @@ class TestSystemLibraryService(object):
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6739,7 +7330,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         options_ = 'options-1249474914'
 
         response = client.get_shelf(name, options_)
@@ -6759,7 +7350,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         options_ = 'options-1249474914'
 
         with pytest.raises(CustomException):
@@ -6810,7 +7401,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
 
         client.delete_shelf(name)
 
@@ -6828,7 +7419,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
 
         with pytest.raises(CustomException):
             client.delete_shelf(name)
@@ -6849,8 +7440,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
+        other_shelf_name = client.shelf_path('[SHELF]')
 
         response = client.merge_shelves(name, other_shelf_name)
         assert expected_response == response
@@ -6869,8 +7460,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
+        other_shelf_name = client.shelf_path('[SHELF]')
 
         with pytest.raises(CustomException):
             client.merge_shelves(name, other_shelf_name)
@@ -6892,7 +7483,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         book = {}
 
         response = client.create_book(name, book)
@@ -6912,7 +7503,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         book = {}
 
         with pytest.raises(CustomException):
@@ -6980,7 +7571,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_book(name)
         assert expected_response == response
@@ -6999,7 +7590,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book(name)
@@ -7020,7 +7611,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         filter_ = 'book-filter-string'
 
         paged_list_response = client.list_books(name, filter=filter_)
@@ -7042,7 +7633,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
         filter_ = 'book-filter-string'
 
         paged_list_response = client.list_books(name, filter=filter_)
@@ -7057,7 +7648,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         client.delete_book(name)
 
@@ -7075,7 +7666,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.delete_book(name)
@@ -7097,7 +7688,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         book = {}
 
         response = client.update_book(name, book)
@@ -7117,7 +7708,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         book = {}
 
         with pytest.raises(CustomException):
@@ -7140,8 +7731,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
+        other_shelf_name = client.shelf_path('[SHELF]')
 
         response = client.move_book(name, other_shelf_name)
         assert expected_response == response
@@ -7160,8 +7751,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        other_shelf_name = client.shelf_path('[SHELF_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
+        other_shelf_name = client.shelf_path('[SHELF]')
 
         with pytest.raises(CustomException):
             client.move_book(name, other_shelf_name)
@@ -7211,7 +7802,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -7234,7 +7825,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -7261,7 +7852,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
 
         response = client.get_book_from_archive(name)
         assert expected_response == response
@@ -7280,7 +7871,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book_from_archive(name)
@@ -7302,8 +7893,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
+        alt_book_name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_book_from_anywhere(name, alt_book_name)
         assert expected_response == response
@@ -7322,8 +7913,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
+        alt_book_name = client.book_path('[SHELF]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book_from_anywhere(name, alt_book_name)
@@ -7345,7 +7936,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_book_from_absolutely_anywhere(name)
         assert expected_response == response
@@ -7364,7 +7955,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book_from_absolutely_anywhere(name)
@@ -7377,7 +7968,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -7398,7 +7989,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -7422,7 +8013,7 @@ class TestLibraryServiceClient(object):
 
 
         # Setup Request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
 
         response = client.stream_shelves(name)
         resources = list(response)
@@ -7443,7 +8034,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.shelf_path('[SHELF_ID]')
+        name = client.shelf_path('[SHELF]')
 
         with pytest.raises(CustomException):
             client.stream_shelves(name)
@@ -7507,7 +8098,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -7532,7 +8123,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -7556,7 +8147,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -7579,7 +8170,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -7686,7 +8277,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        resource = client.book_path('[SHELF]', '[BOOK]')
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -7706,7 +8297,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        resource = client.book_path('[SHELF]', '[BOOK]')
         label = 'label102727412'
 
         with pytest.raises(CustomException):
@@ -7731,7 +8322,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_big_book(name)
         result = response.result()
@@ -7757,7 +8348,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_big_book(name)
         exception = response.exception()
@@ -7778,7 +8369,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_big_nothing(name)
         result = response.result()
@@ -7804,7 +8395,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        name = client.book_path('[SHELF]', '[BOOK]')
 
         response = client.get_big_nothing(name)
         exception = response.exception()
@@ -7832,8 +8423,8 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
         required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
@@ -7879,8 +8470,8 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        required_singular_resource_name_oneof = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
+        required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
         required_singular_resource_name_common = client.project_path('[PROJECT]')
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
@@ -7902,6 +8493,174 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
+    def test_move_books(self):
+        # Setup Expected Response
+        success = False
+        expected_response = {'success': success}
+        expected_response = library_pb2.MoveBooksResponse(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        response = client.move_books()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.MoveBooksRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_move_books_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.move_books()
+
+    def test_archive_books(self):
+        # Setup Expected Response
+        success = False
+        expected_response = {'success': success}
+        expected_response = library_pb2.ArchiveBooksResponse(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        response = client.archive_books()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.ArchiveBooksRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_archive_books_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.archive_books()
+
+    def test_long_running_archive_books(self):
+        # Setup Expected Response
+        name = 'name3373707'
+        done = True
+        expected_response = {'name': name, 'done': done}
+        expected_response = operations_pb2.Operation(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        response = client.long_running_archive_books()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.ArchiveBooksRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_long_running_archive_books_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.long_running_archive_books()
+
+    def test_streaming_archive_books(self):
+        # Setup Expected Response
+        success = False
+        expected_response = {'success': success}
+        expected_response = library_pb2.ArchiveBooksResponse(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [iter([expected_response])])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup Request
+        request = {}
+        request = library_pb2.ArchiveBooksRequest(**request)
+        requests = [request]
+
+        response = client.streaming_archive_books(requests)
+        resources = list(response)
+        assert len(resources) == 1
+        assert expected_response == resources[0]
+
+        assert len(channel.requests) == 1
+        actual_requests = channel.requests[0][1]
+        assert len(actual_requests) == 1
+        actual_request = list(actual_requests)[0]
+        assert request == actual_request
+
+    def test_streaming_archive_books_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup request
+        request = {}
+
+        request = library_pb2.ArchiveBooksRequest(**request)
+        requests = [request]
+
+        with pytest.raises(CustomException):
+            client.streaming_archive_books(requests)
+
+    def test_save_book(self):
+        channel = ChannelStub()
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        client.save_book()
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.Book()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_save_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        with pytest.raises(CustomException):
+            client.save_book()
 
     def test_private_list_shelves(self):
         # Setup Expected Response
@@ -7941,7 +8700,7 @@ class TestLibraryServiceClient(object):
 ============== file: tests/unit/gapic/v1/test_my_proto_client_v1.py ==============
 # -*- coding: utf-8 -*-
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -8033,4 +8792,36 @@ class TestMyProtoClient(object):
 
         with pytest.raises(CustomException):
             client.my_method()
+
+    def test_get_namespace(self):
+        # Setup Expected Response
+        value = 'value111972721'
+        expected_response = {'value': value}
+        expected_response = another_service_pb2.Namespace(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        response = client.get_namespace()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = another_service_pb2.MethodRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_get_namespace_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        with pytest.raises(CustomException):
+            client.get_namespace()
 

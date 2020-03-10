@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldConfigFactory;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.ProtoTypeRef;
@@ -571,7 +572,7 @@ public class InitCodeNode {
       }
       FieldConfig fieldConfig = fieldConfigMap.get(childField.getFullName());
       if (fieldConfig == null) {
-        fieldConfig = FieldConfig.createDefaultFieldConfig(childField);
+        fieldConfig = FieldConfigFactory.createDefaultFieldConfig(childField);
       }
       return fieldConfig;
     } else {

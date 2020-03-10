@@ -205,11 +205,13 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   /** The name of the create method for the resource one-of for the given field config */
-  public String getResourceTypeParentParseMethod(
-      ImportTypeTable typeTable, FieldConfig fieldConfig) {
-    return getAndSaveResourceTypeFactoryName(typeTable, fieldConfig.getMessageFieldConfig())
-        + "."
-        + publicMethodName(Name.from("parse"));
+  public String getResourceTypeParentParseMethod(MethodContext context, FieldConfig fieldConfig) {
+    ImportTypeTable typeTable = context.getTypeTable();
+    String resourceClass =
+        context.getFeatureConfig().useStaticCreateMethodForOneofs()
+            ? getAndSaveResourceTypeName(typeTable, fieldConfig.getMessageFieldConfig())
+            : getAndSaveResourceTypeFactoryName(typeTable, fieldConfig.getMessageFieldConfig());
+    return resourceClass + "." + publicMethodName(Name.from("parse"));
   }
 
   private String getAndSaveResourceTypeFactoryName(

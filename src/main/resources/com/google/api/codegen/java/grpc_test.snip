@@ -72,6 +72,12 @@
           {@unaryTestCase(test)}
       @case "AsyncOperationFlattenedMethod"
           {@longRunningMethodTestCase(test)}
+      @case "RequestObjectMethod"
+          {@unaryTestCase(test)}
+      @case "PagedRequestObjectMethod"
+          {@unaryTestCase(test)}
+      @case "AsyncOperationRequestObjectMethod"
+          {@longRunningMethodTestCase(test)}
       @end
   @end
 @end
@@ -82,9 +88,22 @@
   public void {@test.name}() {
     {@addResponse(test)}
 
-    {@initCode(test.testCaseInitCode)}
+    @if test.testCaseInitCode.lines
+      {@initCode(test.testCaseInitCode)}
 
-    {@methodCall(test)}
+    @end
+    @switch test.clientMethodType
+    @case "PagedFlattenedMethod"
+      {@pagedMethodCall(test)}
+    @case "PagedRequestObjectMethod"
+      {@pagedMethodCall(test)}
+    @case "FlattenedMethod"
+      {@methodCall(test)}
+    @case "RequestObjectMethod"
+      {@methodCall(test)}
+    @default
+      $unhandledCase: {@test.clientMethodType}
+    @end
 
     {@unarySuccessAsserts(test)}
   }
@@ -95,8 +114,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.testCaseInitCode)}
+      @if test.testCaseInitCode.lines
+        {@initCode(test.testCaseInitCode)}
 
+      @end
       client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
       Assert.fail("No exception raised");
@@ -111,8 +132,10 @@
   @@SuppressWarnings("all")
   public void {@test.name}() throws Exception {
     {@addResponse(test)}
-    {@initCode(test.testCaseInitCode)}
+    @if test.testCaseInitCode.lines
+      {@initCode(test.testCaseInitCode)}
 
+    @end
     {@streamingMethodCall(test)}
 
     List<{@test.responseTypeName}> actualResponses = responseObserver.future().get();
@@ -124,8 +147,10 @@
   @@SuppressWarnings("all")
   public void {@test.nameWithException}() throws Exception {
     {@addException(test)}
-    {@initCode(test.testCaseInitCode)}
+    @if test.testCaseInitCode.lines
+      {@initCode(test.testCaseInitCode)}
 
+    @end
     {@streamingMethodCallWithException(test)}
 
     try {
@@ -152,8 +177,10 @@
             .build();
     {@test.mockServiceVarName}.addResponse(resultOperation);
 
-    {@initCode(test.testCaseInitCode)}
+    @if test.testCaseInitCode.lines
+      {@initCode(test.testCaseInitCode)}
 
+    @end
     {@longRunningMethodCall(test)}
 
     {@unarySuccessAsserts(test)}
@@ -165,8 +192,10 @@
     {@addException(test)}
 
     try {
-      {@initCode(test.testCaseInitCode)}
+      @if test.testCaseInitCode.lines
+        {@initCode(test.testCaseInitCode)}
 
+      @end
       client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)}).get();
       Assert.fail("No exception raised");
@@ -231,35 +260,32 @@
   {@test.mockServiceVarName}.addException(exception);
 @end
 
-@private methodCall(test)
-  @switch test.clientMethodType
-  @case "PagedFlattenedMethod"
-    {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
-      {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+@private pagedMethodCall(test)
+  {@test.responseTypeName} pagedListResponse = client.{@test.clientMethodName}(\
+    {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
 
-    @join pageStreamingResponseView : test.pageStreamingResponseViews
-      List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
-      Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
-      @if pageStreamingResponseView.hasExpectedValueTransformFunction
-        Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
-            expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0)),
-            {@pageStreamingResponseView.resourcesVarName}.get(0));
-      @else
-        Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
-      @end
-    @end
-  @case "FlattenedMethod"
-    @if test.hasReturnValue
-      {@test.responseTypeName} actualResponse =
-          client.{@test.clientMethodName}(\
-          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
-      Assert.assertEquals(expectedResponse, actualResponse);
+  @join pageStreamingResponseView : test.pageStreamingResponseViews
+    List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
+    Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
+    @if pageStreamingResponseView.hasExpectedValueTransformFunction
+      Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
+          expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0)),
+          {@pageStreamingResponseView.resourcesVarName}.get(0));
     @else
-      client.{@test.clientMethodName}(\
-            {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+      Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));
     @end
-  @default
-    $unhandledCase: {@test.clientMethodType}$
+  @end
+@end
+
+@private methodCall(test)
+  @if test.hasReturnValue
+    {@test.responseTypeName} actualResponse =
+        client.{@test.clientMethodName}(\
+        {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
+    Assert.assertEquals(expectedResponse, actualResponse);
+  @else
+    client.{@test.clientMethodName}(\
+          {@sampleMethodCallArgList(test.testCaseInitCode.fieldSettings)});
   @end
 @end
 
@@ -276,7 +302,11 @@
   {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
 
   @join assert : test.asserts
-    Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
+    @if and(assert.isFloatingPointNumber, not(assert.isArray))
+      Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)}, 0.001);
+    @else
+      Assert.assertEquals({@assertExpectedParam(assert)}, {@assertActualParam(assert)});
+    @end
   @end
   @if test.clientHasDefaultInstance
     Assert.assertTrue(

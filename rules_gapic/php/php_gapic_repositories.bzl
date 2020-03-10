@@ -16,17 +16,40 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 def _php_impl(ctx):
-    srcs_dir = "srcs"
-    ctx.download_and_extract(
-        url = ["https://www.php.net/distributions/php-%s.tar.gz" % ctx.attr.version],
-        stripPrefix = "php-%s" % ctx.attr.version,
-        output = srcs_dir,
-    )
     root_path = ctx.path(".")
 
+    build_bazel = """
+exports_files(glob(include = ["bin/*", "lib/**"], exclude_directories = 0))
+     """.format(
+    )
+
+    os_name = ctx.os.name
+
+    # First try using the prebuilt version
+    for prebuilt_php in ctx.attr.prebuilt_phps:
+        if prebuilt_php.name.find(os_name) < 0:
+            continue
+        tmp = "php_tmp"
+        _execute_and_check_result(ctx, ["mkdir", tmp], quiet = False)
+        ctx.extract(archive = prebuilt_php, stripPrefix = ctx.attr.strip_prefix, output = tmp)
+        res = ctx.execute(["bin/php", "--version"], working_directory = tmp)
+        _execute_and_check_result(ctx, ["rm", "-rf", tmp], quiet = False)
+        if res.return_code == 0:
+            ctx.extract(archive = prebuilt_php, stripPrefix = ctx.attr.strip_prefix)
+            ctx.file("BUILD.bazel", build_bazel)
+            return
+
+    # If none of the prebuilt versions worked, fallback to building the php
+    # interpreter from sources
+    srcs_dir = "srcs"
+    ctx.download_and_extract(
+        url = ctx.attr.urls,
+        stripPrefix = ctx.attr.strip_prefix,
+        output = srcs_dir,
+    )
     _execute_and_check_result(
         ctx,
-        ["./configure", "--prefix=%s" % root_path.realpath],
+        ["./configure", "--enable-static", "--without-pear", "--prefix=%s" % root_path.realpath],
         working_directory = srcs_dir,
         quiet = False,
     )
@@ -34,18 +57,14 @@ def _php_impl(ctx):
     _execute_and_check_result(ctx, ["make", "install"], working_directory = srcs_dir, quiet = False)
     _execute_and_check_result(ctx, ["rm", "-rf", srcs_dir], quiet = False)
 
-
-    build_bazel = """
-exports_files(glob(include = ["bin/*", "lib/**", "etc/*"], exclude_directories = 0))
-     """.format(
-    )
-
     ctx.file("BUILD.bazel", build_bazel)
 
 php = repository_rule(
     implementation = _php_impl,
     attrs = {
-        "version": attr.string(),
+        "urls": attr.string_list(),
+        "strip_prefix": attr.string(),
+        "prebuilt_phps": attr.label_list(allow_files = True, mandatory = False),
     },
 )
 

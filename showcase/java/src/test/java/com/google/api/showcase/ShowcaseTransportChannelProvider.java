@@ -21,6 +21,7 @@ import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.TransportChannel;
 import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.auth.Credentials;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.ManagedChannelBuilder;
 import java.util.Map;
@@ -81,6 +82,16 @@ public class ShowcaseTransportChannelProvider implements TransportChannelProvide
 
   @Override
   public TransportChannelProvider withPoolSize(int size) {
+    return this;
+  }
+
+  @Override
+  public boolean needsCredentials() {
+    return false;
+  }
+
+  @Override
+  public TransportChannelProvider withCredentials(Credentials credentials) {
     return this;
   }
 

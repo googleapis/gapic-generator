@@ -355,7 +355,7 @@ recommended. See https://www.ruby-lang.org/en/downloads/branches/ for details
 about the Ruby support schedule.
 
 ============== file: Rakefile ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -549,7 +549,7 @@ def header str, token = "#"
 end
 
 ============== file: acceptance/google/longrunning/operations_smoke_test.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -629,7 +629,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: lib/google/longrunning.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -794,7 +794,7 @@ module Google
 end
 
 ============== file: lib/google/longrunning/doc/google/protobuf/any.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -925,7 +925,7 @@ module Google
   end
 end
 ============== file: lib/google/longrunning/doc/google/protobuf/empty.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -954,7 +954,7 @@ module Google
   end
 end
 ============== file: lib/google/longrunning/doc/google/rpc/status.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1041,7 +1041,7 @@ module Google
   end
 end
 ============== file: lib/google/longrunning/doc/longrunning.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1134,7 +1134,7 @@ module Google
   end
 end
 ============== file: lib/google/longrunning/operations_client.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1277,6 +1277,9 @@ module Google
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        if credentials.respond_to?(:quota_project_id) && credentials.quota_project_id
+          headers[:"x-goog-user-project"] = credentials.quota_project_id
+        end
         headers.merge!(metadata) unless metadata.nil?
         client_config_file = Pathname.new(__dir__).join(
           "operations_client_config.json"
@@ -1574,7 +1577,7 @@ end
 }
 
 ============== file: test/google/longrunning/operations_client_test.rb ==============
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

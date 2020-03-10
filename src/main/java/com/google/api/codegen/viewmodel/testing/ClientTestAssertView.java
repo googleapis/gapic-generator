@@ -27,6 +27,8 @@ public abstract class ClientTestAssertView {
 
   public abstract boolean isArray();
 
+  public abstract boolean isFloatingPointNumber();
+
   @Nullable
   public abstract String expectedValueTransformFunction();
 
@@ -64,6 +66,8 @@ public abstract class ClientTestAssertView {
     public abstract Builder isMap(boolean val);
 
     public abstract Builder isArray(boolean val);
+
+    public abstract Builder isFloatingPointNumber(boolean val);
 
     public abstract Builder expectedValueTransformFunction(String val);
 

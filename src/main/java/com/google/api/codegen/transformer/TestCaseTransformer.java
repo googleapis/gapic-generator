@@ -441,7 +441,9 @@ public class TestCaseTransformer {
         ResourceNameOneofInitValueView initValue =
             (ResourceNameOneofInitValueView) simpleLine.initValue();
         ResourceNameInitValueView subValue = initValue.specificResourceNameView();
-        return subValue.formatArgs().contains(projectVarName);
+        return subValue == null
+            ? initValue.formatArgs().contains(projectVarName)
+            : subValue.formatArgs().contains(projectVarName);
       } else if (simpleLine.initValue() instanceof SimpleInitValueView) {
         SimpleInitValueView initValue = (SimpleInitValueView) simpleLine.initValue();
         return initValue.initialValue().equals(projectVarName);
@@ -495,6 +497,9 @@ public class TestCaseTransformer {
         .stream()
         .findFirst()
         .orElseThrow(
-            () -> new IllegalArgumentException("No available flattening for smoke test to use."));
+            () ->
+                new IllegalArgumentException(
+                    "No available flattening for smoke test to use: "
+                        + methodConfig.getMethodModel().getFullName()));
   }
 }

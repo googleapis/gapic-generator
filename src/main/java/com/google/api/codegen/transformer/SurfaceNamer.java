@@ -550,7 +550,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the create method for the resource one-of for the given field config */
   public String getResourceTypeParentParseMethod(
-      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      MethodContext context, FieldConfig resourceFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getResourceTypeParentParseMethod");
   }
 

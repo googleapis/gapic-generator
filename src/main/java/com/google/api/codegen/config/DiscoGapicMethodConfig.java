@@ -33,6 +33,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -141,8 +142,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+    ImmutableListMultimap<String, String> fieldNamePatterns =
+        ImmutableListMultimap.copyOf(methodConfigProto.getFieldNamePatterns().entrySet());
 
     ResourceNameTreatment defaultResourceNameTreatment =
         methodConfigProto.getResourceNameTreatment();

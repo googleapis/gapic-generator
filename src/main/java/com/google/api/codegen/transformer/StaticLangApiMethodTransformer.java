@@ -997,8 +997,7 @@ public class StaticLangApiMethodTransformer {
         continue;
       }
       FieldModel field = fieldConfig.getField();
-      ImmutableMap<String, String> fieldNamePatterns =
-          context.getMethodConfig().getFieldNamePatterns();
+      ImmutableMap<String, String> fieldNamePatterns = context.getFieldResourceEntityMap();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         SingleResourceNameConfig resourceNameConfig =
