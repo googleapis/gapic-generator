@@ -4256,10 +4256,10 @@ func TestLabelerAddLabel(t *testing.T) {
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
 
-    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var resource string = "resource-341064690"
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-        Resource: formattedResource,
+        Resource: resource,
         Label: label,
     }
 
@@ -4287,10 +4287,10 @@ func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLabeler.err = gstatus.Error(errCode, "test error")
 
-    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var resource string = "resource-341064690"
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-        Resource: formattedResource,
+        Resource: resource,
         Label: label,
     }
 

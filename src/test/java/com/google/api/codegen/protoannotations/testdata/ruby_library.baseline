@@ -4536,7 +4536,6 @@ module Library
       #
       # @param resource [String]
       #   REQUIRED: The resource which the label is being added to.
-      #   In the form "shelves/{shelf_id}/books/{book_id}".
       # @param label [String]
       #   REQUIRED: The label to add.
       # @param options [Google::Gax::CallOptions]
@@ -4551,11 +4550,13 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #
+      #   # TODO: Initialize `resource`:
+      #   resource = ''
       #
       #   # TODO: Initialize `label`:
       #   label = ''
-      #   response = library_client.add_label(formatted_resource, label)
+      #   response = library_client.add_label(resource, label)
 
       def add_label \
           resource,
@@ -9775,7 +9776,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label without error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      resource = ''
       label = ''
 
       # Create expected grpc response
@@ -9785,7 +9786,7 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
-        assert_equal(formatted_resource, request.resource)
+        assert_equal(resource, request.resource)
         assert_equal(label, request.label)
         OpenStruct.new(execute: expected_response)
       end
@@ -9799,13 +9800,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.add_label(formatted_resource, label)
+          response = client.add_label(resource, label)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.add_label(formatted_resource, label) do |response, operation|
+          client.add_label(resource, label) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -9816,13 +9817,13 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label with error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      resource = ''
       label = ''
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
-        assert_equal(formatted_resource, request.resource)
+        assert_equal(resource, request.resource)
         assert_equal(label, request.label)
         raise custom_error
       end
@@ -9837,7 +9838,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.add_label(formatted_resource, label)
+            client.add_label(resource, label)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

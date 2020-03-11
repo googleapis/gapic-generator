@@ -7164,7 +7164,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName resource = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(resource.toString())
@@ -7189,7 +7189,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName resource = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   ResourceName resource = ArchiveName.of("[ARCHIVE]");
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
    *     .setResource(resource.toString())
@@ -16452,7 +16452,7 @@ public class LibraryClientTest {
     AddLabelResponse expectedResponse = AddLabelResponse.newBuilder().build();
     mockLabeler.addResponse(expectedResponse);
 
-    BookName resource = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    ResourceName resource = ArchiveName.of("[ARCHIVE]");
     String label = "label102727412";
     AddLabelRequest request = AddLabelRequest.newBuilder()
       .setResource(resource.toString())
@@ -16467,7 +16467,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     AddLabelRequest actualRequest = (AddLabelRequest)actualRequests.get(0);
 
-    Assert.assertEquals(resource, BookName.parse(actualRequest.getResource()));
+    Assert.assertEquals(Objects.toString(resource), Objects.toString(actualRequest.getResource()));
     Assert.assertEquals(label, actualRequest.getLabel());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
@@ -16482,7 +16482,7 @@ public class LibraryClientTest {
     mockLabeler.addException(exception);
 
     try {
-      BookName resource = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      ResourceName resource = ArchiveName.of("[ARCHIVE]");
       String label = "label102727412";
       AddLabelRequest request = AddLabelRequest.newBuilder()
         .setResource(resource.toString())

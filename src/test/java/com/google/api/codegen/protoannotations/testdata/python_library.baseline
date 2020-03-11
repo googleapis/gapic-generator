@@ -3051,7 +3051,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> resource = client.book_path('[SHELF]', '[BOOK]')
+            >>> # TODO: Initialize `resource`:
+            >>> resource = ''
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -3060,7 +3061,6 @@ class LibraryServiceClient(object):
 
         Args:
             resource (str): REQUIRED: The resource which the label is being added to.
-                In the form "shelves/{shelf_id}/books/{book_id}".
             label (str): REQUIRED: The label to add.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
@@ -8601,7 +8601,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = client.book_path('[SHELF]', '[BOOK]')
+        resource = 'resource-341064690'
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -8621,7 +8621,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = client.book_path('[SHELF]', '[BOOK]')
+        resource = 'resource-341064690'
         label = 'label102727412'
 
         with pytest.raises(CustomException):
