@@ -49,6 +49,12 @@ class BazelBuildFileView {
       return;
     }
 
+    serviceConfigJson = bp.getServiceConfigJsonPath();
+    if (serviceConfigJson == null) {
+      serviceConfigJson = "";
+    }
+
+    tokens.put("grpc_service_config", convertPathToLabel(bp.getProtoPackage(), serviceConfigJson));
     tokens.put("gapic_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getGapicYamlPath()));
     tokens.put("service_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getServiceYamlPath()));
 
@@ -73,7 +79,7 @@ class BazelBuildFileView {
     tokens.put(
         "java_gapic_test_deps", joinSetWithIndentationNl(mapJavaGapicTestDeps(actualImports)));
 
-    tokens.put("go_gapic_importpath", bp.getLangGapicPackages().get("go").split(";")[0]);
+    tokens.put("go_gapic_importpath", bp.getLangGapicPackages().get("go"));
     tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
   }
 
