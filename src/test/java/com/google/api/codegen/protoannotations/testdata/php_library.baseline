@@ -4274,16 +4274,15 @@ class LibraryServiceGapicClient
      * ```
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
-     *     $formattedResource = $libraryServiceClient->bookName('[SHELF]', '[BOOK]');
+     *     $resource = '';
      *     $label = '';
-     *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
+     *     $response = $libraryServiceClient->addLabel($resource, $label);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $resource REQUIRED: The resource which the label is being added to.
-     * In the form "shelves/{shelf_id}/books/{book_id}".
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
@@ -8531,10 +8530,10 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
+        $resource = 'resource-341064690';
         $label = 'label102727412';
 
-        $response = $client->addLabel($formattedResource, $label);
+        $response = $client->addLabel($resource, $label);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -8544,7 +8543,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         $actualValue = $actualRequestObject->getResource();
 
-        $this->assertProtobufEquals($formattedResource, $actualValue);
+        $this->assertProtobufEquals($resource, $actualValue);
         $actualValue = $actualRequestObject->getLabel();
 
         $this->assertProtobufEquals($label, $actualValue);
@@ -8575,11 +8574,11 @@ class LibraryServiceClientTest extends GeneratedTest
         $transport->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $client->bookName('[SHELF]', '[BOOK]');
+        $resource = 'resource-341064690';
         $label = 'label102727412';
 
         try {
-            $client->addLabel($formattedResource, $label);
+            $client->addLabel($resource, $label);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

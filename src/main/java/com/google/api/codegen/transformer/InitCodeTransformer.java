@@ -18,9 +18,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
@@ -781,9 +781,9 @@ public class InitCodeTransformer {
       case ANY:
         singleResourceNameConfig =
             Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
-        MethodModel methodModel = context.getMethodModel();
-        if (methodModel instanceof ProtoMethodModel) {
-          ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
+        InterfaceModel interfaceModel = context.getInterfaceModel();
+        if (interfaceModel instanceof ProtoInterfaceModel) {
+          ProtoFile protoFile = ((ProtoInterfaceModel) interfaceModel).getInterface().getFile();
           singleResourceNameConfig =
               singleResourceNameConfig.toBuilder().setAssignedProtoFile(protoFile).build();
         }
