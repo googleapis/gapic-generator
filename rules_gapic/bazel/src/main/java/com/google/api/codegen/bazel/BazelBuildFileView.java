@@ -49,7 +49,7 @@ class BazelBuildFileView {
       return;
     }
 
-    serviceConfigJson = bp.getServiceConfigJsonPath();
+    String serviceConfigJson = bp.getServiceConfigJsonPath();
     if (serviceConfigJson == null) {
       serviceConfigJson = "";
     }
