@@ -81,7 +81,8 @@ class BazelBuildFileView {
 
     String goImportPath = bp.getLangGapicPackages().get("go");
     tokens.put("go_gapic_importpath", goImportPath);
-    tokens.put("go_gapic_importpath_pkg", assembleGoGapicImportPath(bp.getProtoPackage(), goImportPath));
+    tokens.put(
+        "go_gapic_importpath_pkg", assembleGoGapicImportPath(bp.getProtoPackage(), goImportPath));
     tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
   }
 
@@ -130,7 +131,7 @@ class BazelBuildFileView {
   private String assembleGoGapicImportPath(String protoPackage, String importPath) {
     // Extract the (sub-)product name preceding the trailing version segment
     String[] segments = protoPackage.split("\\.");
-    String pkg = segments[segments.length-2];
+    String pkg = segments[segments.length - 2];
 
     return String.join(";", importPath, pkg);
   }
