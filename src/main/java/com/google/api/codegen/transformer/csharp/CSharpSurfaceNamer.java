@@ -27,7 +27,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
-import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -262,7 +261,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
     return inittedConstantName(resourceNameConfig.getEntityName().join("template"));
   }
 
@@ -345,7 +344,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 

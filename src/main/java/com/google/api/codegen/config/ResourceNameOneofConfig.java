@@ -56,6 +56,26 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
         .collect(Collectors.toList());
   }
 
+  public List<SingleResourceNameConfig> getSingleResourceNameConfigsFromAnnotations() {
+    return getPatterns()
+        .stream()
+        .filter(pttn -> !pttn.isFixedPattern())
+        .map(ResourceNamePatternConfig::toSingleResourceNameConfig)
+        .collect(ImmutableList.toImmutableList());
+  }
+
+  public SingleResourceNameConfig getSingleResourceNameConfigForFirstPattern() {
+    ResourceNamePatternConfig firstPattern = oneofConfig.getPatterns().get(0);
+        SingleResourceNameConfig singleResourceFromFirstPattern =
+            SingleResourceNameConfig.newBuilder()
+                .setNamePattern(firstPattern.getPattern())
+                .setNameTemplate(firstPattern.getNameTemplate())
+                .setEntityId(getEntityId())
+                .setEntityName(getEntityName())
+                .setAssignedProtoFile(getAssignedProtoFile())
+                .build();
+  }
+
   @Nullable
   public static ResourceNameOneofConfig createResourceNameOneof(
       DiagCollector diagCollector,

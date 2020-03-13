@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -246,14 +247,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
     return "_"
         + inittedConstantName(resourceNameConfig.getEntityName().join("path").join("template"));
   }
 
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
     return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 

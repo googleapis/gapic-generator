@@ -128,6 +128,11 @@ public class DefaultFeatureConfig implements FeatureConfig {
   }
 
   @Override
+  public boolean enableStringFormatFunctionsForOneofs() {
+    return false;
+  }
+
+  @Override
   public boolean enableRawOperationCallSettings() {
     return false;
   }

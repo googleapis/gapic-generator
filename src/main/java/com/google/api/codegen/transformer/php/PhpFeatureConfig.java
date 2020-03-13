@@ -21,4 +21,8 @@ public class PhpFeatureConfig extends DefaultFeatureConfig {
   public boolean enableMixins() {
     return true;
   }
+
+  public boolean enableStringFormatFunctionsForOneofs() {
+    return true;
+  }
 }
