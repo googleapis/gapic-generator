@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -46,8 +47,16 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     return null;
   }
 
+  /**
+   * Returns a list of ResourceNamePatternConfigs, each of which is created from a pattern of this
+   * multi-pattern resources.
+   */
   public abstract List<ResourceNamePatternConfig> getPatterns();
 
+  /**
+   * Returns a list of SingleResourceNameConfigs for this oneof config created from either
+   * collections field in gapic v1 or deprecated_collections field in gapic v2.
+   */
   public List<SingleResourceNameConfig> getSingleResourceNameConfigs() {
     return getResourceNameConfigs()
         .stream()
@@ -56,7 +65,11 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
         .collect(Collectors.toList());
   }
 
-  public List<SingleResourceNameConfig> getSingleResourceNameConfigsFromAnnotations() {
+  /**
+   * Returns a list of SingleResourceNameConfigs, each of which is created from a non-fixed pattern
+   * of this multi-pattern resource.
+   */
+  public List<SingleResourceNameConfig> getPatternsAsSingleResourceNameConfigs() {
     return getPatterns()
         .stream()
         .filter(pttn -> !pttn.isFixedPattern())
@@ -64,7 +77,16 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
         .collect(ImmutableList.toImmutableList());
   }
 
-  public SingleResourceNameConfig getSingleResourceNameConfigForFirstPattern() {
+  /**
+   * Returns an optional SingleResourceNameConfig for the first pattern of the resource name as if
+   * it is a single-pattern resource name. The purpose of this method is to generate
+   * backward-compatible code when a single-pattern resource name becomes a multi-pattern one. The
+   * returned optional is empty if the ResourceNameOneofConfig is created from gapic config.
+   */
+  public Optional<SingleResourceNameConfig> getFirstPatternAsSingleResourceNameConfig() {
+    if (getPatterns().isEmpty()) {
+      return Optional.<SingleResourceNameConfig>empty();
+    }
     ResourceNamePatternConfig firstPattern = getPatterns().get(0);
     String entityId = Name.upperCamel(getEntityId()).toLowerUnderscore().replace("_oneof", "");
     SingleResourceNameConfig singleResourceFromFirstPattern =
@@ -75,7 +97,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
             .setEntityName(Name.from(entityId))
             .setAssignedProtoFile(getAssignedProtoFile())
             .build();
-    return singleResourceFromFirstPattern;
+    return Optional.of(singleResourceFromFirstPattern);
   }
 
   @Nullable

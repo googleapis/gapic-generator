@@ -3088,12 +3088,6 @@ module Library
 
       private_constant :SHELF_PATH_TEMPLATE
 
-      READER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "projects/{project}/readers/{reader}"
-      )
-
-      private_constant :READER_PATH_TEMPLATE
-
       # Returns a fully-qualified archive resource name string.
       # @param archive [String]
       # @return [String]
@@ -3201,17 +3195,6 @@ module Library
       def self.shelf_path shelf
         SHELF_PATH_TEMPLATE.render(
           :"shelf" => shelf
-        )
-      end
-
-      # Returns a fully-qualified reader resource name string.
-      # @param project [String]
-      # @param reader [String]
-      # @return [String]
-      def self.reader_path project, reader
-        READER_PATH_TEMPLATE.render(
-          :"project" => project,
-          :"reader" => reader
         )
       end
 

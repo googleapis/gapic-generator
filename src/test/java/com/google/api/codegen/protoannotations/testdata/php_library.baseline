@@ -2450,7 +2450,13 @@ class LibraryServiceGapicClient
     private static $projectBookNameTemplate;
     private static $publisherNameTemplate;
     private static $shelfNameTemplate;
+    private static $archiveBookNameTemplate;
+    private static $bookNameTemplate;
+    private static $projectBookNameTemplate;
+    private static $projectReaderNameTemplate;
+    private static $projectShelfReaderNameTemplate;
     private static $readerNameTemplate;
+    private static $shelfBookNameTemplate;
     private static $pathTemplateMap;
 
     private $operationsClient;
@@ -2471,51 +2477,6 @@ class LibraryServiceGapicClient
                 ]
             ]
         ];
-    }
-
-    private static function getArchiveBookNameTemplate()
-    {
-        if (self::$archiveBookNameTemplate == null) {
-            self::$archiveBookNameTemplate = new PathTemplate('archives/{archive}/books/{book}');
-        }
-
-        return self::$archiveBookNameTemplate;
-    }
-
-    private static function getProjectBookNameTemplate()
-    {
-        if (self::$projectBookNameTemplate == null) {
-            self::$projectBookNameTemplate = new PathTemplate('projects/{project}/books/{book}');
-        }
-
-        return self::$projectBookNameTemplate;
-    }
-
-    private static function getProjectReaderNameTemplate()
-    {
-        if (self::$projectReaderNameTemplate == null) {
-            self::$projectReaderNameTemplate = new PathTemplate('projects/{project}/readers/{reader}');
-        }
-
-        return self::$projectReaderNameTemplate;
-    }
-
-    private static function getProjectShelfReaderNameTemplate()
-    {
-        if (self::$projectShelfReaderNameTemplate == null) {
-            self::$projectShelfReaderNameTemplate = new PathTemplate('projects/{project}/shelves/{shelf}/readers/{reader}');
-        }
-
-        return self::$projectShelfReaderNameTemplate;
-    }
-
-    private static function getShelfBookNameTemplate()
-    {
-        if (self::$shelfBookNameTemplate == null) {
-            self::$shelfBookNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
-        }
-
-        return self::$shelfBookNameTemplate;
     }
 
     private static function getArchiveNameTemplate()
@@ -2581,6 +2542,15 @@ class LibraryServiceGapicClient
         return self::$projectNameTemplate;
     }
 
+    private static function getProjectBookNameTemplate()
+    {
+        if (self::$projectBookNameTemplate == null) {
+            self::$projectBookNameTemplate = new PathTemplate('projects/{project}/books/{book}');
+        }
+
+        return self::$projectBookNameTemplate;
+    }
+
     private static function getPublisherNameTemplate()
     {
         if (self::$publisherNameTemplate == null) {
@@ -2599,6 +2569,51 @@ class LibraryServiceGapicClient
         return self::$shelfNameTemplate;
     }
 
+    private static function getArchiveBookNameTemplate()
+    {
+        if (self::$archiveBookNameTemplate == null) {
+            self::$archiveBookNameTemplate = new PathTemplate('archives/{archive}/books/{book}');
+        }
+
+        return self::$archiveBookNameTemplate;
+    }
+
+    private static function getBookNameTemplate()
+    {
+        if (self::$bookNameTemplate == null) {
+            self::$bookNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
+        }
+
+        return self::$bookNameTemplate;
+    }
+
+    private static function getProjectBookNameTemplate()
+    {
+        if (self::$projectBookNameTemplate == null) {
+            self::$projectBookNameTemplate = new PathTemplate('projects/{project}/books/{book}');
+        }
+
+        return self::$projectBookNameTemplate;
+    }
+
+    private static function getProjectReaderNameTemplate()
+    {
+        if (self::$projectReaderNameTemplate == null) {
+            self::$projectReaderNameTemplate = new PathTemplate('projects/{project}/readers/{reader}');
+        }
+
+        return self::$projectReaderNameTemplate;
+    }
+
+    private static function getProjectShelfReaderNameTemplate()
+    {
+        if (self::$projectShelfReaderNameTemplate == null) {
+            self::$projectShelfReaderNameTemplate = new PathTemplate('projects/{project}/shelves/{shelf}/readers/{reader}');
+        }
+
+        return self::$projectShelfReaderNameTemplate;
+    }
+
     private static function getReaderNameTemplate()
     {
         if (self::$readerNameTemplate == null) {
@@ -2608,16 +2623,20 @@ class LibraryServiceGapicClient
         return self::$readerNameTemplate;
     }
 
+    private static function getShelfBookNameTemplate()
+    {
+        if (self::$shelfBookNameTemplate == null) {
+            self::$shelfBookNameTemplate = new PathTemplate('shelves/{shelf}/books/{book}');
+        }
+
+        return self::$shelfBookNameTemplate;
+    }
+
 
     private static function getPathTemplateMap()
     {
         if (self::$pathTemplateMap == null) {
             self::$pathTemplateMap = [
-                'archiveBook' => self::getArchiveBookNameTemplate(),
-                'projectBook' => self::getProjectBookNameTemplate(),
-                'projectReader' => self::getProjectReaderNameTemplate(),
-                'projectShelfReader' => self::getProjectShelfReaderNameTemplate(),
-                'shelfBook' => self::getShelfBookNameTemplate(),
                 'archive' => self::getArchiveNameTemplate(),
                 'archivedBook' => self::getArchivedBookNameTemplate(),
                 'book' => self::getBookNameTemplate(),
@@ -2625,100 +2644,20 @@ class LibraryServiceGapicClient
                 'folder' => self::getFolderNameTemplate(),
                 'location' => self::getLocationNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
+                'projectBook' => self::getProjectBookNameTemplate(),
                 'publisher' => self::getPublisherNameTemplate(),
                 'shelf' => self::getShelfNameTemplate(),
+                'archiveBook' => self::getArchiveBookNameTemplate(),
+                'book' => self::getBookNameTemplate(),
+                'projectBook' => self::getProjectBookNameTemplate(),
+                'projectReader' => self::getProjectReaderNameTemplate(),
+                'projectShelfReader' => self::getProjectShelfReaderNameTemplate(),
                 'reader' => self::getReaderNameTemplate(),
+                'shelfBook' => self::getShelfBookNameTemplate(),
             ];
         }
         return self::$pathTemplateMap;
     }
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a archive_book resource.
-     *
-     * @param string $archive
-     * @param string $book
-     * @return string The formatted archive_book resource.
-     * @experimental
-     */
-    public static function archiveBookName($archive, $book)
-    {
-        return self::getArchiveBookNameTemplate()->render([
-            'archive' => $archive,
-            'book' => $book,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a project_book resource.
-     *
-     * @param string $project
-     * @param string $book
-     * @return string The formatted project_book resource.
-     * @experimental
-     */
-    public static function projectBookName($project, $book)
-    {
-        return self::getProjectBookNameTemplate()->render([
-            'project' => $project,
-            'book' => $book,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a project_reader resource.
-     *
-     * @param string $project
-     * @param string $reader
-     * @return string The formatted project_reader resource.
-     * @experimental
-     */
-    public static function projectReaderName($project, $reader)
-    {
-        return self::getProjectReaderNameTemplate()->render([
-            'project' => $project,
-            'reader' => $reader,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a project_shelf_reader resource.
-     *
-     * @param string $project
-     * @param string $shelf
-     * @param string $reader
-     * @return string The formatted project_shelf_reader resource.
-     * @experimental
-     */
-    public static function projectShelfReaderName($project, $shelf, $reader)
-    {
-        return self::getProjectShelfReaderNameTemplate()->render([
-            'project' => $project,
-            'shelf' => $shelf,
-            'reader' => $reader,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf_book resource.
-     *
-     * @param string $shelf
-     * @param string $book
-     * @return string The formatted shelf_book resource.
-     * @experimental
-     */
-    public static function shelfBookName($shelf, $book)
-    {
-        return self::getShelfBookNameTemplate()->render([
-            'shelf' => $shelf,
-            'book' => $book,
-        ]);
-    }
-
     /**
      * Formats a string containing the fully-qualified path to represent
      * a archive resource.
@@ -2888,6 +2827,93 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a archive_book resource.
+     *
+     * @param string $archive
+     * @param string $book
+     * @return string The formatted archive_book resource.
+     * @experimental
+     */
+    public static function archiveBookName($archive, $book)
+    {
+        return self::getArchiveBookNameTemplate()->render([
+            'archive' => $archive,
+            'book' => $book,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a book resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @return string The formatted book resource.
+     * @experimental
+     */
+    public static function bookName($shelf, $book)
+    {
+        return self::getBookNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a project_book resource.
+     *
+     * @param string $project
+     * @param string $book
+     * @return string The formatted project_book resource.
+     * @experimental
+     */
+    public static function projectBookName($project, $book)
+    {
+        return self::getProjectBookNameTemplate()->render([
+            'project' => $project,
+            'book' => $book,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a project_reader resource.
+     *
+     * @param string $project
+     * @param string $reader
+     * @return string The formatted project_reader resource.
+     * @experimental
+     */
+    public static function projectReaderName($project, $reader)
+    {
+        return self::getProjectReaderNameTemplate()->render([
+            'project' => $project,
+            'reader' => $reader,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a project_shelf_reader resource.
+     *
+     * @param string $project
+     * @param string $shelf
+     * @param string $reader
+     * @return string The formatted project_shelf_reader resource.
+     * @experimental
+     */
+    public static function projectShelfReaderName($project, $shelf, $reader)
+    {
+        return self::getProjectShelfReaderNameTemplate()->render([
+            'project' => $project,
+            'shelf' => $shelf,
+            'reader' => $reader,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a reader resource.
      *
      * @param string $project
@@ -2904,14 +2930,26 @@ class LibraryServiceGapicClient
     }
 
     /**
+     * Formats a string containing the fully-qualified path to represent
+     * a shelf_book resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @return string The formatted shelf_book resource.
+     * @experimental
+     */
+    public static function shelfBookName($shelf, $book)
+    {
+        return self::getShelfBookNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+        ]);
+    }
+
+    /**
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
      * Template: Pattern
-     * - archiveBook: archives/{archive}/books/{book}
-     * - projectBook: projects/{project}/books/{book}
-     * - projectReader: projects/{project}/readers/{reader}
-     * - projectShelfReader: projects/{project}/shelves/{shelf}/readers/{reader}
-     * - shelfBook: shelves/{shelf}/books/{book}
      * - archive: archives/{archive}
      * - archivedBook: archives/{archive}/books/{book}
      * - book: shelves/{shelf}/books/{book}
@@ -2919,9 +2957,16 @@ class LibraryServiceGapicClient
      * - folder: folders/{folder}
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}
+     * - projectBook: projects/{project}/books/{book}
      * - publisher: projects/{project}/locations/{location}/publishers/{publisher}
      * - shelf: shelves/{shelf}
+     * - archiveBook: archives/{archive}/books/{book}
+     * - book: shelves/{shelf}/books/{book}
+     * - projectBook: projects/{project}/books/{book}
+     * - projectReader: projects/{project}/readers/{reader}
+     * - projectShelfReader: projects/{project}/shelves/{shelf}/readers/{reader}
      * - reader: projects/{project}/readers/{reader}
+     * - shelfBook: shelves/{shelf}/books/{book}
      *
      * The optional $template argument can be supplied to specify a particular pattern, and must
      * match one of the templates listed above. If no $template argument is provided, or if the

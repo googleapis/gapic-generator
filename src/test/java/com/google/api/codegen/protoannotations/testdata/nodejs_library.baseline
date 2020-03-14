@@ -5150,9 +5150,6 @@ class LibraryServiceClient {
       shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf}'
       ),
-      readerPathTemplate: new gaxModule.PathTemplate(
-        'projects/{project}/readers/{reader}'
-      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -8262,20 +8259,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified reader resource name string.
-   *
-   * @param {String} project
-   * @param {String} reader
-   * @returns {String}
-   */
-  readerPath(project, reader) {
-    return this._pathTemplates.readerPathTemplate.render({
-      project: project,
-      reader: reader,
-    });
-  }
-
-  /**
    * Parse the archiveName from a archive resource.
    *
    * @param {String} archiveName
@@ -8500,32 +8483,6 @@ class LibraryServiceClient {
     return this._pathTemplates.shelfPathTemplate
       .match(shelfName)
       .shelf;
-  }
-
-  /**
-   * Parse the readerName from a reader resource.
-   *
-   * @param {String} readerName
-   *   A fully-qualified path representing a reader resources.
-   * @returns {String} - A string representing the project.
-   */
-  matchProjectFromReaderName(readerName) {
-    return this._pathTemplates.readerPathTemplate
-      .match(readerName)
-      .project;
-  }
-
-  /**
-   * Parse the readerName from a reader resource.
-   *
-   * @param {String} readerName
-   *   A fully-qualified path representing a reader resources.
-   * @returns {String} - A string representing the reader.
-   */
-  matchReaderFromReaderName(readerName) {
-    return this._pathTemplates.readerPathTemplate
-      .match(readerName)
-      .reader;
   }
 }
 

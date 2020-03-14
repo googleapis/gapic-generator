@@ -97,6 +97,9 @@ public class ResourceNamePatternConfig {
     return getBindingVariables().stream().collect(Collectors.joining("_"));
   }
 
+  /**
+   * If this pattern represents a single resource name, creates a SingleResourceNameConfig from it.
+   */
   public SingleResourceNameConfig toSingleResourceNameConfig() {
     Preconditions.checkArgument(!isFixedPattern(), "pattern %s is a fixed pattern", pattern);
     return SingleResourceNameConfig.newBuilder()
@@ -107,6 +110,7 @@ public class ResourceNamePatternConfig {
         .build();
   }
 
+  /** If this pattern is a fixed resource name, creates a FixedResourceNameConfig from it. */
   public FixedResourceNameConfig toFixedResourceNameConfig() {
     Preconditions.checkArgument(isFixedPattern(), "pattern %s is not a fixed pattern", pattern);
     return new AutoValue_FixedResourceNameConfig(

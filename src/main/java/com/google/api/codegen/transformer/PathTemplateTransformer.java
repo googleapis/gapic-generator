@@ -37,11 +37,11 @@ import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
@@ -64,28 +64,46 @@ public class PathTemplateTransformer {
     return pathTemplates;
   }
 
-  private List<SingleResourceNameConfig> getSingleResourceNameConfigsUsedByInterface(
+  private static List<SingleResourceNameConfig> getSingleResourceNameConfigsUsedByInterface(
       InterfaceContext context) {
-    return getResourceNameConfigsUsedByInterface(context)
-        .stream()
-        .filter(c -> c.getResourceNameType() == ResourceNameType.SINGLE)
-        .map(c -> (SingleResourceNameConfig) c)
-        .sorted(Comparator.comparing(ResourceNameConfig::getEntityId))
-        .collect(ImmutableList.toImmutableList());
+    TreeMap<String, SingleResourceNameConfig> resources = new TreeMap<>();
+    boolean enableStringFormatFunctionsForOneofs =
+        context.getFeatureConfig().enableStringFormatFunctionsForOneofs();
+    for (ResourceNameConfig resourceNameConfig : getResourceNameConfigsUsedByInterface(context)) {
+      if (resourceNameConfig.getResourceNameType() == ResourceNameType.SINGLE) {
+        resources.put(
+            resourceNameConfig.getEntityId(), (SingleResourceNameConfig) resourceNameConfig);
+      }
+      if (resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+        ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
+        for (SingleResourceNameConfig resource : oneofConfig.getSingleResourceNameConfigs()) {
+          resources.put(resource.getEntityId(), resource);
+        }
+
+        // Add SingleResourceNameConfigs derived from patterns later so that these will overwrite
+        // those derived from gapic config v2
+        if (enableStringFormatFunctionsForOneofs) {
+          for (SingleResourceNameConfig resource :
+              oneofConfig.getPatternsAsSingleResourceNameConfigs()) {
+            resources.put(resource.getEntityId(), resource);
+          }
+
+          // Add the SingleResourceNameConfig derived from the first pattern as if it is a
+          // single-pattern
+          // resource name for backward-compatibility
+          Optional<SingleResourceNameConfig> firstPattern =
+              oneofConfig.getFirstPatternAsSingleResourceNameConfig();
+          if (firstPattern.isPresent()) {
+            resources.put(firstPattern.get().getEntityId(), firstPattern.get());
+          }
+        }
+      }
+    }
+    return ImmutableList.copyOf(resources.values());
   }
 
-  private List<SingleResourceNameConfig> getSingleResourceNamesFromAnnotationsUsedByInterface(
+  private static List<ResourceNameConfig> getResourceNameConfigsUsedByInterface(
       InterfaceContext context) {
-    return getResourceNameConfigsUsedByInterface(context)
-        .stream()
-        .filter(c -> c.getResourceNameType() == ResourceNameType.ONEOF)
-        .map(c -> (ResourceNameOneofConfig) c)
-        .flatMap(oneof -> oneof.getSingleResourceNameConfigsFromAnnotations().stream())
-        .sorted(Comparator.comparing(ResourceNameConfig::getEntityId))
-        .collect(ImmutableList.toImmutableList());
-  }
-
-  private List<ResourceNameConfig> getResourceNameConfigsUsedByInterface(InterfaceContext context) {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     Set<String> foundSet = new HashSet<>();
     List<ResourceNameConfig> resourceNameConfigs = new ArrayList<>();
@@ -105,7 +123,7 @@ public class PathTemplateTransformer {
     return resourceNameConfigs;
   }
 
-  private void addSingleResourceNameConfigsUsedByInterface(
+  private static void addSingleResourceNameConfigsUsedByInterface(
       MethodContext methodContext,
       String fieldNamePattern,
       Set<String> foundSet,
@@ -118,7 +136,7 @@ public class PathTemplateTransformer {
     }
   }
 
-  private void addResourceNameOneofConfigsUsedByInterface(
+  private static void addResourceNameOneofConfigsUsedByInterface(
       InterfaceContext context,
       String fieldNamePattern,
       Set<String> foundSet,
@@ -132,23 +150,6 @@ public class PathTemplateTransformer {
       if (!foundSet.contains(resourceNameConfig.getEntityId())) {
         resourceNameConfigs.add(resourceNameConfig);
         foundSet.add(resourceNameConfig.getEntityId());
-      }
-
-      if (oneofConfig.getSingleResourceNameConfigs().isEmpty()) {
-        SingleResourceNameConfig singleResourceFromFirstPattern =
-            oneofConfig.getSingleResourceNameConfigForFirstPattern();
-        String entityId = singleResourceFromFirstPattern.getEntityId();
-        if (!foundSet.contains(entityId)) {
-          resourceNameConfigs.add(singleResourceFromFirstPattern);
-          foundSet.add(entityId);
-        }
-      }
-
-      for (SingleResourceNameConfig config : oneofConfig.getSingleResourceNameConfigs()) {
-        if (!foundSet.contains(config.getEntityId())) {
-          resourceNameConfigs.add(config);
-          foundSet.add(config.getEntityId());
-        }
       }
     }
   }
@@ -247,28 +248,18 @@ public class PathTemplateTransformer {
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
       return Collections.emptyList();
     }
-
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    LinkedHashSet<FormatResourceFunctionView> functions = new LinkedHashSet<>();
+    ImmutableList.Builder<FormatResourceFunctionView> functions = ImmutableList.builder();
+    List<SingleResourceNameConfig> resourceNameConfigs =
+        getSingleResourceNameConfigsUsedByInterface(context);
 
-    // Handle patterns of multi-pattern resource names from proto annotations
-    if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
-      for (SingleResourceNameConfig pattern :
-          getSingleResourceNamesFromAnnotationsUsedByInterface(context)) {
-        FormatResourceFunctionView function = createFormatResourceFunction(context, pattern);
-        functions.add(function);
-      }
-    }
-
-    // Handle single resource names from proto annoations and gapic configs
-    for (SingleResourceNameConfig resourceNameConfig :
-        getSingleResourceNameConfigsUsedByInterface(context)) {
+    for (SingleResourceNameConfig resourceNameConfig : resourceNameConfigs) {
       FormatResourceFunctionView function =
           createFormatResourceFunction(context, resourceNameConfig);
       functions.add(function);
     }
-    return ImmutableList.copyOf(functions);
+    return functions.build();
   }
 
   public List<ParseResourceFunctionView> generateParseResourceFunctions(InterfaceContext context) {
@@ -302,30 +293,21 @@ public class PathTemplateTransformer {
 
   public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
       GapicInterfaceContext context) {
-    LinkedHashSet<PathTemplateGetterFunctionView> functions = new LinkedHashSet<>();
+    ImmutableList.Builder<PathTemplateGetterFunctionView> functions = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    // Handle patterns of multi-pattern resource names from proto annotations
-    if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
-      for (SingleResourceNameConfig resourceNameConfig :
-          getSingleResourceNamesFromAnnotationsUsedByInterface(context)) {
-        PathTemplateGetterFunctionView function =
-            createPathTemplateGetterFunction(context, resourceNameConfig);
-        functions.add(function);
-      }
-    }
+    List<SingleResourceNameConfig> resourceNameConfigs =
+        getSingleResourceNameConfigsUsedByInterface(context);
 
-    // Handle single resource names from proto annotations and gapic configs
-    for (SingleResourceNameConfig resourceNameConfig :
-        getSingleResourceNameConfigsUsedByInterface(context)) {
+    for (SingleResourceNameConfig resourceNameConfig : resourceNameConfigs) {
       PathTemplateGetterFunctionView function =
           createPathTemplateGetterFunction(context, resourceNameConfig);
       functions.add(function);
     }
-    return ImmutableList.copyOf(functions);
+    return functions.build();
   }
 
-  FormatResourceFunctionView createFormatResourceFunction(
+  private FormatResourceFunctionView createFormatResourceFunction(
       InterfaceContext context, SingleResourceNameConfig resourceNameConfig) {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     SurfaceNamer namer = context.getNamer();
@@ -354,7 +336,7 @@ public class PathTemplateTransformer {
     return function.build();
   }
 
-  PathTemplateGetterFunctionView createPathTemplateGetterFunction(
+  private PathTemplateGetterFunctionView createPathTemplateGetterFunction(
       InterfaceContext context, SingleResourceNameConfig resourceNameConfig) {
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
