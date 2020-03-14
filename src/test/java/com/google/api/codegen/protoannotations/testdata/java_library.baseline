@@ -4441,6 +4441,9 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
 
+  private static final PathTemplate READER_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/readers/{reader}");
+
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archive resource.
@@ -4566,6 +4569,19 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfName(String shelf) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf", shelf);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String formatReaderName(String project, String reader) {
+    return READER_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "reader", reader);
   }
 
   /**
@@ -4753,6 +4769,28 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseShelfFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromReaderName(String readerName) {
+    return READER_PATH_TEMPLATE.parse(readerName).get("project");
+  }
+
+  /**
+   * Parses the reader from the given fully-qualified path which
+   * represents a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String parseReaderFromReaderName(String readerName) {
+    return READER_PATH_TEMPLATE.parse(readerName).get("reader");
   }
 
   /**
@@ -15462,11 +15500,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -15574,11 +15614,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -15709,11 +15751,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -15760,11 +15804,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -15820,11 +15866,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
@@ -16278,11 +16326,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
     String name = "name3373707";
@@ -16499,11 +16549,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name2.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     Operation resultOperation =
         Operation.newBuilder()
@@ -17287,11 +17339,13 @@ public class LibraryClientTest {
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
+    ReaderName reader = ReaderName.ofProjectReaderName("[PROJECT]", "[READER]");
     Book expectedResponse = Book.newBuilder()
       .setName(name.toString())
       .setAuthor(author)
       .setTitle(title)
       .setRead(read)
+      .setReader(reader.toString())
       .build();
     mockLibraryService.addResponse(expectedResponse);
 

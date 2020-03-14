@@ -41,7 +41,11 @@ public class ResourceNamePatternConfig {
   }
 
   public String getPattern() {
-    return pattern;
+    return this.pattern;
+  }
+
+  public PathTemplate getNameTemplate() {
+    return this.template;
   }
 
   /** Returns true if the pattern does not have binding variables. */

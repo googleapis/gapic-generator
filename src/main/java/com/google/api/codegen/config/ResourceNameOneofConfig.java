@@ -65,15 +65,17 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
   }
 
   public SingleResourceNameConfig getSingleResourceNameConfigForFirstPattern() {
-    ResourceNamePatternConfig firstPattern = oneofConfig.getPatterns().get(0);
-        SingleResourceNameConfig singleResourceFromFirstPattern =
-            SingleResourceNameConfig.newBuilder()
-                .setNamePattern(firstPattern.getPattern())
-                .setNameTemplate(firstPattern.getNameTemplate())
-                .setEntityId(getEntityId())
-                .setEntityName(getEntityName())
-                .setAssignedProtoFile(getAssignedProtoFile())
-                .build();
+    ResourceNamePatternConfig firstPattern = getPatterns().get(0);
+    String entityId = Name.upperCamel(getEntityId()).toLowerUnderscore().replace("_oneof", "");
+    SingleResourceNameConfig singleResourceFromFirstPattern =
+        SingleResourceNameConfig.newBuilder()
+            .setNamePattern(firstPattern.getPattern())
+            .setNameTemplate(firstPattern.getNameTemplate())
+            .setEntityId(entityId)
+            .setEntityName(Name.from(entityId))
+            .setAssignedProtoFile(getAssignedProtoFile())
+            .build();
+    return singleResourceFromFirstPattern;
   }
 
   @Nullable

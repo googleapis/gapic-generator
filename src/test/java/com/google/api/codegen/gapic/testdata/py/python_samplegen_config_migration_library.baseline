@@ -4097,6 +4097,7 @@ class LibraryServiceClient(object):
             title=None,
             read=None,
             rating=None,
+            reader=None,
             any_value=None,
             struct_value=None,
             value_value=None,
@@ -4140,6 +4141,7 @@ class LibraryServiceClient(object):
             title (str): The title of the book.
             read (bool): Value indicating whether the book has been read.
             rating (~google.cloud.example.library_v1.types.Rating): For testing enums.
+            reader (str)
             any_value (Union[dict, ~google.cloud.example.library_v1.types.Any]): For testing all well-known types.
 
                 If a dict is provided, it must be of the same form as the protobuf
@@ -4242,6 +4244,7 @@ class LibraryServiceClient(object):
             title=title,
             read=read,
             rating=rating,
+            reader=reader,
             any_value=any_value,
             struct_value=struct_value,
             value_value=value_value,
@@ -7471,7 +7474,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7559,7 +7563,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7676,7 +7681,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7719,7 +7725,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -8044,7 +8051,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -8308,7 +8316,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
         operation.response.Pack(expected_response)
@@ -8667,7 +8676,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response

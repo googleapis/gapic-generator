@@ -135,7 +135,13 @@ public class PathTemplateTransformer {
       }
 
       if (oneofConfig.getSingleResourceNameConfigs().isEmpty()) {
-        resourceNameConfigs.add(oneofConfig.getSingleResourceNameConfigFromFirstPattern());
+        SingleResourceNameConfig singleResourceFromFirstPattern =
+            oneofConfig.getSingleResourceNameConfigForFirstPattern();
+        String entityId = singleResourceFromFirstPattern.getEntityId();
+        if (!foundSet.contains(entityId)) {
+          resourceNameConfigs.add(singleResourceFromFirstPattern);
+          foundSet.add(entityId);
+        }
       }
 
       for (SingleResourceNameConfig config : oneofConfig.getSingleResourceNameConfigs()) {
