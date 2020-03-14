@@ -1203,25 +1203,25 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * class.
    */
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(resourceNameConfig.getEntityName().join("path").join("template"));
   }
 
   /** The name of a getter function to get a particular path template for the given collection. */
   public String getPathTemplateNameGetter(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
         Name.from("get").join(resourceNameConfig.getEntityName()).join("name").join("template"));
   }
 
   /** The name of the path template resource, in human format. */
-  public String getPathTemplateResourcePhraseName(ResourceNameConfig resourceNameConfig) {
+  public String getPathTemplateResourcePhraseName(SingleResourceNameConfig resourceNameConfig) {
     return resourceNameConfig.getEntityName().toPhrase();
   }
 
   /** The function name to format the entity for the given collection. */
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(
         Name.from("format").join(resourceNameConfig.getEntityName()).join("name"));
   }
@@ -1236,7 +1236,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The entity name for the given collection. */
-  public String getEntityName(ResourceNameConfig resourceNameConfig) {
+  public String getEntityName(SingleResourceNameConfig resourceNameConfig) {
     return localVarName(resourceNameConfig.getEntityName());
   }
 

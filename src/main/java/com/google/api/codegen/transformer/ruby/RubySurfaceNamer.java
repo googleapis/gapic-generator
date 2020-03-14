@@ -23,7 +23,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -93,7 +92,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 

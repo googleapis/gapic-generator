@@ -34,11 +34,5 @@ public enum ResourceNameType {
   ONEOF,
 
   /** Any resource type. */
-  ANY,
-
-  /**
-   * A resource name type that represents a pattern of a multi-pattern resource name. Only Used in
-   * GAPIC libraries generated from proto annotations.
-   */
-  PATTERN
+  ANY
 }

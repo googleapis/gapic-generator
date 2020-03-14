@@ -22,7 +22,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
-import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -98,13 +98,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(resourceNameConfig.getEntityName().join("name"));
   }
 
   @Override
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
         resourceNameConfig.getEntityName().join(Name.from("name", "template")));
   }

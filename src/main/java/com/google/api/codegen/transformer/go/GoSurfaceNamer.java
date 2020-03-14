@@ -22,7 +22,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
-import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -65,7 +65,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
         getReducedServiceName(interfaceConfig.getInterfaceModel().getSimpleName())
             .join(resourceNameConfig.getEntityName())
@@ -75,13 +75,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateNameGetter(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return getFormatFunctionName(interfaceConfig, resourceNameConfig);
   }
 
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
         clientNamePrefix(interfaceConfig.getInterfaceModel().getSimpleName())
             .join(resourceNameConfig.getEntityName())

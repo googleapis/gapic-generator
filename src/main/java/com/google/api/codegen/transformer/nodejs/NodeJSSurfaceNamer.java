@@ -25,7 +25,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoTypeRef;
-import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -172,7 +171,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return publicFieldName(resourceNameConfig.getEntityName().join(Name.from("path", "template")));
   }
 
@@ -188,7 +187,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      InterfaceConfig interfaceConfig, ResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(resourceNameConfig.getEntityName().join("path"));
   }
 
