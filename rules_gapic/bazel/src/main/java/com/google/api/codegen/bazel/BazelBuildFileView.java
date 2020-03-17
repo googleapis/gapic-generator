@@ -79,10 +79,7 @@ class BazelBuildFileView {
     tokens.put(
         "java_gapic_test_deps", joinSetWithIndentationNl(mapJavaGapicTestDeps(actualImports)));
 
-    String goImportPath = bp.getLangGapicPackages().get("go");
-    tokens.put("go_gapic_importpath", goImportPath);
-    tokens.put(
-        "go_gapic_importpath_pkg", assembleGoGapicImportPath(bp.getProtoPackage(), goImportPath));
+    tokens.put("go_gapic_importpath", bp.getLangGapicPackages().get("go"));
     tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
   }
 
@@ -121,19 +118,6 @@ class BazelBuildFileView {
     sb.replace(lastSlashIndex, lastSlashIndex + 1, ":");
 
     return sb.toString();
-  }
-
-  // assembleGoGapicImportPath extracts the product name from the proto package
-  // in order to construct the Go import path with the product as the Go package
-  // name. The resulting format is cloud.google.com/go/library/apiv1;library.
-  // The section following the semicolon is used in the generated package
-  // statement, so that the trailing segment of the import path won't be.
-  private String assembleGoGapicImportPath(String protoPackage, String importPath) {
-    // Extract the (sub-)product name preceding the trailing version segment
-    String[] segments = protoPackage.split("\\.");
-    String pkg = segments[segments.length - 2];
-
-    return String.join(";", importPath, pkg);
   }
 
   private String joinSetWithIndentation(Set<String> set) {
