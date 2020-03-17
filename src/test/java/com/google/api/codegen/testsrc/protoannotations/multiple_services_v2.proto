@@ -1,0 +1,35 @@
+// Dummy service that doesn't use standard resource names
+
+syntax = "proto3";
+
+package google.cloud.example.v2.foo;
+
+import "different_submodule.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "other_shared_type.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "ExampleProto";
+option java_package = "com.google.example.v2";
+
+service IncrementerService {
+  // Increment.
+  rpc Increment(IncrementRequestV2) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v2/me:increment" body: "*" };
+  }
+
+}
+
+service DecrementerService {
+  // Decrement.
+  rpc Decrement(DecrementRequestV2) returns (google.protobuf.Empty) {
+      option (google.api.http) = { post: "/v2/me:decrement" body: "*" };
+  }
+}
+
+message IncrementRequestV2 {
+}
+
+message DecrementRequestV2 {
+}

@@ -1175,37 +1175,11 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
-    def folder_path(cls, folder):
-        """Return a fully-qualified folder string."""
-        return google.api_core.path_template.expand(
-            'folders/{folder}',
-            folder=folder,
-        )
-
-    @classmethod
-    def location_path(cls, project, location):
-        """Return a fully-qualified location string."""
-        return google.api_core.path_template.expand(
-            'projects/{project}/locations/{location}',
-            project=project,
-            location=location,
-        )
-
-    @classmethod
     def project_path(cls, project):
         """Return a fully-qualified project string."""
         return google.api_core.path_template.expand(
             'projects/{project}',
             project=project,
-        )
-
-    @classmethod
-    def project_book_path(cls, project, book):
-        """Return a fully-qualified project_book string."""
-        return google.api_core.path_template.expand(
-            'projects/{project}/books/{book}',
-            project=project,
-            book=book,
         )
 
     @classmethod
@@ -2365,7 +2339,7 @@ class LibraryServiceClient(object):
     def get_book_from_archive(
             self,
             name,
-            parent,
+            parent=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2378,9 +2352,8 @@ class LibraryServiceClient(object):
             >>> client = library_v1.LibraryServiceClient()
             >>>
             >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
-            >>> parent = client.project_path('[PROJECT]')
             >>>
-            >>> response = client.get_book_from_archive(name, parent)
+            >>> response = client.get_book_from_archive(name)
 
         Args:
             name (str): The name of the book to retrieve.
@@ -2434,8 +2407,8 @@ class LibraryServiceClient(object):
             self,
             name,
             alt_book_name,
-            place,
-            folder,
+            place=None,
+            folder=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
             metadata=None):
@@ -2449,10 +2422,8 @@ class LibraryServiceClient(object):
             >>>
             >>> name = client.book_path('[SHELF]', '[BOOK]')
             >>> alt_book_name = client.book_path('[SHELF]', '[BOOK]')
-            >>> place = client.location_path('[PROJECT]', '[LOCATION]')
-            >>> folder = client.folder_path('[FOLDER]')
             >>>
-            >>> response = client.get_book_from_anywhere(name, alt_book_name, place, folder)
+            >>> response = client.get_book_from_anywhere(name, alt_book_name)
 
         Args:
             name (str): The name of the book to retrieve.
@@ -3267,38 +3238,38 @@ class LibraryServiceClient(object):
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map,
-            required_any_value,
-            required_struct_value,
-            required_value_value,
-            required_list_value_value,
-            required_time_value,
-            required_duration_value,
-            required_field_mask_value,
-            required_int32_value,
-            required_uint32_value,
-            required_int64_value,
-            required_uint64_value,
-            required_float_value,
-            required_double_value,
-            required_string_value,
-            required_bool_value,
-            required_bytes_value,
-            required_repeated_any_value,
-            required_repeated_struct_value,
-            required_repeated_value_value,
-            required_repeated_list_value_value,
-            required_repeated_time_value,
-            required_repeated_duration_value,
-            required_repeated_field_mask_value,
-            required_repeated_int32_value,
-            required_repeated_uint32_value,
-            required_repeated_int64_value,
-            required_repeated_uint64_value,
-            required_repeated_float_value,
-            required_repeated_double_value,
-            required_repeated_string_value,
-            required_repeated_bool_value,
-            required_repeated_bytes_value,
+            required_any_value=None,
+            required_struct_value=None,
+            required_value_value=None,
+            required_list_value_value=None,
+            required_time_value=None,
+            required_duration_value=None,
+            required_field_mask_value=None,
+            required_int32_value=None,
+            required_uint32_value=None,
+            required_int64_value=None,
+            required_uint64_value=None,
+            required_float_value=None,
+            required_double_value=None,
+            required_string_value=None,
+            required_bool_value=None,
+            required_bytes_value=None,
+            required_repeated_any_value=None,
+            required_repeated_struct_value=None,
+            required_repeated_value_value=None,
+            required_repeated_list_value_value=None,
+            required_repeated_time_value=None,
+            required_repeated_duration_value=None,
+            required_repeated_field_mask_value=None,
+            required_repeated_int32_value=None,
+            required_repeated_uint32_value=None,
+            required_repeated_int64_value=None,
+            required_repeated_uint64_value=None,
+            required_repeated_float_value=None,
+            required_repeated_double_value=None,
+            required_repeated_string_value=None,
+            required_repeated_bool_value=None,
+            required_repeated_bytes_value=None,
             optional_singular_int32=None,
             optional_singular_int64=None,
             optional_singular_float=None,
@@ -3453,103 +3424,7 @@ class LibraryServiceClient(object):
             >>> # TODO: Initialize `required_map`:
             >>> required_map = {}
             >>>
-            >>> # TODO: Initialize `required_any_value`:
-            >>> required_any_value = {}
-            >>>
-            >>> # TODO: Initialize `required_struct_value`:
-            >>> required_struct_value = {}
-            >>>
-            >>> # TODO: Initialize `required_value_value`:
-            >>> required_value_value = {}
-            >>>
-            >>> # TODO: Initialize `required_list_value_value`:
-            >>> required_list_value_value = {}
-            >>>
-            >>> # TODO: Initialize `required_time_value`:
-            >>> required_time_value = {}
-            >>>
-            >>> # TODO: Initialize `required_duration_value`:
-            >>> required_duration_value = {}
-            >>>
-            >>> # TODO: Initialize `required_field_mask_value`:
-            >>> required_field_mask_value = {}
-            >>>
-            >>> # TODO: Initialize `required_int32_value`:
-            >>> required_int32_value = {}
-            >>>
-            >>> # TODO: Initialize `required_uint32_value`:
-            >>> required_uint32_value = {}
-            >>>
-            >>> # TODO: Initialize `required_int64_value`:
-            >>> required_int64_value = {}
-            >>>
-            >>> # TODO: Initialize `required_uint64_value`:
-            >>> required_uint64_value = {}
-            >>>
-            >>> # TODO: Initialize `required_float_value`:
-            >>> required_float_value = {}
-            >>>
-            >>> # TODO: Initialize `required_double_value`:
-            >>> required_double_value = {}
-            >>>
-            >>> # TODO: Initialize `required_string_value`:
-            >>> required_string_value = {}
-            >>>
-            >>> # TODO: Initialize `required_bool_value`:
-            >>> required_bool_value = {}
-            >>>
-            >>> # TODO: Initialize `required_bytes_value`:
-            >>> required_bytes_value = {}
-            >>>
-            >>> # TODO: Initialize `required_repeated_any_value`:
-            >>> required_repeated_any_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_struct_value`:
-            >>> required_repeated_struct_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_value_value`:
-            >>> required_repeated_value_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_list_value_value`:
-            >>> required_repeated_list_value_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_time_value`:
-            >>> required_repeated_time_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_duration_value`:
-            >>> required_repeated_duration_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_field_mask_value`:
-            >>> required_repeated_field_mask_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_int32_value`:
-            >>> required_repeated_int32_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_uint32_value`:
-            >>> required_repeated_uint32_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_int64_value`:
-            >>> required_repeated_int64_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_uint64_value`:
-            >>> required_repeated_uint64_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_float_value`:
-            >>> required_repeated_float_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_double_value`:
-            >>> required_repeated_double_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_string_value`:
-            >>> required_repeated_string_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_bool_value`:
-            >>> required_repeated_bool_value = []
-            >>>
-            >>> # TODO: Initialize `required_repeated_bytes_value`:
-            >>> required_repeated_bytes_value = []
-            >>>
-            >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+            >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
         Args:
             required_singular_int32 (int)
@@ -5893,7 +5768,7 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py ==============
+============== file: samples/v1/babble_about_book_1.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -5910,7 +5785,7 @@ def lint_setup_py(session):
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_1")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -5918,9 +5793,9 @@ def lint_setup_py(session):
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_1.py
 
-# [START sample]
+# [START babble_about_book_1]
 from google.cloud.example import library_v1
 
 def sample_babble_about_book():
@@ -5934,14 +5809,14 @@ def sample_babble_about_book():
   client.babble_about_book(requests)
   # No one replied
   print(u'No one replied.')
-# [END sample]
+# [END babble_about_book_1]
 
 def main():
   sample_babble_about_book()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py ==============
+============== file: samples/v1/babble_about_book_2.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -5958,7 +5833,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_2")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -5966,9 +5841,9 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.py
+#   usage: python3 samples/v1/babble_about_book_2.py
 
-# [START sample]
+# [START babble_about_book_2]
 from google.cloud.example import library_v1
 
 def sample_babble_about_book():
@@ -5980,7 +5855,7 @@ def sample_babble_about_book():
 
   requests = [request]
   client.babble_about_book(requests)
-# [END sample]
+# [END babble_about_book_2]
 
 def main():
   sample_babble_about_book()
@@ -6004,7 +5879,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_with_response_handling")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6051,7 +5926,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+# DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_without_response_handling")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6079,7 +5954,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/find_related_books_request_paged_all_odyssey.py ==============
+============== file: samples/v1/empty_response_type_with_response_handling.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6096,7 +5971,107 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   usage: python3 samples/v1/empty_response_type_with_response_handling.py
+
+# [START empty_response_type_with_response_handling]
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test response handling for methods that return empty"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF]', '[BOOK]')
+
+  operation = client.get_big_nothing(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+  # Got nothing
+  print(u'Got nothing.')
+# [END empty_response_type_with_response_handling]
+
+def main():
+  sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/empty_response_type_without_response_handling.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   usage: python3 samples/v1/empty_response_type_without_response_handling.py
+
+# [START empty_response_type_without_response_handling]
+from google.cloud.example import library_v1
+
+def sample_get_big_nothing():
+  """Test default response handling is turned off for methods that return empty"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.book_path('[SHELF]', '[BOOK]')
+
+  operation = client.get_big_nothing(name)
+
+  print(u'Waiting for operation to complete...')
+  response = operation.result()
+
+# [END empty_response_type_without_response_handling]
+
+def main():
+  sample_get_big_nothing()
+
+if __name__ == '__main__':
+  main()
+============== file: samples/v1/find_related_books_odyssey.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "find_related_books_odyssey")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6104,9 +6079,9 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: The Odyssey
 #   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_all_odyssey.py
+#   usage: python3 samples/v1/find_related_books_odyssey.py
 
-# [START sample]
+# [START find_related_books_odyssey]
 from google.cloud.example import library_v1
 
 def sample_find_related_books():
@@ -6123,14 +6098,14 @@ def sample_find_related_books():
   for response_item in client.find_related_books(names, shelves):
     book = response_item
     print(u'Here\'s a related book: {}'.format(book))
-# [END sample]
+# [END find_related_books_odyssey]
 
 def main():
   sample_find_related_books()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/find_related_books_request_paged_odyssey.py ==============
+============== file: samples/v1/get_book_request_test_on_success_map.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6147,42 +6122,41 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+# DO NOT EDIT! This is a generated sample ("Request",  "get_book_request_test_on_success_map")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   usage: python3 samples/v1/find_related_books_request_paged_odyssey.py
+#   title: test maps in response handling
+#   description: When there is a very long description for a sample file we can split
+#     the description into multiple lines and the samples will be just fine
+#   usage: python3 samples/v1/get_book_request_test_on_success_map.py
 
 # [START sample]
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 
-def sample_find_related_books():
-  """Testing calling forms"""
+def sample_get_book():
 
   client = library_v1.LibraryServiceClient()
 
-  names_element = 'Odyssey'
-  names = [names_element]
-  shelves_element = 'Classics'
-  shelves = [shelves_element]
+  name = client.book_path('[SHELF]', '[BOOK]')
 
-  # Iterate over results one page at a time
-  for page in client.find_related_books(names, shelves).pages:
-    for response_item in page:
-      book = response_item
-      print(u'Here\'s a related book: {}'.format(book))
+  response = client.get_book(name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[True]
+  map_value_field = response.map_message_value['key'].field
+  print(u'Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
+  print(u'Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
 # [END sample]
 
 def main():
-  sample_find_related_books()
+  sample_get_book()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/get_big_book_long_running_promise_wap.py ==============
+============== file: samples/v1/hopper.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6199,7 +6173,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "hopper")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6207,7 +6181,7 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
 #   description: Testing calling forms
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap.py [--shelf "Novel\\\"\`\b\t\n\r"]
+#   usage: python3 samples/v1/hopper.py [--shelf "Novel\\\"\`\b\t\n\r"]
 
 # [START hopper]
 from google.cloud.example import library_v1
@@ -6252,223 +6226,6 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/get_big_book_long_running_promise_wap2.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap2")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   usage: python3 samples/v1/get_big_book_long_running_promise_wap2.py [--shelf Novel] [--big_book_name "War and Peace"]
-
-# [START hopper]
-from google.cloud.example import library_v1
-
-def sample_get_big_book(shelf, big_book_name):
-  """
-    Testing resource name overlap
-
-    Args:
-      shelf Test word wrapping for long lines. This is a long comment. The name of
-      the shelf to retrieve the big book from.
-      big_book_name The name of the book.
-    """
-
-  client = library_v1.LibraryServiceClient()
-
-  # shelf = 'Novel'
-  # big_book_name = 'War and Peace'
-  name = client.book_path(shelf, big_book_name)
-
-  operation = client.get_big_book(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  print(response)
-# [END hopper]
-
-def main():
-  import argparse
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel')
-  parser.add_argument('--big_book_name', type=str, default='War and Peace')
-  args = parser.parse_args()
-
-  sample_get_big_book(args.shelf, args.big_book_name)
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_with_response_handling")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_with_response_handling.py
-
-# [START sample]
-from google.cloud.example import library_v1
-
-def sample_get_big_nothing():
-  """Test response handling for methods that return empty"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF]', '[BOOK]')
-
-  operation = client.get_big_nothing(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-  # Got nothing
-  print(u'Got nothing.')
-# [END sample]
-
-def main():
-  sample_get_big_nothing()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "empty_response_type_without_response_handling")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Test default response handling is turned off for methods that return empty
-#   description: Test default response handling is turned off for methods that return empty
-#   usage: python3 samples/v1/get_big_nothing_long_running_promise_empty_response_type_without_response_handling.py
-
-# [START sample]
-from google.cloud.example import library_v1
-
-def sample_get_big_nothing():
-  """Test default response handling is turned off for methods that return empty"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF]', '[BOOK]')
-
-  operation = client.get_big_nothing(name)
-
-  print(u'Waiting for operation to complete...')
-  response = operation.result()
-
-# [END sample]
-
-def main():
-  sample_get_big_nothing()
-
-if __name__ == '__main__':
-  main()
-============== file: samples/v1/get_book_request_test_on_success_map.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: test maps in response handling
-#   description: When there is a very long description for a sample file we can split
-#     the description into multiple lines and the samples will be just fine
-#   usage: python3 samples/v1/get_book_request_test_on_success_map.py
-
-# [START sample]
-from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
-
-def sample_get_book():
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF]', '[BOOK]')
-
-  response = client.get_book(name)
-  int_key_val = response.map_string_value[123]
-  boolean_key_val = response.map_bool_key[True]
-  map_value_field = response.map_message_value['key'].field
-  print(u'Test printing map fields: {}'.format(response.map_list_value_value['quoted_key']))
-  print(u'Test printing enum fields of a map value: {}'.format(enums.SomeMessage.Alignment(response.map_message_value['key'].alignment).name))
-# [END sample]
-
-def main():
-  sample_get_book()
-
-if __name__ == '__main__':
-  main()
 ============== file: samples/v1/lovelace.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -6486,7 +6243,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "lovelace")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6515,55 +6272,6 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/monolog_about_book_request_streaming_client_prog.py ==============
-# -*- coding: utf-8 -*-
-#
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-
-# To install the latest published package dependency, execute the following:
-#   pip install google-cloud-library
-
-# sample-metadata
-#   title: Programming Books
-#   description: Testing calling forms
-#   usage: python3 samples/v1/monolog_about_book_request_streaming_client_prog.py
-
-# [START sample]
-from google.cloud.example import library_v1
-from google.cloud.example.library_v1 import enums
-
-def sample_monolog_about_book():
-  """Testing calling forms"""
-
-  client = library_v1.LibraryServiceClient()
-
-  name = client.book_path('[SHELF]', '[BOOK]')
-  request = {'name': name}
-
-  requests = [request]
-  response = client.monolog_about_book(requests)
-  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
-# [END sample]
-
-def main():
-  sample_monolog_about_book()
-
-if __name__ == '__main__':
-  main()
 ============== file: samples/v1/publish_series_request_pi_version.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -6581,7 +6289,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_pi_version")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6589,7 +6297,7 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Pi version
 #   description: Testing <@calling forms>
-#   usage: python3 samples/v1/publish_series_request_pi_version.py [--shelf_name Math] [--edition 123]
+#   usage: python3 samples/v1/publish_series_request_pi_version.py [--shelf_name "[Math]"] [--edition 123]
 
 # [START canonical]
 from google.cloud.example import library_v1
@@ -6605,7 +6313,7 @@ def sample_publish_series(shelf_name, edition):
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf_name = 'Math'
+  # shelf_name = '[Math]'
   # edition = 123
   shelf = {'name': shelf_name}
   books = []
@@ -6637,7 +6345,7 @@ def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf_name', type=str, default='Math')
+  parser.add_argument('--shelf_name', type=str, default='[Math]')
   parser.add_argument('--edition', type=int, default=123)
   args = parser.parse_args()
 
@@ -6662,7 +6370,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_second_edition")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6694,7 +6402,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_request_object_field_comments.py ==============
+============== file: samples/v1/publish_series_test_request_object_field_comments.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6711,7 +6419,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_request_object_field_comments")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6719,9 +6427,9 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   usage: python3 samples/v1/publish_series_request_test_request_object_field_comments.py
+#   usage: python3 samples/v1/publish_series_test_request_object_field_comments.py
 
-# [START sample]
+# [START publish_series_test_request_object_field_comments]
 from google.cloud.example import library_v1
 import io
 
@@ -6757,14 +6465,14 @@ def sample_publish_series():
 
   response = client.publish_series(shelf, books, series_uuid, edition=edition)
   print(response)
-# [END sample]
+# [END publish_series_test_request_object_field_comments]
 
 def main():
   sample_publish_series()
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/publish_series_request_test_write_to_file.py ==============
+============== file: samples/v1/publish_series_test_write_to_file.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6781,7 +6489,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_write_to_file")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6789,9 +6497,9 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   usage: python3 samples/v1/publish_series_request_test_write_to_file.py
+#   usage: python3 samples/v1/publish_series_test_write_to_file.py
 
-# [START sample]
+# [START publish_series_test_write_to_file]
 from google.cloud.example import library_v1
 
 def sample_publish_series():
@@ -6810,7 +6518,7 @@ def sample_publish_series():
   # testing writing string field.
   with open('series_uuid_in_plain_text.txt', 'w') as out:
     out.write(response.series_uuid.series_string)
-# [END sample]
+# [END publish_series_test_write_to_file]
 
 def main():
   sample_publish_series()
@@ -6834,7 +6542,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+# DO NOT EDIT! This is a generated sample ("Request",  "sample_get_shelf")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -6864,7 +6572,7 @@ def main():
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/stream_shelves_request_streaming_server_empty.py ==============
+============== file: samples/v1/sample_monolog_about_book.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -6881,32 +6589,35 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "sample_monolog_about_book")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
-#   title: Server streaming
+#   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/stream_shelves_request_streaming_server_empty.py
+#   usage: python3 samples/v1/sample_monolog_about_book.py
 
-# [START sample]
+# [START sample_monolog_about_book]
 from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 
-def sample_stream_shelves():
+def sample_monolog_about_book():
   """Testing calling forms"""
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.shelf_path('[SHELF]')
+  name = client.book_path('[SHELF]', '[BOOK]')
+  request = {'name': name}
 
-  for response_item in client.stream_shelves(name):
-    print(response_item)
-# [END sample]
+  requests = [request]
+  response = client.monolog_about_book(requests)
+  print(u'The stage of the comment is: {}'.format(enums.Comment.Stage(response.stage).name))
+# [END sample_monolog_about_book]
 
 def main():
-  sample_stream_shelves()
+  sample_monolog_about_book()
 
 if __name__ == '__main__':
   main()
@@ -6927,7 +6638,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_for_paging")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -7018,40 +6729,8 @@ def sample_test_optional_required_flattening_params(param_float, param_long):
   required_repeated_fixed32 = []
   required_repeated_fixed64 = []
   required_map = {}
-  required_any_value = {}
-  required_struct_value = {}
-  required_value_value = {}
-  required_list_value_value = {}
-  required_time_value = {}
-  required_duration_value = {}
-  required_field_mask_value = {}
-  required_int32_value = {}
-  required_uint32_value = {}
-  required_int64_value = {}
-  required_uint64_value = {}
-  required_float_value = {}
-  required_double_value = {}
-  required_string_value = {}
-  required_bool_value = {}
-  required_bytes_value = {}
-  required_repeated_any_value = []
-  required_repeated_struct_value = []
-  required_repeated_value_value = []
-  required_repeated_list_value_value = []
-  required_repeated_time_value = []
-  required_repeated_duration_value = []
-  required_repeated_field_mask_value = []
-  required_repeated_int32_value = []
-  required_repeated_uint32_value = []
-  required_repeated_int64_value = []
-  required_repeated_uint64_value = []
-  required_repeated_float_value = []
-  required_repeated_double_value = []
-  required_repeated_string_value = []
-  required_repeated_bool_value = []
-  required_repeated_bytes_value = []
 
-  response = client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+  response = client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
   print(response)
 # [END test_float_and_int64]
 
@@ -7100,7 +6779,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.archived_book_path('The archive to search for the book', 'The ID of the book')
+  name = client.book_path('[SHELF]', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Archived book found.')
@@ -7206,6 +6885,58 @@ def main():
 
 if __name__ == '__main__':
   main()
+============== file: samples/v1/testing_map.py ==============
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "testing_map")
+
+# To install the latest published package dependency, execute the following:
+#   pip install google-cloud-library
+
+# sample-metadata
+#   title: testing maps
+#   description: testing maps in request fields
+#   usage: python3 samples/v1/testing_map.py
+
+# [START testing_map]
+from google.cloud.example import library_v1
+
+def sample_create_book():
+  """testing maps in request fields"""
+
+  client = library_v1.LibraryServiceClient()
+
+  name = client.shelf_path('my_shelf')
+  map_string_value_item = 'my_string_value'
+  map_string_value = {1: map_string_value_item}
+  field = 4147
+  map_message_value_item = {'field': field}
+  map_message_value = {'something': map_message_value_item}
+  book = {'map_string_value': map_string_value, 'map_message_value': map_message_value}
+
+  response = client.create_book(name, book)
+  print(u'Book created!')
+# [END testing_map]
+
+def main():
+  sample_create_book()
+
+if __name__ == '__main__':
+  main()
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -7223,60 +6954,56 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningPromise",  "this_tag_should_be_the_name_of_the_file")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf "Novel\\\"\`\b\t\n\r"]
+#   description: Testing resource name overlap
+#   usage: python3 samples/v1/this_tag_should_be_the_name_of_the_file.py [--shelf Novel] [--big_book_name "War and Peace"]
 
 # [START this_tag_should_be_the_name_of_the_file]
 from google.cloud.example import library_v1
 
-def sample_get_big_book(shelf):
-  """Testing calling forms"""
+def sample_get_big_book(shelf, big_book_name):
+  """
+    Testing resource name overlap
+
+    Args:
+      shelf Test word wrapping for long lines. This is a long comment. The name of
+      the shelf to retrieve the big book from.
+      big_book_name The name of the book.
+    """
 
   client = library_v1.LibraryServiceClient()
 
-  # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path(shelf, 'War and Peace')
+  # shelf = 'Novel'
+  # big_book_name = 'War and Peace'
+  name = client.book_path(shelf, big_book_name)
 
   operation = client.get_big_book(name)
 
   print(u'Waiting for operation to complete...')
   response = operation.result()
 
-  # Testing iterating over map fields when both key and value are specified.
-  for my_key, my_value in response.map_list_value_value.items():
-    print(u'key: {}, value: {}'.format(my_key, my_value))
-
-  # Testing iterating over map fields when only key is specified.
-  for another_key, _ in response.map_list_value_value.items():
-    print(u'key: {}'.format(another_key))
-
-  # Testing iterating over map fields when only value is specified.
-  for _, another_value in response.map_list_value_value.items():
-    print(u'value: {}'.format(another_value))
-
-  print(u'name: {}'.format(response.name))
-  print(u'author: {}'.format(response.author))
+  print(response)
 # [END this_tag_should_be_the_name_of_the_file]
 
 def main():
   import argparse
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('--shelf', type=str, default='Novel\\"`\b\t\n\r')
+  parser.add_argument('--shelf', type=str, default='Novel')
+  parser.add_argument('--big_book_name', type=str, default='War and Peace')
   args = parser.parse_args()
 
-  sample_get_big_book(args.shelf)
+  sample_get_big_book(args.shelf, args.big_book_name)
 
 if __name__ == '__main__':
   main()
-============== file: samples/v1/turing_prog_request_streaming_bidi.py ==============
+============== file: samples/v1/turing.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -7293,7 +7020,7 @@ if __name__ == '__main__':
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "turing")
 
 # To install the latest published package dependency, execute the following:
 #   pip install google-cloud-library
@@ -7301,9 +7028,9 @@ if __name__ == '__main__':
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   usage: python3 samples/v1/turing_prog_request_streaming_bidi.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
+#   usage: python3 samples/v1/turing.py [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
-# [START turing_prog_request_streaming_bidi]
+# [START turing]
 from google.cloud.example import library_v1
 from google.cloud.example.library_v1 import enums
 import io
@@ -7326,7 +7053,7 @@ def sample_discuss_book(image_file_name, stage):
   requests = [request]
   for response_item in client.discuss_book(requests):
     print(response_item)
-# [END turing_prog_request_streaming_bidi]
+# [END turing]
 
 def main():
   import argparse
@@ -7493,13 +7220,7 @@ from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.longrunning import operations_pb2
-from google.protobuf import any_pb2
-from google.protobuf import duration_pb2
 from google.protobuf import empty_pb2
-from google.protobuf import field_mask_pb2
-from google.protobuf import struct_pb2
-from google.protobuf import timestamp_pb2
-from google.protobuf import wrappers_pb2
 
 
 
@@ -8131,13 +7852,12 @@ class TestLibraryServiceClient(object):
 
         # Setup Request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
-        parent = client.project_path('[PROJECT]')
 
-        response = client.get_book_from_archive(name, parent)
+        response = client.get_book_from_archive(name)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetBookFromArchiveRequest(name=name, parent=parent)
+        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -8151,10 +7871,9 @@ class TestLibraryServiceClient(object):
 
         # Setup request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
-        parent = client.project_path('[PROJECT]')
 
         with pytest.raises(CustomException):
-            client.get_book_from_archive(name, parent)
+            client.get_book_from_archive(name)
 
     def test_get_book_from_anywhere(self):
         # Setup Expected Response
@@ -8175,14 +7894,12 @@ class TestLibraryServiceClient(object):
         # Setup Request
         name = client.book_path('[SHELF]', '[BOOK]')
         alt_book_name = client.book_path('[SHELF]', '[BOOK]')
-        place = client.location_path('[PROJECT]', '[LOCATION]')
-        folder = client.folder_path('[FOLDER]')
 
-        response = client.get_book_from_anywhere(name, alt_book_name, place, folder)
+        response = client.get_book_from_anywhere(name, alt_book_name)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name, place=place, folder=folder)
+        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -8197,11 +7914,9 @@ class TestLibraryServiceClient(object):
         # Setup request
         name = client.book_path('[SHELF]', '[BOOK]')
         alt_book_name = client.book_path('[SHELF]', '[BOOK]')
-        place = client.location_path('[PROJECT]', '[LOCATION]')
-        folder = client.folder_path('[FOLDER]')
 
         with pytest.raises(CustomException):
-            client.get_book_from_anywhere(name, alt_book_name, place, folder)
+            client.get_book_from_anywhere(name, alt_book_name)
 
     def test_get_book_from_absolutely_anywhere(self):
         # Setup Expected Response
@@ -8727,44 +8442,12 @@ class TestLibraryServiceClient(object):
         required_repeated_fixed32 = []
         required_repeated_fixed64 = []
         required_map = {}
-        required_any_value = {}
-        required_struct_value = {}
-        required_value_value = {}
-        required_list_value_value = {}
-        required_time_value = {}
-        required_duration_value = {}
-        required_field_mask_value = {}
-        required_int32_value = {}
-        required_uint32_value = {}
-        required_int64_value = {}
-        required_uint64_value = {}
-        required_float_value = {}
-        required_double_value = {}
-        required_string_value = {}
-        required_bool_value = {}
-        required_bytes_value = {}
-        required_repeated_any_value = []
-        required_repeated_struct_value = []
-        required_repeated_value_value = []
-        required_repeated_list_value_value = []
-        required_repeated_time_value = []
-        required_repeated_duration_value = []
-        required_repeated_field_mask_value = []
-        required_repeated_int32_value = []
-        required_repeated_uint32_value = []
-        required_repeated_int64_value = []
-        required_repeated_uint64_value = []
-        required_repeated_float_value = []
-        required_repeated_double_value = []
-        required_repeated_string_value = []
-        required_repeated_bool_value = []
-        required_repeated_bytes_value = []
 
-        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_resource_name_common=required_singular_resource_name_common, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_resource_name_common=required_repeated_resource_name_common, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map, required_any_value=required_any_value, required_struct_value=required_struct_value, required_value_value=required_value_value, required_list_value_value=required_list_value_value, required_time_value=required_time_value, required_duration_value=required_duration_value, required_field_mask_value=required_field_mask_value, required_int32_value=required_int32_value, required_uint32_value=required_uint32_value, required_int64_value=required_int64_value, required_uint64_value=required_uint64_value, required_float_value=required_float_value, required_double_value=required_double_value, required_string_value=required_string_value, required_bool_value=required_bool_value, required_bytes_value=required_bytes_value, required_repeated_any_value=required_repeated_any_value, required_repeated_struct_value=required_repeated_struct_value, required_repeated_value_value=required_repeated_value_value, required_repeated_list_value_value=required_repeated_list_value_value, required_repeated_time_value=required_repeated_time_value, required_repeated_duration_value=required_repeated_duration_value, required_repeated_field_mask_value=required_repeated_field_mask_value, required_repeated_int32_value=required_repeated_int32_value, required_repeated_uint32_value=required_repeated_uint32_value, required_repeated_int64_value=required_repeated_int64_value, required_repeated_uint64_value=required_repeated_uint64_value, required_repeated_float_value=required_repeated_float_value, required_repeated_double_value=required_repeated_double_value, required_repeated_string_value=required_repeated_string_value, required_repeated_bool_value=required_repeated_bool_value, required_repeated_bytes_value=required_repeated_bytes_value)
+        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_resource_name_common=required_singular_resource_name_common, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_resource_name_common=required_repeated_resource_name_common, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -8806,41 +8489,9 @@ class TestLibraryServiceClient(object):
         required_repeated_fixed32 = []
         required_repeated_fixed64 = []
         required_map = {}
-        required_any_value = {}
-        required_struct_value = {}
-        required_value_value = {}
-        required_list_value_value = {}
-        required_time_value = {}
-        required_duration_value = {}
-        required_field_mask_value = {}
-        required_int32_value = {}
-        required_uint32_value = {}
-        required_int64_value = {}
-        required_uint64_value = {}
-        required_float_value = {}
-        required_double_value = {}
-        required_string_value = {}
-        required_bool_value = {}
-        required_bytes_value = {}
-        required_repeated_any_value = []
-        required_repeated_struct_value = []
-        required_repeated_value_value = []
-        required_repeated_list_value_value = []
-        required_repeated_time_value = []
-        required_repeated_duration_value = []
-        required_repeated_field_mask_value = []
-        required_repeated_int32_value = []
-        required_repeated_uint32_value = []
-        required_repeated_int64_value = []
-        required_repeated_uint64_value = []
-        required_repeated_float_value = []
-        required_repeated_double_value = []
-        required_repeated_string_value = []
-        required_repeated_bool_value = []
-        required_repeated_bytes_value = []
 
         with pytest.raises(CustomException):
-            client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+            client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
     def test_move_books(self):
         # Setup Expected Response

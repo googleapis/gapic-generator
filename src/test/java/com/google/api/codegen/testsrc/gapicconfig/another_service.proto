@@ -1,0 +1,39 @@
+// (-- Library API for toolkit testing purposes --)
+
+syntax = "proto3";
+
+package google.example.library.v1;
+
+import "google/api/annotations.proto";
+
+service MyProto {
+  rpc MyMethod(MethodRequest) returns (MethodResponse) {
+    option (google.api.http) = { post: "/v1/myMethod" body: "*" };
+  };
+
+  // Define a service with a reserved name
+  rpc GetNamespace(MethodRequest) returns (Namespace) {
+    option (google.api.http) = { post: "/v1/myMethod" body: "*" };
+  }
+}
+
+message MethodRequest {
+  repeated SubMessage mylist = 1;
+  SubMessage myfield = 2;
+  SubMessage secondfield = 3;
+
+}
+
+message SubMessage {
+  string subfield = 1;
+  string subsecondfield = 2;
+}
+
+message MethodResponse {
+  string myfield = 1;
+}
+
+// Define a message with a reserved name
+message Namespace {
+  string value = 1;
+}
