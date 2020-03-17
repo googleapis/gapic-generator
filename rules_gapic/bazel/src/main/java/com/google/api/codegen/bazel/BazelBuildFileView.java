@@ -79,7 +79,7 @@ class BazelBuildFileView {
     tokens.put(
         "java_gapic_test_deps", joinSetWithIndentationNl(mapJavaGapicTestDeps(actualImports)));
 
-    tokens.put("go_gapic_importpath", bp.getLangGapicPackages().get("go"));
+    tokens.put("go_gapic_importpath", bp.getLangGapicPackages().get("go").split(";")[0]);
     tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
   }
 
