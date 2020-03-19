@@ -251,7 +251,6 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-
     for (SingleResourceNameConfig resourceNameConfig :
         getSingleResourceNameConfigsUsedByInterface(context)) {
       FormatResourceFunctionView.Builder function =
@@ -315,6 +314,7 @@ public class PathTemplateTransformer {
       GapicInterfaceContext context) {
     List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
+
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         getSingleResourceNameConfigsUsedByInterface(context)) {
