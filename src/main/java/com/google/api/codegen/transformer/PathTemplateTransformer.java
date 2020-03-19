@@ -251,7 +251,6 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    ImmutableList.Builder<FormatResourceFunctionView> functions = ImmutableList.builder();
 
     for (SingleResourceNameConfig resourceNameConfig :
         getSingleResourceNameConfigsUsedByInterface(context)) {
@@ -277,7 +276,7 @@ public class PathTemplateTransformer {
       }
       function.resourceIdParams(resourceIdParams);
 
-      functions.add(function);
+      functions.add(function.build());
     }
 
     return functions;
@@ -309,7 +308,7 @@ public class PathTemplateTransformer {
       }
     }
 
-    return ImmutableList.copyOf(functions);
+    return functions;
   }
 
   public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
