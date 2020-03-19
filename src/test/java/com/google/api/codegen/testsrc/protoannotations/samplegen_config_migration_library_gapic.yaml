@@ -1,3 +1,6 @@
+# Clone a gapic config for samplegen config migration comparison.
+# The baselines should be exactly the same when generating using this file
+# or the sample configs in common/samples, after the migration is finished.
 type: com.google.api.codegen.ConfigProto
 config_schema_version: 1.0.0
 language_settings:
@@ -20,7 +23,6 @@ language_settings:
     # from the gRPC package name of the API to test the generated
     # code. See: https://github.com/googleapis/toolkit/issues/309
     package_name: Library::V1
-    release_level: GA
   # Use default PHP package name.
   nodejs:
     package_name: library.v1
@@ -39,25 +41,12 @@ collections:
     entity_name: archived_book
   - name_pattern: _deleted-book_
     entity_name: deleted_book
-  - name_pattern: projects/{project}/books/{book}
-    entity_name: project_book
-  - name_pattern: projects/{project}
-    entity_name: project
-  - name_pattern: projects/{project}/locations/{location}
-    entity_name: location
-  - name_pattern: folders/{folder}
-    entity_name: folder
 collection_oneofs:
   - oneof_name: book_oneof
     collection_names:
     - book
     - archived_book
     - deleted_book
-    - project_book
-  - oneof_name: location_parent_oneof
-    collection_names:
-      - project
-      - location
 interfaces:
 - name: google.example.library.v1.MyProto
   retry_codes_def:
@@ -233,7 +222,18 @@ interfaces:
       description: "Test default response handling is turned off for methods that return empty"
     samples:
       standalone:
-      - calling_forms: ".*"
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: [request]
         value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
   - name: MergeShelves
     flattening:
@@ -301,7 +301,7 @@ interfaces:
     sample_code_init_fields:
     - series_uuid.series_string=foobar
     sample_value_sets:
-      # callingFormCheck: pi_version java: Flattened Request Callable
+      # callingFormCheck: pi_version java: Request
       # callingFormCheck: pi_version nodejs: Request
       # callingFormCheck: pi_version py: Request
     - id: pi_version
@@ -357,7 +357,7 @@ interfaces:
       - print:
         - "series_uuid: %s"
         - $resp.series_uuid.series_bytes
-      # callingFormCheck: second_edition java: Flattened Request Callable
+      # callingFormCheck: second_edition java: Request
       # callingFormCheck: second_edition nodejs: Request
       # callingFormCheck: second_edition py: Request
     - id: second_edition
@@ -411,24 +411,27 @@ interfaces:
             - "series_uuid_in_plain_text.txt"
             contents: $resp.series_uuid.series_string
     samples:
-      in_code:
-      - calling_forms: [callable]
-        value_sets: [pi_version]
-      api_explorer:
-      - calling_forms: [request_based, callable]
-        value_sets: [second_edition, pi_version]
-      - calling_forms: callable
-        value_sets: [pi_version]
       standalone:
-      - calling_forms: ".*"
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id is unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: request
         value_sets: [second_edition, pi_version]
         region_tag: "canonical"
-      - calling_forms: callable
-        value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
       - calling_forms: request
         value_sets: ["test_request_object_field_comments"]
+        region_tag: publish_series_test_request_object_field_comments
       - calling_forms: request
         value_sets: ["test_write_to_file"]
+        region_tag: publish_series_test_write_to_file
   - name: GetBook
     flattening:
       groups:
@@ -467,11 +470,19 @@ interfaces:
           - "Test printing enum fields of a map value: %s"
           - $resp.map_message_value{"key"}.alignment
     samples:
-      in_code:
-      - calling_forms: "foo"
-        value_sets: not_here
       standalone:
-      - calling_forms: ".*"
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Change the regex `.*` to request so that we can "predict" the what the filenames would
+      #   be generated for these two value sets in the gapic config, and hardcode them in the
+      #   sample config.
+      - calling_forms: "request"
         value_sets: test_on_success_map
   - name: ListBooks
     flattening:
@@ -595,16 +606,13 @@ interfaces:
       groups:
       - parameters:
         - name
-        - parent
     required_fields:
       - name
-      - parent
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
     field_name_patterns:
       name: archived_book
-      parent: location_parent_oneof
     surface_treatments:
       - include_languages:
           - go
@@ -615,21 +623,15 @@ interfaces:
       - parameters:
         - name
         - alt_book_name
-        - place
-        - folder
     required_fields:
       - name
       - alt_book_name
-      - place
-      - folder
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 10000
     field_name_patterns:
       name: book_oneof
       alt_book_name: book
-      place: location
-      folder: folder
   - name: GetBookFromAbsolutelyAnywhere
     flattening:
       groups:
@@ -700,23 +702,32 @@ interfaces:
             - name
     required_fields:
       - name
-    sample_value_sets:
-      # callingFormCheck: empty java: CallableStreamingServer
-      # callingFormCheck: empty nodejs: RequestStreamingServer
-      # callingFormCheck: empty py: RequestStreamingServer
-    - id: empty
-      title: "Server streaming"
-      description: "Testing calling forms"
-    samples:
-      in_code:
-      - calling_forms: ".*"
-        value_sets: ".*"
-      standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
-      api_explorer:
-      - calling_forms: ".*"
-        value_sets: ".*"
+    #
+    # This set of tests were to test that gapic-generator correctly
+    # generates all the valid combinations of value sets and calling forms
+    # Now that we are flattening the config, we won't need to test
+    # this behavior any more.
+    #
+    # They are commented out instead of deleted just for reference.
+    # Once the migration is over delete them.
+    #
+    # sample_value_sets:
+    #   # callingFormCheck: empty java: CallableStreamingServer
+    #   # callingFormCheck: empty nodejs: RequestStreamingServer
+    #   # callingFormCheck: empty py: RequestStreamingServer
+    # - id: empty
+    #   title: "Server streaming"
+    #   description: "Testing calling forms"
+    # samples:
+    #   in_code:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
+    #   standalone:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
+    #   api_explorer:
+    #   - calling_forms: ".*"
+    #     value_sets: ".*"
   - name: StreamBooks
     flattening:
       groups:
@@ -738,9 +749,6 @@ interfaces:
         defaults:
         - name=BASIC
     samples:
-      in_code:
-      - calling_forms: ".*"
-        value_sets: ".*"
       standalone:
       # Python only
       - calling_forms: request_streaming_server
@@ -750,9 +758,6 @@ interfaces:
       - calling_forms: callable_streaming_server
         value_sets: "prog"
         region_tag: babbage
-      api_explorer:
-      - calling_forms: ".*"
-        value_sets: ".*"
   - name: DiscussBook
     # required_fields makes a difference on sample code.
     required_fields:
@@ -784,16 +789,32 @@ interfaces:
         - parameter: comment.stage
           sample_argument_name: stage
     samples:
-      in_code:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Behavior change:
+      # gapic config: %v and %c can be placeholders for value set ids and calling form names
+      #   in region tags.
+      # sample config: value set id does not exist any more.
+      #
+      # Change region tag to `turing`.
+      #
+      # Note, technically it's still possible to use %c as placeholders for calling form names,
+      # but this feature is not needed for production use, as existing users don't forsee
+      # the case where they need calling form/calling pattern at all for the moment. Thus to
+      # make the migration easier and faster, we will not support this feature in the sample config,
+      # at least for now.
+      #
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Remove the regex `.*` to use the default calling form so that the filenames would
+      #   the same as the region_tag.
       standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
-        region_tag: "turing_%v_%c"
-      api_explorer:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      - value_sets: ".*"
+        region_tag: "turing"
   - name: MonologAboutBook
     # required_fields makes a difference on sample code.
     required_fields:
@@ -818,15 +839,21 @@ interfaces:
           - "The stage of the comment is: %s"
           - $resp.stage
     samples:
-      in_code:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Add a region_tag `sample_monolog_about_book` here. It would be unique as there
+      #   is only one calling form for client-streaming methods in one language, and therefore
+      #   it will be used as the sample filename.
       standalone:
       - calling_forms: ".*"
         value_sets: ".*"
-      api_explorer:
-      - calling_forms: ".*"
-        value_sets: ".*"
+        region_tag: "sample_monolog_about_book"
   - name: BabbleAboutBook
     field_name_patterns:
       name: book
@@ -840,10 +867,24 @@ interfaces:
     - id: empty_response_type_without_response_handling
       title: "Test default response handling is turned off for methods that return empty"
       description: "Test default response handling is turned off for methods that return empty"
+    # Behavior change:
+    # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+    #   sample filename by concatinating method name, calling form, sample value set id
+    # sample config: if region_tag and id are unspecified, generator should auto-generate
+    #   a unique filename for the sample. The generator will be unable to generate the same
+    #   filename as in the gapic config because there is no `sample value set id` in the 
+    #   sample config.
+    #
+    # Add region_tags here. They are both unique and therefore will be used as the
+    # sample filenames.
     samples:
       standalone:
       - calling_forms: ".*"
-        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+        value_sets: [empty_response_type_with_response_handling]
+        region_tag: babble_about_book_1
+      - calling_forms: ".*"
+        value_sets: [empty_response_type_without_response_handling]
+        region_tag: babble_about_book_2
   - name: FindRelatedBooks
     flattening:
       groups:
@@ -872,9 +913,9 @@ interfaces:
     #- names[1]%shelf=my_shelf
     #- names[1]%book=my_first_book
     sample_value_sets:
-      # callingFormCheck: odyssey java: FlattenedPaged RequestPaged CallableList CallablePaged
-      # callingFormCheck: odyssey nodejs: RequestAsyncPaged RequestAsyncPagedAll
-      # callingFormCheck: odyssey py: RequestPaged RequestPagedAll
+      # callingFormCheck: odyssey java: RequestPaged
+      # callingFormCheck: odyssey nodejs: RequestAsyncPagedAll
+      # callingFormCheck: odyssey py: RequestPagedAll
     - id: odyssey
       title: "The Odyssey"
       description: "Testing calling forms"
@@ -888,14 +929,18 @@ interfaces:
           - 'Here''s a related book: %s'
           - book
     samples:
-      in_code:
-      - calling_forms: ".*"
-        value_sets: odyssey
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Remove the regex calling forms to use the default one. Add a unique region tag so
+      #   that the region tag will become the filenames of the samples.
       standalone:
-      - calling_forms: ".*"
-        value_sets: odyssey
-      api_explorer:
-      - calling_forms: ".*"
+      - region_tag: find_related_books_odyssey
         value_sets: odyssey
   - name: AddTag
     flattening:
@@ -962,8 +1007,8 @@ interfaces:
       max_poll_delay_millis: 30000
       total_poll_timeout_millis: 86400000
     sample_value_sets:
-      # callingFormCheck: wap java: LongRunningFlattenedAsync LongRunningRequestAsync Callable LongRunningCallable
-      # callingFormCheck: wap nodejs: LongRunningEventEmitter LongRunningPromise
+      # callingFormCheck: wap java: LongRunningRequestAsync
+      # callingFormCheck: wap nodejs: LongRunningPromiseAwait
       # callingFormCheck: wap py: LongRunningPromise
     - id: wap
       title: "GetBigBook: 'War and Peace'"
@@ -1027,10 +1072,20 @@ interfaces:
           description: "The name of the book."
     samples:
       standalone:
-      - calling_forms: ".*"
-        value_sets: ".*"
+      # Behavior change:
+      # gapic config: if region_tag is unspecified or region_tag is not unique, derive the 
+      #   sample filename by concatinating method name, calling form, sample value set id
+      # sample config: if region_tag and id are unspecified, generator should auto-generate
+      #   a unique filename for the sample. The generator will be unable to generate the same
+      #   filename as in the gapic config because there is no `sample value set id` in the 
+      #   sample config.
+      #
+      # Rearrange the samples to use default calling forms. Since region tags are unique
+      #   they becomes the filenames.
+      # 
+      - value_sets: [wap]
         region_tag: hopper
-      - value_sets: wap
+      - value_sets: [wap2]
         region_tag: "this_tag_should_be_the_name_of_the_file"
   - name: GetBigNothing
     flattening:
@@ -1063,8 +1118,10 @@ interfaces:
       description: "Test default response handling is turned off for methods that return empty"
     samples:
       standalone:
-      - calling_forms: ".*"
-        value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+      - value_sets: [empty_response_type_with_response_handling]
+        region_tag: empty_response_type_with_response_handling
+      - value_sets: [empty_response_type_without_response_handling]
+        region_tag: empty_response_type_without_response_handling
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:
@@ -1099,38 +1156,6 @@ interfaces:
         - required_repeated_fixed32
         - required_repeated_fixed64
         - required_map
-        - required_any_value
-        - required_struct_value
-        - required_value_value
-        - required_list_value_value
-        - required_time_value
-        - required_duration_value
-        - required_field_mask_value
-        - required_int32_value
-        - required_uint32_value
-        - required_int64_value
-        - required_uint64_value
-        - required_float_value
-        - required_double_value
-        - required_string_value
-        - required_bool_value
-        - required_bytes_value
-        - required_repeated_any_value
-        - required_repeated_struct_value
-        - required_repeated_value_value
-        - required_repeated_list_value_value
-        - required_repeated_time_value
-        - required_repeated_duration_value
-        - required_repeated_field_mask_value
-        - required_repeated_int32_value
-        - required_repeated_uint32_value
-        - required_repeated_int64_value
-        - required_repeated_uint64_value
-        - required_repeated_float_value
-        - required_repeated_double_value
-        - required_repeated_string_value
-        - required_repeated_bool_value
-        - required_repeated_bytes_value
         - optional_singular_int32
         - optional_singular_int64
         - optional_singular_float
@@ -1222,38 +1247,6 @@ interfaces:
     - required_repeated_fixed32
     - required_repeated_fixed64
     - required_map
-    - required_any_value
-    - required_struct_value
-    - required_value_value
-    - required_list_value_value
-    - required_time_value
-    - required_duration_value
-    - required_field_mask_value
-    - required_int32_value
-    - required_uint32_value
-    - required_int64_value
-    - required_uint64_value
-    - required_float_value
-    - required_double_value
-    - required_string_value
-    - required_bool_value
-    - required_bytes_value
-    - required_repeated_any_value
-    - required_repeated_struct_value
-    - required_repeated_value_value
-    - required_repeated_list_value_value
-    - required_repeated_time_value
-    - required_repeated_duration_value
-    - required_repeated_field_mask_value
-    - required_repeated_int32_value
-    - required_repeated_uint32_value
-    - required_repeated_int64_value
-    - required_repeated_uint64_value
-    - required_repeated_float_value
-    - required_repeated_double_value
-    - required_repeated_string_value
-    - required_repeated_bool_value
-    - required_repeated_bytes_value
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -1338,13 +1331,10 @@ resource_name_generation:
 - message_name: GetBookFromArchiveRequest
   field_entity_map:
     name: archived_book
-    parent: location_parent_oneof
 - message_name: GetBookFromAnywhereRequest
   field_entity_map:
     name: book_oneof
     alt_book_name: book_oneof
-    place: location
-    folder: folder
 - message_name: GetBookFromAbsolutelyAnywhereRequest
   field_entity_map:
     name: "*"

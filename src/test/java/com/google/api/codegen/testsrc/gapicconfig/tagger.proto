@@ -1,0 +1,67 @@
+// (-- Tagger API mixin for toolkit testing purposes --)
+
+syntax = "proto3";
+
+package google.tagger.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+
+option php_namespace = "Google\\Tagger\\CustomNamespace\\V1";
+option java_multiple_files = false;
+option java_outer_classname = "TaggerProto";
+option java_package = "com.google.tagger.v1";
+option go_package = "google.golang.org/genproto/googleapis/tagger/v1";
+
+// Tagger mixin.
+service Tagger {
+
+  // Adds a tag to the entity.
+  rpc AddTag(AddTagRequest) returns (AddTagResponse) {
+    option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addTag" body: "*" };
+  }
+}
+
+// Labeler mixin.
+service Labeler {
+
+  // Adds a label to the entity.
+  rpc AddLabel(AddLabelRequest) returns (AddLabelResponse) {
+    option (google.api.http) = { post: "/v1/{resource=bookShelves/*/books/*}:addLabel" body: "*" };
+  }
+}
+
+message AddTagRequest {
+  // REQUIRED: The resource which the tag is being added to.
+  // In the form "shelves/{shelf_id}/books/{book_id}".
+  string resource = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "*"];
+
+  // REQUIRED: The tag to add.
+  string tag = 2  [
+    (google.api.field_behavior) = REQUIRED];
+}
+
+message AddLabelRequest {
+  // REQUIRED: The resource which the label is being added to.
+  string resource = 1  [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "*"
+  ];
+
+  // REQUIRED: The label to add.
+  string label = 2  [
+    (google.api.field_behavior) = REQUIRED];
+}
+
+// Response message for the `AddTag` method.
+message AddTagResponse {
+  // empty for now
+}
+
+// Response message for the `AddLabel` method.
+message AddLabelResponse {
+  // empty for now
+}

@@ -39,7 +39,7 @@ public class GapicConfigProducerTest {
   @Test
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/protoannotations");
     Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
@@ -60,7 +60,7 @@ public class GapicConfigProducerTest {
   @Test
   public void missingInterface() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/protoannotations");
     Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
@@ -82,7 +82,7 @@ public class GapicConfigProducerTest {
   @Test
   public void testCreateProductWithGRPCServiceConfig() {
     TestDataLocator locator = MixedPathTestDataLocator.create(this.getClass());
-    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/common");
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc/protoannotations");
 
     Model model =
         CodegenTestUtil.readModel(

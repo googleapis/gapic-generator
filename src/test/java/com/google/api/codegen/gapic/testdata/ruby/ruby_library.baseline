@@ -303,7 +303,7 @@ response = library_client.update_book(formatted_name, book)
 - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
   to see the full list of Cloud APIs that we cover.
 
-[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/example/library/v1
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library
 [Product Documentation]: https://cloud.google.com/library
 
 ## Enabling Logging
@@ -2092,8 +2092,6 @@ module Google
         # @!attribute [rw] rating
         #   @return [Google::Example::Library::V1::Book::Rating]
         #     For testing enums.
-        # @!attribute [rw] reader
-        #   @return [String]
         # @!attribute [rw] any_value
         #   @return [Google::Protobuf::Any]
         #     For testing all well-known types.
@@ -3036,29 +3034,11 @@ module Library
 
       private_constant :BOOK_PATH_TEMPLATE
 
-      FOLDER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "folders/{folder}"
-      )
-
-      private_constant :FOLDER_PATH_TEMPLATE
-
-      LOCATION_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "projects/{project}/locations/{location}"
-      )
-
-      private_constant :LOCATION_PATH_TEMPLATE
-
       PROJECT_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}"
       )
 
       private_constant :PROJECT_PATH_TEMPLATE
-
-      PROJECT_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "projects/{project}/books/{book}"
-      )
-
-      private_constant :PROJECT_BOOK_PATH_TEMPLATE
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf}"
@@ -3088,43 +3068,12 @@ module Library
         )
       end
 
-      # Returns a fully-qualified folder resource name string.
-      # @param folder [String]
-      # @return [String]
-      def self.folder_path folder
-        FOLDER_PATH_TEMPLATE.render(
-          :"folder" => folder
-        )
-      end
-
-      # Returns a fully-qualified location resource name string.
-      # @param project [String]
-      # @param location [String]
-      # @return [String]
-      def self.location_path project, location
-        LOCATION_PATH_TEMPLATE.render(
-          :"project" => project,
-          :"location" => location
-        )
-      end
-
       # Returns a fully-qualified project resource name string.
       # @param project [String]
       # @return [String]
       def self.project_path project
         PROJECT_PATH_TEMPLATE.render(
           :"project" => project
-        )
-      end
-
-      # Returns a fully-qualified project_book resource name string.
-      # @param project [String]
-      # @param book [String]
-      # @return [String]
-      def self.project_book_path project, book
-        PROJECT_BOOK_PATH_TEMPLATE.render(
-          :"project" => project,
-          :"book" => book
         )
       end
 
@@ -4113,12 +4062,11 @@ module Library
       #
       #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
-      #   formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
-      #   response = library_client.get_book_from_archive(formatted_name, formatted_parent)
+      #   response = library_client.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
           name,
-          parent,
+          parent: nil,
           options: nil,
           &block
         req = {
@@ -4152,15 +4100,13 @@ module Library
       #   library_client = Library::Library.new(version: :v1)
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
-      #   formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
-      #   formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
-      #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name, formatted_place, formatted_folder)
+      #   response = library_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
       def get_book_from_anywhere \
           name,
           alt_book_name,
-          place,
-          folder,
+          place: nil,
+          folder: nil,
           options: nil,
           &block
         req = {
@@ -4982,103 +4928,7 @@ module Library
       #
       #   # TODO: Initialize `required_map`:
       #   required_map = {}
-      #
-      #   # TODO: Initialize `required_any_value`:
-      #   required_any_value = {}
-      #
-      #   # TODO: Initialize `required_struct_value`:
-      #   required_struct_value = {}
-      #
-      #   # TODO: Initialize `required_value_value`:
-      #   required_value_value = {}
-      #
-      #   # TODO: Initialize `required_list_value_value`:
-      #   required_list_value_value = {}
-      #
-      #   # TODO: Initialize `required_time_value`:
-      #   required_time_value = {}
-      #
-      #   # TODO: Initialize `required_duration_value`:
-      #   required_duration_value = {}
-      #
-      #   # TODO: Initialize `required_field_mask_value`:
-      #   required_field_mask_value = {}
-      #
-      #   # TODO: Initialize `required_int32_value`:
-      #   required_int32_value = {}
-      #
-      #   # TODO: Initialize `required_uint32_value`:
-      #   required_uint32_value = {}
-      #
-      #   # TODO: Initialize `required_int64_value`:
-      #   required_int64_value = {}
-      #
-      #   # TODO: Initialize `required_uint64_value`:
-      #   required_uint64_value = {}
-      #
-      #   # TODO: Initialize `required_float_value`:
-      #   required_float_value = {}
-      #
-      #   # TODO: Initialize `required_double_value`:
-      #   required_double_value = {}
-      #
-      #   # TODO: Initialize `required_string_value`:
-      #   required_string_value = {}
-      #
-      #   # TODO: Initialize `required_bool_value`:
-      #   required_bool_value = {}
-      #
-      #   # TODO: Initialize `required_bytes_value`:
-      #   required_bytes_value = {}
-      #
-      #   # TODO: Initialize `required_repeated_any_value`:
-      #   required_repeated_any_value = []
-      #
-      #   # TODO: Initialize `required_repeated_struct_value`:
-      #   required_repeated_struct_value = []
-      #
-      #   # TODO: Initialize `required_repeated_value_value`:
-      #   required_repeated_value_value = []
-      #
-      #   # TODO: Initialize `required_repeated_list_value_value`:
-      #   required_repeated_list_value_value = []
-      #
-      #   # TODO: Initialize `required_repeated_time_value`:
-      #   required_repeated_time_value = []
-      #
-      #   # TODO: Initialize `required_repeated_duration_value`:
-      #   required_repeated_duration_value = []
-      #
-      #   # TODO: Initialize `required_repeated_field_mask_value`:
-      #   required_repeated_field_mask_value = []
-      #
-      #   # TODO: Initialize `required_repeated_int32_value`:
-      #   required_repeated_int32_value = []
-      #
-      #   # TODO: Initialize `required_repeated_uint32_value`:
-      #   required_repeated_uint32_value = []
-      #
-      #   # TODO: Initialize `required_repeated_int64_value`:
-      #   required_repeated_int64_value = []
-      #
-      #   # TODO: Initialize `required_repeated_uint64_value`:
-      #   required_repeated_uint64_value = []
-      #
-      #   # TODO: Initialize `required_repeated_float_value`:
-      #   required_repeated_float_value = []
-      #
-      #   # TODO: Initialize `required_repeated_double_value`:
-      #   required_repeated_double_value = []
-      #
-      #   # TODO: Initialize `required_repeated_string_value`:
-      #   required_repeated_string_value = []
-      #
-      #   # TODO: Initialize `required_repeated_bool_value`:
-      #   required_repeated_bool_value = []
-      #
-      #   # TODO: Initialize `required_repeated_bytes_value`:
-      #   required_repeated_bytes_value = []
-      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+      #   response = library_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -5110,38 +4960,38 @@ module Library
           required_repeated_fixed32,
           required_repeated_fixed64,
           required_map,
-          required_any_value,
-          required_struct_value,
-          required_value_value,
-          required_list_value_value,
-          required_time_value,
-          required_duration_value,
-          required_field_mask_value,
-          required_int32_value,
-          required_uint32_value,
-          required_int64_value,
-          required_uint64_value,
-          required_float_value,
-          required_double_value,
-          required_string_value,
-          required_bool_value,
-          required_bytes_value,
-          required_repeated_any_value,
-          required_repeated_struct_value,
-          required_repeated_value_value,
-          required_repeated_list_value_value,
-          required_repeated_time_value,
-          required_repeated_duration_value,
-          required_repeated_field_mask_value,
-          required_repeated_int32_value,
-          required_repeated_uint32_value,
-          required_repeated_int64_value,
-          required_repeated_uint64_value,
-          required_repeated_float_value,
-          required_repeated_double_value,
-          required_repeated_string_value,
-          required_repeated_bool_value,
-          required_repeated_bytes_value,
+          required_any_value: nil,
+          required_struct_value: nil,
+          required_value_value: nil,
+          required_list_value_value: nil,
+          required_time_value: nil,
+          required_duration_value: nil,
+          required_field_mask_value: nil,
+          required_int32_value: nil,
+          required_uint32_value: nil,
+          required_int64_value: nil,
+          required_uint64_value: nil,
+          required_float_value: nil,
+          required_double_value: nil,
+          required_string_value: nil,
+          required_bool_value: nil,
+          required_bytes_value: nil,
+          required_repeated_any_value: nil,
+          required_repeated_struct_value: nil,
+          required_repeated_value_value: nil,
+          required_repeated_list_value_value: nil,
+          required_repeated_time_value: nil,
+          required_repeated_duration_value: nil,
+          required_repeated_field_mask_value: nil,
+          required_repeated_int32_value: nil,
+          required_repeated_uint32_value: nil,
+          required_repeated_int64_value: nil,
+          required_repeated_uint64_value: nil,
+          required_repeated_float_value: nil,
+          required_repeated_double_value: nil,
+          required_repeated_string_value: nil,
+          required_repeated_bool_value: nil,
+          required_repeated_bytes_value: nil,
           optional_singular_int32: nil,
           optional_singular_int64: nil,
           optional_singular_float: nil,
@@ -5473,7 +5323,6 @@ module Library
       #   Value indicating whether the book has been read.
       # @param rating [Google::Example::Library::V1::Book::Rating]
       #   For testing enums.
-      # @param reader [String]
       # @param any_value [Google::Protobuf::Any | Hash]
       #   For testing all well-known types.
       #   A hash of the same form as `Google::Protobuf::Any`
@@ -5566,7 +5415,6 @@ module Library
           title: nil,
           read: nil,
           rating: nil,
-          reader: nil,
           any_value: nil,
           struct_value: nil,
           value_value: nil,
@@ -5596,7 +5444,6 @@ module Library
           title: title,
           read: read,
           rating: rating,
-          reader: reader,
           any_value: any_value,
           struct_value: struct_value,
           value_value: value_value,
@@ -6206,6 +6053,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = ">= 2.0.0"
 
   gem.add_dependency "google-gax", "~> 1.3"
+  gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "redcarpet", "~> 3.0"
@@ -6217,8 +6065,8 @@ end
 ============== file: samples/Gemfile ==============
 source "https://rubygems.org"
 
-gem "google-example-library", path: "../../"
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb ==============
+gem "google-cloud-library", path: "../../"
+============== file: samples/v1/babble_about_book_1.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6233,16 +6081,16 @@ gem "google-example-library", path: "../../"
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_1")
 
 # sample-metadata
 #   title: Test response handling for methods that return empty
 #   description: Test response handling for methods that return empty
-#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_with_response_handling.rb
+#   bundle exec ruby samples/v1/babble_about_book_1.rb
 
 require "library"
 
-# [START sample]
+# [START babble_about_book_1]
 
 # Test response handling for methods that return empty
 def sample_babble_about_book
@@ -6257,7 +6105,7 @@ def sample_babble_about_book
   # No one replied
   puts "No one replied."
 end
-# [END sample]
+# [END babble_about_book_1]
 
 
 require "optparse"
@@ -6266,7 +6114,7 @@ if $PROGRAM_NAME == __FILE__
   sample_babble_about_book
 end
 
-============== file: samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb ==============
+============== file: samples/v1/babble_about_book_2.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6281,16 +6129,16 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "empty_response_type_without_response_handling")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "babble_about_book_2")
 
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
 #   description: Test default response handling is turned off for methods that return empty
-#   bundle exec ruby samples/v1/babble_about_book_request_streaming_client_empty_response_type_without_response_handling.rb
+#   bundle exec ruby samples/v1/babble_about_book_2.rb
 
 require "library"
 
-# [START sample]
+# [START babble_about_book_2]
 
 # Test default response handling is turned off for methods that return empty
 def sample_babble_about_book
@@ -6302,7 +6150,7 @@ def sample_babble_about_book
   requests = [request]
   library_client.babble_about_book(requests)
 end
-# [END sample]
+# [END babble_about_book_2]
 
 
 require "optparse"
@@ -6326,7 +6174,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_with_response_handling")
+# DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_with_response_handling")
 
 # sample-metadata
 #   title: Test response handling for methods that return empty
@@ -6373,7 +6221,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "empty_response_type_without_response_handling")
+# DO NOT EDIT! This is a generated sample ("Request",  "delete_shelf_request_empty_response_type_without_response_handling")
 
 # sample-metadata
 #   title: Test default response handling is turned off for methods that return empty
@@ -6402,7 +6250,7 @@ if $PROGRAM_NAME == __FILE__
   sample_delete_shelf
 end
 
-============== file: samples/v1/find_related_books_request_paged_all_odyssey.rb ==============
+============== file: samples/v1/empty_response_type_with_response_handling.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6417,16 +6265,123 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "odyssey")
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
+
+# sample-metadata
+#   title: Test response handling for methods that return empty
+#   description: Test response handling for methods that return empty
+#   bundle exec ruby samples/v1/empty_response_type_with_response_handling.rb
+
+require "library"
+
+# [START empty_response_type_with_response_handling]
+
+# Test response handling for methods that return empty
+def sample_get_big_nothing
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_nothing(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  response = operation.response
+
+  # Got nothing
+  puts "Got nothing."
+end
+# [END empty_response_type_with_response_handling]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_big_nothing
+end
+
+============== file: samples/v1/empty_response_type_without_response_handling.rb ==============
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
+
+# sample-metadata
+#   title: Test default response handling is turned off for methods that return empty
+#   description: Test default response handling is turned off for methods that return empty
+#   bundle exec ruby samples/v1/empty_response_type_without_response_handling.rb
+
+require "library"
+
+# [START empty_response_type_without_response_handling]
+
+# Test default response handling is turned off for methods that return empty
+def sample_get_big_nothing
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
+
+  # Make the long-running operation request
+  operation = library_client.get_big_nothing(formatted_name)
+
+  # Block until operation complete
+  operation.wait_until_done!
+
+  raise operation.results.message if operation.error?
+
+  response = operation.response
+end
+# [END empty_response_type_without_response_handling]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_get_big_nothing
+end
+
+============== file: samples/v1/find_related_books_odyssey.rb ==============
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "find_related_books_odyssey")
 
 # sample-metadata
 #   title: The Odyssey
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/find_related_books_request_paged_all_odyssey.rb
+#   bundle exec ruby samples/v1/find_related_books_odyssey.rb
 
 require "library"
 
-# [START sample]
+# [START find_related_books_odyssey]
 
 # Testing calling forms
 def sample_find_related_books
@@ -6444,7 +6399,7 @@ def sample_find_related_books
     puts "Here's a related book: #{book}"
   end
 end
-# [END sample]
+# [END find_related_books_odyssey]
 
 
 require "optparse"
@@ -6453,7 +6408,7 @@ if $PROGRAM_NAME == __FILE__
   sample_find_related_books
 end
 
-============== file: samples/v1/find_related_books_request_paged_odyssey.rb ==============
+============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6468,35 +6423,30 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPaged",  "odyssey")
+# DO NOT EDIT! This is a generated sample ("Request",  "get_book_request_test_on_success_map")
 
 # sample-metadata
-#   title: The Odyssey
-#   description: Testing calling forms
-#   bundle exec ruby samples/v1/find_related_books_request_paged_odyssey.rb
+#   title: test maps in response handling
+#   description: When there is a very long description for a sample file we can split
+#     the description into multiple lines and the samples will be just fine
+#   bundle exec ruby samples/v1/get_book_request_test_on_success_map.rb
 
 require "library"
 
 # [START sample]
 
-# Testing calling forms
-def sample_find_related_books
+def sample_get_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  names_element = "Odyssey"
-  names = [names_element]
-  shelves_element = "Classics"
-  shelves = [shelves_element]
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
 
-  # Iterate over results one page at a time.
-  library_client.find_related_books(formatted_names, formatted_shelves).each_page do |page|
-    # Process each page at a time.
-    page.each do |element|
-      book = element
-      puts "Here's a related book: #{book}"
-    end
-  end
+  response = library_client.get_book(formatted_name)
+  int_key_val = response.map_string_value[123]
+  boolean_key_val = response.map_bool_key[true]
+  map_value_field = response.map_message_value["key"].field
+  puts "Test printing map fields: #{response.map_list_value_value["quoted_key"].inspect}"
+  puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
 end
 # [END sample]
 
@@ -6504,10 +6454,10 @@ end
 require "optparse"
 
 if $PROGRAM_NAME == __FILE__
-  sample_find_related_books
+  sample_get_book
 end
 
-============== file: samples/v1/get_big_book_long_running_request_async_wap.rb ==============
+============== file: samples/v1/hopper.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -6522,12 +6472,12 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "hopper")
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap.rb [--shelf "Novel\\\"\`\b\t\n\r"]
+#   bundle exec ruby samples/v1/hopper.rb [--shelf "Novel\\\"\`\b\t\n\r"]
 
 require "library"
 
@@ -6587,233 +6537,6 @@ if $PROGRAM_NAME == __FILE__
   sample_get_big_book(shelf)
 end
 
-============== file: samples/v1/get_big_book_long_running_request_async_wap2.rb ==============
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap2")
-
-# sample-metadata
-#   title: GetBigBook: 'War and Peace'
-#   description: Testing resource name overlap
-#   bundle exec ruby samples/v1/get_big_book_long_running_request_async_wap2.rb [--shelf Novel] [--big_book_name "War and Peace"]
-
-require "library"
-
-# [START hopper]
-
-# Testing resource name overlap
-#
-# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
-# shelf to retrieve the big book from.
-# @param big_book_name {String} The name of the book.
-def sample_get_big_book shelf, big_book_name
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  # shelf = "Novel"
-  # big_book_name = "War and Peace"
-  formatted_name = library_client.class.book_path(shelf, big_book_name)
-
-  # Make the long-running operation request
-  operation = library_client.get_big_book(formatted_name)
-
-  # Block until operation complete
-  operation.wait_until_done!
-
-  raise operation.results.message if operation.error?
-
-  response = operation.response
-
-  puts response.inspect
-end
-# [END hopper]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-
-  shelf = "Novel"
-  big_book_name = "War and Peace"
-
-  ARGV.options do |opts|
-    opts.on("--shelf=val") { |val| shelf = val }
-    opts.on("--big_book_name=val") { |val| big_book_name = val }
-    opts.parse!
-  end
-
-
-  sample_get_big_book(shelf, big_book_name)
-end
-
-============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb ==============
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_with_response_handling")
-
-# sample-metadata
-#   title: Test response handling for methods that return empty
-#   description: Test response handling for methods that return empty
-#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_with_response_handling.rb
-
-require "library"
-
-# [START sample]
-
-# Test response handling for methods that return empty
-def sample_get_big_nothing
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
-
-  # Make the long-running operation request
-  operation = library_client.get_big_nothing(formatted_name)
-
-  # Block until operation complete
-  operation.wait_until_done!
-
-  raise operation.results.message if operation.error?
-
-  response = operation.response
-
-  # Got nothing
-  puts "Got nothing."
-end
-# [END sample]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-  sample_get_big_nothing
-end
-
-============== file: samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb ==============
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "empty_response_type_without_response_handling")
-
-# sample-metadata
-#   title: Test default response handling is turned off for methods that return empty
-#   description: Test default response handling is turned off for methods that return empty
-#   bundle exec ruby samples/v1/get_big_nothing_long_running_request_async_empty_response_type_without_response_handling.rb
-
-require "library"
-
-# [START sample]
-
-# Test default response handling is turned off for methods that return empty
-def sample_get_big_nothing
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
-
-  # Make the long-running operation request
-  operation = library_client.get_big_nothing(formatted_name)
-
-  # Block until operation complete
-  operation.wait_until_done!
-
-  raise operation.results.message if operation.error?
-
-  response = operation.response
-end
-# [END sample]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-  sample_get_big_nothing
-end
-
-============== file: samples/v1/get_book_request_test_on_success_map.rb ==============
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("Request",  "test_on_success_map")
-
-# sample-metadata
-#   title: test maps in response handling
-#   description: When there is a very long description for a sample file we can split
-#     the description into multiple lines and the samples will be just fine
-#   bundle exec ruby samples/v1/get_book_request_test_on_success_map.rb
-
-require "library"
-
-# [START sample]
-
-def sample_get_book
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
-
-  response = library_client.get_book(formatted_name)
-  int_key_val = response.map_string_value[123]
-  boolean_key_val = response.map_bool_key[true]
-  map_value_field = response.map_message_value["key"].field
-  puts "Test printing map fields: #{response.map_list_value_value["quoted_key"].inspect}"
-  puts "Test printing enum fields of a map value: #{response.map_message_value["key"].alignment}"
-end
-# [END sample]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-  sample_get_book
-end
-
 ============== file: samples/v1/lovelace.rb ==============
 # Copyright 2020 Google LLC
 #
@@ -6829,7 +6552,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "lovelace")
 
 # sample-metadata
 #   title: Programming Books
@@ -6860,54 +6583,6 @@ if $PROGRAM_NAME == __FILE__
   sample_stream_books
 end
 
-============== file: samples/v1/monolog_about_book_request_streaming_client_prog.rb ==============
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "prog")
-
-# sample-metadata
-#   title: Programming Books
-#   description: Testing calling forms
-#   bundle exec ruby samples/v1/monolog_about_book_request_streaming_client_prog.rb
-
-require "library"
-
-# [START sample]
-
-# Testing calling forms
-def sample_monolog_about_book
-  # Instantiate a client
-  library_client = Library::Library.new version: :v1
-
-  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
-  request = { name: formatted_name }
-
-  requests = [request]
-  response = library_client.monolog_about_book(requests, sample)
-
-  puts "The stage of the comment is: #{response.stage}"
-end
-# [END sample]
-
-
-require "optparse"
-
-if $PROGRAM_NAME == __FILE__
-  sample_monolog_about_book
-end
-
 ============== file: samples/v1/publish_series_request_pi_version.rb ==============
 # Copyright 2020 Google LLC
 #
@@ -6923,12 +6598,12 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "pi_version")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_pi_version")
 
 # sample-metadata
 #   title: Pi version
 #   description: Testing <@calling forms>
-#   bundle exec ruby samples/v1/publish_series_request_pi_version.rb [--shelf_name Math] [--edition 123]
+#   bundle exec ruby samples/v1/publish_series_request_pi_version.rb [--shelf_name "[Math]"] [--edition 123]
 
 require "library"
 
@@ -6942,7 +6617,7 @@ def sample_publish_series shelf_name, edition
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf_name = "Math"
+  # shelf_name = "[Math]"
   # edition = 123
   shelf = { name: shelf_name }
   books = []
@@ -6976,7 +6651,7 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf_name = "Math"
+  shelf_name = "[Math]"
   edition = 123
 
   ARGV.options do |opts|
@@ -7004,7 +6679,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "second_edition")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_request_second_edition")
 
 # sample-metadata
 #   title: Second edition
@@ -7037,7 +6712,7 @@ if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
 
-============== file: samples/v1/publish_series_request_test_request_object_field_comments.rb ==============
+============== file: samples/v1/publish_series_test_request_object_field_comments.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -7052,16 +6727,16 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_request_object_field_comments")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_request_object_field_comments")
 
 # sample-metadata
 #   title: request object field comments
 #   description: Test request object field comments
-#   bundle exec ruby samples/v1/publish_series_request_test_request_object_field_comments.rb
+#   bundle exec ruby samples/v1/publish_series_test_request_object_field_comments.rb
 
 require "library"
 
-# [START sample]
+# [START publish_series_test_request_object_field_comments]
 
 # Test request object field comments
 def sample_publish_series
@@ -7099,7 +6774,7 @@ def sample_publish_series
   response = library_client.publish_series(shelf, books, series_uuid, edition: edition)
   puts response.inspect
 end
-# [END sample]
+# [END publish_series_test_request_object_field_comments]
 
 
 require "optparse"
@@ -7108,7 +6783,7 @@ if $PROGRAM_NAME == __FILE__
   sample_publish_series
 end
 
-============== file: samples/v1/publish_series_request_test_write_to_file.rb ==============
+============== file: samples/v1/publish_series_test_write_to_file.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -7123,16 +6798,16 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_write_to_file")
+# DO NOT EDIT! This is a generated sample ("Request",  "publish_series_test_write_to_file")
 
 # sample-metadata
 #   title: test writing fields to files
 #   description: Testing write fields to files.
-#   bundle exec ruby samples/v1/publish_series_request_test_write_to_file.rb
+#   bundle exec ruby samples/v1/publish_series_test_write_to_file.rb
 
 require "library"
 
-# [START sample]
+# [START publish_series_test_write_to_file]
 
 # Testing write fields to files.
 def sample_publish_series
@@ -7153,7 +6828,7 @@ def sample_publish_series
   File.write "series_uuid_in_plain_text.txt", response.series_uuid.series_string
 
 end
-# [END sample]
+# [END publish_series_test_write_to_file]
 
 
 require "optparse"
@@ -7177,7 +6852,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("Request",  "test_default_calling_form_unary")
+# DO NOT EDIT! This is a generated sample ("Request",  "sample_get_shelf")
 
 # sample-metadata
 #   title: test_default_calling_form_unary
@@ -7208,7 +6883,7 @@ if $PROGRAM_NAME == __FILE__
   sample_get_shelf
 end
 
-============== file: samples/v1/stream_shelves_request_streaming_server_empty.rb ==============
+============== file: samples/v1/sample_monolog_about_book.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -7223,35 +6898,37 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingServer",  "empty")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingClient",  "sample_monolog_about_book")
 
 # sample-metadata
-#   title: Server streaming
+#   title: Programming Books
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/stream_shelves_request_streaming_server_empty.rb
+#   bundle exec ruby samples/v1/sample_monolog_about_book.rb
 
 require "library"
 
-# [START sample]
+# [START sample_monolog_about_book]
 
 # Testing calling forms
-def sample_stream_shelves
+def sample_monolog_about_book
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.shelf_path("[SHELF]")
+  formatted_name = library_client.class.book_path("[SHELF]", "[BOOK]")
+  request = { name: formatted_name }
 
-  library_client.stream_shelves(formatted_name).each do |element|
-    puts element.inspect
-  end
+  requests = [request]
+  response = library_client.monolog_about_book(requests, sample)
+
+  puts "The stage of the comment is: #{response.stage}"
 end
-# [END sample]
+# [END sample_monolog_about_book]
 
 
 require "optparse"
 
 if $PROGRAM_NAME == __FILE__
-  sample_stream_shelves
+  sample_monolog_about_book
 end
 
 ============== file: samples/v1/test_default_calling_form_for_paging.rb ==============
@@ -7269,7 +6946,7 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_paging")
+# DO NOT EDIT! This is a generated sample ("RequestPagedAll",  "test_default_calling_form_for_paging")
 
 # sample-metadata
 #   title: test default calling form for paging
@@ -7357,40 +7034,8 @@ def sample_test_optional_required_flattening_params param_float, param_long
   required_repeated_fixed32 = []
   required_repeated_fixed64 = []
   required_map = {}
-  required_any_value = {}
-  required_struct_value = {}
-  required_value_value = {}
-  required_list_value_value = {}
-  required_time_value = {}
-  required_duration_value = {}
-  required_field_mask_value = {}
-  required_int32_value = {}
-  required_uint32_value = {}
-  required_int64_value = {}
-  required_uint64_value = {}
-  required_float_value = {}
-  required_double_value = {}
-  required_string_value = {}
-  required_bool_value = {}
-  required_bytes_value = {}
-  required_repeated_any_value = []
-  required_repeated_struct_value = []
-  required_repeated_value_value = []
-  required_repeated_list_value_value = []
-  required_repeated_time_value = []
-  required_repeated_duration_value = []
-  required_repeated_field_mask_value = []
-  required_repeated_int32_value = []
-  required_repeated_uint32_value = []
-  required_repeated_int64_value = []
-  required_repeated_uint64_value = []
-  required_repeated_float_value = []
-  required_repeated_double_value = []
-  required_repeated_string_value = []
-  required_repeated_bool_value = []
-  required_repeated_bytes_value = []
 
-  response = library_client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+  response = library_client.test_optional_required_flattening_params(required_singular_int32, param_long, param_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, formatted_required_singular_resource_name, formatted_required_singular_resource_name_oneof, formatted_required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, formatted_required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map)
   puts response.inspect
 end
 # [END test_float_and_int64]
@@ -7442,7 +7087,7 @@ def sample_get_book_from_absolutely_anywhere
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  formatted_name = library_client.class.archived_book_path("The archive to search for the book", "The ID of the book")
+  formatted_name = library_client.class.book_path("[SHELF]", "The ID of the book")
 
   response = library_client.get_book_from_absolutely_anywhere(formatted_name)
   puts "Archived book found."
@@ -7549,6 +7194,57 @@ if $PROGRAM_NAME == __FILE__
   sample_get_shelf
 end
 
+============== file: samples/v1/testing_map.rb ==============
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# DO NOT EDIT! This is a generated sample ("Request",  "testing_map")
+
+# sample-metadata
+#   title: testing maps
+#   description: testing maps in request fields
+#   bundle exec ruby samples/v1/testing_map.rb
+
+require "library"
+
+# [START testing_map]
+
+# testing maps in request fields
+def sample_create_book
+  # Instantiate a client
+  library_client = Library::Library.new version: :v1
+
+  formatted_name = library_client.class.shelf_path("my_shelf")
+  map_string_value_item = "my_string_value"
+  map_string_value = { 1 => map_string_value_item }
+  field = 4147
+  map_message_value_item = { field: field }
+  map_message_value = { "something" => map_message_value_item }
+  book = { map_string_value: map_string_value, map_message_value: map_message_value }
+
+  response = library_client.create_book(formatted_name, book)
+  puts "Book created!"
+end
+# [END testing_map]
+
+
+require "optparse"
+
+if $PROGRAM_NAME == __FILE__
+  sample_create_book
+end
+
 ============== file: samples/v1/this_tag_should_be_the_name_of_the_file.rb ==============
 # Copyright 2020 Google LLC
 #
@@ -7564,24 +7260,29 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "wap")
+# DO NOT EDIT! This is a generated sample ("LongRunningRequestAsync",  "this_tag_should_be_the_name_of_the_file")
 
 # sample-metadata
 #   title: GetBigBook: 'War and Peace'
-#   description: Testing calling forms
-#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf "Novel\\\"\`\b\t\n\r"]
+#   description: Testing resource name overlap
+#   bundle exec ruby samples/v1/this_tag_should_be_the_name_of_the_file.rb [--shelf Novel] [--big_book_name "War and Peace"]
 
 require "library"
 
 # [START this_tag_should_be_the_name_of_the_file]
 
-# Testing calling forms
-def sample_get_big_book shelf
+# Testing resource name overlap
+#
+# @param shelf {String} Test word wrapping for long lines. This is a long comment. The name of the
+# shelf to retrieve the big book from.
+# @param big_book_name {String} The name of the book.
+def sample_get_big_book shelf, big_book_name
   # Instantiate a client
   library_client = Library::Library.new version: :v1
 
-  # shelf = "Novel\\\"`\b\t\n\r"
-  formatted_name = library_client.class.book_path(shelf, "War and Peace")
+  # shelf = "Novel"
+  # big_book_name = "War and Peace"
+  formatted_name = library_client.class.book_path(shelf, big_book_name)
 
   # Make the long-running operation request
   operation = library_client.get_big_book(formatted_name)
@@ -7593,23 +7294,7 @@ def sample_get_big_book shelf
 
   response = operation.response
 
-  # Testing iterating over map fields when both key and value are specified.
-  response.map_list_value_value.each do |my_key, my_value|
-    puts "key: #{my_key}, value: #{my_value.inspect}"
-  end
-
-  # Testing iterating over map fields when only key is specified.
-  response.map_list_value_value.keys.each do |another_key|
-    puts "key: #{another_key}"
-  end
-
-  # Testing iterating over map fields when only value is specified.
-  response.map_list_value_value.values.each do |another_value|
-    puts "value: #{another_value.inspect}"
-  end
-
-  puts "name: #{response.name}"
-  puts "author: #{response.author}"
+  puts response.inspect
 end
 # [END this_tag_should_be_the_name_of_the_file]
 
@@ -7618,18 +7303,20 @@ require "optparse"
 
 if $PROGRAM_NAME == __FILE__
 
-  shelf = "Novel\\\"`\b\t\n\r"
+  shelf = "Novel"
+  big_book_name = "War and Peace"
 
   ARGV.options do |opts|
     opts.on("--shelf=val") { |val| shelf = val }
+    opts.on("--big_book_name=val") { |val| big_book_name = val }
     opts.parse!
   end
 
 
-  sample_get_big_book(shelf)
+  sample_get_big_book(shelf, big_book_name)
 end
 
-============== file: samples/v1/turing_prog_request_streaming_bidi.rb ==============
+============== file: samples/v1/turing.rb ==============
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -7644,16 +7331,16 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "prog")
+# DO NOT EDIT! This is a generated sample ("RequestStreamingBidi",  "turing")
 
 # sample-metadata
 #   title: Programming Books
 #   description: Testing calling forms
-#   bundle exec ruby samples/v1/turing_prog_request_streaming_bidi.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
+#   bundle exec ruby samples/v1/turing.rb [--image_file_name "image_file.jpg"] [--stage DRAFT]
 
 require "library"
 
-# [START turing_prog_request_streaming_bidi]
+# [START turing]
 
 # Testing calling forms
 def sample_discuss_book image_file_name, stage
@@ -7677,7 +7364,7 @@ def sample_discuss_book image_file_name, stage
     puts element.inspect
   end
 end
-# [END turing_prog_request_streaming_bidi]
+# [END turing]
 
 
 require "optparse"
@@ -8161,13 +7848,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8351,13 +8036,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8581,13 +8264,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8669,13 +8350,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8907,7 +8586,6 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes get_book_from_archive without error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
-      formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -8926,7 +8604,6 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(formatted_parent, request.parent)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
@@ -8939,13 +8616,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.get_book_from_archive(formatted_name, formatted_parent)
+          response = client.get_book_from_archive(formatted_name)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_book_from_archive(formatted_name, formatted_parent) do |response, operation|
+          client.get_book_from_archive(formatted_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -8957,13 +8634,11 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes get_book_from_archive with error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK]")
-      formatted_parent = Library::V1::LibraryServiceClient.project_path("[PROJECT]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(formatted_parent, request.parent)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_archive, mock_method)
@@ -8977,7 +8652,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.get_book_from_archive(formatted_name, formatted_parent)
+            client.get_book_from_archive(formatted_name)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -8994,8 +8669,6 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
-      formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
-      formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
@@ -9015,8 +8688,6 @@ describe Library::V1::LibraryServiceClient do
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
-        assert_equal(formatted_place, request.place)
-        assert_equal(formatted_folder, request.folder)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
@@ -9029,23 +8700,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.get_book_from_anywhere(
-            formatted_name,
-            formatted_alt_book_name,
-            formatted_place,
-            formatted_folder
-          )
+          response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.get_book_from_anywhere(
-            formatted_name,
-            formatted_alt_book_name,
-            formatted_place,
-            formatted_folder
-          ) do |response, operation|
+          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -9058,16 +8719,12 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
       formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
-      formatted_place = Library::V1::LibraryServiceClient.location_path("[PROJECT]", "[LOCATION]")
-      formatted_folder = Library::V1::LibraryServiceClient.folder_path("[FOLDER]")
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
-        assert_equal(formatted_place, request.place)
-        assert_equal(formatted_folder, request.folder)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:get_book_from_anywhere, mock_method)
@@ -9081,12 +8738,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.get_book_from_anywhere(
-              formatted_name,
-              formatted_alt_book_name,
-              formatted_place,
-              formatted_folder
-            )
+            client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -9350,13 +9002,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -9787,13 +9437,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
       result = Google::Protobuf::Any.new
@@ -10044,38 +9692,6 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
-      required_any_value = {}
-      required_struct_value = {}
-      required_value_value = {}
-      required_list_value_value = {}
-      required_time_value = {}
-      required_duration_value = {}
-      required_field_mask_value = {}
-      required_int32_value = {}
-      required_uint32_value = {}
-      required_int64_value = {}
-      required_uint64_value = {}
-      required_float_value = {}
-      required_double_value = {}
-      required_string_value = {}
-      required_bool_value = {}
-      required_bytes_value = {}
-      required_repeated_any_value = []
-      required_repeated_struct_value = []
-      required_repeated_value_value = []
-      required_repeated_list_value_value = []
-      required_repeated_time_value = []
-      required_repeated_duration_value = []
-      required_repeated_field_mask_value = []
-      required_repeated_int32_value = []
-      required_repeated_uint32_value = []
-      required_repeated_int64_value = []
-      required_repeated_uint64_value = []
-      required_repeated_float_value = []
-      required_repeated_double_value = []
-      required_repeated_string_value = []
-      required_repeated_bool_value = []
-      required_repeated_bytes_value = []
 
       # Create expected grpc response
       expected_response = {}
@@ -10116,86 +9732,6 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
-        assert_equal(Google::Gax::to_proto(required_any_value, Google::Protobuf::Any), request.required_any_value)
-        assert_equal(Google::Gax::to_proto(required_struct_value, Google::Protobuf::Struct), request.required_struct_value)
-        assert_equal(Google::Gax::to_proto(required_value_value, Google::Protobuf::Value), request.required_value_value)
-        assert_equal(Google::Gax::to_proto(required_list_value_value, Google::Protobuf::ListValue), request.required_list_value_value)
-        assert_equal(Google::Gax::to_proto(required_time_value, Google::Protobuf::Timestamp), request.required_time_value)
-        assert_equal(Google::Gax::to_proto(required_duration_value, Google::Protobuf::Duration), request.required_duration_value)
-        assert_equal(Google::Gax::to_proto(required_field_mask_value, Google::Protobuf::FieldMask), request.required_field_mask_value)
-        assert_equal(Google::Gax::to_proto(required_int32_value, Google::Protobuf::Int32Value), request.required_int32_value)
-        assert_equal(Google::Gax::to_proto(required_uint32_value, Google::Protobuf::UInt32Value), request.required_uint32_value)
-        assert_equal(Google::Gax::to_proto(required_int64_value, Google::Protobuf::Int64Value), request.required_int64_value)
-        assert_equal(Google::Gax::to_proto(required_uint64_value, Google::Protobuf::UInt64Value), request.required_uint64_value)
-        assert_equal(Google::Gax::to_proto(required_float_value, Google::Protobuf::FloatValue), request.required_float_value)
-        assert_equal(Google::Gax::to_proto(required_double_value, Google::Protobuf::DoubleValue), request.required_double_value)
-        assert_equal(Google::Gax::to_proto(required_string_value, Google::Protobuf::StringValue), request.required_string_value)
-        assert_equal(Google::Gax::to_proto(required_bool_value, Google::Protobuf::BoolValue), request.required_bool_value)
-        assert_equal(Google::Gax::to_proto(required_bytes_value, Google::Protobuf::BytesValue), request.required_bytes_value)
-        required_repeated_any_value = required_repeated_any_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Any)
-        end
-        assert_equal(required_repeated_any_value, request.required_repeated_any_value)
-        required_repeated_struct_value = required_repeated_struct_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Struct)
-        end
-        assert_equal(required_repeated_struct_value, request.required_repeated_struct_value)
-        required_repeated_value_value = required_repeated_value_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Value)
-        end
-        assert_equal(required_repeated_value_value, request.required_repeated_value_value)
-        required_repeated_list_value_value = required_repeated_list_value_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::ListValue)
-        end
-        assert_equal(required_repeated_list_value_value, request.required_repeated_list_value_value)
-        required_repeated_time_value = required_repeated_time_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Timestamp)
-        end
-        assert_equal(required_repeated_time_value, request.required_repeated_time_value)
-        required_repeated_duration_value = required_repeated_duration_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Duration)
-        end
-        assert_equal(required_repeated_duration_value, request.required_repeated_duration_value)
-        required_repeated_field_mask_value = required_repeated_field_mask_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::FieldMask)
-        end
-        assert_equal(required_repeated_field_mask_value, request.required_repeated_field_mask_value)
-        required_repeated_int32_value = required_repeated_int32_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Int32Value)
-        end
-        assert_equal(required_repeated_int32_value, request.required_repeated_int32_value)
-        required_repeated_uint32_value = required_repeated_uint32_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::UInt32Value)
-        end
-        assert_equal(required_repeated_uint32_value, request.required_repeated_uint32_value)
-        required_repeated_int64_value = required_repeated_int64_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Int64Value)
-        end
-        assert_equal(required_repeated_int64_value, request.required_repeated_int64_value)
-        required_repeated_uint64_value = required_repeated_uint64_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::UInt64Value)
-        end
-        assert_equal(required_repeated_uint64_value, request.required_repeated_uint64_value)
-        required_repeated_float_value = required_repeated_float_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::FloatValue)
-        end
-        assert_equal(required_repeated_float_value, request.required_repeated_float_value)
-        required_repeated_double_value = required_repeated_double_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::DoubleValue)
-        end
-        assert_equal(required_repeated_double_value, request.required_repeated_double_value)
-        required_repeated_string_value = required_repeated_string_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::StringValue)
-        end
-        assert_equal(required_repeated_string_value, request.required_repeated_string_value)
-        required_repeated_bool_value = required_repeated_bool_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::BoolValue)
-        end
-        assert_equal(required_repeated_bool_value, request.required_repeated_bool_value)
-        required_repeated_bytes_value = required_repeated_bytes_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::BytesValue)
-        end
-        assert_equal(required_repeated_bytes_value, request.required_repeated_bytes_value)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
@@ -10237,39 +9773,7 @@ describe Library::V1::LibraryServiceClient do
             formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
-            required_map,
-            required_any_value,
-            required_struct_value,
-            required_value_value,
-            required_list_value_value,
-            required_time_value,
-            required_duration_value,
-            required_field_mask_value,
-            required_int32_value,
-            required_uint32_value,
-            required_int64_value,
-            required_uint64_value,
-            required_float_value,
-            required_double_value,
-            required_string_value,
-            required_bool_value,
-            required_bytes_value,
-            required_repeated_any_value,
-            required_repeated_struct_value,
-            required_repeated_value_value,
-            required_repeated_list_value_value,
-            required_repeated_time_value,
-            required_repeated_duration_value,
-            required_repeated_field_mask_value,
-            required_repeated_int32_value,
-            required_repeated_uint32_value,
-            required_repeated_int64_value,
-            required_repeated_uint64_value,
-            required_repeated_float_value,
-            required_repeated_double_value,
-            required_repeated_string_value,
-            required_repeated_bool_value,
-            required_repeated_bytes_value
+            required_map
           )
 
           # Verify the response
@@ -10305,39 +9809,7 @@ describe Library::V1::LibraryServiceClient do
             formatted_required_repeated_resource_name_common,
             required_repeated_fixed32,
             required_repeated_fixed64,
-            required_map,
-            required_any_value,
-            required_struct_value,
-            required_value_value,
-            required_list_value_value,
-            required_time_value,
-            required_duration_value,
-            required_field_mask_value,
-            required_int32_value,
-            required_uint32_value,
-            required_int64_value,
-            required_uint64_value,
-            required_float_value,
-            required_double_value,
-            required_string_value,
-            required_bool_value,
-            required_bytes_value,
-            required_repeated_any_value,
-            required_repeated_struct_value,
-            required_repeated_value_value,
-            required_repeated_list_value_value,
-            required_repeated_time_value,
-            required_repeated_duration_value,
-            required_repeated_field_mask_value,
-            required_repeated_int32_value,
-            required_repeated_uint32_value,
-            required_repeated_int64_value,
-            required_repeated_uint64_value,
-            required_repeated_float_value,
-            required_repeated_double_value,
-            required_repeated_string_value,
-            required_repeated_bool_value,
-            required_repeated_bytes_value
+            required_map
           ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
@@ -10378,38 +9850,6 @@ describe Library::V1::LibraryServiceClient do
       required_repeated_fixed32 = []
       required_repeated_fixed64 = []
       required_map = {}
-      required_any_value = {}
-      required_struct_value = {}
-      required_value_value = {}
-      required_list_value_value = {}
-      required_time_value = {}
-      required_duration_value = {}
-      required_field_mask_value = {}
-      required_int32_value = {}
-      required_uint32_value = {}
-      required_int64_value = {}
-      required_uint64_value = {}
-      required_float_value = {}
-      required_double_value = {}
-      required_string_value = {}
-      required_bool_value = {}
-      required_bytes_value = {}
-      required_repeated_any_value = []
-      required_repeated_struct_value = []
-      required_repeated_value_value = []
-      required_repeated_list_value_value = []
-      required_repeated_time_value = []
-      required_repeated_duration_value = []
-      required_repeated_field_mask_value = []
-      required_repeated_int32_value = []
-      required_repeated_uint32_value = []
-      required_repeated_int64_value = []
-      required_repeated_uint64_value = []
-      required_repeated_float_value = []
-      required_repeated_double_value = []
-      required_repeated_string_value = []
-      required_repeated_bool_value = []
-      required_repeated_bytes_value = []
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -10446,86 +9886,6 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
         assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
         assert_equal(required_map, request.required_map)
-        assert_equal(Google::Gax::to_proto(required_any_value, Google::Protobuf::Any), request.required_any_value)
-        assert_equal(Google::Gax::to_proto(required_struct_value, Google::Protobuf::Struct), request.required_struct_value)
-        assert_equal(Google::Gax::to_proto(required_value_value, Google::Protobuf::Value), request.required_value_value)
-        assert_equal(Google::Gax::to_proto(required_list_value_value, Google::Protobuf::ListValue), request.required_list_value_value)
-        assert_equal(Google::Gax::to_proto(required_time_value, Google::Protobuf::Timestamp), request.required_time_value)
-        assert_equal(Google::Gax::to_proto(required_duration_value, Google::Protobuf::Duration), request.required_duration_value)
-        assert_equal(Google::Gax::to_proto(required_field_mask_value, Google::Protobuf::FieldMask), request.required_field_mask_value)
-        assert_equal(Google::Gax::to_proto(required_int32_value, Google::Protobuf::Int32Value), request.required_int32_value)
-        assert_equal(Google::Gax::to_proto(required_uint32_value, Google::Protobuf::UInt32Value), request.required_uint32_value)
-        assert_equal(Google::Gax::to_proto(required_int64_value, Google::Protobuf::Int64Value), request.required_int64_value)
-        assert_equal(Google::Gax::to_proto(required_uint64_value, Google::Protobuf::UInt64Value), request.required_uint64_value)
-        assert_equal(Google::Gax::to_proto(required_float_value, Google::Protobuf::FloatValue), request.required_float_value)
-        assert_equal(Google::Gax::to_proto(required_double_value, Google::Protobuf::DoubleValue), request.required_double_value)
-        assert_equal(Google::Gax::to_proto(required_string_value, Google::Protobuf::StringValue), request.required_string_value)
-        assert_equal(Google::Gax::to_proto(required_bool_value, Google::Protobuf::BoolValue), request.required_bool_value)
-        assert_equal(Google::Gax::to_proto(required_bytes_value, Google::Protobuf::BytesValue), request.required_bytes_value)
-        required_repeated_any_value = required_repeated_any_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Any)
-        end
-        assert_equal(required_repeated_any_value, request.required_repeated_any_value)
-        required_repeated_struct_value = required_repeated_struct_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Struct)
-        end
-        assert_equal(required_repeated_struct_value, request.required_repeated_struct_value)
-        required_repeated_value_value = required_repeated_value_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Value)
-        end
-        assert_equal(required_repeated_value_value, request.required_repeated_value_value)
-        required_repeated_list_value_value = required_repeated_list_value_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::ListValue)
-        end
-        assert_equal(required_repeated_list_value_value, request.required_repeated_list_value_value)
-        required_repeated_time_value = required_repeated_time_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Timestamp)
-        end
-        assert_equal(required_repeated_time_value, request.required_repeated_time_value)
-        required_repeated_duration_value = required_repeated_duration_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Duration)
-        end
-        assert_equal(required_repeated_duration_value, request.required_repeated_duration_value)
-        required_repeated_field_mask_value = required_repeated_field_mask_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::FieldMask)
-        end
-        assert_equal(required_repeated_field_mask_value, request.required_repeated_field_mask_value)
-        required_repeated_int32_value = required_repeated_int32_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Int32Value)
-        end
-        assert_equal(required_repeated_int32_value, request.required_repeated_int32_value)
-        required_repeated_uint32_value = required_repeated_uint32_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::UInt32Value)
-        end
-        assert_equal(required_repeated_uint32_value, request.required_repeated_uint32_value)
-        required_repeated_int64_value = required_repeated_int64_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::Int64Value)
-        end
-        assert_equal(required_repeated_int64_value, request.required_repeated_int64_value)
-        required_repeated_uint64_value = required_repeated_uint64_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::UInt64Value)
-        end
-        assert_equal(required_repeated_uint64_value, request.required_repeated_uint64_value)
-        required_repeated_float_value = required_repeated_float_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::FloatValue)
-        end
-        assert_equal(required_repeated_float_value, request.required_repeated_float_value)
-        required_repeated_double_value = required_repeated_double_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::DoubleValue)
-        end
-        assert_equal(required_repeated_double_value, request.required_repeated_double_value)
-        required_repeated_string_value = required_repeated_string_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::StringValue)
-        end
-        assert_equal(required_repeated_string_value, request.required_repeated_string_value)
-        required_repeated_bool_value = required_repeated_bool_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::BoolValue)
-        end
-        assert_equal(required_repeated_bool_value, request.required_repeated_bool_value)
-        required_repeated_bytes_value = required_repeated_bytes_value.map do |req|
-          Google::Gax::to_proto(req, Google::Protobuf::BytesValue)
-        end
-        assert_equal(required_repeated_bytes_value, request.required_repeated_bytes_value)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:test_optional_required_flattening_params, mock_method)
@@ -10568,39 +9928,7 @@ describe Library::V1::LibraryServiceClient do
               formatted_required_repeated_resource_name_common,
               required_repeated_fixed32,
               required_repeated_fixed64,
-              required_map,
-              required_any_value,
-              required_struct_value,
-              required_value_value,
-              required_list_value_value,
-              required_time_value,
-              required_duration_value,
-              required_field_mask_value,
-              required_int32_value,
-              required_uint32_value,
-              required_int64_value,
-              required_uint64_value,
-              required_float_value,
-              required_double_value,
-              required_string_value,
-              required_bool_value,
-              required_bytes_value,
-              required_repeated_any_value,
-              required_repeated_struct_value,
-              required_repeated_value_value,
-              required_repeated_list_value_value,
-              required_repeated_time_value,
-              required_repeated_duration_value,
-              required_repeated_field_mask_value,
-              required_repeated_int32_value,
-              required_repeated_uint32_value,
-              required_repeated_int64_value,
-              required_repeated_uint64_value,
-              required_repeated_float_value,
-              required_repeated_double_value,
-              required_repeated_string_value,
-              required_repeated_bool_value,
-              required_repeated_bytes_value
+              required_map
             )
           end
 
@@ -10938,13 +10266,11 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      reader = "reader-934979389"
       expected_response = {
         name: name,
         author: author,
         title: title,
-        read: read,
-        reader: reader
+        read: read
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
