@@ -245,21 +245,40 @@ public class PathTemplateTransformer {
 
   public List<FormatResourceFunctionView> generateFormatResourceFunctions(
       InterfaceContext context) {
+    List<FormatResourceFunctionView> functions = new ArrayList<>();
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
-      return Collections.emptyList();
+      return functions;
     }
+
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     ImmutableList.Builder<FormatResourceFunctionView> functions = ImmutableList.builder();
-    List<SingleResourceNameConfig> resourceNameConfigs =
-        getSingleResourceNameConfigsUsedByInterface(context);
 
-    for (SingleResourceNameConfig resourceNameConfig : resourceNameConfigs) {
-      FormatResourceFunctionView function =
-          createFormatResourceFunction(context, resourceNameConfig);
-      functions.add(function);
-    }
-    return functions.build();
+    for (SingleResourceNameConfig resourceNameConfig : getSingleResourceNameConfigsUsedByInterface(context)) {
+      FormatResourceFunctionView.Builder function =
+        FormatResourceFunctionView.newBuilder()
+            .resourceName(namer.getResourceTypeName(resourceNameConfig))
+            .entityName(resourceNameConfig.getEntityName().toLowerUnderscore())
+            .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
+            .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
+            .pathTemplateGetterName(
+                namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
+            .pattern(resourceNameConfig.getNamePattern())
+            .isResourceNameDeprecated(resourceNameConfig.getDeprecated());
+      List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
+      for (String variable : resourceNameConfig.getNameTemplate().vars()) {
+        ResourceIdParamView param =
+            ResourceIdParamView.newBuilder()
+                .name(namer.getParamName(variable))
+                .docName(namer.getParamDocName(variable))
+                .templateKey(variable)
+                .build();
+        resourceIdParams.add(param);
+      }
+      function.resourceIdParams(resourceIdParams);
+        functions.add(function);
+      }
+    return functions;
   }
 
   public List<ParseResourceFunctionView> generateParseResourceFunctions(InterfaceContext context) {

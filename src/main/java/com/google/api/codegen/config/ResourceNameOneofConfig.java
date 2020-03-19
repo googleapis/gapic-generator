@@ -73,7 +73,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     return getPatterns()
         .stream()
         .filter(pttn -> !pttn.isFixedPattern())
-        .map(ResourceNamePatternConfig::toSingleResourceNameConfig)
+        .map(ResourceNamePatternConfig::asSingleResourceNameConfig)
         .collect(ImmutableList.toImmutableList());
   }
 
@@ -89,7 +89,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
     }
     ResourceNamePatternConfig firstPattern = getPatterns().get(0);
     String entityId = Name.upperCamel(getEntityId()).toLowerUnderscore().replace("_oneof", "");
-    SingleResourceNameConfig singleResourceFromFirstPattern =
+    SingleResourceNameConfig singleResourceName =
         SingleResourceNameConfig.newBuilder()
             .setNamePattern(firstPattern.getPattern())
             .setNameTemplate(firstPattern.getNameTemplate())
@@ -97,7 +97,7 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
             .setEntityName(Name.from(entityId))
             .setAssignedProtoFile(getAssignedProtoFile())
             .build();
-    return Optional.of(singleResourceFromFirstPattern);
+    return Optional.of(singleResourceName);
   }
 
   @Nullable

@@ -98,9 +98,9 @@ public class ResourceNamePatternConfig {
   }
 
   /**
-   * If this pattern represents a single resource name, creates a SingleResourceNameConfig from it.
+   * If this pattern represents a single formattable resource name, creates a SingleResourceNameConfig from it.
    */
-  public SingleResourceNameConfig toSingleResourceNameConfig() {
+  public SingleResourceNameConfig asSingleResourceNameConfig() {
     Preconditions.checkArgument(!isFixedPattern(), "pattern %s is a fixed pattern", pattern);
     return SingleResourceNameConfig.newBuilder()
         .setNamePattern(pattern)
@@ -111,7 +111,7 @@ public class ResourceNamePatternConfig {
   }
 
   /** If this pattern is a fixed resource name, creates a FixedResourceNameConfig from it. */
-  public FixedResourceNameConfig toFixedResourceNameConfig() {
+  public FixedResourceNameConfig asFixedResourceNameConfig() {
     Preconditions.checkArgument(isFixedPattern(), "pattern %s is not a fixed pattern", pattern);
     return new AutoValue_FixedResourceNameConfig(
         getPatternId(), Name.from(getPatternId()), pattern, null);
