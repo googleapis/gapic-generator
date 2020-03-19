@@ -181,11 +181,13 @@ public abstract class GapicProductConfig implements ProductConfig {
               + "or switch to bazel.");
     }
 
+    // Consider all proto files in the defaultPackage as well as its sub-packages
+    // as source files.
     List<ProtoFile> sourceProtos =
         model
             .getFiles()
             .stream()
-            .filter(f -> f.getProto().getPackage().equals(defaultPackage))
+            .filter(f -> f.getProto().getPackage().startsWith(defaultPackage))
             .collect(Collectors.toList());
 
     if (protoPackage != null && configProto == null) {
