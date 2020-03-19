@@ -36,7 +36,6 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -254,17 +253,18 @@ public class PathTemplateTransformer {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     ImmutableList.Builder<FormatResourceFunctionView> functions = ImmutableList.builder();
 
-    for (SingleResourceNameConfig resourceNameConfig : getSingleResourceNameConfigsUsedByInterface(context)) {
+    for (SingleResourceNameConfig resourceNameConfig :
+        getSingleResourceNameConfigsUsedByInterface(context)) {
       FormatResourceFunctionView.Builder function =
-        FormatResourceFunctionView.newBuilder()
-            .resourceName(namer.getResourceTypeName(resourceNameConfig))
-            .entityName(resourceNameConfig.getEntityName().toLowerUnderscore())
-            .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
-            .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
-            .pathTemplateGetterName(
-                namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
-            .pattern(resourceNameConfig.getNamePattern())
-            .isResourceNameDeprecated(resourceNameConfig.getDeprecated());
+          FormatResourceFunctionView.newBuilder()
+              .resourceName(namer.getResourceTypeName(resourceNameConfig))
+              .entityName(resourceNameConfig.getEntityName().toLowerUnderscore())
+              .name(namer.getFormatFunctionName(interfaceConfig, resourceNameConfig))
+              .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
+              .pathTemplateGetterName(
+                  namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
+              .pattern(resourceNameConfig.getNamePattern())
+              .isResourceNameDeprecated(resourceNameConfig.getDeprecated());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String variable : resourceNameConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =
@@ -276,8 +276,8 @@ public class PathTemplateTransformer {
         resourceIdParams.add(param);
       }
       function.resourceIdParams(resourceIdParams);
-        functions.add(function);
-      }
+      functions.add(function);
+    }
     return functions;
   }
 

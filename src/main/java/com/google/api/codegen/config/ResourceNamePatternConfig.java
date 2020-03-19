@@ -98,7 +98,8 @@ public class ResourceNamePatternConfig {
   }
 
   /**
-   * If this pattern represents a single formattable resource name, creates a SingleResourceNameConfig from it.
+   * If this pattern represents a single formattable resource name, creates a
+   * SingleResourceNameConfig from it.
    */
   public SingleResourceNameConfig asSingleResourceNameConfig() {
     Preconditions.checkArgument(!isFixedPattern(), "pattern %s is a fixed pattern", pattern);
