@@ -312,18 +312,21 @@ public class PathTemplateTransformer {
 
   public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
       GapicInterfaceContext context) {
-    ImmutableList.Builder<PathTemplateGetterFunctionView> functions = ImmutableList.builder();
+    List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    List<SingleResourceNameConfig> resourceNameConfigs =
-        getSingleResourceNameConfigsUsedByInterface(context);
-
-    for (SingleResourceNameConfig resourceNameConfig : resourceNameConfigs) {
-      PathTemplateGetterFunctionView function =
-          createPathTemplateGetterFunction(context, resourceNameConfig);
-      functions.add(function);
+    for (SingleResourceNameConfig resourceNameConfig :
+        getSingleResourceNameConfigsUsedByInterface(context)) {
+      PathTemplateGetterFunctionView.Builder function =
+          PathTemplateGetterFunctionView.newBuilder()
+              .name(namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
+              .resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig))
+              .entityName(namer.getEntityName(resourceNameConfig))
+              .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
+              .pattern(resourceNameConfig.getNamePattern());
+      functions.add(function.build());
     }
-    return functions.build();
+    return functions;
   }
 
   private FormatResourceFunctionView createFormatResourceFunction(
@@ -353,20 +356,5 @@ public class PathTemplateTransformer {
     }
     function.resourceIdParams(resourceIdParams);
     return function.build();
-  }
-
-  private PathTemplateGetterFunctionView createPathTemplateGetterFunction(
-      InterfaceContext context, SingleResourceNameConfig resourceNameConfig) {
-    SurfaceNamer namer = context.getNamer();
-    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    PathTemplateGetterFunctionView function =
-        PathTemplateGetterFunctionView.newBuilder()
-            .name(namer.getPathTemplateNameGetter(interfaceConfig, resourceNameConfig))
-            .resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig))
-            .entityName(namer.getEntityName(resourceNameConfig))
-            .pathTemplateName(namer.getPathTemplateName(interfaceConfig, resourceNameConfig))
-            .pattern(resourceNameConfig.getNamePattern())
-            .build();
-    return function;
   }
 }
