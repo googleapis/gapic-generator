@@ -19,6 +19,7 @@ import com.google.api.codegen.config.SampleSpec;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -47,6 +48,8 @@ public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransfor
               .initCodeTransformer(new InitCodeTransformer(importSectionTransformer, false))
               .sampleType(SampleSpec.SampleType.STANDALONE)
               .build());
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      p -> new RubyFeatureConfig();
   private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
       product -> new RubySurfaceNamer(product.getPackageName());
   private static final Function<String, ModelTypeTable> newTypeTable =
@@ -59,7 +62,7 @@ public class RubyGapicSamplesTransformer extends DynamicLangGapicSamplesTransfor
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        new RubyFeatureConfig(),
+        newFeatureConfig,
         newSurfaceNamer,
         newTypeTable);
     this.pathMapper = pathMapper;

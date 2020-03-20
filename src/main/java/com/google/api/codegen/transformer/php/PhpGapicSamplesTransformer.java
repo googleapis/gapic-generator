@@ -24,6 +24,7 @@ import com.google.api.codegen.config.SampleSpec.SampleType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -55,7 +56,8 @@ public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransform
               .build());
   private static final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
-
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      p -> new PhpFeatureConfig(p);
   private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
       product -> new PhpSurfaceNamer(product.getPackageName());
   private static final Function<String, ModelTypeTable> newTypeTable =
@@ -71,7 +73,7 @@ public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransform
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        new PhpFeatureConfig(),
+        newFeatureConfig,
         newSurfaceNamer,
         newTypeTable);
     this.pathMapper = pathMapper;
@@ -100,7 +102,7 @@ public class PhpGapicSamplesTransformer extends DynamicLangGapicSamplesTransform
   public SampleManifestTransformer createManifestTransformer() {
     return new SampleManifestTransformer(
         new PhpSampleMetadataNamer(this, pathMapper),
-        p -> new PhpFeatureConfig(),
+        p -> new PhpFeatureConfig(p),
         newSurfaceNamer,
         newTypeTable,
         pathMapper);

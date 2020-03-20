@@ -55,7 +55,7 @@ public abstract class DynamicLangGapicSamplesTransformer
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer;
   private final DynamicLangApiMethodTransformer apiMethodTransformer;
-  private final FeatureConfig featureConfig;
+  private final Function<GapicProductConfig, FeatureConfig> newFeatureConfig;
   private final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer;
   private final Function<String, ModelTypeTable> newTypeTable;
 
@@ -64,14 +64,14 @@ public abstract class DynamicLangGapicSamplesTransformer
       GapicCodePathMapper pathMapper,
       FileHeaderTransformer fileHeaderTransformer,
       DynamicLangApiMethodTransformer apiMethodTransformer,
-      FeatureConfig featureConfig,
+      Function<GapicProductConfig, FeatureConfig> newFeatureConfig,
       Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer,
       Function<String, ModelTypeTable> newTypeTable) {
     this.templateFileName = templateFileName;
     this.pathMapper = pathMapper;
     this.fileHeaderTransformer = fileHeaderTransformer;
     this.apiMethodTransformer = apiMethodTransformer;
-    this.featureConfig = featureConfig;
+    this.newFeatureConfig = newFeatureConfig;
     this.newSurfaceNamer = newSurfaceNamer;
     this.newTypeTable = newTypeTable;
   }
@@ -81,6 +81,7 @@ public abstract class DynamicLangGapicSamplesTransformer
     String packageName = productConfig.getPackageName();
     SurfaceNamer namer = newSurfaceNamer.apply(productConfig);
     ModelTypeTable typeTable = newTypeTable.apply(packageName);
+    FeatureConfig featureConfig = newFeatureConfig.apply(productConfig);
 
     List<InterfaceContext> interfaceContexts =
         Streams.stream(apiModel.getInterfaces(productConfig))

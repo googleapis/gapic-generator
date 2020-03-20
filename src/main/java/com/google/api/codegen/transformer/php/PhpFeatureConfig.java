@@ -14,15 +14,24 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 
 public class PhpFeatureConfig extends DefaultFeatureConfig {
+
+  private final GapicProductConfig productConfig;
+
+  public PhpFeatureConfig(GapicProductConfig productConfig) {
+    this.productConfig = productConfig;
+  }
+
   @Override
   public boolean enableMixins() {
     return true;
   }
 
+  @Override
   public boolean enableStringFormatFunctionsForOneofs() {
-    return true;
+    return productConfig.getProtoParser().isProtoAnnotationsEnabled();
   }
 }

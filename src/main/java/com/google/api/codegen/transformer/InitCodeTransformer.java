@@ -742,7 +742,7 @@ public class InitCodeTransformer {
     if (fieldConfig.getResourceNameType() == ResourceNameType.ONEOF) {
       ResourceNameOneofConfig oneofConfig =
           (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-      singleResourceNameConfig = getMatchingSingleResourceNameConfig(item, oneofConfig);
+      singleResourceNameConfig = getMatchingSingleResourceNameConfig(context, item, oneofConfig);
     } else {
       singleResourceNameConfig = initValueConfig.getSingleResourceNameConfig();
     }
@@ -830,7 +830,7 @@ public class InitCodeTransformer {
           .build();
     } else {
       SingleResourceNameConfig singleResourceNameConfig =
-          getMatchingSingleResourceNameConfig(item, oneofConfig);
+          getMatchingSingleResourceNameConfig(context, item, oneofConfig);
       FieldConfig singleResourceNameFieldConfig =
           fieldConfig.withResourceNameConfig(singleResourceNameConfig);
       ResourceNameInitValueView initView =
@@ -985,18 +985,26 @@ public class InitCodeTransformer {
   }
 
   private static SingleResourceNameConfig getMatchingSingleResourceNameConfig(
-      InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+      MethodContext context, InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
     Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
+    List<SingleResourceNameConfig> singleResourceNameConfigs;
+    if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
+      singleResourceNameConfigs = oneofConfig.getPatternsAsSingleResourceNameConfigs();
+    } else {
+      singleResourceNameConfigs = oneofConfig.getSingleResourceNameConfigs();
+    }
+    if (singleResourceNameConfigs.isEmpty()) {
+      System.out.println(oneofConfig);
+    }
     List<SingleResourceNameConfig> matchingConfigs =
-        oneofConfig
-            .getSingleResourceNameConfigs()
+        singleResourceNameConfigs
             .stream()
             .filter(c -> c.getNameTemplate().vars().equals(bindingValues))
             .collect(Collectors.toList());
     // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
     if (matchingConfigs.isEmpty()) {
-      return oneofConfig.getSingleResourceNameConfigs().get(0);
+      return singleResourceNameConfigs.get(0);
     }
     return matchingConfigs.get(0);
   }

@@ -66,35 +66,33 @@ public class PathTemplateTransformer {
   private static List<SingleResourceNameConfig> getSingleResourceNameConfigsUsedByInterface(
       InterfaceContext context) {
     TreeMap<String, SingleResourceNameConfig> resources = new TreeMap<>();
-    boolean enableStringFormatFunctionsForOneofs =
-        context.getFeatureConfig().enableStringFormatFunctionsForOneofs();
     for (ResourceNameConfig resourceNameConfig : getResourceNameConfigsUsedByInterface(context)) {
       if (resourceNameConfig.getResourceNameType() == ResourceNameType.SINGLE) {
         resources.put(
             resourceNameConfig.getEntityId(), (SingleResourceNameConfig) resourceNameConfig);
       }
       if (resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+        // Add SingleResourceNameConfigs derived from gapic config v1 and v2
         ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
         for (SingleResourceNameConfig resource : oneofConfig.getSingleResourceNameConfigs()) {
           resources.put(resource.getEntityId(), resource);
         }
 
-        // Add SingleResourceNameConfigs derived from patterns later so that these will overwrite
-        // those derived from gapic config v2
-        if (enableStringFormatFunctionsForOneofs) {
+        // Add SingleResourceNameConfigs derived from patterns next so that when collision,
+        // those derived from patterns will win
+        if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
           for (SingleResourceNameConfig resource :
               oneofConfig.getPatternsAsSingleResourceNameConfigs()) {
             resources.put(resource.getEntityId(), resource);
           }
-
-          // Add the SingleResourceNameConfig derived from the first pattern as if it is a
-          // single-pattern
-          // resource name for backward-compatibility
-          Optional<SingleResourceNameConfig> firstPattern =
-              oneofConfig.getFirstPatternAsSingleResourceNameConfig();
-          if (firstPattern.isPresent()) {
-            resources.put(firstPattern.get().getEntityId(), firstPattern.get());
-          }
+        }
+        // Add the SingleResourceNameConfig derived from the first pattern last as if it is a
+        // single-pattern resource name for backward-compatibility.
+        // We need this for all dynamic languages.
+        Optional<SingleResourceNameConfig> firstPattern =
+            oneofConfig.getFirstPatternAsSingleResourceNameConfig();
+        if (firstPattern.isPresent()) {
+          resources.put(firstPattern.get().getEntityId(), firstPattern.get());
         }
       }
     }

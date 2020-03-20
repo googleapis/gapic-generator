@@ -69,13 +69,13 @@ public class DefaultFeatureConfig implements FeatureConfig {
     // Note This check is not needed for generating Java gapics with gapic config v2, because for
     // those we can put multi-pattern resource name in deprecated_collections in gapic config v2
     // so that the generator can create resource name strings in the old way.
-    boolean requiresMultiPatternResourceSupport =
+    boolean isResourceOneofFromAnnotations =
         fieldConfig.getResourceNameType() == ResourceNameType.ONEOF
             && ((ResourceNameOneofConfig) fieldConfig.getResourceNameConfig())
                 .getSingleResourceNameConfigs()
                 .isEmpty();
 
-    return !requiresMultiPatternResourceSupport;
+    return !isResourceOneofFromAnnotations || enableInstantiatingResourceOneofsFromAnnotations();
   }
 
   @Override
@@ -130,6 +130,11 @@ public class DefaultFeatureConfig implements FeatureConfig {
   @Override
   public boolean enableStringFormatFunctionsForOneofs() {
     return false;
+  }
+
+  @Override
+  public boolean enableInstantiatingResourceOneofsFromAnnotations() {
+    return useStaticCreateMethodForOneofs() || enableStringFormatFunctionsForOneofs();
   }
 
   @Override

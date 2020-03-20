@@ -4441,6 +4441,12 @@ public class LibraryClient implements BackgroundResource {
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
 
+  private static final PathTemplate BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+
+  private static final PathTemplate READER_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}/readers/{reader}");
+
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archive resource.
@@ -4566,6 +4572,32 @@ public class LibraryClient implements BackgroundResource {
   public static final String formatShelfName(String shelf) {
     return SHELF_PATH_TEMPLATE.instantiate(
         "shelf", shelf);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a book resource.
+   *
+   * @deprecated Use the {@link BookName} class instead.
+   */
+  @Deprecated
+  public static final String formatBookName(String shelf, String book) {
+    return BOOK_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,
+        "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String formatReaderName(String project, String reader) {
+    return READER_PATH_TEMPLATE.instantiate(
+        "project", project,
+        "reader", reader);
   }
 
   /**
@@ -4753,6 +4785,50 @@ public class LibraryClient implements BackgroundResource {
   @Deprecated
   public static final String parseShelfFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a book resource.
+   *
+   * @deprecated Use the {@link BookName} class instead.
+   */
+  @Deprecated
+  public static final String parseShelfFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book resource.
+   *
+   * @deprecated Use the {@link BookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which
+   * represents a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromReaderName(String readerName) {
+    return READER_PATH_TEMPLATE.parse(readerName).get("project");
+  }
+
+  /**
+   * Parses the reader from the given fully-qualified path which
+   * represents a reader resource.
+   *
+   * @deprecated Use the {@link ReaderName} class instead.
+   */
+  @Deprecated
+  public static final String parseReaderFromReaderName(String readerName) {
+    return READER_PATH_TEMPLATE.parse(readerName).get("reader");
   }
 
   /**

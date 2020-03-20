@@ -83,6 +83,8 @@ public interface FeatureConfig {
    */
   boolean enableStringFormatFunctionsForOneofs();
 
+  boolean enableInstantiatingResourceOneofsFromAnnotations();
+
   /** Returns true if a raw operation call settings method should be generated. */
   boolean enableRawOperationCallSettings();
 }
