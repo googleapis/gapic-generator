@@ -96,7 +96,6 @@ public class PathTemplateTransformer {
         }
       }
     }
-    resources.values().stream().forEach(r -> System.out.println(r.getEntityId()));
     return ImmutableList.copyOf(resources.values());
   }
 
@@ -312,8 +311,8 @@ public class PathTemplateTransformer {
   public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
       GapicInterfaceContext context) {
     List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
-    SurfaceNamer namer = context.getNamer();
 
+    SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         getSingleResourceNameConfigsUsedByInterface(context)) {

@@ -993,9 +993,6 @@ public class InitCodeTransformer {
     } else {
       singleResourceNameConfigs = oneofConfig.getSingleResourceNameConfigs();
     }
-    if (singleResourceNameConfigs.isEmpty()) {
-      System.out.println(oneofConfig);
-    }
     List<SingleResourceNameConfig> matchingConfigs =
         singleResourceNameConfigs
             .stream()

@@ -83,6 +83,11 @@ public interface FeatureConfig {
    */
   boolean enableStringFormatFunctionsForOneofs();
 
+  /**
+   * Returns true if multi-pattern resource generation from proto annotation is supported. Returns
+   * true if useStaticCreateMethodForOneofs() returns true (Java) and or
+   * enableStringFormatFunctionsForOneofs() returns true (PHP).
+   */
   boolean enableInstantiatingResourceOneofsFromAnnotations();
 
   /** Returns true if a raw operation call settings method should be generated. */
