@@ -5147,14 +5147,11 @@ class LibraryServiceClient {
       publisherPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/publishers/{publisher}'
       ),
-      shelfPathTemplate: new gaxModule.PathTemplate(
-        'shelves/{shelf}'
-      ),
-      bookPathTemplate: new gaxModule.PathTemplate(
-        'shelves/{shelf}/books/{book}'
-      ),
       readerPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/readers/{reader}'
+      ),
+      shelfPathTemplate: new gaxModule.PathTemplate(
+        'shelves/{shelf}'
       ),
     };
 
@@ -8154,7 +8151,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Return a fully-qualified book resource name string.
    *
    * @param {String} shelf
@@ -8253,32 +8249,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Return a fully-qualified shelf resource name string.
-   *
-   * @param {String} shelf
-   * @returns {String}
-   */
-  shelfPath(shelf) {
-    return this._pathTemplates.shelfPathTemplate.render({
-      shelf: shelf,
-    });
-  }
-
-  /**
-   * Return a fully-qualified book resource name string.
-   *
-   * @param {String} shelf
-   * @param {String} book
-   * @returns {String}
-   */
-  bookPath(shelf, book) {
-    return this._pathTemplates.bookPathTemplate.render({
-      shelf: shelf,
-      book: book,
-    });
-  }
-
-  /**
    * Return a fully-qualified reader resource name string.
    *
    * @param {String} project
@@ -8289,6 +8259,18 @@ class LibraryServiceClient {
     return this._pathTemplates.readerPathTemplate.render({
       project: project,
       reader: reader,
+    });
+  }
+
+  /**
+   * Return a fully-qualified shelf resource name string.
+   *
+   * @param {String} shelf
+   * @returns {String}
+   */
+  shelfPath(shelf) {
+    return this._pathTemplates.shelfPathTemplate.render({
+      shelf: shelf,
     });
   }
 
@@ -8332,7 +8314,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8346,7 +8327,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8507,45 +8487,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * Parse the shelfName from a shelf resource.
-   *
-   * @param {String} shelfName
-   *   A fully-qualified path representing a shelf resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromShelfName(shelfName) {
-    return this._pathTemplates.shelfPathTemplate
-      .match(shelfName)
-      .shelf;
-  }
-
-  /**
-   * Parse the bookName from a book resource.
-   *
-   * @param {String} bookName
-   *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromBookName(bookName) {
-    return this._pathTemplates.bookPathTemplate
-      .match(bookName)
-      .shelf;
-  }
-
-  /**
-   * Parse the bookName from a book resource.
-   *
-   * @param {String} bookName
-   *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromBookName(bookName) {
-    return this._pathTemplates.bookPathTemplate
-      .match(bookName)
-      .book;
-  }
-
-  /**
    * Parse the readerName from a reader resource.
    *
    * @param {String} readerName
@@ -8569,6 +8510,19 @@ class LibraryServiceClient {
     return this._pathTemplates.readerPathTemplate
       .match(readerName)
       .reader;
+  }
+
+  /**
+   * Parse the shelfName from a shelf resource.
+   *
+   * @param {String} shelfName
+   *   A fully-qualified path representing a shelf resources.
+   * @returns {String} - A string representing the shelf.
+   */
+  matchShelfFromShelfName(shelfName) {
+    return this._pathTemplates.shelfPathTemplate
+      .match(shelfName)
+      .shelf;
   }
 }
 

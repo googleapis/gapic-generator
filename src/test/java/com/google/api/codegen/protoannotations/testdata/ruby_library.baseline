@@ -3082,23 +3082,17 @@ module Library
 
       private_constant :PUBLISHER_PATH_TEMPLATE
 
-      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}"
-      )
-
-      private_constant :SHELF_PATH_TEMPLATE
-
-      BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
-      )
-
-      private_constant :BOOK_PATH_TEMPLATE
-
       READER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}/readers/{reader}"
       )
 
       private_constant :READER_PATH_TEMPLATE
+
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}"
+      )
+
+      private_constant :SHELF_PATH_TEMPLATE
 
       # Returns a fully-qualified archive resource name string.
       # @param archive [String]
@@ -3121,8 +3115,6 @@ module Library
       end
 
       # Returns a fully-qualified book resource name string.
-      # @deprecated Multi-pattern resource names will have unified creation and parsing helper functions.
-      # This helper function will be deleted in the next major version.
       # @param shelf [String]
       # @param book [String]
       # @return [String]
@@ -3201,26 +3193,6 @@ module Library
         )
       end
 
-      # Returns a fully-qualified shelf resource name string.
-      # @param shelf [String]
-      # @return [String]
-      def self.shelf_path shelf
-        SHELF_PATH_TEMPLATE.render(
-          :"shelf" => shelf
-        )
-      end
-
-      # Returns a fully-qualified book resource name string.
-      # @param shelf [String]
-      # @param book [String]
-      # @return [String]
-      def self.book_path shelf, book
-        BOOK_PATH_TEMPLATE.render(
-          :"shelf" => shelf,
-          :"book" => book
-        )
-      end
-
       # Returns a fully-qualified reader resource name string.
       # @param project [String]
       # @param reader [String]
@@ -3229,6 +3201,15 @@ module Library
         READER_PATH_TEMPLATE.render(
           :"project" => project,
           :"reader" => reader
+        )
+      end
+
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf [String]
+      # @return [String]
+      def self.shelf_path shelf
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf" => shelf
         )
       end
 

@@ -96,6 +96,7 @@ public class PathTemplateTransformer {
         }
       }
     }
+    resources.values().stream().forEach(r -> System.out.println(r.getEntityId()));
     return ImmutableList.copyOf(resources.values());
   }
 

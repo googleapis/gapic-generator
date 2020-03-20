@@ -106,7 +106,7 @@ public class ResourceNamePatternConfig {
     return SingleResourceNameConfig.newBuilder()
         .setNamePattern(pattern)
         .setNameTemplate(template)
-        .setEntityId(getPatternId())
+        .setEntityId(Name.anyLower(getPatternId()).toUpperCamel())
         .setEntityName(Name.from(getPatternId()))
         .build();
   }
