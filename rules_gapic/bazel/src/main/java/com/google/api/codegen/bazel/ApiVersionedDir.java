@@ -305,6 +305,5 @@ class ApiVersionedDir {
       topLevelCloudScope = parent.getCloudScopes().getOrDefault("", false);
     }
     cloudScope = topLevelCloudScope;
-
   }
 }
