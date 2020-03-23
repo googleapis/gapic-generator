@@ -10,8 +10,7 @@ class ApiDir {
       Pattern.compile("(?m)^type\\s*:\\s*google.api.Service\\s*$");
   private static Pattern SERVICE_YAML_NAME_VERSION =
       Pattern.compile("_(?<version>[a-zA-Z]+\\d+[\\w]*)\\.yaml");
-  private static Pattern CLOUD_AUTH_SCOPE =
-      Pattern.compile("https\\:\\/\\/www\\.googleapis\\.com\\/auth\\/cloud-platform");
+  private static String CLOUD_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
 
   private final Map<String, String> serviceYamlPaths = new TreeMap<>();
   private final Map<String, Boolean> cloudScopes = new TreeMap<>();
@@ -32,8 +31,7 @@ class ApiDir {
       String verKey = subM.find() ? subM.group("version") : "";
       serviceYamlPaths.put(verKey, fileName);
 
-      Matcher s = CLOUD_AUTH_SCOPE.matcher(fileBody);
-      if (s.find()) {
+      if (fileBody.contains(CLOUD_AUTH_SCOPE)) {
         cloudScopes.put(verKey, true);
       }
     }

@@ -38,8 +38,7 @@ class ApiVersionedDir {
   private static Pattern SERVICE_YAML_TYPE =
       Pattern.compile("(?m)^type\\s*:\\s*google.api.Service\\s*$");
 
-  private static Pattern CLOUD_AUTH_SCOPE =
-      Pattern.compile("https\\:\\/\\/www\\.googleapis\\.com\\/auth\\/cloud-platform");
+  private static String CLOUD_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
 
   // A reference to the object representing the parent dir of this versioned API dir.
   // For example: google/example/library.
@@ -213,8 +212,7 @@ class ApiVersionedDir {
     if (m.find()) {
       serviceYamlPath = fileName;
 
-      Matcher s = CLOUD_AUTH_SCOPE.matcher(fileBody);
-      if (s.find()) {
+      if (fileBody.contains(CLOUD_AUTH_SCOPE)) {
         cloudScope = true;
       }
     }

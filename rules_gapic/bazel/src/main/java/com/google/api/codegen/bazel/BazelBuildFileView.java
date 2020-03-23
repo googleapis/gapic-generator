@@ -80,12 +80,21 @@ class BazelBuildFileView {
         "java_gapic_test_deps", joinSetWithIndentationNl(mapJavaGapicTestDeps(actualImports)));
 
     // Construct GAPIC import path & package name based on go_package proto option
-    String goPkg = bp.getLangProtoPackages().get("go");
+    String goImport =
+        assembleGoImportPath(
+            bp.getCloudScope(), bp.getProtoPackage(), bp.getLangProtoPackages().get("go"));
+
+    tokens.put("go_gapic_importpath", goImport);
+    tokens.put("go_gapic_test_importpath", goImport.split(";")[0]);
+    tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
+  }
+
+  private String assembleGoImportPath(boolean isCloud, String protoPkg, String goPkg) {
     goPkg = goPkg.replaceFirst("google\\.golang\\.org\\/genproto\\/googleapis\\/", "");
     goPkg = goPkg.replaceFirst("cloud\\/", "");
 
     String goImport = "";
-    if (bp.getCloudScope()) {
+    if (isCloud) {
       goImport = "cloud.google.com/go/";
       goPkg = goPkg.replaceFirst("v(.+);", "apiv$1;");
     } else {
@@ -94,15 +103,11 @@ class BazelBuildFileView {
 
       // use the proto package path for a non-Cloud Go import path
       // example: google.golang.org/google/ads/googleads/v3/services;services
-      String protoPkg = bp.getProtoPackage();
       goPkg = protoPkg.replaceAll("\\.", "\\/");
       goPkg += ";" + pkgName;
     }
-    goImport += goPkg;
 
-    tokens.put("go_gapic_importpath", goImport);
-    tokens.put("go_gapic_test_importpath", goImport.split(";")[0]);
-    tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
+    return goImport + goPkg;
   }
 
   private String convertPathToLabel(String pkg, String path) {
