@@ -85,7 +85,11 @@ java_gapic_build_configs_pkg = rule(
         "test_deps": attr.label_list(mandatory = False, allow_empty = True),
         "package_dir": attr.string(mandatory = False),
         "templates": attr.label_keyed_string_dict(mandatory = False, allow_files = True),
-        "static_substitutions": attr.string_dict(mandatory = False, allow_empty = True, default = {}),
+        "static_substitutions": attr.string_dict(
+            mandatory = False,
+            allow_empty = True,
+            default = {"group": "com.google.cloud"},
+        ),
     },
     outputs = {"pkg": "%{name}.tar.gz"},
     implementation = _java_gapic_build_configs_pkg_impl,
@@ -159,6 +163,7 @@ def java_gapic_assembly_gradle_pkg(
         name,
         deps,
         assembly_name = None,
+        static_substitutions = None,
         **kwargs):
     package_dir = name
     if assembly_name:
@@ -175,7 +180,7 @@ def java_gapic_assembly_gradle_pkg(
     grpc_deps = []
     proto_deps = []
 
-    processed_deps = {} #there is no proper Set in Starlark
+    processed_deps = {}  #there is no proper Set in Starlark
     for dep in deps:
         if dep.endswith("_java_gapic"):
             put_dep_in_a_bucket(dep, client_deps, processed_deps)
@@ -217,6 +222,7 @@ def java_gapic_assembly_gradle_pkg(
     _java_gapic_assembly_gradle_pkg(
         name = name,
         assembly_name = package_dir,
+        static_substitutions = static_substitutions,
         deps = proto_target_dep + grpc_target_dep + client_target_dep,
     )
 
@@ -263,7 +269,7 @@ def _java_gapic_gradle_pkg(
         **kwargs
     )
 
-def _java_gapic_assembly_gradle_pkg(name, assembly_name, deps, visibility = None):
+def _java_gapic_assembly_gradle_pkg(name, assembly_name, deps, static_substitutions, visibility = None):
     resource_target_name = "%s-resources" % assembly_name
     java_gapic_build_configs_pkg(
         name = resource_target_name,
@@ -272,6 +278,7 @@ def _java_gapic_assembly_gradle_pkg(name, assembly_name, deps, visibility = None
             Label("//rules_gapic/java:resources/gradle/assembly.gradle.tmpl"): "build.gradle",
             Label("//rules_gapic/java:resources/gradle/settings.gradle.tmpl"): "settings.gradle",
         },
+        static_substitutions = static_substitutions,
     )
 
     pkg_tar(
