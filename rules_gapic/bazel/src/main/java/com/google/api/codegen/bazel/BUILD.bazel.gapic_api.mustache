@@ -106,10 +106,9 @@ go_proto_library(
 
 go_gapic_library(
     name = "{{name}}_go_gapic",
-    src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    srcs = [":{{name}}_proto_with_info"],
+    grpc_service_config = "{{grpc_service_config}}",
     importpath = "{{go_gapic_importpath}}",
-    package = "{{package}}",
     service_yaml = "{{service_yaml}}",
     deps = [
         ":{{name}}_go_proto",{{go_gapic_deps}}
@@ -120,7 +119,7 @@ go_test(
     name = "{{name}}_go_gapic_test",
     srcs = [":{{name}}_go_gapic_srcjar_test"],
     embed = [":{{name}}_go_gapic"],
-    importpath = "{{go_gapic_importpath}}",
+    importpath = "{{go_gapic_test_importpath}}",
 )
 
 # Open Source Packages
@@ -128,7 +127,6 @@ go_gapic_assembly_pkg(
     name = "gapi-cloud-{{assembly_name}}-{{version}}-go",
     deps = [
         ":{{name}}_go_gapic",
-        ":{{name}}_go_gapic_srcjar-smoke-test.srcjar",
         ":{{name}}_go_gapic_srcjar-test.srcjar",
         ":{{name}}_go_proto",
     ],
