@@ -94,7 +94,7 @@ class BazelBuildFileView {
     goPkg = goPkg.replaceFirst("cloud\\/", "");
 
     String goImport = "";
-    if (isCloud) {
+    if (isCloud || protoPkg.contains("cloud")) {
       goImport = "cloud.google.com/go/";
       goPkg = goPkg.replaceFirst("v(.+);", "apiv$1;");
     } else {
