@@ -80,9 +80,9 @@ class BazelBuildFileView {
         "java_gapic_test_deps", joinSetWithIndentationNl(mapJavaGapicTestDeps(actualImports)));
 
     // Construct GAPIC import path & package name based on go_package proto option
-    String goImport =
-        assembleGoImportPath(
-            bp.getCloudScope(), bp.getProtoPackage(), bp.getLangProtoPackages().get("go"));
+    String protoPkg = bp.getProtoPackage();
+    boolean isCloud = bp.getCloudScope() || protoPkg.contains("cloud");
+    String goImport = assembleGoImportPath(isCloud, protoPkg, bp.getLangProtoPackages().get("go"));
 
     tokens.put("go_gapic_importpath", goImport);
     tokens.put("go_gapic_test_importpath", goImport.split(";")[0]);
