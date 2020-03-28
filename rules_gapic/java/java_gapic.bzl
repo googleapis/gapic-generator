@@ -74,9 +74,9 @@ def java_gapic_srcjar(
         name,
         src,
         gapic_yaml,
-        service_yaml,
         artifact_type,
-        package,
+        package = None,
+        service_yaml = None,
         grpc_service_config = None,
         **kwargs):
     raw_srcjar_name = "%s_raw" % name
@@ -202,7 +202,6 @@ def java_discogapic_library(
         name,
         src,
         gapic_yaml,
-        service_yaml,
         deps = [],
         test_deps = [],
         **kwargs):
@@ -212,8 +211,7 @@ def java_discogapic_library(
         name = srcjar_name,
         src = src,
         gapic_yaml = gapic_yaml,
-        service_yaml = service_yaml,
-        artifact_type = "GAPIC_CODE",
+        artifact_type = "DISCOGAPIC_CODE",
         **kwargs
     )
 
@@ -229,6 +227,7 @@ def java_discogapic_library(
         "@com_google_auth_google_auth_library_credentials//jar",
         "@com_google_auth_google_auth_library_oauth2_http//jar",
         "@com_google_http_client_google_http_client//jar",
+        "@com_google_code_gson_gson//jar",
     ]
 
     native.java_library(
@@ -243,7 +242,6 @@ def java_discogapic_library(
         "@com_google_http_client_google_http_client_jackson2//jar",
         "@com_fasterxml_jackson_core_jackson_core//jar",
         "@com_google_api_gax_java//gax:gax_testlib",
-        "@com_google_code_gson_gson//jar",
         "@junit_junit//jar",
     ]
 
