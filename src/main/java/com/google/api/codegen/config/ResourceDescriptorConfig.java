@@ -272,14 +272,16 @@ public abstract class ResourceDescriptorConfig {
   static String getParentPattern(String pattern) {
     List<String> segments = getSegments(pattern);
     int index = segments.size() - 1;
+    if (index < 0) {
+      return "";
+    }
     if (isVariableBinding(segments.get(index))) {
       index -= 2;
     } else {
       index--;
     }
-    if (index < 0) {
-      return "";
-    }
+    Preconditions.checkArgument(
+        index >= -1, "malformatted pattern, can't calculate parent: %s", pattern);
     return String.join("/", segments.subList(0, index + 1));
   }
 
