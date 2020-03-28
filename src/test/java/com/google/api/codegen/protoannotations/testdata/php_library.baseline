@@ -2310,6 +2310,7 @@ use Google\Example\Library\V1\Book\MapStringValueEntry;
 use Google\Example\Library\V1\Book\Rating;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\CreateBookRequest;
+use Google\Example\Library\V1\CreateInventoryRequest;
 use Google\Example\Library\V1\CreateShelfRequest;
 use Google\Example\Library\V1\DeleteBookRequest;
 use Google\Example\Library\V1\DeleteShelfRequest;
@@ -2322,6 +2323,7 @@ use Google\Example\Library\V1\GetBookFromAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromArchiveRequest;
 use Google\Example\Library\V1\GetBookRequest;
 use Google\Example\Library\V1\GetShelfRequest;
+use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
@@ -2445,6 +2447,7 @@ class LibraryServiceGapicClient
     private static $bookNameTemplate;
     private static $bookFromArchiveNameTemplate;
     private static $folderNameTemplate;
+    private static $inventoryNameTemplate;
     private static $locationNameTemplate;
     private static $projectNameTemplate;
     private static $projectBookNameTemplate;
@@ -2517,6 +2520,15 @@ class LibraryServiceGapicClient
         return self::$folderNameTemplate;
     }
 
+    private static function getInventoryNameTemplate()
+    {
+        if (self::$inventoryNameTemplate == null) {
+            self::$inventoryNameTemplate = new PathTemplate('projects/{project}/locations/{location}/publishers/{publisher}/inventory');
+        }
+
+        return self::$inventoryNameTemplate;
+    }
+
     private static function getLocationNameTemplate()
     {
         if (self::$locationNameTemplate == null) {
@@ -2572,6 +2584,7 @@ class LibraryServiceGapicClient
                 'book' => self::getBookNameTemplate(),
                 'bookFromArchive' => self::getBookFromArchiveNameTemplate(),
                 'folder' => self::getFolderNameTemplate(),
+                'inventory' => self::getInventoryNameTemplate(),
                 'location' => self::getLocationNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
@@ -2661,6 +2674,25 @@ class LibraryServiceGapicClient
     {
         return self::getFolderNameTemplate()->render([
             'folder' => $folder,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a inventory resource.
+     *
+     * @param string $project
+     * @param string $location
+     * @param string $publisher
+     * @return string The formatted inventory resource.
+     * @experimental
+     */
+    public static function inventoryName($project, $location, $publisher)
+    {
+        return self::getInventoryNameTemplate()->render([
+            'project' => $project,
+            'location' => $location,
+            'publisher' => $publisher,
         ]);
     }
 
@@ -2757,6 +2789,7 @@ class LibraryServiceGapicClient
      * - book: shelves/{shelf}/books/{book}
      * - bookFromArchive: archives/{archive}/books/{book}
      * - folder: folders/{folder}
+     * - inventory: projects/{project}/locations/{location}/publishers/{publisher}/inventory
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
@@ -4942,6 +4975,59 @@ class LibraryServiceGapicClient
     }
 
     /**
+     * Creates an inventory. Tests singleton resources.
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $formattedParent = $libraryServiceClient->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+     *     $response = $libraryServiceClient->createInventory($formattedParent);
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param string $parent
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type Inventory $inventory
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\Example\Library\V1\Inventory
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function createInventory($parent, array $optionalArgs = [])
+    {
+        $request = new CreateInventoryRequest();
+        $request->setParent($parent);
+        if (isset($optionalArgs['inventory'])) {
+            $request->setInventory($optionalArgs['inventory']);
+        }
+
+        $requestParams = new RequestParamsHeaderDescriptor([
+          'parent' => $request->getParent(),
+        ]);
+        $optionalArgs['headers'] = isset($optionalArgs['headers'])
+            ? array_merge($requestParams->getHeader(), $optionalArgs['headers'])
+            : $requestParams->getHeader();
+
+        return $this->startCall(
+            'CreateInventory',
+            Inventory::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
      *
      *
      * Sample code:
@@ -5933,6 +6019,11 @@ class MyProtoClient extends MyProtoGapicClient
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "CreateInventory": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "MoveBooks": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -6323,6 +6414,18 @@ return [
                 'uriTemplate' => '/v1/testofp',
                 'body' => '*',
             ],
+            'CreateInventory' => [
+                'method' => 'post',
+                'uriTemplate' => '/v1/{parent=projects/*/locations/*/publishers/*}',
+                'body' => 'inventory',
+                'placeholders' => [
+                    'parent' => [
+                        'getters' => [
+                            'getParent',
+                        ],
+                    ],
+                ]
+            ],
             'MoveBooks' => [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{source=**}:move',
@@ -6552,6 +6655,7 @@ use Google\Example\Library\V1\BookFromArchive;
 use Google\Example\Library\V1\Comment;
 use Google\Example\Library\V1\Comment\Stage;
 use Google\Example\Library\V1\CreateBookRequest;
+use Google\Example\Library\V1\CreateInventoryRequest;
 use Google\Example\Library\V1\CreateShelfRequest;
 use Google\Example\Library\V1\DeleteBookRequest;
 use Google\Example\Library\V1\DeleteShelfRequest;
@@ -6563,6 +6667,7 @@ use Google\Example\Library\V1\GetBookFromAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromArchiveRequest;
 use Google\Example\Library\V1\GetBookRequest;
 use Google\Example\Library\V1\GetShelfRequest;
+use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
@@ -9238,6 +9343,79 @@ class LibraryServiceClientTest extends GeneratedTest
 
         try {
             $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $requiredAnyValue, $requiredStructValue, $requiredValueValue, $requiredListValueValue, $requiredTimeValue, $requiredDurationValue, $requiredFieldMaskValue, $requiredInt32Value, $requiredUint32Value, $requiredInt64Value, $requiredUint64Value, $requiredFloatValue, $requiredDoubleValue, $requiredStringValue, $requiredBoolValue, $requiredBytesValue, $requiredRepeatedAnyValue, $requiredRepeatedStructValue, $requiredRepeatedValueValue, $requiredRepeatedListValueValue, $requiredRepeatedTimeValue, $requiredRepeatedDurationValue, $requiredRepeatedFieldMaskValue, $requiredRepeatedInt32Value, $requiredRepeatedUint32Value, $requiredRepeatedInt64Value, $requiredRepeatedUint64Value, $requiredRepeatedFloatValue, $requiredRepeatedDoubleValue, $requiredRepeatedStringValue, $requiredRepeatedBoolValue, $requiredRepeatedBytesValue);
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function createInventoryTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $name = 'name3373707';
+        $expectedResponse = new Inventory();
+        $expectedResponse->setName($name);
+        $transport->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedParent = $client->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+
+        $response = $client->createInventory($formattedParent);
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/CreateInventory', $actualFuncCall);
+
+        $actualValue = $actualRequestObject->getParent();
+
+        $this->assertProtobufEquals($formattedParent, $actualValue);
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function createInventoryExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        // Mock request
+        $formattedParent = $client->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+
+        try {
+            $client->createInventory($formattedParent);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

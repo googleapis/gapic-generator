@@ -244,6 +244,7 @@ type CallOptions struct {
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
     TestOptionalRequiredFlatteningParams []gax.CallOption
+    CreateInventory []gax.CallOption
     MoveBooks []gax.CallOption
     ArchiveBooks []gax.CallOption
     LongRunningArchiveBooks []gax.CallOption
@@ -304,6 +305,7 @@ func defaultCallOptions() *CallOptions {
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
         TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
+        CreateInventory: retry[[2]string{"default", "non_idempotent"}],
         MoveBooks: retry[[2]string{"default", "non_idempotent"}],
         ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         LongRunningArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
@@ -924,6 +926,23 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
         resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// CreateInventory creates an inventory. Tests singleton resources.
+func (c *LibClient) CreateInventory(ctx context.Context, req *librarypb.CreateInventoryRequest, opts ...gax.CallOption) (*librarypb.Inventory, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "parent", url.QueryEscape(req.GetParent())))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.CreateInventory[0:len(c.CallOptions.CreateInventory):len(c.CallOptions.CreateInventory)], opts...)
+    var resp *librarypb.Inventory
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.CreateInventory(ctx, req, settings.GRPC...)
         return err
     }, opts...)
     if err != nil {
@@ -1930,6 +1949,24 @@ func ExampleClient_TestOptionalRequiredFlatteningParams() {
     _ = resp
 }
 
+func ExampleClient_CreateInventory() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.CreateInventoryRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.CreateInventory(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
 func ExampleClient_MoveBooks() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2214,6 +2251,18 @@ func (s *mockLibraryServer) PublishSeries(ctx context.Context, req *librarypb.Pu
         return nil, s.err
     }
     return s.resps[0].(*librarypb.PublishSeriesResponse), nil
+}
+
+func (s *mockLibraryServer) CreateInventory(ctx context.Context, req *librarypb.CreateInventoryRequest) (*librarypb.Inventory, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Inventory), nil
 }
 
 func (s *mockLibraryServer) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
@@ -4765,6 +4814,65 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     }
 
     resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceCreateInventory(t *testing.T) {
+    var name string = "name3373707"
+    var expectedResponse = &librarypb.Inventory{
+        Name: name,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var request = &librarypb.CreateInventoryRequest{
+        Parent: formattedParent,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateInventory(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceCreateInventoryError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var request = &librarypb.CreateInventoryRequest{
+        Parent: formattedParent,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateInventory(context.Background(), request)
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)

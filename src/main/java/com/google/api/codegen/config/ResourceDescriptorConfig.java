@@ -271,15 +271,16 @@ public abstract class ResourceDescriptorConfig {
   @VisibleForTesting
   static String getParentPattern(String pattern) {
     List<String> segments = getSegments(pattern);
-    int index = segments.size() - 2;
-    while (index >= 0 && !isVariableBinding(segments.get(index))) {
+    int index = segments.size() - 1;
+    if (isVariableBinding(segments.get(index))) {
+      index -= 2;
+    } else {
       index--;
     }
-    index++;
-    if (index <= 0) {
+    if (index < 0) {
       return "";
     }
-    return String.join("/", segments.subList(0, index));
+    return String.join("/", segments.subList(0, index + 1));
   }
 
   private static Map<String, Boolean> getParentPatternsMap(ResourceDescriptorConfig resource) {

@@ -1048,6 +1048,101 @@ public class LibraryServiceClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   Inventory inventory = Inventory.newBuilder().build();
+   *   Inventory response = libraryServiceClient.createInventory(parent, inventory);
+   * }
+   * </code></pre>
+   *
+   * @param parent
+   * @param inventory
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Inventory createInventory(PublisherName parent, Inventory inventory) {
+    CreateInventoryRequest request =
+        CreateInventoryRequest.newBuilder()
+            .setParent(parent == null ? null : parent.toString())
+            .setInventory(inventory)
+            .build();
+    return createInventory(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   Inventory inventory = Inventory.newBuilder().build();
+   *   Inventory response = libraryServiceClient.createInventory(parent.toString(), inventory);
+   * }
+   * </code></pre>
+   *
+   * @param parent
+   * @param inventory
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Inventory createInventory(String parent, Inventory inventory) {
+    CreateInventoryRequest request =
+        CreateInventoryRequest.newBuilder()
+            .setParent(parent)
+            .setInventory(inventory)
+            .build();
+    return createInventory(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   CreateInventoryRequest request = CreateInventoryRequest.newBuilder()
+   *     .setParent(parent.toString())
+   *     .build();
+   *   Inventory response = libraryServiceClient.createInventory(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Inventory createInventory(CreateInventoryRequest request) {
+    return createInventoryCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   CreateInventoryRequest request = CreateInventoryRequest.newBuilder()
+   *     .setParent(parent.toString())
+   *     .build();
+   *   ApiFuture&lt;Inventory&gt; future = libraryServiceClient.createInventoryCallable().futureCall(request);
+   *   // Do something
+   *   Inventory response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable() {
+    return stub.createInventoryCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * Gets a book.
    *
    * Sample code:
@@ -2916,6 +3011,38 @@ public class LibraryServiceClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
+   *   InventoryName destination = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ArchiveName source, InventoryName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ArchiveName source = ArchiveName.of("[ARCHIVE]");
    *   ShelfName destination = ShelfName.of("[SHELF]");
    *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
    *   ProjectName project = ProjectName.of("[PROJECT]");
@@ -2979,6 +3106,134 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(InventoryName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   InventoryName destination = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(InventoryName source, InventoryName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ShelfName destination = ShelfName.of("[SHELF]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(InventoryName source, ShelfName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ProjectName destination = ProjectName.of("[PROJECT]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(InventoryName source, ProjectName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ShelfName source = ShelfName.of("[SHELF]");
    *   ArchiveName destination = ArchiveName.of("[ARCHIVE]");
    *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
@@ -2994,6 +3249,38 @@ public class LibraryServiceClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final MoveBooksResponse moveBooks(ShelfName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ShelfName source = ShelfName.of("[SHELF]");
+   *   InventoryName destination = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ShelfName source, InventoryName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
@@ -3090,6 +3377,38 @@ public class LibraryServiceClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final MoveBooksResponse moveBooks(ProjectName source, ArchiveName destination, List<String> publishers, ProjectName project) {
+    MoveBooksRequest request =
+        MoveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setDestination(destination == null ? null : destination.toString())
+            .addAllPublishers(publishers)
+            .setProject(project == null ? null : project.toString())
+            .build();
+    return moveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   ProjectName source = ProjectName.of("[PROJECT]");
+   *   InventoryName destination = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   List&lt;String&gt; formattedPublishers = new ArrayList&lt;&gt;();
+   *   ProjectName project = ProjectName.of("[PROJECT]");
+   *   MoveBooksResponse response = libraryServiceClient.moveBooks(source, destination, formattedPublishers, project);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param destination
+   * @param publishers
+   * @param project
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final MoveBooksResponse moveBooks(ProjectName source, InventoryName destination, List<String> publishers, ProjectName project) {
     MoveBooksRequest request =
         MoveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
@@ -3266,6 +3585,32 @@ public class LibraryServiceClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source, archive);
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ArchiveBooksResponse archiveBooks(InventoryName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return archiveBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
    *   ShelfName source = ShelfName.of("[SHELF]");
    *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
    *   ArchiveBooksResponse response = libraryServiceClient.archiveBooks(source, archive);
@@ -3393,6 +3738,33 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
   public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(ArchiveName source, ArchiveName archive) {
+    ArchiveBooksRequest request =
+        ArchiveBooksRequest.newBuilder()
+            .setSource(source == null ? null : source.toString())
+            .setArchive(archive == null ? null : archive.toString())
+            .build();
+    return longRunningArchiveBooksAsync(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   InventoryName source = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ArchiveName archive = ArchiveName.of("[ARCHIVE]");
+   *   ArchiveBooksResponse response = libraryServiceClient.longRunningArchiveBooksAsync(source, archive).get();
+   * }
+   * </code></pre>
+   *
+   * @param source
+   * @param archive
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi("The surface for long-running operations is not stable yet and may change in the future.")
+  public final OperationFuture<ArchiveBooksResponse, ArchiveBooksMetadata> longRunningArchiveBooksAsync(InventoryName source, ArchiveName archive) {
     ArchiveBooksRequest request =
         ArchiveBooksRequest.newBuilder()
             .setSource(source == null ? null : source.toString())
@@ -5322,6 +5694,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
   }
 
   /**
+   * Returns the object with the settings used for calls to createInventory.
+   */
+  public UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).createInventorySettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to getBook.
    */
   public UnaryCallSettings<GetBookRequest, Book> getBookSettings() {
@@ -5695,6 +6074,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
      */
     public UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return getStubSettingsBuilder().publishSeriesSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to createInventory.
+     */
+    public UnaryCallSettings.Builder<CreateInventoryRequest, Inventory> createInventorySettings() {
+      return getStubSettingsBuilder().createInventorySettings();
     }
 
     /**
@@ -6558,6 +6944,7 @@ import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateInventoryRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
@@ -6571,6 +6958,8 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.Inventory;
+import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
@@ -6745,6 +7134,7 @@ import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateInventoryRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
@@ -6758,6 +7148,8 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.Inventory;
+import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
@@ -6878,6 +7270,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setFullMethodName("google.example.library.v1.LibraryService/PublishSeries")
           .setRequestMarshaller(ProtoUtils.marshaller(PublishSeriesRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(PublishSeriesResponse.getDefaultInstance()))
+          .build();
+  private static final MethodDescriptor<CreateInventoryRequest, Inventory> createInventoryMethodDescriptor =
+      MethodDescriptor.<CreateInventoryRequest, Inventory>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/CreateInventory")
+          .setRequestMarshaller(ProtoUtils.marshaller(CreateInventoryRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(Inventory.getDefaultInstance()))
           .build();
   private static final MethodDescriptor<GetBookRequest, Book> getBookMethodDescriptor =
       MethodDescriptor.<GetBookRequest, Book>newBuilder()
@@ -7080,6 +7479,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
   private final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
+  private final UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable;
   private final UnaryCallable<GetBookRequest, Book> getBookCallable;
   private final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
   private final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
@@ -7215,6 +7615,19 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
                   public Map<String, String> extract(PublishSeriesRequest request) {
                     ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
                     params.put("shelf.name", String.valueOf(request.getShelf().getName()));
+                    return params.build();
+                  }
+                })
+            .build();
+    GrpcCallSettings<CreateInventoryRequest, Inventory> createInventoryTransportSettings =
+        GrpcCallSettings.<CreateInventoryRequest, Inventory>newBuilder()
+            .setMethodDescriptor(createInventoryMethodDescriptor)
+            .setParamsExtractor(
+                new RequestParamsExtractor<CreateInventoryRequest>() {
+                  @Override
+                  public Map<String, String> extract(CreateInventoryRequest request) {
+                    ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+                    params.put("parent", String.valueOf(request.getParent()));
                     return params.build();
                   }
                 })
@@ -7480,6 +7893,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
     this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
     this.publishSeriesCallable = callableFactory.createUnaryCallable(publishSeriesTransportSettings,settings.publishSeriesSettings(), clientContext);
+    this.createInventoryCallable = callableFactory.createUnaryCallable(createInventoryTransportSettings,settings.createInventorySettings(), clientContext);
     this.getBookCallable = callableFactory.createUnaryCallable(getBookTransportSettings,settings.getBookSettings(), clientContext);
     this.listBooksCallable = callableFactory.createUnaryCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
     this.listBooksPagedCallable = callableFactory.createPagedCallable(listBooksTransportSettings,settings.listBooksSettings(), clientContext);
@@ -7550,6 +7964,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
+  }
+
+  public UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable() {
+    return createInventoryCallable;
   }
 
   public UnaryCallable<GetBookRequest, Book> getBookCallable() {
@@ -8032,6 +8450,7 @@ import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateInventoryRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
@@ -8045,6 +8464,8 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.Inventory;
+import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
@@ -8142,6 +8563,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     throw new UnsupportedOperationException("Not implemented: publishSeriesCallable()");
+  }
+
+  public UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable() {
+    throw new UnsupportedOperationException("Not implemented: createInventoryCallable()");
   }
 
   public UnaryCallable<GetBookRequest, Book> getBookCallable() {
@@ -8348,6 +8773,7 @@ import com.google.example.library.v1.BookFromAnywhere;
 import com.google.example.library.v1.BookFromArchive;
 import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateInventoryRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
@@ -8360,6 +8786,7 @@ import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.Inventory;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
@@ -8445,6 +8872,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
   private final UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+  private final UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings;
   private final UnaryCallSettings<GetBookRequest, Book> getBookSettings;
   private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final UnaryCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
@@ -8523,6 +8951,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
    */
   public UnaryCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to createInventory.
+   */
+  public UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings() {
+    return createInventorySettings;
   }
 
   /**
@@ -8831,6 +9266,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     mergeShelvesSettings = settingsBuilder.mergeShelvesSettings().build();
     createBookSettings = settingsBuilder.createBookSettings().build();
     publishSeriesSettings = settingsBuilder.publishSeriesSettings().build();
+    createInventorySettings = settingsBuilder.createInventorySettings().build();
     getBookSettings = settingsBuilder.getBookSettings().build();
     listBooksSettings = settingsBuilder.listBooksSettings().build();
     deleteBookSettings = settingsBuilder.deleteBookSettings().build();
@@ -9024,6 +9460,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
     private final UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final UnaryCallSettings.Builder<CreateInventoryRequest, Inventory> createInventorySettings;
     private final UnaryCallSettings.Builder<GetBookRequest, Book> getBookSettings;
     private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final UnaryCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
@@ -9107,6 +9544,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       publishSeriesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      createInventorySettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       getBookSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       listBooksSettings = PagedCallSettings.newBuilder(
@@ -9178,6 +9617,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           mergeShelvesSettings,
           createBookSettings,
           publishSeriesSettings,
+          createInventorySettings,
           getBookSettings,
           listBooksSettings,
           deleteBookSettings,
@@ -9240,6 +9680,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.publishSeriesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.createInventorySettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -9408,6 +9852,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       mergeShelvesSettings = settings.mergeShelvesSettings.toBuilder();
       createBookSettings = settings.createBookSettings.toBuilder();
       publishSeriesSettings = settings.publishSeriesSettings.toBuilder();
+      createInventorySettings = settings.createInventorySettings.toBuilder();
       getBookSettings = settings.getBookSettings.toBuilder();
       listBooksSettings = settings.listBooksSettings.toBuilder();
       deleteBookSettings = settings.deleteBookSettings.toBuilder();
@@ -9447,6 +9892,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           mergeShelvesSettings,
           createBookSettings,
           publishSeriesSettings,
+          createInventorySettings,
           getBookSettings,
           listBooksSettings,
           deleteBookSettings,
@@ -9533,6 +9979,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to createInventory.
+     */
+    public UnaryCallSettings.Builder<CreateInventoryRequest, Inventory> createInventorySettings() {
+      return createInventorySettings;
     }
 
     /**
@@ -10665,6 +11118,51 @@ public class LibraryServiceClientTest {
       PublisherName publisher = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
 
       client.publishSeries(shelf, books, edition, seriesUuid, publisher);
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createInventoryTest() {
+    InventoryName name = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+    Inventory expectedResponse = Inventory.newBuilder()
+      .setName(name.toString())
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+    Inventory inventory = Inventory.newBuilder().build();
+
+    Inventory actualResponse =
+        client.createInventory(parent, inventory);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    CreateInventoryRequest actualRequest = (CreateInventoryRequest)actualRequests.get(0);
+
+    Assert.assertEquals(parent, PublisherName.parse(actualRequest.getParent()));
+    Assert.assertEquals(inventory, actualRequest.getInventory());
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void createInventoryExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+      Inventory inventory = Inventory.newBuilder().build();
+
+      client.createInventory(parent, inventory);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -12613,6 +13111,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof PublishSeriesResponse) {
       requests.add(request);
       responseObserver.onNext((PublishSeriesResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void createInventory(CreateInventoryRequest request,
+    StreamObserver<Inventory> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Inventory) {
+      requests.add(request);
+      responseObserver.onNext((Inventory) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

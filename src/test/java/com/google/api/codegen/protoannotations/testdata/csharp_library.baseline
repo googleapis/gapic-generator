@@ -7654,6 +7654,68 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        /// <summary>Snippet for CreateInventoryAsync</summary>
+        public async Task CreateInventoryAsync()
+        {
+            // Snippet: CreateInventoryAsync(PublisherName,Inventory,CallSettings)
+            // Additional: CreateInventoryAsync(PublisherName,Inventory,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            Inventory inventory = new Inventory();
+            // Make the request
+            Inventory response = await libraryServiceClient.CreateInventoryAsync(parent, inventory);
+            // End snippet
+        }
+
+        /// <summary>Snippet for CreateInventory</summary>
+        public void CreateInventory()
+        {
+            // Snippet: CreateInventory(PublisherName,Inventory,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            Inventory inventory = new Inventory();
+            // Make the request
+            Inventory response = libraryServiceClient.CreateInventory(parent, inventory);
+            // End snippet
+        }
+
+        /// <summary>Snippet for CreateInventoryAsync</summary>
+        public async Task CreateInventoryAsync_RequestObject()
+        {
+            // Snippet: CreateInventoryAsync(CreateInventoryRequest,CallSettings)
+            // Additional: CreateInventoryAsync(CreateInventoryRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            CreateInventoryRequest request = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            // Make the request
+            Inventory response = await libraryServiceClient.CreateInventoryAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for CreateInventory</summary>
+        public void CreateInventory_RequestObject()
+        {
+            // Snippet: CreateInventory(CreateInventoryRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            CreateInventoryRequest request = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            // Make the request
+            Inventory response = libraryServiceClient.CreateInventory(request);
+            // End snippet
+        }
+
         /// <summary>Snippet for MoveBooksAsync</summary>
         public async Task MoveBooksAsync()
         {
@@ -10835,6 +10897,108 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
+        public void CreateInventory()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            CreateInventoryRequest expectedRequest = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                Inventory = new Inventory(),
+            };
+            Inventory expectedResponse = new Inventory
+            {
+                InventoryName = new InventoryName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            mockGrpcClient.Setup(x => x.CreateInventory(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            Inventory inventory = new Inventory();
+            Inventory response = client.CreateInventory(parent, inventory);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task CreateInventoryAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            CreateInventoryRequest expectedRequest = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                Inventory = new Inventory(),
+            };
+            Inventory expectedResponse = new Inventory
+            {
+                InventoryName = new InventoryName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            mockGrpcClient.Setup(x => x.CreateInventoryAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Inventory>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+            Inventory inventory = new Inventory();
+            Inventory response = await client.CreateInventoryAsync(parent, inventory);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void CreateInventory2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            CreateInventoryRequest request = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            Inventory expectedResponse = new Inventory
+            {
+                InventoryName = new InventoryName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            mockGrpcClient.Setup(x => x.CreateInventory(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Inventory response = client.CreateInventory(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task CreateInventoryAsync2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            CreateInventoryRequest request = new CreateInventoryRequest
+            {
+                ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            Inventory expectedResponse = new Inventory
+            {
+                InventoryName = new InventoryName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+            };
+            mockGrpcClient.Setup(x => x.CreateInventoryAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<Inventory>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            Inventory response = await client.CreateInventoryAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
         public void MoveBooks()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -11471,6 +11635,7 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
+            CreateInventorySettings = existing.CreateInventorySettings;
             MoveBooksSettings = existing.MoveBooksSettings;
             ArchiveBooksSettings = existing.ArchiveBooksSettings;
             LongRunningArchiveBooksSettings = existing.LongRunningArchiveBooksSettings;
@@ -12300,6 +12465,35 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public gaxgrpc::CallSettings TestOptionalRequiredFlatteningParamsSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.CreateInventory</c> and <c>LibraryServiceClient.CreateInventoryAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.CreateInventory</c> and
+        /// <c>LibraryServiceClient.CreateInventoryAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings CreateInventorySettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
             gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
                 retryBackoff: GetDefaultRetryBackoff(),
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
@@ -21404,6 +21598,212 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            PublisherName parent,
+            Inventory inventory,
+            gaxgrpc::CallSettings callSettings = null) => CreateInventoryAsync(
+                new CreateInventoryRequest
+                {
+                    ParentAsPublisherName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
+                    Inventory = inventory, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            PublisherName parent,
+            Inventory inventory,
+            st::CancellationToken cancellationToken) => CreateInventoryAsync(
+                parent,
+                inventory,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Inventory CreateInventory(
+            PublisherName parent,
+            Inventory inventory,
+            gaxgrpc::CallSettings callSettings = null) => CreateInventory(
+                new CreateInventoryRequest
+                {
+                    ParentAsPublisherName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
+                    Inventory = inventory, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            string parent,
+            Inventory inventory,
+            gaxgrpc::CallSettings callSettings = null) => CreateInventoryAsync(
+                new CreateInventoryRequest
+                {
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
+                    Inventory = inventory, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            string parent,
+            Inventory inventory,
+            st::CancellationToken cancellationToken) => CreateInventoryAsync(
+                parent,
+                inventory,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="parent">
+        ///
+        /// </param>
+        /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Inventory CreateInventory(
+            string parent,
+            Inventory inventory,
+            gaxgrpc::CallSettings callSettings = null) => CreateInventory(
+                new CreateInventoryRequest
+                {
+                    Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
+                    Inventory = inventory, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            CreateInventoryRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<Inventory> CreateInventoryAsync(
+            CreateInventoryRequest request,
+            st::CancellationToken cancellationToken) => CreateInventoryAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual Inventory CreateInventory(
+            CreateInventoryRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="source">
@@ -21503,6 +21903,111 @@ namespace Google.Example.Library.V1
                 {
                     SourceAsArchiveName = source, // Optional
                     DestinationAsArchiveName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ArchiveName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsArchiveName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ArchiveName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ArchiveName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsArchiveName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
                     PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
                     ProjectAsProjectName = project, // Optional
                 },
@@ -21740,6 +22245,426 @@ namespace Google.Example.Library.V1
         /// A Task containing the RPC response.
         /// </returns>
         public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ArchiveName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsArchiveName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ArchiveName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            InventoryName source,
+            ArchiveName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsArchiveName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            InventoryName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ShelfName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsShelfName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ShelfName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            InventoryName source,
+            ShelfName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsShelfName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ProjectName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            InventoryName source,
+            ProjectName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            InventoryName source,
+            ProjectName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    DestinationAsProjectName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
             ShelfName source,
             ArchiveName destination,
             scg::IEnumerable<PublisherName> publishers,
@@ -21818,6 +22743,111 @@ namespace Google.Example.Library.V1
                 {
                     SourceAsShelfName = source, // Optional
                     DestinationAsArchiveName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ShelfName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsShelfName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ShelfName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ShelfName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsShelfName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
                     PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
                     ProjectAsProjectName = project, // Optional
                 },
@@ -22133,6 +23163,111 @@ namespace Google.Example.Library.V1
                 {
                     SourceAsProjectName = source, // Optional
                     DestinationAsArchiveName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ProjectName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooksAsync(
+                new MoveBooksRequest
+                {
+                    SourceAsProjectName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
+                    PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
+                    ProjectAsProjectName = project, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<MoveBooksResponse> MoveBooksAsync(
+            ProjectName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            st::CancellationToken cancellationToken) => MoveBooksAsync(
+                source,
+                destination,
+                publishers,
+                project,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="destination">
+        ///
+        /// </param>
+        /// <param name="publishers">
+        ///
+        /// </param>
+        /// <param name="project">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual MoveBooksResponse MoveBooks(
+            ProjectName source,
+            InventoryName destination,
+            scg::IEnumerable<PublisherName> publishers,
+            ProjectName project,
+            gaxgrpc::CallSettings callSettings = null) => MoveBooks(
+                new MoveBooksRequest
+                {
+                    SourceAsProjectName = source, // Optional
+                    DestinationAsInventoryName = destination, // Optional
                     PublishersAsPublisherNames = { publishers ?? linq::Enumerable.Empty<PublisherName>() }, // Optional
                     ProjectAsProjectName = project, // Optional
                 },
@@ -22580,6 +23715,81 @@ namespace Google.Example.Library.V1
                 new ArchiveBooksRequest
                 {
                     SourceAsArchiveName = source, // Optional
+                    ArchiveAsArchiveName = archive, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ArchiveBooksResponse> ArchiveBooksAsync(
+            InventoryName source,
+            ArchiveName archive,
+            gaxgrpc::CallSettings callSettings = null) => ArchiveBooksAsync(
+                new ArchiveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    ArchiveAsArchiveName = archive, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ArchiveBooksResponse> ArchiveBooksAsync(
+            InventoryName source,
+            ArchiveName archive,
+            st::CancellationToken cancellationToken) => ArchiveBooksAsync(
+                source,
+                archive,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual ArchiveBooksResponse ArchiveBooks(
+            InventoryName source,
+            ArchiveName archive,
+            gaxgrpc::CallSettings callSettings = null) => ArchiveBooks(
+                new ArchiveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
                     ArchiveAsArchiveName = archive, // Optional
                 },
                 callSettings);
@@ -22936,6 +24146,81 @@ namespace Google.Example.Library.V1
                 new ArchiveBooksRequest
                 {
                     SourceAsArchiveName = source, // Optional
+                    ArchiveAsArchiveName = archive, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<lro::Operation<ArchiveBooksResponse, ArchiveBooksMetadata>> LongRunningArchiveBooksAsync(
+            InventoryName source,
+            ArchiveName archive,
+            gaxgrpc::CallSettings callSettings = null) => LongRunningArchiveBooksAsync(
+                new ArchiveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
+                    ArchiveAsArchiveName = archive, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<lro::Operation<ArchiveBooksResponse, ArchiveBooksMetadata>> LongRunningArchiveBooksAsync(
+            InventoryName source,
+            ArchiveName archive,
+            st::CancellationToken cancellationToken) => LongRunningArchiveBooksAsync(
+                source,
+                archive,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="source">
+        ///
+        /// </param>
+        /// <param name="archive">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual lro::Operation<ArchiveBooksResponse, ArchiveBooksMetadata> LongRunningArchiveBooks(
+            InventoryName source,
+            ArchiveName archive,
+            gaxgrpc::CallSettings callSettings = null) => LongRunningArchiveBooks(
+                new ArchiveBooksRequest
+                {
+                    SourceAsInventoryName = source, // Optional
                     ArchiveAsArchiveName = archive, // Optional
                 },
                 callSettings);
@@ -23236,6 +24521,17 @@ namespace Google.Example.Library.V1
                 gax::GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
                 LongRunningArchiveBooksOperationsClient,
                 callSettings);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The client-server stream.
+        /// </returns>
+        *** ERROR: Cannot handle streaming type 'BidiStreaming' ***
 
         /// <summary>
         ///
@@ -23719,6 +25015,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
+        private readonly gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> _callCreateInventory;
         private readonly gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> _callMoveBooks;
         private readonly gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> _callArchiveBooks;
         private readonly gaxgrpc::ApiCall<ArchiveBooksRequest, lro::Operation> _callLongRunningArchiveBooks;
@@ -23814,6 +25111,9 @@ namespace Google.Example.Library.V1
                 .WithGoogleRequestParam("name", request => request.Name);
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            _callCreateInventory = clientHelper.BuildApiCall<CreateInventoryRequest, Inventory>(
+                GrpcClient.CreateInventoryAsync, GrpcClient.CreateInventory, effectiveSettings.CreateInventorySettings)
+                .WithGoogleRequestParam("parent", request => request.Parent);
             _callMoveBooks = clientHelper.BuildApiCall<MoveBooksRequest, MoveBooksResponse>(
                 GrpcClient.MoveBooksAsync, GrpcClient.MoveBooks, effectiveSettings.MoveBooksSettings)
                 .WithGoogleRequestParam("source", request => request.Source);
@@ -23881,6 +25181,8 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_ApiCall(ref _callCreateInventory);
+            Modify_CreateInventoryApiCall(ref _callCreateInventory);
             Modify_ApiCall(ref _callMoveBooks);
             Modify_MoveBooksApiCall(ref _callMoveBooks);
             Modify_ApiCall(ref _callArchiveBooks);
@@ -23938,6 +25240,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
+        partial void Modify_CreateInventoryApiCall(ref gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> call);
         partial void Modify_MoveBooksApiCall(ref gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> call);
         partial void Modify_ArchiveBooksApiCall(ref gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> call);
         partial void Modify_LongRunningArchiveBooksApiCall(ref gaxgrpc::ApiCall<ArchiveBooksRequest, lro::Operation> call);
@@ -23979,6 +25282,7 @@ namespace Google.Example.Library.V1
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_CreateInventoryRequest(ref CreateInventoryRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_MoveBooksRequest(ref MoveBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_ArchiveBooksRequest(ref ArchiveBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_Book(ref Book request, ref gaxgrpc::CallSettings settings);
@@ -25074,6 +26378,46 @@ namespace Google.Example.Library.V1
         {
             Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
             return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<Inventory> CreateInventoryAsync(
+            CreateInventoryRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_CreateInventoryRequest(ref request, ref callSettings);
+            return _callCreateInventory.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Creates an inventory. Tests singleton resources.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override Inventory CreateInventory(
+            CreateInventoryRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_CreateInventoryRequest(ref request, ref callSettings);
+            return _callCreateInventory.Sync(request, callSettings);
         }
 
         /// <summary>
@@ -26826,6 +28170,113 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
+    /// Resource name for the 'inventory' resource.
+    /// </summary>
+    public sealed partial class InventoryName : gax::IResourceName, sys::IEquatable<InventoryName>
+    {
+        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("projects/{project}/locations/{location}/publishers/{publisher}/inventory");
+
+        /// <summary>
+        /// Parses the given inventory resource name in string form into a new
+        /// <see cref="InventoryName"/> instance.
+        /// </summary>
+        /// <param name="inventoryName">The inventory resource name in string form. Must not be <c>null</c>.</param>
+        /// <returns>The parsed <see cref="InventoryName"/> if successful.</returns>
+        public static InventoryName Parse(string inventoryName)
+        {
+            gax::GaxPreconditions.CheckNotNull(inventoryName, nameof(inventoryName));
+            gax::TemplatedResourceName resourceName = s_template.ParseName(inventoryName);
+            return new InventoryName(resourceName[0], resourceName[1], resourceName[2]);
+        }
+
+        /// <summary>
+        /// Tries to parse the given inventory resource name in string form into a new
+        /// <see cref="InventoryName"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="inventoryName"/> is null,
+        /// as this would usually indicate a programming error rather than a data error.
+        /// </remarks>
+        /// <param name="inventoryName">The inventory resource name in string form. Must not be <c>null</c>.</param>
+        /// <param name="result">When this method returns, the parsed <see cref="InventoryName"/>,
+        /// or <c>null</c> if parsing fails.</param>
+        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
+        public static bool TryParse(string inventoryName, out InventoryName result)
+        {
+            gax::GaxPreconditions.CheckNotNull(inventoryName, nameof(inventoryName));
+            gax::TemplatedResourceName resourceName;
+            if (s_template.TryParseName(inventoryName, out resourceName))
+            {
+                result = new InventoryName(resourceName[0], resourceName[1], resourceName[2]);
+                return true;
+            }
+            else
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>Formats the IDs into the string representation of the <see cref="InventoryName"/>.</summary>
+        /// <param name="projectId">The <c>project</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The <c>location</c> ID. Must not be <c>null</c>.</param>
+        /// <param name="publisherId">The <c>publisher</c> ID. Must not be <c>null</c>.</param>
+        /// <returns>The string representation of the <see cref="InventoryName"/>.</returns>
+        public static string Format(string projectId, string locationId, string publisherId) =>
+            s_template.Expand(gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId)), gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId)), gax::GaxPreconditions.CheckNotNull(publisherId, nameof(publisherId)));
+
+        /// <summary>
+        /// Constructs a new instance of the <see cref="InventoryName"/> resource name class
+        /// from its component parts.
+        /// </summary>
+        /// <param name="projectId">The project ID. Must not be <c>null</c>.</param>
+        /// <param name="locationId">The location ID. Must not be <c>null</c>.</param>
+        /// <param name="publisherId">The publisher ID. Must not be <c>null</c>.</param>
+        public InventoryName(string projectId, string locationId, string publisherId)
+        {
+            ProjectId = gax::GaxPreconditions.CheckNotNull(projectId, nameof(projectId));
+            LocationId = gax::GaxPreconditions.CheckNotNull(locationId, nameof(locationId));
+            PublisherId = gax::GaxPreconditions.CheckNotNull(publisherId, nameof(publisherId));
+        }
+
+        /// <summary>
+        /// The project ID. Never <c>null</c>.
+        /// </summary>
+        public string ProjectId { get; }
+
+        /// <summary>
+        /// The location ID. Never <c>null</c>.
+        /// </summary>
+        public string LocationId { get; }
+
+        /// <summary>
+        /// The publisher ID. Never <c>null</c>.
+        /// </summary>
+        public string PublisherId { get; }
+
+        /// <inheritdoc />
+        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
+
+        /// <inheritdoc />
+        public override string ToString() => s_template.Expand(ProjectId, LocationId, PublisherId);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object obj) => Equals(obj as InventoryName);
+
+        /// <inheritdoc />
+        public bool Equals(InventoryName other) => ToString() == other?.ToString();
+
+        /// <inheritdoc />
+        public static bool operator ==(InventoryName a, InventoryName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
+
+        /// <inheritdoc />
+        public static bool operator !=(InventoryName a, InventoryName b) => !(a == b);
+    }
+
+    /// <summary>
     /// Resource name for the 'location' resource.
     /// </summary>
     public sealed partial class LocationName : gax::IResourceName, sys::IEquatable<LocationName>
@@ -27400,6 +28851,19 @@ namespace Google.Example.Library.V1
 
     }
 
+    public partial class CreateInventoryRequest
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.PublisherName"/>-typed view over the <see cref="Parent"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.PublisherName ParentAsPublisherName
+        {
+            get { return string.IsNullOrEmpty(Parent) ? null : Google.Example.Library.V1.PublisherName.Parse(Parent); }
+            set { Parent = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
     public partial class DeleteBookRequest
     {
         /// <summary>
@@ -27564,6 +29028,19 @@ namespace Google.Example.Library.V1
         public Google.Example.Library.V1.ShelfName ShelfName
         {
             get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.ShelfName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
+
+    }
+
+    public partial class Inventory
+    {
+        /// <summary>
+        /// <see cref="Google.Example.Library.V1.InventoryName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public Google.Example.Library.V1.InventoryName InventoryName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : Google.Example.Library.V1.InventoryName.Parse(Name); }
             set { Name = value != null ? value.ToString() : ""; }
         }
 

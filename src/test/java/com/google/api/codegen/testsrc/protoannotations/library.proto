@@ -119,6 +119,12 @@ service LibraryService {
     option (google.api.method_signature) = "shelf,books,edition,series_uuid,publisher";
   }
 
+  // Creates an inventory. Tests singleton resources.
+  rpc CreateInventory(CreateInventoryRequest) returns (Inventory) {
+    option (google.api.http) = { post: "/v1/{parent=projects/*/locations/*/publishers/*}" body: "inventory" };
+    option (google.api.method_signature) = "parent,inventory";
+  }
+
   // Gets a book.
   rpc GetBook(GetBookRequest) returns (Book) {
     option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
@@ -434,6 +440,7 @@ message Book {
     pattern: "shelves/{shelf}/books/{book}",
     pattern: "archives/{archive}/books/{book}",
     pattern: "projects/{project}/books/{book}"
+    pattern: "projects/{project}/locations/{location}/publishers/{publisher}/inventory/books/{book}"
     history: ORIGINALLY_SINGLE_PATTERN,
   };
 
@@ -500,6 +507,16 @@ message Book {
 
   // For testing accessing map fields in samplegen
   map<bool, string>  map_bool_key = 30;
+}
+
+message Inventory {
+
+  option (google.api.resource) = {
+    type: "library.googleapis.com/Inventory",
+    pattern: "projects/{project}/locations/{location}/publishers/{publisher}/inventory"
+  };
+
+  string name = 1;
 }
 
 // A single book in the archives.
@@ -842,6 +859,15 @@ message ListStringsResponse {
   ];
   string next_page_token = 2;
 }
+
+ message CreateInventoryRequest {
+    string parent = 1 [
+      (google.api.resource_reference).child_type = "library.googleapis.com/Inventory",
+      (google.api.field_behavior) = REQUIRED
+    ];
+
+    Inventory inventory = 2;
+ }
 
 message AddCommentsRequest {
   string name = 1 [

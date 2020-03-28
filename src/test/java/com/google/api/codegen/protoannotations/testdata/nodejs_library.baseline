@@ -2668,6 +2668,17 @@ const Book = {
 };
 
 /**
+ * @property {string} name
+ *
+ * @typedef Inventory
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.Inventory definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const Inventory = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
  * A single book in the archives.
  *
  * @property {string} name
@@ -3213,6 +3224,20 @@ const ListStringsRequest = {
  * @see [google.example.library.v1.ListStringsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
 const ListStringsResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} parent
+ *
+ * @property {Object} inventory
+ *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
+ *
+ * @typedef CreateInventoryRequest
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.CreateInventoryRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const CreateInventoryRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -5133,6 +5158,9 @@ class LibraryServiceClient {
       folderPathTemplate: new gaxModule.PathTemplate(
         'folders/{folder}'
       ),
+      inventoryPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/publishers/{publisher}/inventory'
+      ),
       locationPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
       ),
@@ -5310,6 +5338,7 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'createInventory',
       'moveBooks',
       'archiveBooks',
       'longRunningArchiveBooks',
@@ -7730,6 +7759,60 @@ class LibraryServiceClient {
   }
 
   /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   * @param {Object} [request.inventory]
+   *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Inventory]{@link google.example.library.v1.Inventory}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Inventory]{@link google.example.library.v1.Inventory}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   * const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+   * client.createInventory({parent: formattedParent})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  createInventory(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
+
+    return this._innerApiCalls.createInventory(request, options, callback);
+  }
+
+  /**
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} [request.source]
@@ -8187,6 +8270,22 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified inventory resource name string.
+   *
+   * @param {String} project
+   * @param {String} location
+   * @param {String} publisher
+   * @returns {String}
+   */
+  inventoryPath(project, location, publisher) {
+    return this._pathTemplates.inventoryPathTemplate.render({
+      project: project,
+      location: location,
+      publisher: publisher,
+    });
+  }
+
+  /**
    * Return a fully-qualified location resource name string.
    *
    * @param {String} project
@@ -8361,6 +8460,45 @@ class LibraryServiceClient {
     return this._pathTemplates.folderPathTemplate
       .match(folderName)
       .folder;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .project;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the location.
+   */
+  matchLocationFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .location;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the publisher.
+   */
+  matchPublisherFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .publisher;
   }
 
   /**
@@ -8657,6 +8795,11 @@ module.exports = LibraryServiceClient;
           "retry_params_name": "default"
         },
         "TestOptionalRequiredFlatteningParams": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "CreateInventory": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -11042,6 +11185,66 @@ describe('LibraryServiceClient', () => {
       );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('createInventory', () => {
+    it('invokes createInventory without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const request = {
+        parent: formattedParent,
+      };
+
+      // Mock response
+      const name = 'name3373707';
+      const expectedResponse = {
+        name: name,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.createInventory = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.createInventory(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes createInventory with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const request = {
+        parent: formattedParent,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.createInventory = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.createInventory(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');
