@@ -1,0 +1,60 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+
+description = 'GAPIC library for {{name}}'
+group = 'com.google.cloud'
+version = '0.0.0-SNAPSHOT'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+dependencies {
+  compile 'com.google.api:gax:{{version.gax}}'
+  testCompile 'com.google.api:gax:{{version.gax}}:testlib'
+  compile 'com.google.api:gax-httpjson:{{version.gax_httpjson}}'
+  testCompile 'com.google.api:gax-httpjson:{{version.gax_httpjson}}:testlib'
+  testCompile '{{maven.junit_junit}}'
+  {{extra_deps}}
+}
+
+task smokeTest(type: Test) {
+  filter {
+    includeTestsMatching "*SmokeTest"
+    setFailOnNoMatchingTests false
+  }
+}
+
+test {
+  exclude "**/*SmokeTest*"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+clean {
+  delete 'all-jars'
+}
+
+task allJars(type: Copy) {
+  dependsOn test, jar
+  into 'all-jars'
+  // Replace with `from configurations.testRuntime, jar` to include test dependencies
+  from configurations.runtime, jar
+}

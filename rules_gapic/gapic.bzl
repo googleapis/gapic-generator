@@ -36,7 +36,7 @@ def _gapic_srcjar_impl(ctx):
             _set_args(attr.src, "--descriptor_set=", arguments, inputs)
         _set_args(attr.gapic_yaml, "--gapic_yaml=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
-        _set_args(attr.language, "--language=", arguments, required = True)
+        _set_args(attr.language, "--language=", arguments)
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
         _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
@@ -322,6 +322,15 @@ def path_ignoring_repository(f):
     if f.owner.workspace_root:
         return f.path[f.path.find(f.owner.workspace_root) + len(f.owner.workspace_root) + 1:]
     return f.short_path
+
+def discogapic_config(name, src, **kwargs):
+    gapic_srcjar(
+        name = name,
+        src = src,
+        artifact_type = "DISCOGAPIC_CONFIG",
+        output_suffix = ".yaml",
+        **kwargs
+    )
 
 #
 # Private helper functions
