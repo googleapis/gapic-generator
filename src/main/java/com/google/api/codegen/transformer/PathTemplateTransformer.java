@@ -36,10 +36,11 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
@@ -62,11 +63,47 @@ public class PathTemplateTransformer {
     return pathTemplates;
   }
 
-  private List<SingleResourceNameConfig> getSingleResourceNameConfigsUsedByInterface(
+  private static List<SingleResourceNameConfig> getSingleResourceNameConfigsUsedByInterface(
+      InterfaceContext context) {
+    TreeMap<String, SingleResourceNameConfig> resources = new TreeMap<>();
+    for (ResourceNameConfig resourceNameConfig : getResourceNameConfigsUsedByInterface(context)) {
+      if (resourceNameConfig.getResourceNameType() == ResourceNameType.SINGLE) {
+        resources.put(
+            resourceNameConfig.getEntityId(), (SingleResourceNameConfig) resourceNameConfig);
+      }
+      if (resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+        // Add SingleResourceNameConfigs derived from gapic config v1 and v2
+        ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
+        for (SingleResourceNameConfig resource : oneofConfig.getSingleResourceNameConfigs()) {
+          resources.put(resource.getEntityId(), resource);
+        }
+
+        // Add SingleResourceNameConfigs derived from patterns next so that when collision,
+        // those derived from patterns will win
+        if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
+          for (SingleResourceNameConfig resource :
+              oneofConfig.getPatternsAsSingleResourceNameConfigs()) {
+            resources.put(resource.getEntityId(), resource);
+          }
+        }
+        // Add the SingleResourceNameConfig derived from the first pattern last as if it is a
+        // single-pattern resource name for backward-compatibility.
+        // We need this for all dynamic languages.
+        Optional<SingleResourceNameConfig> firstPattern =
+            oneofConfig.getFirstPatternAsSingleResourceNameConfig();
+        if (firstPattern.isPresent()) {
+          resources.put(firstPattern.get().getEntityId(), firstPattern.get());
+        }
+      }
+    }
+    return ImmutableList.copyOf(resources.values());
+  }
+
+  private static List<ResourceNameConfig> getResourceNameConfigsUsedByInterface(
       InterfaceContext context) {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     Set<String> foundSet = new HashSet<>();
-    List<SingleResourceNameConfig> resourceNameConfigs = new ArrayList<>();
+    List<ResourceNameConfig> resourceNameConfigs = new ArrayList<>();
     for (SingleResourceNameConfig config : interfaceConfig.getSingleResourceNameConfigs()) {
       resourceNameConfigs.add(config);
       foundSet.add(config.getEntityId());
@@ -80,15 +117,14 @@ public class PathTemplateTransformer {
             context, fieldNamePattern, foundSet, resourceNameConfigs);
       }
     }
-    return ImmutableList.sortedCopyOf(
-        Comparator.comparing(ResourceNameConfig::getEntityId), resourceNameConfigs);
+    return resourceNameConfigs;
   }
 
-  private void addSingleResourceNameConfigsUsedByInterface(
+  private static void addSingleResourceNameConfigsUsedByInterface(
       MethodContext methodContext,
       String fieldNamePattern,
       Set<String> foundSet,
-      List<SingleResourceNameConfig> resourceNameConfigs) {
+      List<ResourceNameConfig> resourceNameConfigs) {
     SingleResourceNameConfig resourceNameConfig =
         methodContext.getSingleResourceNameConfig(fieldNamePattern);
     if (resourceNameConfig != null && !foundSet.contains(resourceNameConfig.getEntityId())) {
@@ -97,21 +133,20 @@ public class PathTemplateTransformer {
     }
   }
 
-  private void addResourceNameOneofConfigsUsedByInterface(
+  private static void addResourceNameOneofConfigsUsedByInterface(
       InterfaceContext context,
-      String fieldNamPattern,
+      String fieldNamePattern,
       Set<String> foundSet,
-      List<SingleResourceNameConfig> resourceNameConfigs) {
+      List<ResourceNameConfig> resourceNameConfigs) {
     ResourceNameConfig resourceNameConfig =
-        context.getProductConfig().getResourceNameConfigs().get(fieldNamPattern);
+        context.getProductConfig().getResourceNameConfigs().get(fieldNamePattern);
     if (resourceNameConfig != null
         && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
-      for (SingleResourceNameConfig config :
-          ((ResourceNameOneofConfig) resourceNameConfig).getSingleResourceNameConfigs()) {
-        if (!foundSet.contains(config.getEntityId())) {
-          resourceNameConfigs.add(config);
-          foundSet.add(config.getEntityId());
-        }
+      ResourceNameOneofConfig oneofConfig = (ResourceNameOneofConfig) resourceNameConfig;
+
+      if (!foundSet.contains(resourceNameConfig.getEntityId())) {
+        resourceNameConfigs.add(resourceNameConfig);
+        foundSet.add(resourceNameConfig.getEntityId());
       }
     }
   }
@@ -227,12 +262,12 @@ public class PathTemplateTransformer {
               .pattern(resourceNameConfig.getNamePattern())
               .isResourceNameDeprecated(resourceNameConfig.getDeprecated());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
-      for (String var : resourceNameConfig.getNameTemplate().vars()) {
+      for (String variable : resourceNameConfig.getNameTemplate().vars()) {
         ResourceIdParamView param =
             ResourceIdParamView.newBuilder()
-                .name(namer.getParamName(var))
-                .docName(namer.getParamDocName(var))
-                .templateKey(var)
+                .name(namer.getParamName(variable))
+                .docName(namer.getParamDocName(variable))
+                .templateKey(variable)
                 .build();
         resourceIdParams.add(param);
       }
@@ -290,7 +325,6 @@ public class PathTemplateTransformer {
               .pattern(resourceNameConfig.getNamePattern());
       functions.add(function.build());
     }
-
     return functions;
   }
 }

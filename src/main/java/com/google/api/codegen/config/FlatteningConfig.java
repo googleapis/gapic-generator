@@ -269,7 +269,7 @@ public abstract class FlatteningConfig {
               resourceNameConfigs,
               oneofNames,
               method,
-              protoParser.hasResourceReference(method.getInputField(parameter).getProtoField())
+              isParameterResourceName(method, parameter, messageConfigs)
                   ? ResourceNameTreatment.STATIC_TYPES
                   : ResourceNameTreatment.NONE);
       flatteningConfigs = collectFieldConfigs(flatteningConfigs, fieldConfigs, parameter);
@@ -516,5 +516,16 @@ public abstract class FlatteningConfig {
   private static boolean hasSingularResourceNameParameters(
       List<Map<String, FieldConfig>> flatteningGroups) {
     return flatteningGroups.stream().anyMatch(FlatteningConfig::hasSingularResourceNameParameter);
+  }
+
+  private static boolean isParameterResourceName(
+      ProtoMethodModel method, String parameter, ResourceNameMessageConfigs messageConfigs) {
+    String inputFullName = method.getInputFullName();
+    ResourceNameMessageConfig resourceMessageConfig =
+        messageConfigs.getResourceTypeConfigMap().get(inputFullName);
+    if (resourceMessageConfig == null) {
+      return false;
+    }
+    return resourceMessageConfig.fieldEntityMap().containsKey(parameter);
   }
 }

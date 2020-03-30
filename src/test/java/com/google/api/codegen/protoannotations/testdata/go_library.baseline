@@ -244,10 +244,12 @@ type CallOptions struct {
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
     TestOptionalRequiredFlatteningParams []gax.CallOption
+    CreateInventory []gax.CallOption
     MoveBooks []gax.CallOption
     ArchiveBooks []gax.CallOption
     LongRunningArchiveBooks []gax.CallOption
     StreamingArchiveBooks []gax.CallOption
+    SaveBook []gax.CallOption
     PrivateListShelves []gax.CallOption
 }
 
@@ -303,10 +305,12 @@ func defaultCallOptions() *CallOptions {
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
         TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
+        CreateInventory: retry[[2]string{"default", "non_idempotent"}],
         MoveBooks: retry[[2]string{"default", "non_idempotent"}],
         ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         LongRunningArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         StreamingArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
+        SaveBook: retry[[2]string{"default", "non_idempotent"}],
         PrivateListShelves: retry[[2]string{"default", "idempotent"}],
     }
 }
@@ -930,6 +934,23 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     return resp, nil
 }
 
+// CreateInventory creates an inventory. Tests singleton resources.
+func (c *LibClient) CreateInventory(ctx context.Context, req *librarypb.CreateInventoryRequest, opts ...gax.CallOption) (*librarypb.Inventory, error) {
+    md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "parent", url.QueryEscape(req.GetParent())))
+    ctx = insertMetadata(ctx, c.xGoogMetadata, md)
+    opts = append(c.CallOptions.CreateInventory[0:len(c.CallOptions.CreateInventory):len(c.CallOptions.CreateInventory)], opts...)
+    var resp *librarypb.Inventory
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.CreateInventory(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 // MoveBooks
 func (c *LibClient) MoveBooks(ctx context.Context, req *librarypb.MoveBooksRequest, opts ...gax.CallOption) (*librarypb.MoveBooksResponse, error) {
     md := metadata.Pairs("x-goog-request-params", fmt.Sprintf("%s=%v", "source", url.QueryEscape(req.GetSource())))
@@ -997,6 +1018,19 @@ func (c *LibClient) StreamingArchiveBooks(ctx context.Context, opts ...gax.CallO
         return nil, err
     }
     return resp, nil
+}
+
+// SaveBook test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+// New APIs should always create a separate message for a request.
+func (c *LibClient) SaveBook(ctx context.Context, req *librarypb.Book, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.SaveBook[0:len(c.CallOptions.SaveBook):len(c.CallOptions.SaveBook)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.SaveBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
 }
 
 // PrivateListShelves this method is not exposed in the GAPIC config. It should be generated.
@@ -1915,6 +1949,24 @@ func ExampleClient_TestOptionalRequiredFlatteningParams() {
     _ = resp
 }
 
+func ExampleClient_CreateInventory() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.CreateInventoryRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.CreateInventory(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
 func ExampleClient_MoveBooks() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2005,6 +2057,22 @@ func ExampleClient_StreamingArchiveBooks() {
         }
         // TODO: Use resp.
         _ = resp
+    }
+}
+
+func ExampleClient_SaveBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.Book{
+        // TODO: Fill request struct fields.
+    }
+    err = c.SaveBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
     }
 }
 
@@ -2183,6 +2251,18 @@ func (s *mockLibraryServer) PublishSeries(ctx context.Context, req *librarypb.Pu
         return nil, s.err
     }
     return s.resps[0].(*librarypb.PublishSeriesResponse), nil
+}
+
+func (s *mockLibraryServer) CreateInventory(ctx context.Context, req *librarypb.CreateInventoryRequest) (*librarypb.Inventory, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.Inventory), nil
 }
 
 func (s *mockLibraryServer) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
@@ -2501,6 +2581,18 @@ func (s *mockLibraryServer) StreamingArchiveBooks(stream librarypb.LibraryServic
     return nil
 }
 
+func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
 func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
@@ -2577,6 +2669,18 @@ func (s *mockMyProtoServer) MyMethod(ctx context.Context, req *pb.MethodRequest)
         return nil, s.err
     }
     return s.resps[0].(*pb.MethodResponse), nil
+}
+
+func (s *mockMyProtoServer) GetNamespace(ctx context.Context, req *pb.MethodRequest) (*pb.Namespace, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*pb.Namespace), nil
 }
 
 
@@ -2933,11 +3037,13 @@ func TestLibraryServiceCreateBook(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -3080,11 +3186,13 @@ func TestLibraryServiceGetBook(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -3273,11 +3381,13 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -3342,11 +3452,13 @@ func TestLibraryServiceMoveBook(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -3825,11 +3937,13 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -4201,10 +4315,10 @@ func TestLabelerAddLabel(t *testing.T) {
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
 
-    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var resource string = "resource-341064690"
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-        Resource: formattedResource,
+        Resource: resource,
         Label: label,
     }
 
@@ -4232,10 +4346,10 @@ func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLabeler.err = gstatus.Error(errCode, "test error")
 
-    var formattedResource string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var resource string = "resource-341064690"
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
-        Resource: formattedResource,
+        Resource: resource,
         Label: label,
     }
 
@@ -4258,11 +4372,13 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name2,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -4718,6 +4834,65 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     }
     _ = resp
 }
+func TestLibraryServiceCreateInventory(t *testing.T) {
+    var name string = "name3373707"
+    var expectedResponse = &librarypb.Inventory{
+        Name: name,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var request = &librarypb.CreateInventoryRequest{
+        Parent: formattedParent,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateInventory(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceCreateInventoryError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var request = &librarypb.CreateInventoryRequest{
+        Parent: formattedParent,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.CreateInventory(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
 func TestLibraryServiceMoveBooks(t *testing.T) {
     var success bool = false
     var expectedResponse = &librarypb.MoveBooksResponse{
@@ -4976,16 +5151,70 @@ func TestLibraryServiceStreamingArchiveBooksError(t *testing.T) {
     }
     _ = resp
 }
+func TestLibraryServiceSaveBook(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var request = &librarypb.Book{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceSaveBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
+    var request = &librarypb.Book{
+        Name: formattedName,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
 func TestLibraryServicePrivateListShelves(t *testing.T) {
     var name string = "name3373707"
     var author string = "author-1406328437"
     var title string = "title110371416"
     var read bool = true
+    var reader string = "reader-934979389"
     var expectedResponse = &librarypb.Book{
         Name: name,
         Author: author,
         Title: title,
         Read: read,
+        Reader: reader,
     }
 
     mockLibrary.err = nil
@@ -5088,6 +5317,59 @@ func TestMyProtoMyMethodError(t *testing.T) {
     }
     _ = resp
 }
+func TestMyProtoGetNamespace(t *testing.T) {
+    var value string = "value111972721"
+    var expectedResponse = &pb.Namespace{
+        Value: value,
+    }
+
+    mockMyProto.err = nil
+    mockMyProto.reqs = nil
+
+    mockMyProto.resps = append(mockMyProto.resps[:0], expectedResponse)
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockMyProto.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestMyProtoGetNamespaceError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockMyProto.err = gstatus.Error(errCode, "test error")
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client.go ==============
 // Copyright 2020 Google LLC
 //
@@ -5122,6 +5404,7 @@ import (
 // MyProtoCallOptions contains the retry settings for each method of MyProtoClient.
 type MyProtoCallOptions struct {
     MyMethod []gax.CallOption
+    GetNamespace []gax.CallOption
 }
 
 func defaultMyProtoClientOptions() []option.ClientOption {
@@ -5138,6 +5421,7 @@ func defaultMyProtoCallOptions() *MyProtoCallOptions {
     }
     return &MyProtoCallOptions{
         MyMethod: retry[[2]string{"default", "non_idempotent"}],
+        GetNamespace: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -5212,6 +5496,22 @@ func (c *MyProtoClient) MyMethod(ctx context.Context, req *pb.MethodRequest, opt
     return resp, nil
 }
 
+// GetNamespace define a service with a reserved name
+func (c *MyProtoClient) GetNamespace(ctx context.Context, req *pb.MethodRequest, opts ...gax.CallOption) (*pb.Namespace, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetNamespace[0:len(c.CallOptions.GetNamespace):len(c.CallOptions.GetNamespace)], opts...)
+    var resp *pb.Namespace
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.myProtoClient.GetNamespace(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 
 
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client_example_test.go ==============
@@ -5261,6 +5561,24 @@ func ExampleMyProtoClient_MyMethod() {
         // TODO: Fill request struct fields.
     }
     resp, err := c.MyMethod(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleMyProtoClient_GetNamespace() {
+    ctx := context.Background()
+    c, err := library.NewMyProtoClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &pb.MethodRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetNamespace(ctx, req)
     if err != nil {
         // TODO: Handle error.
     }

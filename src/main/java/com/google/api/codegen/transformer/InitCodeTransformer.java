@@ -18,9 +18,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodContext;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
@@ -742,7 +742,7 @@ public class InitCodeTransformer {
     if (fieldConfig.getResourceNameType() == ResourceNameType.ONEOF) {
       ResourceNameOneofConfig oneofConfig =
           (ResourceNameOneofConfig) fieldConfig.getResourceNameConfig();
-      singleResourceNameConfig = getMatchingSingleResourceNameConfig(item, oneofConfig);
+      singleResourceNameConfig = getMatchingSingleResourceNameConfig(context, item, oneofConfig);
     } else {
       singleResourceNameConfig = initValueConfig.getSingleResourceNameConfig();
     }
@@ -781,9 +781,9 @@ public class InitCodeTransformer {
       case ANY:
         singleResourceNameConfig =
             Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
-        MethodModel methodModel = context.getMethodModel();
-        if (methodModel instanceof ProtoMethodModel) {
-          ProtoFile protoFile = ((ProtoMethodModel) methodModel).getProtoMethod().getFile();
+        InterfaceModel interfaceModel = context.getInterfaceModel();
+        if (interfaceModel instanceof ProtoInterfaceModel) {
+          ProtoFile protoFile = ((ProtoInterfaceModel) interfaceModel).getInterface().getFile();
           singleResourceNameConfig =
               singleResourceNameConfig.toBuilder().setAssignedProtoFile(protoFile).build();
         }
@@ -830,7 +830,7 @@ public class InitCodeTransformer {
           .build();
     } else {
       SingleResourceNameConfig singleResourceNameConfig =
-          getMatchingSingleResourceNameConfig(item, oneofConfig);
+          getMatchingSingleResourceNameConfig(context, item, oneofConfig);
       FieldConfig singleResourceNameFieldConfig =
           fieldConfig.withResourceNameConfig(singleResourceNameConfig);
       ResourceNameInitValueView initView =
@@ -985,18 +985,23 @@ public class InitCodeTransformer {
   }
 
   private static SingleResourceNameConfig getMatchingSingleResourceNameConfig(
-      InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
+      MethodContext context, InitCodeNode node, ResourceNameOneofConfig oneofConfig) {
     Set<String> bindingValues = node.getInitValueConfig().getResourceNameBindingValues().keySet();
+    List<SingleResourceNameConfig> singleResourceNameConfigs;
+    if (context.getFeatureConfig().enableStringFormatFunctionsForOneofs()) {
+      singleResourceNameConfigs = oneofConfig.getPatternsAsSingleResourceNameConfigs();
+    } else {
+      singleResourceNameConfigs = oneofConfig.getSingleResourceNameConfigs();
+    }
     List<SingleResourceNameConfig> matchingConfigs =
-        oneofConfig
-            .getSingleResourceNameConfigs()
+        singleResourceNameConfigs
             .stream()
             .filter(c -> c.getNameTemplate().vars().equals(bindingValues))
             .collect(Collectors.toList());
     // Return the first one to not break in-code samples and unit tests when
     // there are no matching resource name binding values
     if (matchingConfigs.isEmpty()) {
-      return oneofConfig.getSingleResourceNameConfigs().get(0);
+      return singleResourceNameConfigs.get(0);
     }
     return matchingConfigs.get(0);
   }
@@ -1008,6 +1013,7 @@ public class InitCodeTransformer {
         oneofConfig
             .getPatterns()
             .stream()
+            .filter(p -> !p.getBindingVariables().isEmpty())
             .filter(p -> p.getBindingVariables().equals(bindingValues))
             .findAny();
     return pattern.isPresent() ? pattern.get() : oneofConfig.getPatterns().get(0);

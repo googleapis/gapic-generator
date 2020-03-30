@@ -38,6 +38,8 @@ class ApiVersionedDir {
   private static Pattern SERVICE_YAML_TYPE =
       Pattern.compile("(?m)^type\\s*:\\s*google.api.Service\\s*$");
 
+  private static String CLOUD_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+
   // A reference to the object representing the parent dir of this versioned API dir.
   // For example: google/example/library.
   private ApiDir parent;
@@ -111,6 +113,16 @@ class ApiVersionedDir {
   // For example: "v1"
   private String version;
 
+  // Flag indicating Cloud Auth Scope presence in the service yaml.
+  // For example:
+  // authentication:
+  //   rules:
+  //   - selector: 'google.example.library.v1.LibraryService.*'
+  //     oauth:
+  //       canonical_scopes: |-
+  //         https://www.googleapis.com/auth/cloud-platform
+  private boolean cloudScope;
+
   void setParent(ApiDir parent) {
     this.parent = parent;
   }
@@ -167,6 +179,10 @@ class ApiVersionedDir {
     return version;
   }
 
+  boolean getCloudScope() {
+    return cloudScope;
+  }
+
   void parseYamlFile(String fileName, String fileBody) {
     // It is a gapic yaml
     Matcher m = GAPIC_YAML_TYPE.matcher(fileBody);
@@ -195,6 +211,10 @@ class ApiVersionedDir {
     m = SERVICE_YAML_TYPE.matcher(fileBody);
     if (m.find()) {
       serviceYamlPath = fileName;
+
+      if (fileBody.contains(CLOUD_AUTH_SCOPE)) {
+        cloudScope = true;
+      }
     }
   }
 
@@ -277,5 +297,11 @@ class ApiVersionedDir {
     if (topLevelServiceYaml != null && version != null) {
       serviceYamlPath = version + '/' + topLevelServiceYaml;
     }
+
+    Boolean topLevelCloudScope = parent.getCloudScopes().get(version);
+    if (topLevelCloudScope == null) {
+      topLevelCloudScope = parent.getCloudScopes().getOrDefault("", false);
+    }
+    cloudScope = topLevelCloudScope;
   }
 }

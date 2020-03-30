@@ -67,9 +67,12 @@ _nodejs_gapic_src_pkg = rule(
     implementation = _nodejs_gapic_src_pkg_impl,
 )
 
-def nodejs_gapic_assembly_pkg(name, deps):
+def nodejs_gapic_assembly_pkg(name, deps, assembly_name = None):
+    package_dir = name
+    if assembly_name:
+        package_dir = "%s-%s" % (assembly_name, name)
     _nodejs_gapic_src_pkg(
         name = name,
         deps = deps,
-        package_dir = name,
+        package_dir = package_dir,
     )

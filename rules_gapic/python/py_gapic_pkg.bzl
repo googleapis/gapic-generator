@@ -85,7 +85,7 @@ _py_gapic_src_pkg = rule(
     implementation = _py_gapic_src_pkg_impl,
 )
 
-def py_gapic_assembly_pkg(name, deps, **kwargs):
+def py_gapic_assembly_pkg(name, deps, assembly_name = None, **kwargs):
     actual_deps = []
     processed_deps = {}
     for dep in deps:
@@ -96,10 +96,13 @@ def py_gapic_assembly_pkg(name, deps, **kwargs):
             put_dep_in_a_bucket("%s_srcjar-smoke-test.srcjar" % dep, actual_deps, processed_deps)
             put_dep_in_a_bucket("%s_srcjar-pkg.srcjar" % dep, actual_deps, processed_deps)
 
+    package_dir = name
+    if assembly_name:
+        package_dir = "%s-%s" % (assembly_name, name)
     _py_gapic_src_pkg(
         name = name,
         deps = actual_deps,
-        package_dir = name,
+        package_dir = package_dir,
         **kwargs
     )
 

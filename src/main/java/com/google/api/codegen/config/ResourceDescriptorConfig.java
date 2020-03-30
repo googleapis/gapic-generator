@@ -270,16 +270,22 @@ public abstract class ResourceDescriptorConfig {
 
   @VisibleForTesting
   static String getParentPattern(String pattern) {
+    Preconditions.checkArgument(!pattern.equals(""), "resource pattern can't be an empty string.");
+    if (pattern.equals("*")) {
+      return "*";
+    }
+
     List<String> segments = getSegments(pattern);
-    int index = segments.size() - 2;
-    while (index >= 0 && !isVariableBinding(segments.get(index))) {
+    int index = segments.size() - 1;
+    if (isVariableBinding(segments.get(index))) {
+      index -= 2;
+    } else {
       index--;
     }
-    index++;
-    if (index <= 0) {
-      return "";
-    }
-    return String.join("/", segments.subList(0, index));
+
+    Preconditions.checkArgument(
+        index >= -1, "malformatted pattern, can't calculate parent: %s", pattern);
+    return String.join("/", segments.subList(0, index + 1));
   }
 
   private static Map<String, Boolean> getParentPatternsMap(ResourceDescriptorConfig resource) {

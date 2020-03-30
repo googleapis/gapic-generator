@@ -1080,6 +1080,11 @@ module Google
         # @!attribute [rw] myfield
         #   @return [String]
         class MethodResponse; end
+
+        # Define a message with a reserved name
+        # @!attribute [rw] value
+        #   @return [String]
+        class Namespace; end
       end
     end
   end
@@ -2087,6 +2092,8 @@ module Google
         # @!attribute [rw] rating
         #   @return [Google::Example::Library::V1::Book::Rating]
         #     For testing enums.
+        # @!attribute [rw] reader
+        #   @return [String]
         # @!attribute [rw] any_value
         #   @return [Google::Protobuf::Any]
         #     For testing all well-known types.
@@ -2152,6 +2159,10 @@ module Google
             BAD = 1
           end
         end
+
+        # @!attribute [rw] name
+        #   @return [String]
+        class Inventory; end
 
         # A single book in the archives.
         # @!attribute [rw] name
@@ -2443,6 +2454,12 @@ module Google
         # @!attribute [rw] next_page_token
         #   @return [String]
         class ListStringsResponse; end
+
+        # @!attribute [rw] parent
+        #   @return [String]
+        # @!attribute [rw] inventory
+        #   @return [Google::Example::Library::V1::Inventory]
+        class CreateInventoryRequest; end
 
         # @!attribute [rw] name
         #   @return [String]
@@ -3051,6 +3068,12 @@ module Library
 
       private_constant :FOLDER_PATH_TEMPLATE
 
+      INVENTORY_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/locations/{location}/publishers/{publisher}/inventory"
+      )
+
+      private_constant :INVENTORY_PATH_TEMPLATE
+
       LOCATION_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "projects/{project}/locations/{location}"
       )
@@ -3074,6 +3097,12 @@ module Library
       )
 
       private_constant :PUBLISHER_PATH_TEMPLATE
+
+      READER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/readers/{reader}"
+      )
+
+      private_constant :READER_PATH_TEMPLATE
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf}"
@@ -3102,8 +3131,6 @@ module Library
       end
 
       # Returns a fully-qualified book resource name string.
-      # @deprecated Multi-pattern resource names will have unified creation and parsing helper functions.
-      # This helper function will be deleted in the next major version.
       # @param shelf [String]
       # @param book [String]
       # @return [String]
@@ -3133,6 +3160,19 @@ module Library
       def self.folder_path folder
         FOLDER_PATH_TEMPLATE.render(
           :"folder" => folder
+        )
+      end
+
+      # Returns a fully-qualified inventory resource name string.
+      # @param project [String]
+      # @param location [String]
+      # @param publisher [String]
+      # @return [String]
+      def self.inventory_path project, location, publisher
+        INVENTORY_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"location" => location,
+          :"publisher" => publisher
         )
       end
 
@@ -3179,6 +3219,17 @@ module Library
           :"project" => project,
           :"location" => location,
           :"publisher" => publisher
+        )
+      end
+
+      # Returns a fully-qualified reader resource name string.
+      # @param project [String]
+      # @param reader [String]
+      # @return [String]
+      def self.reader_path project, reader
+        READER_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"reader" => reader
         )
       end
 
@@ -3273,6 +3324,9 @@ module Library
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        if credentials.respond_to?(:quota_project_id) && credentials.quota_project_id
+          headers[:"x-goog-user-project"] = credentials.quota_project_id
+        end
         headers.merge!(metadata) unless metadata.nil?
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
@@ -3510,6 +3564,14 @@ module Library
           defaults["test_optional_required_flattening_params"],
           exception_transformer: exception_transformer
         )
+        @create_inventory = Google::Gax.create_api_call(
+          @library_service_stub.method(:create_inventory),
+          defaults["create_inventory"],
+          exception_transformer: exception_transformer,
+          params_extractor: proc do |request|
+            {'parent' => request.parent}
+          end
+        )
         @move_books = Google::Gax.create_api_call(
           @library_service_stub.method(:move_books),
           defaults["move_books"],
@@ -3537,6 +3599,11 @@ module Library
         @streaming_archive_books = Google::Gax.create_api_call(
           @library_service_stub.method(:streaming_archive_books),
           defaults["streaming_archive_books"],
+          exception_transformer: exception_transformer
+        )
+        @save_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:save_book),
+          defaults["save_book"],
           exception_transformer: exception_transformer
         )
         @private_list_shelves = Google::Gax.create_api_call(
@@ -4523,7 +4590,6 @@ module Library
       #
       # @param resource [String]
       #   REQUIRED: The resource which the label is being added to.
-      #   In the form "shelves/{shelf_id}/books/{book_id}".
       # @param label [String]
       #   REQUIRED: The label to add.
       # @param options [Google::Gax::CallOptions]
@@ -4538,11 +4604,13 @@ module Library
       #   require "library"
       #
       #   library_client = Library::Library.new(version: :v1)
-      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #
+      #   # TODO: Initialize `resource`:
+      #   resource = ''
       #
       #   # TODO: Initialize `label`:
       #   label = ''
-      #   response = library_client.add_label(formatted_resource, label)
+      #   response = library_client.add_label(resource, label)
 
       def add_label \
           resource,
@@ -5383,6 +5451,40 @@ module Library
         @test_optional_required_flattening_params.call(req, options, &block)
       end
 
+      # Creates an inventory. Tests singleton resources.
+      #
+      # @param parent [String]
+      # @param inventory [Google::Example::Library::V1::Inventory | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::Inventory`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Inventory]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::Inventory]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+      #   response = library_client.create_inventory(formatted_parent)
+
+      def create_inventory \
+          parent,
+          inventory: nil,
+          options: nil,
+          &block
+        req = {
+          parent: parent,
+          inventory: inventory
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateInventoryRequest)
+        @create_inventory.call(req, options, &block)
+      end
+
       # @param source [String]
       # @param destination [String]
       # @param publishers [Array<String>]
@@ -5536,6 +5638,173 @@ module Library
           Google::Gax::to_proto(req, Google::Example::Library::V1::ArchiveBooksRequest)
         end
         @streaming_archive_books.call(request_protos, options)
+      end
+
+      # Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+      # New APIs should always create a separate message for a request.
+      #
+      # @param name [String]
+      #   The resource name of the book.
+      #   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+      #   Message field comment may include special characters: <>&"`'@.
+      # @param author [String]
+      #   The name of the book author.
+      # @param title [String]
+      #   The title of the book.
+      # @param read [true, false]
+      #   Value indicating whether the book has been read.
+      # @param rating [Google::Example::Library::V1::Book::Rating]
+      #   For testing enums.
+      # @param reader [String]
+      # @param any_value [Google::Protobuf::Any | Hash]
+      #   For testing all well-known types.
+      #   A hash of the same form as `Google::Protobuf::Any`
+      #   can also be provided.
+      # @param struct_value [Google::Protobuf::Struct | Hash]
+      #   A hash of the same form as `Google::Protobuf::Struct`
+      #   can also be provided.
+      # @param value_value [Google::Protobuf::Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Value`
+      #   can also be provided.
+      # @param list_value_value [Google::Protobuf::ListValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param map_list_value_value [Hash{String => Google::Protobuf::ListValue | Hash}]
+      #   A hash of the same form as `Google::Protobuf::ListValue`
+      #   can also be provided.
+      # @param time_value [Google::Protobuf::Timestamp | Hash]
+      #   A hash of the same form as `Google::Protobuf::Timestamp`
+      #   can also be provided.
+      # @param duration_value [Google::Protobuf::Duration | Hash]
+      #   A hash of the same form as `Google::Protobuf::Duration`
+      #   can also be provided.
+      # @param field_mask_value [Google::Protobuf::FieldMask | Hash]
+      #   A hash of the same form as `Google::Protobuf::FieldMask`
+      #   can also be provided.
+      # @param int32_value [Google::Protobuf::Int32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int32Value`
+      #   can also be provided.
+      # @param uint32_value [Google::Protobuf::UInt32Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt32Value`
+      #   can also be provided.
+      # @param int64_value [Google::Protobuf::Int64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::Int64Value`
+      #   can also be provided.
+      # @param uint64_value [Google::Protobuf::UInt64Value | Hash]
+      #   A hash of the same form as `Google::Protobuf::UInt64Value`
+      #   can also be provided.
+      # @param float_value [Google::Protobuf::FloatValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::FloatValue`
+      #   can also be provided.
+      # @param double_value [Google::Protobuf::DoubleValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::DoubleValue`
+      #   can also be provided.
+      # @param string_value [Google::Protobuf::StringValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::StringValue`
+      #   can also be provided.
+      # @param bool_value [Google::Protobuf::BoolValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BoolValue`
+      #   can also be provided.
+      # @param bytes_value [Google::Protobuf::BytesValue | Hash]
+      #   A hash of the same form as `Google::Protobuf::BytesValue`
+      #   can also be provided.
+      # @param map_string_value [Hash{Integer => String}]
+      #   Test doc generation of lists:
+      #
+      #   * Here is a sentence about the first element of the list that continues
+      #     into a second line.
+      #   * The second element of the list.
+      #   * Another element of the list where the indentation isn't consistent
+      #     after a blank space.
+      #
+      #     The second paragraph of the list
+      #     that doesn't have a hanging indent.
+      # @param map_message_value [Hash{String => Google::Example::Library::V1::SomeMessage | Hash}]
+      #   A hash of the same form as `Google::Example::Library::V1::SomeMessage`
+      #   can also be provided.
+      # @param resource [Google::Test::Shared::Data::Used | Hash]
+      #   Tests Python doc generation: should generate a dummy file for shared_type
+      #   resource, but *not* its import, other_shared_type
+      #   A hash of the same form as `Google::Test::Shared::Data::Used`
+      #   can also be provided.
+      # @param map_bool_key [Hash{true, false => String}]
+      #   For testing accessing map fields in samplegen
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result []
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      #   library_client.save_book(formatted_name)
+
+      def save_book \
+          name,
+          author: nil,
+          title: nil,
+          read: nil,
+          rating: nil,
+          reader: nil,
+          any_value: nil,
+          struct_value: nil,
+          value_value: nil,
+          list_value_value: nil,
+          map_list_value_value: nil,
+          time_value: nil,
+          duration_value: nil,
+          field_mask_value: nil,
+          int32_value: nil,
+          uint32_value: nil,
+          int64_value: nil,
+          uint64_value: nil,
+          float_value: nil,
+          double_value: nil,
+          string_value: nil,
+          bool_value: nil,
+          bytes_value: nil,
+          map_string_value: nil,
+          map_message_value: nil,
+          resource: nil,
+          map_bool_key: nil,
+          options: nil,
+          &block
+        req = {
+          name: name,
+          author: author,
+          title: title,
+          read: read,
+          rating: rating,
+          reader: reader,
+          any_value: any_value,
+          struct_value: struct_value,
+          value_value: value_value,
+          list_value_value: list_value_value,
+          map_list_value_value: map_list_value_value,
+          time_value: time_value,
+          duration_value: duration_value,
+          field_mask_value: field_mask_value,
+          int32_value: int32_value,
+          uint32_value: uint32_value,
+          int64_value: int64_value,
+          uint64_value: uint64_value,
+          float_value: float_value,
+          double_value: double_value,
+          string_value: string_value,
+          bool_value: bool_value,
+          bytes_value: bytes_value,
+          map_string_value: map_string_value,
+          map_message_value: map_message_value,
+          resource: resource,
+          map_bool_key: map_bool_key
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::Book)
+        @save_book.call(req, options, &block)
+        nil
       end
 
       # This method is not exposed in the GAPIC config. It should be generated.
@@ -5748,6 +6017,11 @@ end
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "CreateInventory": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "MoveBooks": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -5764,6 +6038,11 @@ end
           "retry_params_name": "default"
         },
         "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -5905,6 +6184,9 @@ module Library
         google_api_client.freeze
 
         headers = { :"x-goog-api-client" => google_api_client }
+        if credentials.respond_to?(:quota_project_id) && credentials.quota_project_id
+          headers[:"x-goog-user-project"] = credentials.quota_project_id
+        end
         headers.merge!(metadata) unless metadata.nil?
         client_config_file = Pathname.new(__dir__).join(
           "my_proto_client_config.json"
@@ -5939,6 +6221,11 @@ module Library
         @my_method = Google::Gax.create_api_call(
           @my_proto_stub.method(:my_method),
           defaults["my_method"],
+          exception_transformer: exception_transformer
+        )
+        @get_namespace = Google::Gax.create_api_call(
+          @my_proto_stub.method(:get_namespace),
+          defaults["get_namespace"],
           exception_transformer: exception_transformer
         )
       end
@@ -5982,6 +6269,46 @@ module Library
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::MethodRequest)
         @my_method.call(req, options, &block)
       end
+
+      # Define a service with a reserved name
+      #
+      # @param mylist [Array<Google::Example::Library::V1::SubMessage | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param myfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param secondfield [Google::Example::Library::V1::SubMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::SubMessage`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::Namespace]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::Namespace]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   my_proto_client = Library::MyProto.new(version: :v1)
+      #   response = my_proto_client.get_namespace
+
+      def get_namespace \
+          mylist: nil,
+          myfield: nil,
+          secondfield: nil,
+          options: nil,
+          &block
+        req = {
+          mylist: mylist,
+          myfield: myfield,
+          secondfield: secondfield
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MethodRequest)
+        @get_namespace.call(req, options, &block)
+      end
     end
   end
 end
@@ -6011,6 +6338,11 @@ end
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -8001,11 +8333,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8189,11 +8523,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8417,11 +8753,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8503,11 +8841,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -9182,11 +9522,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -9540,7 +9882,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label without error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      resource = ''
       label = ''
 
       # Create expected grpc response
@@ -9550,7 +9892,7 @@ describe Library::V1::LibraryServiceClient do
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
-        assert_equal(formatted_resource, request.resource)
+        assert_equal(resource, request.resource)
         assert_equal(label, request.label)
         OpenStruct.new(execute: expected_response)
       end
@@ -9564,13 +9906,13 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.add_label(formatted_resource, label)
+          response = client.add_label(resource, label)
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.add_label(formatted_resource, label) do |response, operation|
+          client.add_label(resource, label) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -9581,13 +9923,13 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes add_label with error' do
       # Create request parameters
-      formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+      resource = ''
       label = ''
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
-        assert_equal(formatted_resource, request.resource)
+        assert_equal(resource, request.resource)
         assert_equal(label, request.label)
         raise custom_error
       end
@@ -9602,7 +9944,7 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.add_label(formatted_resource, label)
+            client.add_label(resource, label)
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
@@ -9624,11 +9966,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
       result = Google::Protobuf::Any.new
@@ -10446,6 +10790,80 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
+  describe 'create_inventory' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#create_inventory."
+
+    it 'invokes create_inventory without error' do
+      # Create request parameters
+      formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+
+      # Create expected grpc response
+      name = "name3373707"
+      expected_response = { name: name }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Inventory)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::CreateInventoryRequest, request)
+        assert_equal(formatted_parent, request.parent)
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:create_inventory, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_inventory")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.create_inventory(formatted_parent)
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.create_inventory(formatted_parent) do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes create_inventory with error' do
+      # Create request parameters
+      formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::CreateInventoryRequest, request)
+        assert_equal(formatted_parent, request.parent)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:create_inventory, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("create_inventory")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.create_inventory(formatted_parent)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
   describe 'move_books' do
     custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#move_books."
 
@@ -10737,6 +11155,75 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
+  describe 'save_book' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#save_book."
+
+    it 'invokes save_book without error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::Book, request)
+        assert_equal(formatted_name, request.name)
+        OpenStruct.new(execute: nil)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:save_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("save_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.save_book(formatted_name)
+
+          # Verify the response
+          assert_nil(response)
+
+          # Call method with block
+          client.save_book(formatted_name) do |response, operation|
+            # Verify the response
+            assert_nil(response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes save_book with error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF]", "[BOOK]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::Book, request)
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:save_book, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("save_book")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.save_book(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
   describe 'private_list_shelves' do
     custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#private_list_shelves."
 
@@ -10746,11 +11233,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -10934,6 +11423,70 @@ describe Library::V1::MyProtoClient do
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
             client.my_method
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'get_namespace' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::MyProtoClient#get_namespace."
+
+    it 'invokes get_namespace without error' do
+      # Create expected grpc response
+      value = "value111972721"
+      expected_response = { value: value }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Namespace)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_namespace, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("get_namespace")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          response = client.get_namespace
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.get_namespace do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes get_namespace with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:get_namespace, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockMyProtoCredentials_v1.new("get_namespace")
+
+      Google::Example::Library::V1::MyProto::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::MyProto.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.get_namespace
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

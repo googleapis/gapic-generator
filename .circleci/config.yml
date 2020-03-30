@@ -351,10 +351,6 @@ jobs:
           name: Test baselines
           command: |
             ./testutils/check-baselines.sh
-            go test testutils/check-calling-form-in-baseline/*.go
-            go run $(find testutils/check-calling-form-in-baseline -type f | grep -v _test) -yaml src/test/java/com/google/api/codegen/testsrc/common/library_gapic.yaml src/test
-            go test testutils/check-lang-uses-form/*.go
-            go run $(find testutils/check-lang-uses-form -type f | grep -v _test) -forms src/main/java/com/google/api/codegen/viewmodel/CallingForm.java src/test
   gapic-generator-bazel-test:
     working_directory: /tmp/
     environment:
@@ -413,7 +409,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:0.42.2
+      - image: googleapis/artman:1.1.1
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -740,7 +736,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:0.42.2
+      - image: googleapis/artman:1.1.1
     steps:
       - attach_workspace:
           at: workspace

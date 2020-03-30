@@ -77,6 +77,19 @@ public interface FeatureConfig {
   /** Returns true if string format functions are supported. */
   boolean enableStringFormatFunctions();
 
+  /**
+   * Returns true if generating a string format for each pattern in a multi-pattern resource name is
+   * supported. Returns true only when the client is generated from proto annotations in PHP.
+   */
+  boolean enableStringFormatFunctionsForOneofs();
+
+  /**
+   * Returns true if multi-pattern resource generation from proto annotation is supported. Returns
+   * true if useStaticCreateMethodForOneofs() returns true (Java) and or
+   * enableStringFormatFunctionsForOneofs() returns true (PHP).
+   */
+  boolean enableInstantiatingResourceOneofsFromAnnotations();
+
   /** Returns true if a raw operation call settings method should be generated. */
   boolean enableRawOperationCallSettings();
 }

@@ -44,7 +44,7 @@ public class MethodTransformer {
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
-  private static final int FLATTENING_THRESHOLD = 4;
+  private static final int FLATTENING_THRESHOLD = 5;
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {

@@ -248,6 +248,7 @@ type CallOptions struct {
     ArchiveBooks []gax.CallOption
     LongRunningArchiveBooks []gax.CallOption
     StreamingArchiveBooks []gax.CallOption
+    SaveBook []gax.CallOption
     PrivateListShelves []gax.CallOption
 }
 
@@ -307,6 +308,7 @@ func defaultCallOptions() *CallOptions {
         ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         LongRunningArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
         StreamingArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
+        SaveBook: retry[[2]string{"default", "non_idempotent"}],
         PrivateListShelves: retry[[2]string{"default", "idempotent"}],
     }
 }
@@ -995,6 +997,19 @@ func (c *LibClient) StreamingArchiveBooks(ctx context.Context, opts ...gax.CallO
         return nil, err
     }
     return resp, nil
+}
+
+// SaveBook test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+// New APIs should always create a separate message for a request.
+func (c *LibClient) SaveBook(ctx context.Context, req *librarypb.Book, opts ...gax.CallOption) error {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.SaveBook[0:len(c.CallOptions.SaveBook):len(c.CallOptions.SaveBook)], opts...)
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        _, err = c.client.SaveBook(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    return err
 }
 
 // PrivateListShelves this method is not exposed in the GAPIC config. It should be generated.
@@ -1932,6 +1947,22 @@ func ExampleClient_StreamingArchiveBooks() {
     }
 }
 
+func ExampleClient_SaveBook() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.Book{
+        // TODO: Fill request struct fields.
+    }
+    err = c.SaveBook(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+}
+
 func ExampleClient_PrivateListShelves() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -1973,16 +2004,10 @@ package library
 import (
     pb ""
 
-    anypb "github.com/golang/protobuf/ptypes/any"
-    durationpb "github.com/golang/protobuf/ptypes/duration"
     emptypb "github.com/golang/protobuf/ptypes/empty"
-    structpbpb "github.com/golang/protobuf/ptypes/struct"
-    timestamppb "github.com/golang/protobuf/ptypes/timestamp"
-    wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
-    field_maskpb "google.golang.org/genproto/protobuf/field_mask"
 )
 
 import (
@@ -2425,6 +2450,18 @@ func (s *mockLibraryServer) StreamingArchiveBooks(stream librarypb.LibraryServic
     return nil
 }
 
+func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*emptypb.Empty), nil
+}
+
 func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
@@ -2501,6 +2538,18 @@ func (s *mockMyProtoServer) MyMethod(ctx context.Context, req *pb.MethodRequest)
         return nil, s.err
     }
     return s.resps[0].(*pb.MethodResponse), nil
+}
+
+func (s *mockMyProtoServer) GetNamespace(ctx context.Context, req *pb.MethodRequest) (*pb.Namespace, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*pb.Namespace), nil
 }
 
 
@@ -3487,13 +3536,9 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
-    var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
-    var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
         Name: formattedName,
         AltBookName: formattedAltBookName,
-        Place: formattedPlace,
-        Folder: formattedFolder,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -3522,13 +3567,9 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
 
     var formattedName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
     var formattedAltBookName string = fmt.Sprintf("shelves/%s/books/%s", "[SHELF]", "[BOOK]")
-    var formattedPlace string = fmt.Sprintf("projects/%s/locations/%s", "[PROJECT]", "[LOCATION]")
-    var formattedFolder string = fmt.Sprintf("folders/%s", "[FOLDER]")
     var request = &librarypb.GetBookFromAnywhereRequest{
         Name: formattedName,
         AltBookName: formattedAltBookName,
-        Place: formattedPlace,
-        Folder: formattedFolder,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4377,38 +4418,6 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
-    var requiredAnyValue *anypb.Any = &anypb.Any{}
-    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
-    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
-    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
-    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
-    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
-    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
-    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
-    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
-    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
-    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
-    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
-    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
-    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
-    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
-    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
-    var requiredRepeatedAnyValue []*anypb.Any = nil
-    var requiredRepeatedStructValue []*structpbpb.Struct = nil
-    var requiredRepeatedValueValue []*structpbpb.Value = nil
-    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
-    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
-    var requiredRepeatedDurationValue []*durationpb.Duration = nil
-    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
-    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
-    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
-    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
-    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
-    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
-    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
-    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
-    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
-    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4439,38 +4448,6 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
-        RequiredAnyValue: requiredAnyValue,
-        RequiredStructValue: requiredStructValue,
-        RequiredValueValue: requiredValueValue,
-        RequiredListValueValue: requiredListValueValue,
-        RequiredTimeValue: requiredTimeValue,
-        RequiredDurationValue: requiredDurationValue,
-        RequiredFieldMaskValue: requiredFieldMaskValue,
-        RequiredInt32Value: requiredInt32Value,
-        RequiredUint32Value: requiredUint32Value,
-        RequiredInt64Value: requiredInt64Value,
-        RequiredUint64Value: requiredUint64Value,
-        RequiredFloatValue: requiredFloatValue,
-        RequiredDoubleValue: requiredDoubleValue,
-        RequiredStringValue: requiredStringValue,
-        RequiredBoolValue: requiredBoolValue,
-        RequiredBytesValue: requiredBytesValue,
-        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
-        RequiredRepeatedStructValue: requiredRepeatedStructValue,
-        RequiredRepeatedValueValue: requiredRepeatedValueValue,
-        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
-        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
-        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
-        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
-        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
-        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
-        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
-        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
-        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
-        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
-        RequiredRepeatedStringValue: requiredRepeatedStringValue,
-        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
-        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4526,38 +4503,6 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     var requiredRepeatedFixed32 []int32 = nil
     var requiredRepeatedFixed64 []int64 = nil
     var requiredMap map[int32]string = nil
-    var requiredAnyValue *anypb.Any = &anypb.Any{}
-    var requiredStructValue *structpbpb.Struct = &structpbpb.Struct{}
-    var requiredValueValue *structpbpb.Value = &structpbpb.Value{}
-    var requiredListValueValue *structpbpb.ListValue = &structpbpb.ListValue{}
-    var requiredTimeValue *timestamppb.Timestamp = &timestamppb.Timestamp{}
-    var requiredDurationValue *durationpb.Duration = &durationpb.Duration{}
-    var requiredFieldMaskValue *field_maskpb.FieldMask = &field_maskpb.FieldMask{}
-    var requiredInt32Value *wrapperspb.Int32Value = &wrapperspb.Int32Value{}
-    var requiredUint32Value *wrapperspb.UInt32Value = &wrapperspb.UInt32Value{}
-    var requiredInt64Value *wrapperspb.Int64Value = &wrapperspb.Int64Value{}
-    var requiredUint64Value *wrapperspb.UInt64Value = &wrapperspb.UInt64Value{}
-    var requiredFloatValue *wrapperspb.FloatValue = &wrapperspb.FloatValue{}
-    var requiredDoubleValue *wrapperspb.DoubleValue = &wrapperspb.DoubleValue{}
-    var requiredStringValue *wrapperspb.StringValue = &wrapperspb.StringValue{}
-    var requiredBoolValue *wrapperspb.BoolValue = &wrapperspb.BoolValue{}
-    var requiredBytesValue *wrapperspb.BytesValue = &wrapperspb.BytesValue{}
-    var requiredRepeatedAnyValue []*anypb.Any = nil
-    var requiredRepeatedStructValue []*structpbpb.Struct = nil
-    var requiredRepeatedValueValue []*structpbpb.Value = nil
-    var requiredRepeatedListValueValue []*structpbpb.ListValue = nil
-    var requiredRepeatedTimeValue []*timestamppb.Timestamp = nil
-    var requiredRepeatedDurationValue []*durationpb.Duration = nil
-    var requiredRepeatedFieldMaskValue []*field_maskpb.FieldMask = nil
-    var requiredRepeatedInt32Value []*wrapperspb.Int32Value = nil
-    var requiredRepeatedUint32Value []*wrapperspb.UInt32Value = nil
-    var requiredRepeatedInt64Value []*wrapperspb.Int64Value = nil
-    var requiredRepeatedUint64Value []*wrapperspb.UInt64Value = nil
-    var requiredRepeatedFloatValue []*wrapperspb.FloatValue = nil
-    var requiredRepeatedDoubleValue []*wrapperspb.DoubleValue = nil
-    var requiredRepeatedStringValue []*wrapperspb.StringValue = nil
-    var requiredRepeatedBoolValue []*wrapperspb.BoolValue = nil
-    var requiredRepeatedBytesValue []*wrapperspb.BytesValue = nil
     var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
         RequiredSingularInt32: requiredSingularInt32,
         RequiredSingularInt64: requiredSingularInt64,
@@ -4588,38 +4533,6 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
         RequiredRepeatedFixed32: requiredRepeatedFixed32,
         RequiredRepeatedFixed64: requiredRepeatedFixed64,
         RequiredMap: requiredMap,
-        RequiredAnyValue: requiredAnyValue,
-        RequiredStructValue: requiredStructValue,
-        RequiredValueValue: requiredValueValue,
-        RequiredListValueValue: requiredListValueValue,
-        RequiredTimeValue: requiredTimeValue,
-        RequiredDurationValue: requiredDurationValue,
-        RequiredFieldMaskValue: requiredFieldMaskValue,
-        RequiredInt32Value: requiredInt32Value,
-        RequiredUint32Value: requiredUint32Value,
-        RequiredInt64Value: requiredInt64Value,
-        RequiredUint64Value: requiredUint64Value,
-        RequiredFloatValue: requiredFloatValue,
-        RequiredDoubleValue: requiredDoubleValue,
-        RequiredStringValue: requiredStringValue,
-        RequiredBoolValue: requiredBoolValue,
-        RequiredBytesValue: requiredBytesValue,
-        RequiredRepeatedAnyValue: requiredRepeatedAnyValue,
-        RequiredRepeatedStructValue: requiredRepeatedStructValue,
-        RequiredRepeatedValueValue: requiredRepeatedValueValue,
-        RequiredRepeatedListValueValue: requiredRepeatedListValueValue,
-        RequiredRepeatedTimeValue: requiredRepeatedTimeValue,
-        RequiredRepeatedDurationValue: requiredRepeatedDurationValue,
-        RequiredRepeatedFieldMaskValue: requiredRepeatedFieldMaskValue,
-        RequiredRepeatedInt32Value: requiredRepeatedInt32Value,
-        RequiredRepeatedUint32Value: requiredRepeatedUint32Value,
-        RequiredRepeatedInt64Value: requiredRepeatedInt64Value,
-        RequiredRepeatedUint64Value: requiredRepeatedUint64Value,
-        RequiredRepeatedFloatValue: requiredRepeatedFloatValue,
-        RequiredRepeatedDoubleValue: requiredRepeatedDoubleValue,
-        RequiredRepeatedStringValue: requiredRepeatedStringValue,
-        RequiredRepeatedBoolValue: requiredRepeatedBoolValue,
-        RequiredRepeatedBytesValue: requiredRepeatedBytesValue,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4870,6 +4783,52 @@ func TestLibraryServiceStreamingArchiveBooksError(t *testing.T) {
     }
     _ = resp
 }
+func TestLibraryServiceSaveBook(t *testing.T) {
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.Book = &librarypb.Book{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+}
+
+func TestLibraryServiceSaveBookError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.Book = &librarypb.Book{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    err = c.SaveBook(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+}
 func TestLibraryServicePrivateListShelves(t *testing.T) {
     var name string = "name3373707"
     var author string = "author-1406328437"
@@ -4982,6 +4941,59 @@ func TestMyProtoMyMethodError(t *testing.T) {
     }
     _ = resp
 }
+func TestMyProtoGetNamespace(t *testing.T) {
+    var value string = "value111972721"
+    var expectedResponse = &pb.Namespace{
+        Value: value,
+    }
+
+    mockMyProto.err = nil
+    mockMyProto.reqs = nil
+
+    mockMyProto.resps = append(mockMyProto.resps[:0], expectedResponse)
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockMyProto.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestMyProtoGetNamespaceError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockMyProto.err = gstatus.Error(errCode, "test error")
+
+    var request *pb.MethodRequest = &pb.MethodRequest{}
+
+    c, err := NewMyProtoClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.GetNamespace(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client.go ==============
 // Copyright 2020 Google LLC
 //
@@ -5016,6 +5028,7 @@ import (
 // MyProtoCallOptions contains the retry settings for each method of MyProtoClient.
 type MyProtoCallOptions struct {
     MyMethod []gax.CallOption
+    GetNamespace []gax.CallOption
 }
 
 func defaultMyProtoClientOptions() []option.ClientOption {
@@ -5032,6 +5045,7 @@ func defaultMyProtoCallOptions() *MyProtoCallOptions {
     }
     return &MyProtoCallOptions{
         MyMethod: retry[[2]string{"default", "non_idempotent"}],
+        GetNamespace: retry[[2]string{"default", "non_idempotent"}],
     }
 }
 
@@ -5106,6 +5120,22 @@ func (c *MyProtoClient) MyMethod(ctx context.Context, req *pb.MethodRequest, opt
     return resp, nil
 }
 
+// GetNamespace define a service with a reserved name
+func (c *MyProtoClient) GetNamespace(ctx context.Context, req *pb.MethodRequest, opts ...gax.CallOption) (*pb.Namespace, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.GetNamespace[0:len(c.CallOptions.GetNamespace):len(c.CallOptions.GetNamespace)], opts...)
+    var resp *pb.Namespace
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.myProtoClient.GetNamespace(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
 
 
 ============== file: cloud.google.com/go/library/apiv1/my_proto_client_example_test.go ==============
@@ -5155,6 +5185,24 @@ func ExampleMyProtoClient_MyMethod() {
         // TODO: Fill request struct fields.
     }
     resp, err := c.MyMethod(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleMyProtoClient_GetNamespace() {
+    ctx := context.Background()
+    c, err := library.NewMyProtoClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &pb.MethodRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetNamespace(ctx, req)
     if err != nil {
         // TODO: Handle error.
     }

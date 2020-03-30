@@ -73,7 +73,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final TestValueGenerator valueGenerator = new TestValueGenerator(valueProducer);
 
-  private final PhpFeatureConfig featureConfig = new PhpFeatureConfig();
   private final MockServiceTransformer mockServiceTransformer = new MockServiceTransformer();
 
   public PhpGapicSurfaceTestTransformer() {}
@@ -112,7 +111,11 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
         new ModelTypeTable(
             new PhpTypeTable(testPackageName), new PhpModelTypeNameConverter(testPackageName));
     return GapicInterfaceContext.create(
-        apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
+        apiInterface,
+        productConfig,
+        typeTable,
+        surfacePackageNamer,
+        new PhpFeatureConfig(productConfig));
   }
 
   private ClientTestFileView createUnitTestFileView(GapicInterfaceContext context) {

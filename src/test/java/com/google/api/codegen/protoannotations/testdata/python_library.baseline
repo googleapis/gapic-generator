@@ -1089,6 +1089,7 @@ from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import library_pb2_grpc
+from google.cloud.example.library_v1.proto import shared_type_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
@@ -1199,6 +1200,16 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
+    def inventory_path(cls, project, location, publisher):
+        """Return a fully-qualified inventory string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}/locations/{location}/publishers/{publisher}/inventory',
+            project=project,
+            location=location,
+            publisher=publisher,
+        )
+
+    @classmethod
     def location_path(cls, project, location):
         """Return a fully-qualified location string."""
         return google.api_core.path_template.expand(
@@ -1232,6 +1243,15 @@ class LibraryServiceClient(object):
             project=project,
             location=location,
             publisher=publisher,
+        )
+
+    @classmethod
+    def reader_path(cls, project, reader):
+        """Return a fully-qualified reader string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}/readers/{reader}',
+            project=project,
+            reader=reader,
         )
 
     @classmethod
@@ -3050,7 +3070,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> resource = client.book_path('[SHELF]', '[BOOK]')
+            >>> # TODO: Initialize `resource`:
+            >>> resource = ''
             >>>
             >>> # TODO: Initialize `label`:
             >>> label = ''
@@ -3059,7 +3080,6 @@ class LibraryServiceClient(object):
 
         Args:
             resource (str): REQUIRED: The resource which the label is being added to.
-                In the form "shelves/{shelf_id}/books/{book_id}".
             label (str): REQUIRED: The label to add.
             retry (Optional[google.api_core.retry.Retry]):  A retry object used
                 to retry requests. If ``None`` is specified, requests will
@@ -3994,6 +4014,75 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def create_inventory(
+            self,
+            parent,
+            inventory=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Creates an inventory. Tests singleton resources.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+            >>>
+            >>> response = client.create_inventory(parent)
+
+        Args:
+            parent (str)
+            inventory (Union[dict, ~google.cloud.example.library_v1.types.Inventory]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Inventory`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Inventory` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'create_inventory' not in self._inner_api_calls:
+            self._inner_api_calls['create_inventory'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.create_inventory,
+                default_retry=self._method_configs['CreateInventory'].retry,
+                default_timeout=self._method_configs['CreateInventory'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.CreateInventoryRequest(
+            parent=parent,
+            inventory=inventory,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('parent', parent)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['create_inventory'](request, retry=retry, timeout=timeout, metadata=metadata)
+
     def move_books(
             self,
             source=None,
@@ -4260,6 +4349,187 @@ class LibraryServiceClient(object):
 
         return self._inner_api_calls['streaming_archive_books'](requests, retry=retry, timeout=timeout, metadata=metadata)
 
+    def save_book(
+            self,
+            name,
+            author=None,
+            title=None,
+            read=None,
+            rating=None,
+            reader=None,
+            any_value=None,
+            struct_value=None,
+            value_value=None,
+            list_value_value=None,
+            map_list_value_value=None,
+            time_value=None,
+            duration_value=None,
+            field_mask_value=None,
+            int32_value=None,
+            uint32_value=None,
+            int64_value=None,
+            uint64_value=None,
+            float_value=None,
+            double_value=None,
+            string_value=None,
+            bool_value=None,
+            bytes_value=None,
+            map_string_value=None,
+            map_message_value=None,
+            resource=None,
+            map_bool_key=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+        New APIs should always create a separate message for a request.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>>
+            >>> client.save_book(name)
+
+        Args:
+            name (str): The resource name of the book.
+                Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+                Message field comment may include special characters: <>&"`'@.
+            author (str): The name of the book author.
+            title (str): The title of the book.
+            read (bool): Value indicating whether the book has been read.
+            rating (~google.cloud.example.library_v1.types.Rating): For testing enums.
+            reader (str)
+            any_value (Union[dict, ~google.cloud.example.library_v1.types.Any]): For testing all well-known types.
+
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Any`
+            struct_value (Union[dict, ~google.cloud.example.library_v1.types.Struct]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Struct`
+            value_value (Union[dict, ~google.cloud.example.library_v1.types.Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Value`
+            list_value_value (Union[dict, ~google.cloud.example.library_v1.types.ListValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            map_list_value_value (dict[str -> Union[dict, ~google.cloud.example.library_v1.types.ListValue]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.ListValue`
+            time_value (Union[dict, ~google.cloud.example.library_v1.types.Timestamp]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Timestamp`
+            duration_value (Union[dict, ~google.cloud.example.library_v1.types.Duration]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Duration`
+            field_mask_value (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            int32_value (Union[dict, ~google.cloud.example.library_v1.types.Int32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int32Value`
+            uint32_value (Union[dict, ~google.cloud.example.library_v1.types.UInt32Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt32Value`
+            int64_value (Union[dict, ~google.cloud.example.library_v1.types.Int64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Int64Value`
+            uint64_value (Union[dict, ~google.cloud.example.library_v1.types.UInt64Value]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.UInt64Value`
+            float_value (Union[dict, ~google.cloud.example.library_v1.types.FloatValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FloatValue`
+            double_value (Union[dict, ~google.cloud.example.library_v1.types.DoubleValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.DoubleValue`
+            string_value (Union[dict, ~google.cloud.example.library_v1.types.StringValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringValue`
+            bool_value (Union[dict, ~google.cloud.example.library_v1.types.BoolValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BoolValue`
+            bytes_value (Union[dict, ~google.cloud.example.library_v1.types.BytesValue]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.BytesValue`
+            map_string_value (dict[int -> str]): Test doc generation of lists:
+
+                +   Here is a sentence about the first element of the list that continues
+                    into a second line.
+                +   The second element of the list.
+                +   Another element of the list where the indentation isn't consistent
+                after a blank space.
+
+                    The second paragraph of the list
+                that doesn't have a hanging indent.
+            map_message_value (dict[str -> Union[dict, ~google.cloud.example.library_v1.types.SomeMessage]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SomeMessage`
+            resource (Union[dict, ~google.cloud.example.library_v1.types.Used]): Tests Python doc generation: should generate a dummy file for shared_type
+                resource, but *not* its import, other_shared_type
+
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Used`
+            map_bool_key (dict[bool -> str]): For testing accessing map fields in samplegen
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'save_book' not in self._inner_api_calls:
+            self._inner_api_calls['save_book'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.save_book,
+                default_retry=self._method_configs['SaveBook'].retry,
+                default_timeout=self._method_configs['SaveBook'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.Book(
+            name=name,
+            author=author,
+            title=title,
+            read=read,
+            rating=rating,
+            reader=reader,
+            any_value=any_value,
+            struct_value=struct_value,
+            value_value=value_value,
+            list_value_value=list_value_value,
+            map_list_value_value=map_list_value_value,
+            time_value=time_value,
+            duration_value=duration_value,
+            field_mask_value=field_mask_value,
+            int32_value=int32_value,
+            uint32_value=uint32_value,
+            int64_value=int64_value,
+            uint64_value=uint64_value,
+            float_value=float_value,
+            double_value=double_value,
+            string_value=string_value,
+            bool_value=bool_value,
+            bytes_value=bytes_value,
+            map_string_value=map_string_value,
+            map_message_value=map_message_value,
+            resource=resource,
+            map_bool_key=map_bool_key,
+        )
+        self._inner_api_calls['save_book'](request, retry=retry, timeout=timeout, metadata=metadata)
+
     def private_list_shelves(
             self,
             page_token=None,
@@ -4489,6 +4759,11 @@ config = {
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "CreateInventory": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "MoveBooks": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -4505,6 +4780,11 @@ config = {
           "retry_params_name": "default"
         },
         "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -4558,6 +4838,7 @@ from google.cloud.example.library_v1.proto import book_from_anywhere_pb2
 from google.cloud.example.library_v1.proto import field_mask_pb2 as proto_field_mask_pb2
 from google.cloud.example.library_v1.proto import library_pb2
 from google.cloud.example.library_v1.proto import library_pb2_grpc
+from google.cloud.example.library_v1.proto import shared_type_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2
 from google.cloud.example.library_v1.proto import tagger_pb2_grpc
 from google.longrunning import operations_pb2
@@ -4769,6 +5050,69 @@ class MyProtoClient(object):
         )
         return self._inner_api_calls['my_method'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def get_namespace(
+            self,
+            mylist=None,
+            myfield=None,
+            secondfield=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Define a service with a reserved name
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.MyProtoClient()
+            >>>
+            >>> response = client.get_namespace()
+
+        Args:
+            mylist (list[Union[dict, ~google.cloud.example.library_v1.types.SubMessage]]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            myfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            secondfield (Union[dict, ~google.cloud.example.library_v1.types.SubMessage]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SubMessage`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Namespace` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'get_namespace' not in self._inner_api_calls:
+            self._inner_api_calls['get_namespace'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.get_namespace,
+                default_retry=self._method_configs['GetNamespace'].retry,
+                default_timeout=self._method_configs['GetNamespace'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = another_service_pb2.MethodRequest(
+            mylist=mylist,
+            myfield=myfield,
+            secondfield=secondfield,
+        )
+        return self._inner_api_calls['get_namespace'](request, retry=retry, timeout=timeout, metadata=metadata)
+
 ============== file: google/cloud/example/library_v1/gapic/my_proto_client_config.py ==============
 config = {
   "interfaces": {
@@ -4794,6 +5138,11 @@ config = {
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -5299,6 +5648,19 @@ class LibraryServiceGrpcTransport(object):
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
 
     @property
+    def create_inventory(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_inventory`.
+
+        Creates an inventory. Tests singleton resources.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].CreateInventory
+
+    @property
     def move_books(self):
         """Return the gRPC stub for :meth:`LibraryServiceClient.move_books`.
 
@@ -5345,6 +5707,20 @@ class LibraryServiceGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].StreamingArchiveBooks
+
+    @property
+    def save_book(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.save_book`.
+
+        Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+        New APIs should always create a separate message for a request.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].SaveBook
 
     @property
     def private_list_shelves(self):
@@ -5487,6 +5863,19 @@ class MyProtoGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['my_proto_stub'].MyMethod
+
+    @property
+    def get_namespace(self):
+        """Return the gRPC stub for :meth:`MyProtoClient.get_namespace`.
+
+        Define a service with a reserved name
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['my_proto_stub'].GetNamespace
 ============== file: google/cloud/example/library_v1/types.py ==============
 # -*- coding: utf-8 -*-
 #
@@ -7508,7 +7897,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7596,7 +7986,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7713,7 +8104,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -7756,7 +8148,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -8087,7 +8480,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -8321,7 +8715,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        resource = client.book_path('[SHELF]', '[BOOK]')
+        resource = 'resource-341064690'
         label = 'label102727412'
 
         response = client.add_label(resource, label)
@@ -8341,7 +8735,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        resource = client.book_path('[SHELF]', '[BOOK]')
+        resource = 'resource-341064690'
         label = 'label102727412'
 
         with pytest.raises(CustomException):
@@ -8353,7 +8747,8 @@ class TestLibraryServiceClient(object):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
         operation.response.Pack(expected_response)
@@ -8602,6 +8997,44 @@ class TestLibraryServiceClient(object):
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
 
+    def test_create_inventory(self):
+        # Setup Expected Response
+        name = 'name3373707'
+        expected_response = {'name': name}
+        expected_response = library_pb2.Inventory(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup Request
+        parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+
+        response = client.create_inventory(parent)
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.CreateInventoryRequest(parent=parent)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_create_inventory_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup request
+        parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+
+        with pytest.raises(CustomException):
+            client.create_inventory(parent)
+
     def test_move_books(self):
         # Setup Expected Response
         success = False
@@ -8754,13 +9187,45 @@ class TestLibraryServiceClient(object):
         with pytest.raises(CustomException):
             client.streaming_archive_books(requests)
 
+    def test_save_book(self):
+        channel = ChannelStub()
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup Request
+        name = client.book_path('[SHELF]', '[BOOK]')
+
+        client.save_book(name)
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.Book(name=name)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_save_book_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup request
+        name = client.book_path('[SHELF]', '[BOOK]')
+
+        with pytest.raises(CustomException):
+            client.save_book(name)
+
     def test_private_list_shelves(self):
         # Setup Expected Response
         name = 'name3373707'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = {'name': name, 'author': author, 'title': title, 'read': read}
+        reader = 'reader-934979389'
+        expected_response = {'name': name, 'author': author, 'title': title, 'read': read, 'reader': reader}
         expected_response = library_pb2.Book(**expected_response)
 
         # Mock the API response
@@ -8884,4 +9349,36 @@ class TestMyProtoClient(object):
 
         with pytest.raises(CustomException):
             client.my_method()
+
+    def test_get_namespace(self):
+        # Setup Expected Response
+        value = 'value111972721'
+        expected_response = {'value': value}
+        expected_response = another_service_pb2.Namespace(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        response = client.get_namespace()
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = another_service_pb2.MethodRequest()
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_get_namespace_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.MyProtoClient()
+
+        with pytest.raises(CustomException):
+            client.get_namespace()
 

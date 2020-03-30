@@ -2430,6 +2430,19 @@ const SubMessage = {
 const MethodResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
+
+/**
+ * Define a message with a reserved name
+ *
+ * @property {string} value
+ *
+ * @typedef Namespace
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.Namespace definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/another_service.proto}
+ */
+const Namespace = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 ============== file: src/v1/doc/google/example/library/v1/doc_book_from_anywhere.js ==============
 // Copyright 2020 Google LLC
 //
@@ -2554,6 +2567,8 @@ const FieldMask = {
  *
  *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
  *
+ * @property {string} reader
+ *
  * @property {Object} anyValue
  *   For testing all well-known types.
  *
@@ -2652,6 +2667,17 @@ const Book = {
      */
     BAD: 1
   }
+};
+
+/**
+ * @property {string} name
+ *
+ * @typedef Inventory
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.Inventory definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const Inventory = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
 /**
@@ -3200,6 +3226,20 @@ const ListStringsRequest = {
  * @see [google.example.library.v1.ListStringsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
 const ListStringsResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} parent
+ *
+ * @property {Object} inventory
+ *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
+ *
+ * @typedef CreateInventoryRequest
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.CreateInventoryRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const CreateInventoryRequest = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -5120,6 +5160,9 @@ class LibraryServiceClient {
       folderPathTemplate: new gaxModule.PathTemplate(
         'folders/{folder}'
       ),
+      inventoryPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/publishers/{publisher}/inventory'
+      ),
       locationPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
       ),
@@ -5131,6 +5174,9 @@ class LibraryServiceClient {
       ),
       publisherPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/publishers/{publisher}'
+      ),
+      readerPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/readers/{reader}'
       ),
       shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf}'
@@ -5297,10 +5343,12 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'createInventory',
       'moveBooks',
       'archiveBooks',
       'longRunningArchiveBooks',
       'streamingArchiveBooks',
+      'saveBook',
       'privateListShelves',
     ];
     for (const methodName of libraryServiceStubMethods) {
@@ -7106,7 +7154,6 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.resource
    *   REQUIRED: The resource which the label is being added to.
-   *   In the form "shelves/{shelf_id}/books/{book_id}".
    * @param {string} request.label
    *   REQUIRED: The label to add.
    * @param {Object} [options]
@@ -7128,10 +7175,10 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * const formattedResource = client.bookPath('[SHELF]', '[BOOK]');
+   * const resource = '';
    * const label = '';
    * const request = {
-   *   resource: formattedResource,
+   *   resource: resource,
    *   label: label,
    * };
    * client.addLabel(request)
@@ -7717,6 +7764,60 @@ class LibraryServiceClient {
   }
 
   /**
+   * Creates an inventory. Tests singleton resources.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   * @param {Object} [request.inventory]
+   *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Inventory]{@link google.example.library.v1.Inventory}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Inventory]{@link google.example.library.v1.Inventory}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   * const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+   * client.createInventory({parent: formattedParent})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  createInventory(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
+
+    return this._innerApiCalls.createInventory(request, options, callback);
+  }
+
+  /**
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} [request.source]
@@ -7946,6 +8047,113 @@ class LibraryServiceClient {
   }
 
   /**
+   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+   * New APIs should always create a separate message for a request.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   The resource name of the book.
+   *   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+   *   Message field comment may include special characters: <>&"`'@.
+   * @param {string} [request.author]
+   *   The name of the book author.
+   * @param {string} [request.title]
+   *   The title of the book.
+   * @param {boolean} [request.read]
+   *   Value indicating whether the book has been read.
+   * @param {number} [request.rating]
+   *   For testing enums.
+   *
+   *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
+   * @param {string} [request.reader]
+   * @param {Object} [request.anyValue]
+   *   For testing all well-known types.
+   *
+   *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+   * @param {Object} [request.structValue]
+   *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+   * @param {Object} [request.valueValue]
+   *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+   * @param {Object} [request.listValueValue]
+   *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+   * @param {Object.<string, Object>} [request.mapListValueValue]
+   * @param {Object} [request.timeValue]
+   *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+   * @param {Object} [request.durationValue]
+   *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+   * @param {Object} [request.fieldMaskValue]
+   *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+   * @param {Object} [request.int32Value]
+   *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+   * @param {Object} [request.uint32Value]
+   *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+   * @param {Object} [request.int64Value]
+   *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+   * @param {Object} [request.uint64Value]
+   *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+   * @param {Object} [request.floatValue]
+   *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+   * @param {Object} [request.doubleValue]
+   *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+   * @param {Object} [request.stringValue]
+   *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+   * @param {Object} [request.boolValue]
+   *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+   * @param {Object} [request.bytesValue]
+   *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+   * @param {Object.<number, string>} [request.mapStringValue]
+   *   Test doc generation of lists:
+   *
+   *   +   Here is a sentence about the first element of the list that continues
+   *       into a second line.
+   *   +   The second element of the list.
+   *   +   Another element of the list where the indentation isn't consistent
+   *   after a blank space.
+   *
+   *       The second paragraph of the list
+   *   that doesn't have a hanging indent.
+   * @param {Object.<string, Object>} [request.mapMessageValue]
+   * @param {Object} [request.resource]
+   *   Tests Python doc generation: should generate a dummy file for shared_type
+   *   resource, but *not* its import, other_shared_type
+   *
+   *   This object should have the same structure as [Used]{@link google.test.shared.data.Used}
+   * @param {Object.<boolean, string>} [request.mapBoolKey]
+   *   For testing accessing map fields in samplegen
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error)} [callback]
+   *   The function which will be called with the result of the API call.
+   * @returns {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   * const formattedName = client.bookPath('[SHELF]', '[BOOK]');
+   * client.saveBook({name: formattedName}).catch(err => {
+   *   console.error(err);
+   * });
+   */
+  saveBook(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+
+    return this._innerApiCalls.saveBook(request, options, callback);
+  }
+
+  /**
    * This method is not exposed in the GAPIC config. It should be generated.
    *
    * @param {Object} request
@@ -8026,7 +8234,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Return a fully-qualified book resource name string.
    *
    * @param {String} shelf
@@ -8064,6 +8271,22 @@ class LibraryServiceClient {
   folderPath(folder) {
     return this._pathTemplates.folderPathTemplate.render({
       folder: folder,
+    });
+  }
+
+  /**
+   * Return a fully-qualified inventory resource name string.
+   *
+   * @param {String} project
+   * @param {String} location
+   * @param {String} publisher
+   * @returns {String}
+   */
+  inventoryPath(project, location, publisher) {
+    return this._pathTemplates.inventoryPathTemplate.render({
+      project: project,
+      location: location,
+      publisher: publisher,
     });
   }
 
@@ -8125,6 +8348,20 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified reader resource name string.
+   *
+   * @param {String} project
+   * @param {String} reader
+   * @returns {String}
+   */
+  readerPath(project, reader) {
+    return this._pathTemplates.readerPathTemplate.render({
+      project: project,
+      reader: reader,
+    });
+  }
+
+  /**
    * Return a fully-qualified shelf resource name string.
    *
    * @param {String} shelf
@@ -8176,7 +8413,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8190,7 +8426,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8242,6 +8477,45 @@ class LibraryServiceClient {
     return this._pathTemplates.folderPathTemplate
       .match(folderName)
       .folder;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .project;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the location.
+   */
+  matchLocationFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .location;
+  }
+
+  /**
+   * Parse the inventoryName from a inventory resource.
+   *
+   * @param {String} inventoryName
+   *   A fully-qualified path representing a inventory resources.
+   * @returns {String} - A string representing the publisher.
+   */
+  matchPublisherFromInventoryName(inventoryName) {
+    return this._pathTemplates.inventoryPathTemplate
+      .match(inventoryName)
+      .publisher;
   }
 
   /**
@@ -8348,6 +8622,32 @@ class LibraryServiceClient {
     return this._pathTemplates.publisherPathTemplate
       .match(publisherName)
       .publisher;
+  }
+
+  /**
+   * Parse the readerName from a reader resource.
+   *
+   * @param {String} readerName
+   *   A fully-qualified path representing a reader resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromReaderName(readerName) {
+    return this._pathTemplates.readerPathTemplate
+      .match(readerName)
+      .project;
+  }
+
+  /**
+   * Parse the readerName from a reader resource.
+   *
+   * @param {String} readerName
+   *   A fully-qualified path representing a reader resources.
+   * @returns {String} - A string representing the reader.
+   */
+  matchReaderFromReaderName(readerName) {
+    return this._pathTemplates.readerPathTemplate
+      .match(readerName)
+      .reader;
   }
 
   /**
@@ -8542,6 +8842,11 @@ module.exports = LibraryServiceClient;
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "CreateInventory": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
         "MoveBooks": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -8558,6 +8863,11 @@ module.exports = LibraryServiceClient;
           "retry_params_name": "default"
         },
         "StreamingArchiveBooks": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "SaveBook": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -8724,6 +9034,7 @@ class MyProtoClient {
     // and create an API call method for each.
     const myProtoStubMethods = [
       'myMethod',
+      'getNamespace',
     ];
     for (const methodName of myProtoStubMethods) {
       const innerCallPromise = myProtoStub.then(
@@ -8836,6 +9147,57 @@ class MyProtoClient {
 
     return this._innerApiCalls.myMethod(request, options, callback);
   }
+
+  /**
+   * Define a service with a reserved name
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {Object[]} [request.mylist]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.myfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [request.secondfield]
+   *   This object should have the same structure as [SubMessage]{@link google.example.library.v1.SubMessage}
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [Namespace]{@link google.example.library.v1.Namespace}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [Namespace]{@link google.example.library.v1.Namespace}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.MyProtoClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.getNamespace({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  getNamespace(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+
+    return this._innerApiCalls.getNamespace(request, options, callback);
+  }
 }
 
 
@@ -8866,6 +9228,11 @@ module.exports = MyProtoClient;
       "methods": {
         "MyMethod": {
           "timeout_millis": 1000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "GetNamespace": {
+          "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
@@ -9259,11 +9626,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9402,11 +9771,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9586,11 +9957,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9656,11 +10029,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -10187,11 +10562,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -10376,10 +10753,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedResource = client.bookPath('[SHELF]', '[BOOK]');
+      const resource = 'resource-341064690';
       const label = 'label102727412';
       const request = {
-        resource: formattedResource,
+        resource: resource,
         label: label,
       };
 
@@ -10406,10 +10783,10 @@ describe('LibraryServiceClient', () => {
       });
 
       // Mock request
-      const formattedResource = client.bookPath('[SHELF]', '[BOOK]');
+      const resource = 'resource-341064690';
       const label = 'label102727412';
       const request = {
-        resource: formattedResource,
+        resource: resource,
         label: label,
       };
 
@@ -10447,11 +10824,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -10869,6 +11248,66 @@ describe('LibraryServiceClient', () => {
     });
   });
 
+  describe('createInventory', () => {
+    it('invokes createInventory without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const request = {
+        parent: formattedParent,
+      };
+
+      // Mock response
+      const name = 'name3373707';
+      const expectedResponse = {
+        name: name,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.createInventory = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.createInventory(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes createInventory with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const request = {
+        parent: formattedParent,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.createInventory = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.createInventory(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
   describe('moveBooks', () => {
     it('invokes moveBooks without error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
@@ -11094,6 +11533,55 @@ describe('LibraryServiceClient', () => {
     });
   });
 
+  describe('saveBook', () => {
+    it('invokes saveBook without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedName = client.bookPath('[SHELF]', '[BOOK]');
+      const request = {
+        name: formattedName,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.saveBook = mockSimpleGrpcMethod(request);
+
+      client.saveBook(request, err => {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes saveBook with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const formattedName = client.bookPath('[SHELF]', '[BOOK]');
+      const request = {
+        name: formattedName,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.saveBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.saveBook(request, err => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
   describe('privateListShelves', () => {
     it('invokes privateListShelves without error', done => {
       const client = new libraryModule.v1.LibraryServiceClient({
@@ -11109,11 +11597,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -11228,6 +11718,60 @@ describe('MyProtoClient', () => {
       );
 
       client.myMethod(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('getNamespace', () => {
+    it('invokes getNamespace without error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const value = 'value111972721';
+      const expectedResponse = {
+        value: value,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.getNamespace = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.getNamespace(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes getNamespace with error', done => {
+      const client = new libraryModule.v1.MyProtoClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.getNamespace = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.getNamespace(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

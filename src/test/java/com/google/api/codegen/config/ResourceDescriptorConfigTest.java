@@ -96,10 +96,11 @@ public class ResourceDescriptorConfigTest {
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}/bars/{bar}"))
         .isEqualTo("foos/{foo}");
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}/busy/bars/{bar}"))
-        .isEqualTo("foos/{foo}");
+        .isEqualTo("foos/{foo}/busy");
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}/bars/{bar}/bang"))
         .isEqualTo("foos/{foo}/bars/{bar}");
     assertThat(ResourceDescriptorConfig.getParentPattern("foos/{foo}")).isEqualTo("");
+    assertThat(ResourceDescriptorConfig.getParentPattern("*")).isEqualTo("*");
   }
 
   @Test
