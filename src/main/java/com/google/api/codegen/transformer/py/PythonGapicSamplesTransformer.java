@@ -22,6 +22,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -55,6 +56,8 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
               .sampleType(sampleType)
               .sampleImportTransformer(new PythonSampleImportTransformer())
               .build());
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      p -> new DefaultFeatureConfig();
   private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
       product -> new PythonSurfaceNamer(product.getPackageName());
   private static final Function<String, ModelTypeTable> newTypeTable =
@@ -70,7 +73,7 @@ public class PythonGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        new DefaultFeatureConfig(),
+        newFeatureConfig,
         newSurfaceNamer,
         newTypeTable);
     this.packageConfig = packageConfig;

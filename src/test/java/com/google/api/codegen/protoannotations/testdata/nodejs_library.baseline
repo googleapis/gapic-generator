@@ -2567,6 +2567,8 @@ const FieldMask = {
  *
  *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
  *
+ * @property {string} reader
+ *
  * @property {Object} anyValue
  *   For testing all well-known types.
  *
@@ -5144,6 +5146,9 @@ class LibraryServiceClient {
       ),
       publisherPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/publishers/{publisher}'
+      ),
+      readerPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/readers/{reader}'
       ),
       shelfPathTemplate: new gaxModule.PathTemplate(
         'shelves/{shelf}'
@@ -7978,6 +7983,7 @@ class LibraryServiceClient {
    *   For testing enums.
    *
    *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
+   * @param {string} [request.reader]
    * @param {Object} [request.anyValue]
    *   For testing all well-known types.
    *
@@ -8145,7 +8151,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Return a fully-qualified book resource name string.
    *
    * @param {String} shelf
@@ -8244,6 +8249,20 @@ class LibraryServiceClient {
   }
 
   /**
+   * Return a fully-qualified reader resource name string.
+   *
+   * @param {String} project
+   * @param {String} reader
+   * @returns {String}
+   */
+  readerPath(project, reader) {
+    return this._pathTemplates.readerPathTemplate.render({
+      project: project,
+      reader: reader,
+    });
+  }
+
+  /**
    * Return a fully-qualified shelf resource name string.
    *
    * @param {String} shelf
@@ -8295,7 +8314,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8309,7 +8327,6 @@ class LibraryServiceClient {
   }
 
   /**
-   * @deprecated Multi-pattern resource names will have unified formatting and parsing helper functions. This helper function will be deleted in the next major version.
    * Parse the bookName from a book resource.
    *
    * @param {String} bookName
@@ -8467,6 +8484,32 @@ class LibraryServiceClient {
     return this._pathTemplates.publisherPathTemplate
       .match(publisherName)
       .publisher;
+  }
+
+  /**
+   * Parse the readerName from a reader resource.
+   *
+   * @param {String} readerName
+   *   A fully-qualified path representing a reader resources.
+   * @returns {String} - A string representing the project.
+   */
+  matchProjectFromReaderName(readerName) {
+    return this._pathTemplates.readerPathTemplate
+      .match(readerName)
+      .project;
+  }
+
+  /**
+   * Parse the readerName from a reader resource.
+   *
+   * @param {String} readerName
+   *   A fully-qualified path representing a reader resources.
+   * @returns {String} - A string representing the reader.
+   */
+  matchReaderFromReaderName(readerName) {
+    return this._pathTemplates.readerPathTemplate
+      .match(readerName)
+      .reader;
   }
 
   /**
@@ -9440,11 +9483,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9583,11 +9628,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9767,11 +9814,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -9837,11 +9886,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -10368,11 +10419,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -10628,11 +10681,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name2,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer
@@ -11339,11 +11394,13 @@ describe('LibraryServiceClient', () => {
       const author = 'author-1406328437';
       const title = 'title110371416';
       const read = true;
+      const reader = 'reader-934979389';
       const expectedResponse = {
         name: name,
         author: author,
         title: title,
         read: read,
+        reader: reader,
       };
 
       // Mock Grpc layer

@@ -29,7 +29,7 @@ option go_package = "google.golang.org/genproto/googleapis/example/library/v1;li
 
 option (google.api.resource_definition) = {
   type: "library.googleapis.com/Publisher",
-  pattern: "projects/{project}/locations/{location}/publishers/{publisher}"
+  pattern: "projects/{project}/locations/{location}/publishers/{publisher}",
 };
 
 option (google.api.resource_definition) = {
@@ -462,6 +462,10 @@ message Book {
   // For testing enums.
   Rating rating = 5;
 
+  string reader = 6 [
+    (google.api.resource_reference).type = "library.googleapis.com/Reader"
+  ];
+
   // For testing all well-known types.
   google.protobuf.Any any_value = 10;
   google.protobuf.Struct struct_value = 11;
@@ -583,6 +587,20 @@ message Shelf {
 
   // Internal theme that is visible to trusted testers only.
   string internal_theme = 3;
+}
+
+message Reader {
+
+  option (google.api.resource) = {
+    type: "library.googleapis.com/Reader",
+    pattern: "projects/{project}/readers/{reader}",
+    pattern: "projects/{project}/shelves/{shelf}/readers/{reader}"
+  };
+
+  string name = 1 [
+      (google.api.field_behavior) = REQUIRED];
+
+  google.protobuf.Timestamp join_time = 2;
 }
 
 // Request message for LibraryService.CreateShelf.

@@ -20,6 +20,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.DynamicLangGapicSamplesTransformer;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
@@ -50,6 +51,8 @@ public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
               .sampleImportTransformer(new NodeJSSampleImportTransformer())
               .sampleType(SampleType.STANDALONE)
               .build());
+  private static final Function<GapicProductConfig, FeatureConfig> newFeatureConfig =
+      p -> new NodeJSFeatureConfig();
   private static final Function<GapicProductConfig, SurfaceNamer> newSurfaceNamer =
       product -> new NodeJSSurfaceNamer(product.getPackageName(), NodeJSUtils.isGcloud(product));
   private static final Function<String, ModelTypeTable> newTypeTable =
@@ -62,7 +65,7 @@ public class NodeJSGapicSamplesTransformer extends DynamicLangGapicSamplesTransf
         pathMapper,
         fileHeaderTransformer,
         apiMethodTransformer,
-        new NodeJSFeatureConfig(),
+        newFeatureConfig,
         newSurfaceNamer,
         newTypeTable);
     this.pathMapper = pathMapper;
