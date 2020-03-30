@@ -2452,6 +2452,7 @@ class LibraryServiceGapicClient
     private static $locationNameTemplate;
     private static $projectNameTemplate;
     private static $projectBookNameTemplate;
+    private static $projectLocationPublisherBookNameTemplate;
     private static $projectReaderNameTemplate;
     private static $projectShelfReaderNameTemplate;
     private static $publisherNameTemplate;
@@ -2570,6 +2571,15 @@ class LibraryServiceGapicClient
         return self::$projectBookNameTemplate;
     }
 
+    private static function getProjectLocationPublisherBookNameTemplate()
+    {
+        if (self::$projectLocationPublisherBookNameTemplate == null) {
+            self::$projectLocationPublisherBookNameTemplate = new PathTemplate('projects/{project}/locations/{location}/publishers/{publisher}/inventory/books/{book}');
+        }
+
+        return self::$projectLocationPublisherBookNameTemplate;
+    }
+
     private static function getProjectReaderNameTemplate()
     {
         if (self::$projectReaderNameTemplate == null) {
@@ -2639,6 +2649,7 @@ class LibraryServiceGapicClient
                 'location' => self::getLocationNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
+                'projectLocationPublisherBook' => self::getProjectLocationPublisherBookNameTemplate(),
                 'projectReader' => self::getProjectReaderNameTemplate(),
                 'projectShelfReader' => self::getProjectShelfReaderNameTemplate(),
                 'publisher' => self::getPublisherNameTemplate(),
@@ -2818,6 +2829,27 @@ class LibraryServiceGapicClient
 
     /**
      * Formats a string containing the fully-qualified path to represent
+     * a project_location_publisher_book resource.
+     *
+     * @param string $project
+     * @param string $location
+     * @param string $publisher
+     * @param string $book
+     * @return string The formatted project_location_publisher_book resource.
+     * @experimental
+     */
+    public static function projectLocationPublisherBookName($project, $location, $publisher, $book)
+    {
+        return self::getProjectLocationPublisherBookNameTemplate()->render([
+            'project' => $project,
+            'location' => $location,
+            'publisher' => $publisher,
+            'book' => $book,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
      * a project_reader resource.
      *
      * @param string $project
@@ -2934,6 +2966,7 @@ class LibraryServiceGapicClient
      * - location: projects/{project}/locations/{location}
      * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
+     * - projectLocationPublisherBook: projects/{project}/locations/{location}/publishers/{publisher}/inventory/books/{book}
      * - projectReader: projects/{project}/readers/{reader}
      * - projectShelfReader: projects/{project}/shelves/{shelf}/readers/{reader}
      * - publisher: projects/{project}/locations/{location}/publishers/{publisher}
