@@ -220,6 +220,42 @@ def java_gapic_assembly_gradle_pkg(
         deps = proto_target_dep + grpc_target_dep + client_target_dep,
     )
 
+def java_discogapic_assembly_gradle_pkg(
+        name,
+        deps,
+        assembly_name = None,
+        **kwargs):
+    package_dir = name
+    if assembly_name:
+        package_dir = "google-cloud-%s-%s" % (assembly_name, name)
+    client_target = "gapic-%s" % package_dir
+    client_target_dep = []
+
+    client_deps = []
+    client_test_deps = []
+
+    processed_deps = {} #there is no proper Set in Starlark
+    for dep in deps:
+        if dep.endswith("_java_gapic"):
+            put_dep_in_a_bucket(dep, client_deps, processed_deps)
+            put_dep_in_a_bucket("%s_test" % dep, client_test_deps, processed_deps)
+
+    if client_deps:
+        _java_gapic_gradle_pkg(
+            name = client_target,
+            template_label = Label("//rules_gapic/java:resources/gradle/client_disco.gradle.tmpl"),
+            deps = client_deps,
+            test_deps = client_test_deps,
+            **kwargs
+        )
+        client_target_dep = ["%s" % client_target]
+
+    _java_gapic_assembly_gradle_pkg(
+        name = name,
+        assembly_name = package_dir,
+        deps = client_target_dep,
+    )
+
 def _java_gapic_gradle_pkg(
         name,
         template_label,
