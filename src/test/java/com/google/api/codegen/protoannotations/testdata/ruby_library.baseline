@@ -2092,6 +2092,8 @@ module Google
         # @!attribute [rw] rating
         #   @return [Google::Example::Library::V1::Book::Rating]
         #     For testing enums.
+        # @!attribute [rw] reader
+        #   @return [String]
         # @!attribute [rw] any_value
         #   @return [Google::Protobuf::Any]
         #     For testing all well-known types.
@@ -3096,6 +3098,12 @@ module Library
 
       private_constant :PUBLISHER_PATH_TEMPLATE
 
+      READER_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "projects/{project}/readers/{reader}"
+      )
+
+      private_constant :READER_PATH_TEMPLATE
+
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
         "shelves/{shelf}"
       )
@@ -3123,8 +3131,6 @@ module Library
       end
 
       # Returns a fully-qualified book resource name string.
-      # @deprecated Multi-pattern resource names will have unified creation and parsing helper functions.
-      # This helper function will be deleted in the next major version.
       # @param shelf [String]
       # @param book [String]
       # @return [String]
@@ -3213,6 +3219,17 @@ module Library
           :"project" => project,
           :"location" => location,
           :"publisher" => publisher
+        )
+      end
+
+      # Returns a fully-qualified reader resource name string.
+      # @param project [String]
+      # @param reader [String]
+      # @return [String]
+      def self.reader_path project, reader
+        READER_PATH_TEMPLATE.render(
+          :"project" => project,
+          :"reader" => reader
         )
       end
 
@@ -5638,6 +5655,7 @@ module Library
       #   Value indicating whether the book has been read.
       # @param rating [Google::Example::Library::V1::Book::Rating]
       #   For testing enums.
+      # @param reader [String]
       # @param any_value [Google::Protobuf::Any | Hash]
       #   For testing all well-known types.
       #   A hash of the same form as `Google::Protobuf::Any`
@@ -5731,6 +5749,7 @@ module Library
           title: nil,
           read: nil,
           rating: nil,
+          reader: nil,
           any_value: nil,
           struct_value: nil,
           value_value: nil,
@@ -5760,6 +5779,7 @@ module Library
           title: title,
           read: read,
           rating: rating,
+          reader: reader,
           any_value: any_value,
           struct_value: struct_value,
           value_value: value_value,
@@ -8313,11 +8333,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8501,11 +8523,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8729,11 +8753,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -8815,11 +8841,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -9494,11 +9522,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
@@ -9936,11 +9966,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name_2,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
       result = Google::Protobuf::Any.new
@@ -11201,11 +11233,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
+      reader = "reader-934979389"
       expected_response = {
         name: name,
         author: author,
         title: title,
-        read: read
+        read: read,
+        reader: reader
       }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 

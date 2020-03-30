@@ -133,7 +133,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
               productConfig,
               modelTypeTable,
               new PhpSurfaceNamer(productConfig.getPackageName()),
-              new PhpFeatureConfig());
+              new PhpFeatureConfig(productConfig));
       surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;

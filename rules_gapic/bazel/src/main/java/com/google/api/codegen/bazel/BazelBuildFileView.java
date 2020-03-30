@@ -96,7 +96,7 @@ class BazelBuildFileView {
     String goImport = "";
     if (isCloud) {
       goImport = "cloud.google.com/go/";
-      goPkg = goPkg.replaceFirst("v(.+);", "apiv$1;");
+      goPkg = goPkg.replaceFirst("\\/v([a-z0-9]+);", "\\/apiv$1;");
     } else {
       goImport = "google.golang.org/";
       String pkgName = goPkg.split(";")[1];
