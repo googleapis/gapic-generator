@@ -1200,6 +1200,16 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
+    def inventory_path(cls, project, location, publisher):
+        """Return a fully-qualified inventory string."""
+        return google.api_core.path_template.expand(
+            'projects/{project}/locations/{location}/publishers/{publisher}/inventory',
+            project=project,
+            location=location,
+            publisher=publisher,
+        )
+
+    @classmethod
     def location_path(cls, project, location):
         """Return a fully-qualified location string."""
         return google.api_core.path_template.expand(
@@ -4004,6 +4014,75 @@ class LibraryServiceClient(object):
         )
         return self._inner_api_calls['test_optional_required_flattening_params'](request, retry=retry, timeout=timeout, metadata=metadata)
 
+    def create_inventory(
+            self,
+            parent,
+            inventory=None,
+            retry=google.api_core.gapic_v1.method.DEFAULT,
+            timeout=google.api_core.gapic_v1.method.DEFAULT,
+            metadata=None):
+        """
+        Creates an inventory. Tests singleton resources.
+
+        Example:
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+            >>>
+            >>> response = client.create_inventory(parent)
+
+        Args:
+            parent (str)
+            inventory (Union[dict, ~google.cloud.example.library_v1.types.Inventory]):
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Inventory`
+            retry (Optional[google.api_core.retry.Retry]):  A retry object used
+                to retry requests. If ``None`` is specified, requests will
+                be retried using a default configuration.
+            timeout (Optional[float]): The amount of time, in seconds, to wait
+                for the request to complete. Note that if ``retry`` is
+                specified, the timeout applies to each individual attempt.
+            metadata (Optional[Sequence[Tuple[str, str]]]): Additional metadata
+                that is provided to the method.
+
+        Returns:
+            A :class:`~google.cloud.example.library_v1.types.Inventory` instance.
+
+        Raises:
+            google.api_core.exceptions.GoogleAPICallError: If the request
+                    failed for any reason.
+            google.api_core.exceptions.RetryError: If the request failed due
+                    to a retryable error and retry attempts failed.
+            ValueError: If the parameters are invalid.
+        """
+        # Wrap the transport method to add retry and timeout logic.
+        if 'create_inventory' not in self._inner_api_calls:
+            self._inner_api_calls['create_inventory'] = google.api_core.gapic_v1.method.wrap_method(
+                self.transport.create_inventory,
+                default_retry=self._method_configs['CreateInventory'].retry,
+                default_timeout=self._method_configs['CreateInventory'].timeout,
+                client_info=self._client_info,
+            )
+
+        request = library_pb2.CreateInventoryRequest(
+            parent=parent,
+            inventory=inventory,
+        )
+        if metadata is None:
+            metadata = []
+        metadata = list(metadata)
+        try:
+            routing_header = [('parent', parent)]
+        except AttributeError:
+            pass
+        else:
+            routing_metadata = google.api_core.gapic_v1.routing_header.to_grpc_metadata(routing_header)
+            metadata.append(routing_metadata)
+
+        return self._inner_api_calls['create_inventory'](request, retry=retry, timeout=timeout, metadata=metadata)
+
     def move_books(
             self,
             source=None,
@@ -4676,6 +4755,11 @@ config = {
           "retry_params_name": "default"
         },
         "TestOptionalRequiredFlatteningParams": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "CreateInventory": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
@@ -5562,6 +5646,19 @@ class LibraryServiceGrpcTransport(object):
                 deserialized response object.
         """
         return self._stubs['library_service_stub'].TestOptionalRequiredFlatteningParams
+
+    @property
+    def create_inventory(self):
+        """Return the gRPC stub for :meth:`LibraryServiceClient.create_inventory`.
+
+        Creates an inventory. Tests singleton resources.
+
+        Returns:
+            Callable: A callable which accepts the appropriate
+                deserialized request object and returns a
+                deserialized response object.
+        """
+        return self._stubs['library_service_stub'].CreateInventory
 
     @property
     def move_books(self):
@@ -8899,6 +8996,44 @@ class TestLibraryServiceClient(object):
 
         with pytest.raises(CustomException):
             client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_resource_name_common, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_resource_name_common, required_repeated_fixed32, required_repeated_fixed64, required_map, required_any_value, required_struct_value, required_value_value, required_list_value_value, required_time_value, required_duration_value, required_field_mask_value, required_int32_value, required_uint32_value, required_int64_value, required_uint64_value, required_float_value, required_double_value, required_string_value, required_bool_value, required_bytes_value, required_repeated_any_value, required_repeated_struct_value, required_repeated_value_value, required_repeated_list_value_value, required_repeated_time_value, required_repeated_duration_value, required_repeated_field_mask_value, required_repeated_int32_value, required_repeated_uint32_value, required_repeated_int64_value, required_repeated_uint64_value, required_repeated_float_value, required_repeated_double_value, required_repeated_string_value, required_repeated_bool_value, required_repeated_bytes_value)
+
+    def test_create_inventory(self):
+        # Setup Expected Response
+        name = 'name3373707'
+        expected_response = {'name': name}
+        expected_response = library_pb2.Inventory(**expected_response)
+
+        # Mock the API response
+        channel = ChannelStub(responses = [expected_response])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup Request
+        parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+
+        response = client.create_inventory(parent)
+        assert expected_response == response
+
+        assert len(channel.requests) == 1
+        expected_request = library_pb2.CreateInventoryRequest(parent=parent)
+        actual_request = channel.requests[0][1]
+        assert expected_request == actual_request
+
+    def test_create_inventory_exception(self):
+        # Mock the API response
+        channel = ChannelStub(responses = [CustomException()])
+        patch = mock.patch('google.api_core.grpc_helpers.create_channel')
+        with patch as create_channel:
+            create_channel.return_value = channel
+            client = library_v1.LibraryServiceClient()
+
+        # Setup request
+        parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+
+        with pytest.raises(CustomException):
+            client.create_inventory(parent)
 
     def test_move_books(self):
         # Setup Expected Response
