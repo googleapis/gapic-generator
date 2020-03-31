@@ -119,6 +119,7 @@ def java_resource_name_proto_library(name, deps, gapic_yaml, **kwargs):
         deps = [
             "@com_google_api_api_common//jar",
             "@com_google_guava_guava//jar",
+            "@javax_annotation_javax_annotation_api//jar",
         ],
         **kwargs
     )
@@ -171,6 +172,7 @@ def java_gapic_library(
         "@com_google_auth_google_auth_library_credentials//jar",
         "@com_google_auth_google_auth_library_oauth2_http//jar",
         "@com_google_http_client_google_http_client//jar",
+        "@javax_annotation_javax_annotation_api//jar",
     ]
 
     native.java_library(
@@ -228,6 +230,7 @@ def java_discogapic_library(
         "@com_google_auth_google_auth_library_oauth2_http//jar",
         "@com_google_http_client_google_http_client//jar",
         "@com_google_code_gson_gson//jar",
+        "@javax_annotation_javax_annotation_api//jar",
     ]
 
     native.java_library(
