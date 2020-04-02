@@ -1288,27 +1288,6 @@ def unit(session):
     session.run('py.test', '--quiet', os.path.join('tests', 'unit'))
 
 
-@nox.session(python=['2.7', '3.7'])
-def system(session):
-    """Run the system test suite."""
-
-    # Sanity check: Only run system tests if the environment variable is set.
-    if not os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', ''):
-        session.skip('Credentials must be set via environment variable.')
-
-    # Install all test dependencies, then install this package in-place.
-    session.install('pytest')
-    session.install('-e', '.')
-
-    # Run py.test against the unit tests.
-    session.run(
-        'py.test',
-        '--quiet',
-        os.path.join('tests', 'system'),
-        *session.posargs
-    )
-
-
 @nox.session
 def lint_setup_py(session):
     """Verify that setup.py is valid (including RST check)."""
