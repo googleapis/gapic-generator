@@ -43,7 +43,6 @@ anchor_check_generation: &anchor_check_generation
       exit 0
     fi
 
-# Test a Ruby client if generation succeeded.
 anchor_test_python_client: &anchor_test_python_client
   command: |
     if [ -z "$NOX_COMMANDS" ]
@@ -65,9 +64,7 @@ anchor_test_python_client: &anchor_test_python_client
 anchor_verify_and_test_python: &anchor_verify_and_test_python
   working_directory: /tmp/
   docker:
-    # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
-    # https://github.com/googleapis/gapic-generator/issues/2237
-    - image: googleapis/nox:0.17.0
+    - image: l.gcr.io/google/python:latest
     - image: gcr.io/gapic-images/gapic-showcase:0.4.0
   steps:
     - attach_workspace:
@@ -76,6 +73,10 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
         <<: *anchor_run_decrypt
     - run:
         <<: *anchor_check_generation
+    - run:
+        name: Install nox==0.17.0
+        command: |
+         pip3 install nox-automation==0.17.0  # TODO showcase still has old nox format
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
        name: Run Showcase Generated Unit Tests.
@@ -93,6 +94,10 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
          nox --session "showcase(py='3.6')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
        when: always
+    - run:
+        name: Install nox latest
+        command: |
+         pip3 install nox
     - run:
         name: Prepare for Pubsub testing.
         command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
@@ -561,10 +566,8 @@ jobs:
       LANGUAGE: python
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
-      NOX_COMMANDS: "
-        nox --session \"unit(py='2.7')\";
-        nox --session \"unit(py='3.5')\";
-        nox --session \"unit(py='3.6')\";"
+      NOX_COMMANDS: |
+        nox --noxfile noxfile.py 
     <<: *anchor_verify_and_test_python
   python-system-test:
     environment:
@@ -572,10 +575,8 @@ jobs:
       LANGUAGE: python
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
-      NOX_COMMANDS: "
-        nox --session \"unit(py='2.7')\";
-        nox --session \"unit(py='3.5')\";
-        nox --session \"unit(py='3.6')\";"
+      NOX_COMMANDS: |
+        nox --noxfile noxfile.py
     <<: *anchor_verify_and_test_python
   ruby-2.4-test:
     environment:

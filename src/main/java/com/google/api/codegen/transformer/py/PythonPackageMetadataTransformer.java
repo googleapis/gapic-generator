@@ -88,7 +88,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   private static final String NAMESPACE_INIT_TEMPLATE_FILE = "py/namespace__init__.py.snip";
   private static final String API_DOC_TEMPLATE_FILE = "py/docs/api.rst.snip";
   private static final String TYPES_DOC_TEMPLATE_FILE = "py/docs/types.rst.snip";
-  private static final String NOX_TEMPLATE_FILE = "py/nox.py.snip";
+  private static final String NOX_TEMPLATE_FILE = "py/noxfile.py.snip";
 
   private static final Set<String> GOOGLE_CLOUD_NAMESPACE_PACKAGES =
       ImmutableSet.of("google", "google.cloud");
@@ -159,7 +159,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer<
   private ViewModel generateNoxFile(ApiModel model, GapicProductConfig productConfig) {
     PackageMetadataNamer namer = new PackageMetadataNamer();
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
-    String outputPath = "nox.py";
+    String outputPath = "noxfile.py";
     return generateMetadataView(
             model, productConfig, NOX_TEMPLATE_FILE, namer, surfaceNamer, outputPath)
         .fileHeader(
