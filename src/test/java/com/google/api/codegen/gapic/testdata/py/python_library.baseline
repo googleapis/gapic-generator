@@ -5684,7 +5684,7 @@ for module in _local_modules:
 
 __all__ = tuple(sorted(names))
 
-============== file: nox.py ==============
+============== file: noxfile.py ==============
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Google LLC
@@ -5713,8 +5713,7 @@ def default(session):
     return unit(session, 'default')
 
 
-@nox.session
-@nox.parametrize('py', ['2.7', '3.5', '3.6', '3.7'])
+@nox.session(python=['2.7', '3.5', '3.6', '3.7'])
 def unit(session, py):
     """Run the unit test suite."""
 
@@ -5733,8 +5732,7 @@ def unit(session, py):
     session.run('py.test', '--quiet', os.path.join('tests', 'unit'))
 
 
-@nox.session
-@nox.parametrize('py', ['2.7', '3.7'])
+@nox.session(python=['2.7', '3.7'])
 def system(session, py):
     """Run the system test suite."""
 

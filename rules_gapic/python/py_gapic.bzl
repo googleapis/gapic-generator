@@ -35,8 +35,8 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
     {formatter} -q {output_dir_path}
 
     pushd {output_dir_path}
-    zip -q -r {output_dir_name}-pkg.srcjar nox.py setup.py setup.cfg docs MANIFEST.in README.rst LICENSE
-    rm -rf nox.py setup.py docs
+    zip -q -r {output_dir_name}-pkg.srcjar noxfile.py setup.py setup.cfg docs MANIFEST.in README.rst LICENSE
+    rm -rf noxfile.py setup.py docs
     zip -q -r {output_dir_name}-test.srcjar tests/unit
     rm -rf tests/unit
     if [ -d "tests/system" ]; then
