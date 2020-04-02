@@ -65,9 +65,7 @@ anchor_test_python_client: &anchor_test_python_client
 anchor_verify_and_test_python: &anchor_verify_and_test_python
   working_directory: /tmp/
   docker:
-    # Use Docker image version v0.17.0 because latest v0.18.2 is not compatible with `attach_workspace` step.
-    # https://github.com/googleapis/gapic-generator/issues/2237
-    - image: googleapis/nox:0.17.0
+    - image: l.gcr.io/google/python:latest
     - image: gcr.io/gapic-images/gapic-showcase:0.4.0
   steps:
     - attach_workspace:
@@ -76,6 +74,10 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
         <<: *anchor_run_decrypt
     - run:
         <<: *anchor_check_generation
+    - run:
+        name: Install nox
+        command: |
+          pip3 install nox
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
        name: Run Showcase Generated Unit Tests.
