@@ -53,7 +53,6 @@ anchor_test_python_client: &anchor_test_python_client
     if [ -e ${PYTHON_GEN_DIR}/${TEST_API} ]
     then
       cd ${PYTHON_GEN_DIR}/${TEST_API}
-      ls
       echo "Running test commands: $NOX_COMMANDS"
       eval "$NOX_COMMANDS"
     else
@@ -75,9 +74,9 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
         <<: *anchor_check_generation
     - run:
-        name: Install nox
+        name: Install nox==0.17.0
         command: |
-         pip3 install nox-automation==0.17.0  # TODO showcase and generated artman code still use old nox format
+         pip3 install nox-automation==0.17.0  # TODO showcase still has old nox format
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
        name: Run Showcase Generated Unit Tests.
@@ -95,6 +94,10 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
          nox --session "showcase(py='3.6')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
        when: always
+    - run:
+        name: Install nox latest
+        command: |
+         pip3 install nox
     - run:
         name: Prepare for Pubsub testing.
         command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
