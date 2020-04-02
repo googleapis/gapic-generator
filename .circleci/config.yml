@@ -77,12 +77,11 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
         name: Install nox
         command: |
-          pip3 install nox
+         pip3 install nox-automation==0.17.0  # TODO showcase and generated artman code still use old nox format
     # Generated Logging client is broken: https://github.com/googleapis/gapic-generator/issues/2209.
     - run:
        name: Run Showcase Generated Unit Tests.
        command: |
-         pip3 install nox-automation==0.17.0  # TODO showcase still has old nox format
          nox --session "unit(py='2.7')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
          nox --session "unit(py='3.6')" \
@@ -91,7 +90,6 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
        name: Run Showcase Integration Tests.
        command: |
-         pip3 install nox-automation==0.17.0  # TODO showcase still has old nox format
          nox --session "showcase(py='2.7')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
          nox --session "showcase(py='3.6')" \
