@@ -566,10 +566,8 @@ jobs:
       LANGUAGE: python
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
-      NOX_COMMANDS: "
-        nox --noxfile noxfile.py --session \"unit(py='2.7')\";
-        nox --noxfile noxfile.py --session \"unit(py='3.5')\";
-        nox --noxfile noxfile.py --session \"unit(py='3.6')\";"
+      NOX_COMMANDS: |
+        nox --noxfile noxfile.py 
     <<: *anchor_verify_and_test_python
   python-system-test:
     environment:
@@ -577,10 +575,8 @@ jobs:
       LANGUAGE: python
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
-      NOX_COMMANDS: "
-        nox --noxfile noxfile.py --session \"unit(py='2.7')\";
-        nox --noxfile noxfile.py --session \"unit(py='3.5')\";
-        nox --noxfile noxfile.py --session \"unit(py='3.6')\";"
+      NOX_COMMANDS: |
+        nox --noxfile noxfile.py
     <<: *anchor_verify_and_test_python
   ruby-2.4-test:
     environment:
