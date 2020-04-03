@@ -567,16 +567,17 @@ jobs:
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
       NOX_COMMANDS: |
-        nox --noxfile noxfile.py 
+        nox --noxfile noxfile.py
     <<: *anchor_verify_and_test_python
   python-system-test:
     environment:
       <<: *anchor_auth_vars
+      PROJECT_ID: gapic-test
       LANGUAGE: python
       <<: *anchor_artman_vars
       PYTHON_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/python
       NOX_COMMANDS: |
-        nox --noxfile noxfile.py
+        nox --noxfile noxfile.py -s system
     <<: *anchor_verify_and_test_python
   ruby-2.4-test:
     environment:
