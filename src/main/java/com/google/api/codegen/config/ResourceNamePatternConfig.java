@@ -98,7 +98,7 @@ public class ResourceNamePatternConfig {
     String patternId = getBindingVariables().stream().collect(Collectors.joining("_"));
 
     String[] segments = pattern.split("/");
-    checkState(segments.length > 0, "internal: pattern %s is fixed pattern.", pattern);
+    checkState(segments.length > 1, "internal: pattern %s is fixed pattern.", pattern);
     String lastSegment = segments[segments.length - 1];
 
     // Singleton resource. Append the last segment.
