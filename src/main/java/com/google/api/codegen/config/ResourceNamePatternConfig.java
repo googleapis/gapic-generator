@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.api.codegen.util.Name;
 import com.google.api.pathtemplate.PathTemplate;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -84,7 +86,6 @@ public class ResourceNamePatternConfig {
    * pattern with underscores.
    */
   public String getPatternId() {
-    // TODO(hzyi): support singleton resource name patterns
     if (isFixedPattern()) {
       String name = pattern.replaceAll("^[^a-zA-Z]+", "");
       name = name.replaceAll("[^a-zA-Z]$", "");
@@ -94,7 +95,24 @@ public class ResourceNamePatternConfig {
 
     // PathTemplate uses an ImmutableMap to keep track of bindings, so we
     // can count on it to give us the correct order of binding variables
-    return getBindingVariables().stream().collect(Collectors.joining("_"));
+    String patternId = getBindingVariables().stream().collect(Collectors.joining("_"));
+
+    String[] segments = pattern.split("/");
+    checkState(segments.length > 0, "internal: pattern %s is fixed pattern.", pattern);
+    String lastSegment = segments[segments.length - 1];
+
+    // Singleton resource. Append the last segment.
+    if (!lastSegment.startsWith("{") || !lastSegment.endsWith("}")) {
+
+      checkArgument(
+          !lastSegment.startsWith("{") && !lastSegment.endsWith("}"),
+          "bad format: segment %s of resource pattern %s has unmatching braces",
+          lastSegment,
+          pattern);
+
+      patternId = patternId + '_' + Name.anyLower(lastSegment).toLowerUnderscore();
+    }
+    return patternId;
   }
 
   /**
@@ -102,7 +120,7 @@ public class ResourceNamePatternConfig {
    * SingleResourceNameConfig from it.
    */
   public SingleResourceNameConfig asSingleResourceNameConfig() {
-    Preconditions.checkArgument(!isFixedPattern(), "pattern %s is a fixed pattern", pattern);
+    checkArgument(!isFixedPattern(), "pattern %s is a fixed pattern", pattern);
     return SingleResourceNameConfig.newBuilder()
         .setNamePattern(pattern)
         .setNameTemplate(template)
@@ -113,7 +131,7 @@ public class ResourceNamePatternConfig {
 
   /** If this pattern is a fixed resource name, creates a FixedResourceNameConfig from it. */
   public FixedResourceNameConfig asFixedResourceNameConfig() {
-    Preconditions.checkArgument(isFixedPattern(), "pattern %s is not a fixed pattern", pattern);
+    checkArgument(isFixedPattern(), "pattern %s is not a fixed pattern", pattern);
     return new AutoValue_FixedResourceNameConfig(
         getPatternId(), Name.from(getPatternId()), pattern, null);
   }

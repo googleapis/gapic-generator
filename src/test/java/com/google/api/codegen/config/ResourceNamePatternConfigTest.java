@@ -41,4 +41,19 @@ public class ResourceNamePatternConfigTest {
     assertThat(new ResourceNamePatternConfig("states/{state}/cities/{city}").getBindingVariables())
         .containsExactly("state", "city");
   }
+
+  @Test
+  public void testGetPatternId() {
+    ResourceNamePatternConfig pattern;
+    pattern = new ResourceNamePatternConfig("_deleted_topic");
+    assertThat(pattern.getPatternId()).isEqualTo("deleted_topic");
+    pattern = new ResourceNamePatternConfig("states/{state}/cities/{city}");
+    assertThat(pattern.getPatternId()).isEqualTo("state_city");
+    pattern = new ResourceNamePatternConfig("states/{state}/cities/{city}/mayor");
+    assertThat(pattern.getPatternId()).isEqualTo("state_city_mayor");
+    pattern = new ResourceNamePatternConfig("states/{state}/cities/{city}/mascotAnimal");
+    assertThat(pattern.getPatternId()).isEqualTo("state_city_mascot_animal");
+    pattern = new ResourceNamePatternConfig("states/{state}/mascotAnimals/{mascot_animal}");
+    assertThat(pattern.getPatternId()).isEqualTo("state_mascot_animal");
+  }
 }
