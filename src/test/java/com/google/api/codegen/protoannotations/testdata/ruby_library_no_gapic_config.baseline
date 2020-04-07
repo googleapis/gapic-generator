@@ -2339,6 +2339,12 @@ module Google
         #   @return [String]
         # @!attribute [rw] inventory
         #   @return [Google::Example::Library::V1::Inventory]
+        # @!attribute [rw] asset
+        #   @return [String]
+        # @!attribute [rw] parent_asset
+        #   @return [String]
+        # @!attribute [rw] assets
+        #   @return [Array<String>]
         class CreateInventoryRequest; end
 
         # @!attribute [rw] name
@@ -3709,6 +3715,9 @@ module Library
       # Creates an inventory. Tests singleton resources.
       #
       # @param parent [String]
+      # @param asset [String]
+      # @param parent_asset [String]
+      # @param assets [Array<String>]
       # @param inventory [Google::Example::Library::V1::Inventory | Hash]
       #   A hash of the same form as `Google::Example::Library::V1::Inventory`
       #   can also be provided.
@@ -3725,15 +3734,30 @@ module Library
       #
       #   library_client = Library::Library.new(version: :v1)
       #   formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
-      #   response = library_client.create_inventory(formatted_parent)
+      #
+      #   # TODO: Initialize `asset`:
+      #   asset = ''
+      #
+      #   # TODO: Initialize `parent_asset`:
+      #   parent_asset = ''
+      #
+      #   # TODO: Initialize `assets`:
+      #   assets = []
+      #   response = library_client.create_inventory(formatted_parent, asset, parent_asset, assets)
 
       def create_inventory \
           parent,
+          asset,
+          parent_asset,
+          assets,
           inventory: nil,
           options: nil,
           &block
         req = {
           parent: parent,
+          asset: asset,
+          parent_asset: parent_asset,
+          assets: assets,
           inventory: inventory
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateInventoryRequest)
@@ -6847,6 +6871,9 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes create_inventory without error' do
       # Create request parameters
       formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+      asset = ''
+      parent_asset = ''
+      assets = []
 
       # Create expected grpc response
       name = "name3373707"
@@ -6857,6 +6884,9 @@ describe Library::V1::LibraryServiceClient do
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::CreateInventoryRequest, request)
         assert_equal(formatted_parent, request.parent)
+        assert_equal(asset, request.asset)
+        assert_equal(parent_asset, request.parent_asset)
+        assert_equal(assets, request.assets)
         OpenStruct.new(execute: expected_response)
       end
       mock_stub = MockGrpcClientStub_v1.new(:create_inventory, mock_method)
@@ -6869,13 +6899,23 @@ describe Library::V1::LibraryServiceClient do
           client = Library::Library.new(version: :v1)
 
           # Call method
-          response = client.create_inventory(formatted_parent)
+          response = client.create_inventory(
+            formatted_parent,
+            asset,
+            parent_asset,
+            assets
+          )
 
           # Verify the response
           assert_equal(expected_response, response)
 
           # Call method with block
-          client.create_inventory(formatted_parent) do |response, operation|
+          client.create_inventory(
+            formatted_parent,
+            asset,
+            parent_asset,
+            assets
+          ) do |response, operation|
             # Verify the response
             assert_equal(expected_response, response)
             refute_nil(operation)
@@ -6887,11 +6927,17 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes create_inventory with error' do
       # Create request parameters
       formatted_parent = Library::V1::LibraryServiceClient.publisher_path("[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+      asset = ''
+      parent_asset = ''
+      assets = []
 
       # Mock Grpc layer
       mock_method = proc do |request|
         assert_instance_of(Google::Example::Library::V1::CreateInventoryRequest, request)
         assert_equal(formatted_parent, request.parent)
+        assert_equal(asset, request.asset)
+        assert_equal(parent_asset, request.parent_asset)
+        assert_equal(assets, request.assets)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub_v1.new(:create_inventory, mock_method)
@@ -6905,7 +6951,12 @@ describe Library::V1::LibraryServiceClient do
 
           # Call method
           err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
-            client.create_inventory(formatted_parent)
+            client.create_inventory(
+              formatted_parent,
+              asset,
+              parent_asset,
+              assets
+            )
           end
 
           # Verify the GaxError wrapped the custom error that was raised.

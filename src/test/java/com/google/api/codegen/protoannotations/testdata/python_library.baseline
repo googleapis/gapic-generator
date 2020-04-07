@@ -4017,6 +4017,9 @@ class LibraryServiceClient(object):
     def create_inventory(
             self,
             parent,
+            asset,
+            parent_asset,
+            assets,
             inventory=None,
             retry=google.api_core.gapic_v1.method.DEFAULT,
             timeout=google.api_core.gapic_v1.method.DEFAULT,
@@ -4031,10 +4034,22 @@ class LibraryServiceClient(object):
             >>>
             >>> parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
             >>>
-            >>> response = client.create_inventory(parent)
+            >>> # TODO: Initialize `asset`:
+            >>> asset = ''
+            >>>
+            >>> # TODO: Initialize `parent_asset`:
+            >>> parent_asset = ''
+            >>>
+            >>> # TODO: Initialize `assets`:
+            >>> assets = []
+            >>>
+            >>> response = client.create_inventory(parent, asset, parent_asset, assets)
 
         Args:
             parent (str)
+            asset (str)
+            parent_asset (str)
+            assets (list[str])
             inventory (Union[dict, ~google.cloud.example.library_v1.types.Inventory]):
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.Inventory`
@@ -4068,6 +4083,9 @@ class LibraryServiceClient(object):
 
         request = library_pb2.CreateInventoryRequest(
             parent=parent,
+            asset=asset,
+            parent_asset=parent_asset,
+            assets=assets,
             inventory=inventory,
         )
         if metadata is None:
@@ -8996,12 +9014,15 @@ class TestLibraryServiceClient(object):
 
         # Setup Request
         parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+        asset = 'asset93121264'
+        parent_asset = 'parentAsset1389473563'
+        assets = []
 
-        response = client.create_inventory(parent)
+        response = client.create_inventory(parent, asset, parent_asset, assets)
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.CreateInventoryRequest(parent=parent)
+        expected_request = library_pb2.CreateInventoryRequest(parent=parent, asset=asset, parent_asset=parent_asset, assets=assets)
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 
@@ -9015,9 +9036,12 @@ class TestLibraryServiceClient(object):
 
         # Setup request
         parent = client.publisher_path('[PROJECT]', '[LOCATION]', '[PUBLISHER]')
+        asset = 'asset93121264'
+        parent_asset = 'parentAsset1389473563'
+        assets = []
 
         with pytest.raises(CustomException):
-            client.create_inventory(parent)
+            client.create_inventory(parent, asset, parent_asset, assets)
 
     def test_move_books(self):
         # Setup Expected Response

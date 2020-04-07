@@ -130,6 +130,12 @@ public abstract class ResourceDescriptorConfig {
 
     // Single-pattern resource.
     if (getPatterns().size() == 1) {
+      String pattern = getPatterns().get(0);
+
+      if ("*".equals(pattern)) {
+        return Collections.singletonMap(getUnqualifiedTypeName(), AnyResourceNameConfig.instance());
+      }
+
       return Collections.singletonMap(
           getUnqualifiedTypeName(),
           SingleResourceNameConfig.createSingleResourceNameWithOverride(

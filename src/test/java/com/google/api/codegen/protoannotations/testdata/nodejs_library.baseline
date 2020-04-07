@@ -3235,6 +3235,12 @@ const ListStringsResponse = {
  * @property {Object} inventory
  *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
  *
+ * @property {string} asset
+ *
+ * @property {string} parentAsset
+ *
+ * @property {string[]} assets
+ *
  * @typedef CreateInventoryRequest
  * @memberof google.example.library.v1
  * @see [google.example.library.v1.CreateInventoryRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
@@ -7769,6 +7775,9 @@ class LibraryServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
+   * @param {string} request.asset
+   * @param {string} request.parentAsset
+   * @param {string[]} request.assets
    * @param {Object} [request.inventory]
    *   This object should have the same structure as [Inventory]{@link google.example.library.v1.Inventory}
    * @param {Object} [options]
@@ -7791,7 +7800,16 @@ class LibraryServiceClient {
    * });
    *
    * const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
-   * client.createInventory({parent: formattedParent})
+   * const asset = '';
+   * const parentAsset = '';
+   * const assets = [];
+   * const request = {
+   *   parent: formattedParent,
+   *   asset: asset,
+   *   parentAsset: parentAsset,
+   *   assets: assets,
+   * };
+   * client.createInventory(request)
    *   .then(responses => {
    *     const response = responses[0];
    *     // doThingsWith(response)
@@ -11257,8 +11275,14 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const asset = 'asset93121264';
+      const parentAsset = 'parentAsset1389473563';
+      const assets = [];
       const request = {
         parent: formattedParent,
+        asset: asset,
+        parentAsset: parentAsset,
+        assets: assets,
       };
 
       // Mock response
@@ -11288,8 +11312,14 @@ describe('LibraryServiceClient', () => {
 
       // Mock request
       const formattedParent = client.publisherPath('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+      const asset = 'asset93121264';
+      const parentAsset = 'parentAsset1389473563';
+      const assets = [];
       const request = {
         parent: formattedParent,
+        asset: asset,
+        parentAsset: parentAsset,
+        assets: assets,
       };
 
       // Mock Grpc layer

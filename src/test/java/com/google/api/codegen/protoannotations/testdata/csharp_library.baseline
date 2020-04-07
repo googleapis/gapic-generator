@@ -7657,29 +7657,35 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for CreateInventoryAsync</summary>
         public async Task CreateInventoryAsync()
         {
-            // Snippet: CreateInventoryAsync(PublisherName,Inventory,CallSettings)
-            // Additional: CreateInventoryAsync(PublisherName,Inventory,CancellationToken)
+            // Snippet: CreateInventoryAsync(PublisherName,Inventory,IResourceName,IResourceName,IEnumerable<IResourceName>,CallSettings)
+            // Additional: CreateInventoryAsync(PublisherName,Inventory,IResourceName,IResourceName,IEnumerable<IResourceName>,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             Inventory inventory = new Inventory();
+            IResourceName asset = new ArchiveName("[ARCHIVE]");
+            IResourceName parentAsset = new ArchiveName("[ARCHIVE]");
+            IEnumerable<IResourceName> assets = new List<IResourceName>();
             // Make the request
-            Inventory response = await libraryServiceClient.CreateInventoryAsync(parent, inventory);
+            Inventory response = await libraryServiceClient.CreateInventoryAsync(parent, inventory, asset, parentAsset, assets);
             // End snippet
         }
 
         /// <summary>Snippet for CreateInventory</summary>
         public void CreateInventory()
         {
-            // Snippet: CreateInventory(PublisherName,Inventory,CallSettings)
+            // Snippet: CreateInventory(PublisherName,Inventory,IResourceName,IResourceName,IEnumerable<IResourceName>,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             Inventory inventory = new Inventory();
+            IResourceName asset = new ArchiveName("[ARCHIVE]");
+            IResourceName parentAsset = new ArchiveName("[ARCHIVE]");
+            IEnumerable<IResourceName> assets = new List<IResourceName>();
             // Make the request
-            Inventory response = libraryServiceClient.CreateInventory(parent, inventory);
+            Inventory response = libraryServiceClient.CreateInventory(parent, inventory, asset, parentAsset, assets);
             // End snippet
         }
 
@@ -7694,6 +7700,9 @@ namespace Google.Example.Library.V1.Snippets
             CreateInventoryRequest request = new CreateInventoryRequest
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             // Make the request
             Inventory response = await libraryServiceClient.CreateInventoryAsync(request);
@@ -7710,6 +7719,9 @@ namespace Google.Example.Library.V1.Snippets
             CreateInventoryRequest request = new CreateInventoryRequest
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             // Make the request
             Inventory response = libraryServiceClient.CreateInventory(request);
@@ -10926,6 +10938,9 @@ namespace Google.Example.Library.V1.Tests
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
                 Inventory = new Inventory(),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             Inventory expectedResponse = new Inventory
             {
@@ -10936,7 +10951,10 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             Inventory inventory = new Inventory();
-            Inventory response = client.CreateInventory(parent, inventory);
+            IResourceName asset = new ArchiveName("[ARCHIVE]");
+            IResourceName parentAsset = new ArchiveName("[ARCHIVE]");
+            IEnumerable<IResourceName> assets = new List<IResourceName>();
+            Inventory response = client.CreateInventory(parent, inventory, asset, parentAsset, assets);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -10953,6 +10971,9 @@ namespace Google.Example.Library.V1.Tests
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
                 Inventory = new Inventory(),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             Inventory expectedResponse = new Inventory
             {
@@ -10963,7 +10984,10 @@ namespace Google.Example.Library.V1.Tests
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
             PublisherName parent = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
             Inventory inventory = new Inventory();
-            Inventory response = await client.CreateInventoryAsync(parent, inventory);
+            IResourceName asset = new ArchiveName("[ARCHIVE]");
+            IResourceName parentAsset = new ArchiveName("[ARCHIVE]");
+            IEnumerable<IResourceName> assets = new List<IResourceName>();
+            Inventory response = await client.CreateInventoryAsync(parent, inventory, asset, parentAsset, assets);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -10979,6 +11003,9 @@ namespace Google.Example.Library.V1.Tests
             CreateInventoryRequest request = new CreateInventoryRequest
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             Inventory expectedResponse = new Inventory
             {
@@ -11003,6 +11030,9 @@ namespace Google.Example.Library.V1.Tests
             CreateInventoryRequest request = new CreateInventoryRequest
             {
                 ParentAsPublisherName = new PublisherName("[PROJECT]", "[LOCATION]", "[PUBLISHER]"),
+                AssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                ParentAssetAsResourceName = new ArchiveName("[ARCHIVE]"),
+                AssetsAsResourceNames = { },
             };
             Inventory expectedResponse = new Inventory
             {
@@ -21628,6 +21658,15 @@ namespace Google.Example.Library.V1
         /// <param name="inventory">
         ///
         /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -21637,11 +21676,17 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<Inventory> CreateInventoryAsync(
             PublisherName parent,
             Inventory inventory,
+            IResourceName asset,
+            IResourceName parentAsset,
+            scg::IEnumerable<IResourceName> assets,
             gaxgrpc::CallSettings callSettings = null) => CreateInventoryAsync(
                 new CreateInventoryRequest
                 {
                     ParentAsPublisherName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                     Inventory = inventory, // Optional
+                    AssetAsResourceName = gax::GaxPreconditions.CheckNotNull(asset, nameof(asset)),
+                    ParentAssetAsResourceName = gax::GaxPreconditions.CheckNotNull(parentAsset, nameof(parentAsset)),
+                    AssetsAsResourceNames = { gax::GaxPreconditions.CheckNotNull(assets, nameof(assets)) },
                 },
                 callSettings);
 
@@ -21652,6 +21697,15 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
         ///
         /// </param>
         /// <param name="cancellationToken">
@@ -21663,9 +21717,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<Inventory> CreateInventoryAsync(
             PublisherName parent,
             Inventory inventory,
+            IResourceName asset,
+            IResourceName parentAsset,
+            scg::IEnumerable<IResourceName> assets,
             st::CancellationToken cancellationToken) => CreateInventoryAsync(
                 parent,
                 inventory,
+                asset,
+                parentAsset,
+                assets,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -21675,6 +21735,15 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
         ///
         /// </param>
         /// <param name="callSettings">
@@ -21686,11 +21755,17 @@ namespace Google.Example.Library.V1
         public virtual Inventory CreateInventory(
             PublisherName parent,
             Inventory inventory,
+            IResourceName asset,
+            IResourceName parentAsset,
+            scg::IEnumerable<IResourceName> assets,
             gaxgrpc::CallSettings callSettings = null) => CreateInventory(
                 new CreateInventoryRequest
                 {
                     ParentAsPublisherName = gax::GaxPreconditions.CheckNotNull(parent, nameof(parent)),
                     Inventory = inventory, // Optional
+                    AssetAsResourceName = gax::GaxPreconditions.CheckNotNull(asset, nameof(asset)),
+                    ParentAssetAsResourceName = gax::GaxPreconditions.CheckNotNull(parentAsset, nameof(parentAsset)),
+                    AssetsAsResourceNames = { gax::GaxPreconditions.CheckNotNull(assets, nameof(assets)) },
                 },
                 callSettings);
 
@@ -21701,6 +21776,15 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
         ///
         /// </param>
         /// <param name="callSettings">
@@ -21712,11 +21796,17 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<Inventory> CreateInventoryAsync(
             string parent,
             Inventory inventory,
+            string asset,
+            string parentAsset,
+            scg::IEnumerable<string> assets,
             gaxgrpc::CallSettings callSettings = null) => CreateInventoryAsync(
                 new CreateInventoryRequest
                 {
                     Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                     Inventory = inventory, // Optional
+                    Asset = gax::GaxPreconditions.CheckNotNullOrEmpty(asset, nameof(asset)),
+                    ParentAsset = gax::GaxPreconditions.CheckNotNullOrEmpty(parentAsset, nameof(parentAsset)),
+                    Assets = { gax::GaxPreconditions.CheckNotNull(assets, nameof(assets)) },
                 },
                 callSettings);
 
@@ -21727,6 +21817,15 @@ namespace Google.Example.Library.V1
         ///
         /// </param>
         /// <param name="inventory">
+        ///
+        /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
         ///
         /// </param>
         /// <param name="cancellationToken">
@@ -21738,9 +21837,15 @@ namespace Google.Example.Library.V1
         public virtual stt::Task<Inventory> CreateInventoryAsync(
             string parent,
             Inventory inventory,
+            string asset,
+            string parentAsset,
+            scg::IEnumerable<string> assets,
             st::CancellationToken cancellationToken) => CreateInventoryAsync(
                 parent,
                 inventory,
+                asset,
+                parentAsset,
+                assets,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -21752,6 +21857,15 @@ namespace Google.Example.Library.V1
         /// <param name="inventory">
         ///
         /// </param>
+        /// <param name="asset">
+        ///
+        /// </param>
+        /// <param name="parentAsset">
+        ///
+        /// </param>
+        /// <param name="assets">
+        ///
+        /// </param>
         /// <param name="callSettings">
         /// If not null, applies overrides to this RPC call.
         /// </param>
@@ -21761,11 +21875,17 @@ namespace Google.Example.Library.V1
         public virtual Inventory CreateInventory(
             string parent,
             Inventory inventory,
+            string asset,
+            string parentAsset,
+            scg::IEnumerable<string> assets,
             gaxgrpc::CallSettings callSettings = null) => CreateInventory(
                 new CreateInventoryRequest
                 {
                     Parent = gax::GaxPreconditions.CheckNotNullOrEmpty(parent, nameof(parent)),
                     Inventory = inventory, // Optional
+                    Asset = gax::GaxPreconditions.CheckNotNullOrEmpty(asset, nameof(asset)),
+                    ParentAsset = gax::GaxPreconditions.CheckNotNullOrEmpty(parentAsset, nameof(parentAsset)),
+                    Assets = { gax::GaxPreconditions.CheckNotNull(assets, nameof(assets)) },
                 },
                 callSettings);
 
@@ -29032,6 +29152,31 @@ namespace Google.Example.Library.V1
             get { return string.IsNullOrEmpty(Parent) ? null : Google.Example.Library.V1.PublisherName.Parse(Parent); }
             set { Parent = value != null ? value.ToString() : ""; }
         }
+
+        /// <summary>
+        /// <see cref="gax::IResourceName"/>-typed view over the <see cref="Asset"/> resource name property.
+        /// </summary>
+        public gax::IResourceName AssetAsResourceName
+        {
+            get { return string.IsNullOrEmpty(Asset) ? null : gax::UnknownResourceName.Parse(Asset); }
+            set { Asset = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="gax::IResourceName"/>-typed view over the <see cref="ParentAsset"/> resource name property.
+        /// </summary>
+        public gax::IResourceName ParentAssetAsResourceName
+        {
+            get { return string.IsNullOrEmpty(ParentAsset) ? null : gax::UnknownResourceName.Parse(ParentAsset); }
+            set { ParentAsset = value != null ? value.ToString() : ""; }
+        }
+
+        /// <summary>
+        /// <see cref="gax::ResourceNameList{gax::IResourceName}"/>-typed view over the <see cref="Assets"/> resource name property.
+        /// </summary>
+        public gax::ResourceNameList<gax::IResourceName> AssetsAsResourceNames =>
+            new gax::ResourceNameList<gax::IResourceName>(Assets,
+                str => gax::UnknownResourceName.Parse(str));
 
     }
 

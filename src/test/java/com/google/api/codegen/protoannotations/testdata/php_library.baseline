@@ -5160,13 +5160,19 @@ class LibraryServiceGapicClient
      * $libraryServiceClient = new LibraryServiceClient();
      * try {
      *     $formattedParent = $libraryServiceClient->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
-     *     $response = $libraryServiceClient->createInventory($formattedParent);
+     *     $asset = '';
+     *     $parentAsset = '';
+     *     $assets = [];
+     *     $response = $libraryServiceClient->createInventory($formattedParent, $asset, $parentAsset, $assets);
      * } finally {
      *     $libraryServiceClient->close();
      * }
      * ```
      *
      * @param string $parent
+     * @param string $asset
+     * @param string $parentAsset
+     * @param string[] $assets
      * @param array $optionalArgs {
      *     Optional.
      *     @type Inventory $inventory
@@ -5182,10 +5188,13 @@ class LibraryServiceGapicClient
      * @throws ApiException if the remote call fails
      * @experimental
      */
-    public function createInventory($parent, array $optionalArgs = [])
+    public function createInventory($parent, $asset, $parentAsset, $assets, array $optionalArgs = [])
     {
         $request = new CreateInventoryRequest();
         $request->setParent($parent);
+        $request->setAsset($asset);
+        $request->setParentAsset($parentAsset);
+        $request->setAssets($assets);
         if (isset($optionalArgs['inventory'])) {
             $request->setInventory($optionalArgs['inventory']);
         }
@@ -9571,8 +9580,11 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedParent = $client->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+        $asset = 'asset93121264';
+        $parentAsset = 'parentAsset1389473563';
+        $assets = [];
 
-        $response = $client->createInventory($formattedParent);
+        $response = $client->createInventory($formattedParent, $asset, $parentAsset, $assets);
         $this->assertEquals($expectedResponse, $response);
         $actualRequests = $transport->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -9583,6 +9595,15 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualValue = $actualRequestObject->getParent();
 
         $this->assertProtobufEquals($formattedParent, $actualValue);
+        $actualValue = $actualRequestObject->getAsset();
+
+        $this->assertProtobufEquals($asset, $actualValue);
+        $actualValue = $actualRequestObject->getParentAsset();
+
+        $this->assertProtobufEquals($parentAsset, $actualValue);
+        $actualValue = $actualRequestObject->getAssets();
+
+        $this->assertProtobufEquals($assets, $actualValue);
 
         $this->assertTrue($transport->isExhausted());
     }
@@ -9611,9 +9632,12 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock request
         $formattedParent = $client->publisherName('[PROJECT]', '[LOCATION]', '[PUBLISHER]');
+        $asset = 'asset93121264';
+        $parentAsset = 'parentAsset1389473563';
+        $assets = [];
 
         try {
-            $client->createInventory($formattedParent);
+            $client->createInventory($formattedParent, $asset, $parentAsset, $assets);
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

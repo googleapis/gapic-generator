@@ -174,6 +174,8 @@ public class PathTemplateTransformer {
           resourceNames.add(
               generateResourceNameFixed(context, index, (FixedResourceNameConfig) config));
           break;
+        case ANY:
+          break; // ignore AnyResourceNameConfigs
         default:
           throw new IllegalStateException("Unexpected resource-name type.");
       }
