@@ -174,32 +174,6 @@ public abstract class ResourceNameMessageConfigs {
                 "unknown resource name type: " + resource.getResourceNameType());
         }
       }
-
-      // if (!childType.isEmpty()) {
-      //   List<ResourceDescriptorConfig> parents =
-      //       childParentResourceMap.getOrDefault(childType, Collections.emptyList());
-      //   for (ResourceDescriptorConfig parentResourceDescriptor : parents) {
-      //     String derivedEntityName = parentResourceDescriptor.getDerivedEntityName();
-      //     ResourceNameConfig parentResource = resourceNameConfigs.get(derivedEntityName);
-      //     Preconditions.checkArgument(
-      //         parentResource != null, "Referencing non-existing parent resource: %s", childType);
-      //     fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
-      //   }
-      //   continue;
-      // }
-
-      // String unqualifiedResourceType = ResourceDescriptorConfig.getUnqualifiedTypeName(type);
-      // ResourceNameConfig resourceNameConfig =
-      //     resourceNameConfigs.get(unqualifiedResourceType + "Oneof");
-      // if (resourceNameConfig != null
-      //     && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
-      //   fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType + "Oneof");
-      //   continue;
-      // }
-      // resourceNameConfig = resourceNameConfigs.get(unqualifiedResourceType);
-      // Preconditions.checkArgument(
-      //     resourceNameConfig != null, "Referencing non-existing resource: %s", type);
-      // fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType);
     }
   }
 
