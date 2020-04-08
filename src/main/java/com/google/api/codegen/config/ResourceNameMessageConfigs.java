@@ -72,7 +72,12 @@ public abstract class ResourceNameMessageConfigs {
 
         // Handle resource references.
         loadFieldEntityPairFromResourceReferenceAnnotation(
-            fieldEntityMapBuilder, parser, message, resourceNameConfigs, childParentResourceMap);
+            fieldEntityMapBuilder,
+            parser,
+            message,
+            resourceNameConfigs,
+            descriptorConfigMap,
+            childParentResourceMap);
 
         ImmutableListMultimap<String, String> fieldEntityMap = fieldEntityMapBuilder.build();
         if (fieldEntityMap.size() > 0) {
@@ -116,6 +121,7 @@ public abstract class ResourceNameMessageConfigs {
       ProtoParser parser,
       MessageType message,
       Map<String, ResourceNameConfig> resourceNameConfigs,
+      Map<String, ResourceDescriptorConfig> descriptorConfigMap,
       Map<String, List<ResourceDescriptorConfig>> childParentResourceMap) {
     for (Field field : message.getFields()) {
       ResourceReference reference = parser.getResourceReference(field);
@@ -134,36 +140,40 @@ public abstract class ResourceNameMessageConfigs {
           "Only one of child_type and type should be set: %s",
           field);
 
-      if (!childType.isEmpty()) {
-        List<ResourceDescriptorConfig> parents =
-            childParentResourceMap.getOrDefault(childType, Collections.emptyList());
-        for (ResourceDescriptorConfig parentResourceDescriptor : parents) {
-          String derivedEntityName = parentResourceDescriptor.getDerivedEntityName();
-          ResourceNameConfig parentResource = resourceNameConfigs.get(derivedEntityName);
-          Preconditions.checkArgument(
-              parentResource != null, "Referencing non-existing parent resource: %s", childType);
-          fieldEntityMap.put(field.getSimpleName(), parentResource.getEntityId());
-        }
-        continue;
-      }
-
-      if (type.equals("*")) {
+      if (type.equals("*") || childType.equals("*")) {
         fieldEntityMap.put(field.getSimpleName(), "*");
         continue;
       }
 
-      String unqualifiedResourceType = ResourceDescriptorConfig.getUnqualifiedTypeName(type);
-      ResourceNameConfig resourceNameConfig =
-          resourceNameConfigs.get(unqualifiedResourceType + "Oneof");
-      if (resourceNameConfig != null
-          && resourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
-        fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType + "Oneof");
-        continue;
+      List<ResourceDescriptorConfig> referencedResources;
+      if (!childType.isEmpty()) {
+        referencedResources = childParentResourceMap.get(childType);
+      } else {
+        referencedResources = Collections.singletonList(descriptorConfigMap.get(type));
       }
-      resourceNameConfig = resourceNameConfigs.get(unqualifiedResourceType);
-      Preconditions.checkArgument(
-          resourceNameConfig != null, "Referencing non-existing resource: %s", type);
-      fieldEntityMap.put(field.getSimpleName(), unqualifiedResourceType);
+
+      for (ResourceDescriptorConfig descriptor : referencedResources) {
+        String unqualifiedName = descriptor.getDerivedEntityName();
+        ResourceNameConfig resource = resourceNameConfigs.get(unqualifiedName);
+
+        switch (resource.getResourceNameType()) {
+          case ANY:
+            fieldEntityMap.put(field.getSimpleName(), "*");
+            break;
+          case SINGLE:
+            fieldEntityMap.put(field.getSimpleName(), unqualifiedName);
+            break;
+          case ONEOF:
+            fieldEntityMap.put(field.getSimpleName(), unqualifiedName);
+            if (((ResourceNameOneofConfig) resource).hasAnyResourceNamePattern()) {
+              fieldEntityMap.put(field.getSimpleName(), "*");
+            }
+            break;
+          default:
+            throw new IllegalArgumentException(
+                "unknown resource name type: " + resource.getResourceNameType());
+        }
+      }
     }
   }
 

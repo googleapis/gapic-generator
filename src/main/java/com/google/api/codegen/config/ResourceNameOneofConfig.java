@@ -53,6 +53,11 @@ public abstract class ResourceNameOneofConfig implements ResourceNameConfig {
    */
   public abstract List<ResourceNamePatternConfig> getPatterns();
 
+  /** Returns true of any of its patterns is "*". */
+  public boolean hasAnyResourceNamePattern() {
+    return getPatterns().stream().anyMatch(p -> "*".equals(p));
+  }
+
   /**
    * Returns a list of SingleResourceNameConfigs for this oneof config created from either
    * collections field in gapic v1 or deprecated_collections field in gapic v2.

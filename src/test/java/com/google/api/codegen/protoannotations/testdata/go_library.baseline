@@ -4846,8 +4846,14 @@ func TestLibraryServiceCreateInventory(t *testing.T) {
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
     var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var asset string = "asset93121264"
+    var parentAsset string = "parentAsset1389473563"
+    var assets []string = nil
     var request = &librarypb.CreateInventoryRequest{
         Parent: formattedParent,
+        Asset: asset,
+        ParentAsset: parentAsset,
+        Assets: assets,
     }
 
     c, err := NewClient(context.Background(), clientOpt)
@@ -4875,8 +4881,14 @@ func TestLibraryServiceCreateInventoryError(t *testing.T) {
     mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedParent string = fmt.Sprintf("projects/%s/locations/%s/publishers/%s", "[PROJECT]", "[LOCATION]", "[PUBLISHER]")
+    var asset string = "asset93121264"
+    var parentAsset string = "parentAsset1389473563"
+    var assets []string = nil
     var request = &librarypb.CreateInventoryRequest{
         Parent: formattedParent,
+        Asset: asset,
+        ParentAsset: parentAsset,
+        Assets: assets,
     }
 
     c, err := NewClient(context.Background(), clientOpt)

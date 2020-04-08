@@ -8605,19 +8605,28 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
    *   Inventory inventory = Inventory.newBuilder().build();
-   *   Inventory response = libraryClient.createInventory(parent, inventory);
+   *   ResourceName asset = ArchiveName.of("[ARCHIVE]");
+   *   ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; assets = new ArrayList&lt;&gt;();
+   *   Inventory response = libraryClient.createInventory(parent, inventory, asset, parentAsset, assets);
    * }
    * </code></pre>
    *
    * @param parent
    * @param inventory
+   * @param asset
+   * @param parentAsset
+   * @param assets
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Inventory createInventory(PublisherName parent, Inventory inventory) {
+  public final Inventory createInventory(PublisherName parent, Inventory inventory, ResourceName asset, ResourceName parentAsset, List<String> assets) {
     CreateInventoryRequest request =
         CreateInventoryRequest.newBuilder()
             .setParent(parent == null ? null : parent.toString())
             .setInventory(inventory)
+            .setAsset(asset == null ? null : asset.toString())
+            .setParentAsset(parentAsset == null ? null : parentAsset.toString())
+            .addAllAssets(assets)
             .build();
     return createInventory(request);
   }
@@ -8631,19 +8640,28 @@ public class LibraryClient implements BackgroundResource {
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
    *   Inventory inventory = Inventory.newBuilder().build();
-   *   Inventory response = libraryClient.createInventory(parent.toString(), inventory);
+   *   ResourceName asset = ArchiveName.of("[ARCHIVE]");
+   *   ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;String&gt; assets = new ArrayList&lt;&gt;();
+   *   Inventory response = libraryClient.createInventory(parent.toString(), inventory, asset.toString(), parentAsset.toString(), assets);
    * }
    * </code></pre>
    *
    * @param parent
    * @param inventory
+   * @param asset
+   * @param parentAsset
+   * @param assets
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Inventory createInventory(String parent, Inventory inventory) {
+  public final Inventory createInventory(String parent, Inventory inventory, String asset, String parentAsset, List<String> assets) {
     CreateInventoryRequest request =
         CreateInventoryRequest.newBuilder()
             .setParent(parent)
             .setInventory(inventory)
+            .setAsset(asset)
+            .setParentAsset(parentAsset)
+            .addAllAssets(assets)
             .build();
     return createInventory(request);
   }
@@ -8656,8 +8674,14 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ResourceName asset = ArchiveName.of("[ARCHIVE]");
+   *   ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;ResourceName&gt; assets = new ArrayList&lt;&gt;();
    *   CreateInventoryRequest request = CreateInventoryRequest.newBuilder()
    *     .setParent(parent.toString())
+   *     .setAsset(asset.toString())
+   *     .setParentAsset(parentAsset.toString())
+   *     .addAllAssets(UntypedResourceName.toStringList(assets))
    *     .build();
    *   Inventory response = libraryClient.createInventory(request);
    * }
@@ -8678,8 +8702,14 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
+   *   ResourceName asset = ArchiveName.of("[ARCHIVE]");
+   *   ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+   *   List&lt;ResourceName&gt; assets = new ArrayList&lt;&gt;();
    *   CreateInventoryRequest request = CreateInventoryRequest.newBuilder()
    *     .setParent(parent.toString())
+   *     .setAsset(asset.toString())
+   *     .setParentAsset(parentAsset.toString())
+   *     .addAllAssets(UntypedResourceName.toStringList(assets))
    *     .build();
    *   ApiFuture&lt;Inventory&gt; future = libraryClient.createInventoryCallable().futureCall(request);
    *   // Do something
@@ -17599,9 +17629,12 @@ public class LibraryClientTest {
 
     PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
     Inventory inventory = Inventory.newBuilder().build();
+    ResourceName asset = ArchiveName.of("[ARCHIVE]");
+    ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+    List<String> assets = new ArrayList<>();
 
     Inventory actualResponse =
-        client.createInventory(parent, inventory);
+        client.createInventory(parent, inventory, asset, parentAsset, assets);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
@@ -17610,6 +17643,9 @@ public class LibraryClientTest {
 
     Assert.assertEquals(parent, PublisherName.parse(actualRequest.getParent()));
     Assert.assertEquals(inventory, actualRequest.getInventory());
+    Assert.assertEquals(Objects.toString(asset), Objects.toString(actualRequest.getAsset()));
+    Assert.assertEquals(Objects.toString(parentAsset), Objects.toString(actualRequest.getParentAsset()));
+    Assert.assertEquals(assets, actualRequest.getAssetsList());
     Assert.assertTrue(
         channelProvider.isHeaderSent(
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
@@ -17625,8 +17661,11 @@ public class LibraryClientTest {
     try {
       PublisherName parent = PublisherName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
       Inventory inventory = Inventory.newBuilder().build();
+      ResourceName asset = ArchiveName.of("[ARCHIVE]");
+      ResourceName parentAsset = ArchiveName.of("[ARCHIVE]");
+      List<String> assets = new ArrayList<>();
 
-      client.createInventory(parent, inventory);
+      client.createInventory(parent, inventory, asset, parentAsset, assets);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
