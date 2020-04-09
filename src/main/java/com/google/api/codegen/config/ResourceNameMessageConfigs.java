@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.api.ResourceDescriptor;
 import com.google.api.ResourceReference;
 import com.google.api.codegen.ConfigProto;
@@ -148,8 +150,11 @@ public abstract class ResourceNameMessageConfigs {
       List<ResourceDescriptorConfig> referencedResources;
       if (!childType.isEmpty()) {
         referencedResources = childParentResourceMap.get(childType);
+        checkNotNull(referencedResources, "unable to find parent resources of %s", childType);
       } else {
-        referencedResources = Collections.singletonList(descriptorConfigMap.get(type));
+        ResourceDescriptorConfig referencedResource = descriptorConfigMap.get(type);
+        checkNotNull(referencedResource, "unable to find referenced resource %s", type);
+        referencedResources = Collections.singletonList(referencedResource);
       }
 
       for (ResourceDescriptorConfig descriptor : referencedResources) {
