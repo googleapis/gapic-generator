@@ -2450,6 +2450,7 @@ class LibraryServiceGapicClient
     private static $folderNameTemplate;
     private static $inventoryNameTemplate;
     private static $locationNameTemplate;
+    private static $organizationReaderNameTemplate;
     private static $projectNameTemplate;
     private static $projectBookNameTemplate;
     private static $projectLocationPublisherBookNameTemplate;
@@ -2553,6 +2554,15 @@ class LibraryServiceGapicClient
         return self::$locationNameTemplate;
     }
 
+    private static function getOrganizationReaderNameTemplate()
+    {
+        if (self::$organizationReaderNameTemplate == null) {
+            self::$organizationReaderNameTemplate = new PathTemplate('organization/{organization}/reader');
+        }
+
+        return self::$organizationReaderNameTemplate;
+    }
+
     private static function getProjectNameTemplate()
     {
         if (self::$projectNameTemplate == null) {
@@ -2647,6 +2657,7 @@ class LibraryServiceGapicClient
                 'folder' => self::getFolderNameTemplate(),
                 'inventory' => self::getInventoryNameTemplate(),
                 'location' => self::getLocationNameTemplate(),
+                'organizationReader' => self::getOrganizationReaderNameTemplate(),
                 'project' => self::getProjectNameTemplate(),
                 'projectBook' => self::getProjectBookNameTemplate(),
                 'projectLocationPublisherBook' => self::getProjectLocationPublisherBookNameTemplate(),
@@ -2792,6 +2803,21 @@ class LibraryServiceGapicClient
         return self::getLocationNameTemplate()->render([
             'project' => $project,
             'location' => $location,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a organization_reader resource.
+     *
+     * @param string $organization
+     * @return string The formatted organization_reader resource.
+     * @experimental
+     */
+    public static function organizationReaderName($organization)
+    {
+        return self::getOrganizationReaderNameTemplate()->render([
+            'organization' => $organization,
         ]);
     }
 
@@ -2964,6 +2990,7 @@ class LibraryServiceGapicClient
      * - folder: folders/{folder}
      * - inventory: projects/{project}/locations/{location}/publishers/{publisher}/inventory
      * - location: projects/{project}/locations/{location}
+     * - organizationReader: organization/{organization}/reader
      * - project: projects/{project}
      * - projectBook: projects/{project}/books/{book}
      * - projectLocationPublisherBook: projects/{project}/locations/{location}/publishers/{publisher}/inventory/books/{book}
