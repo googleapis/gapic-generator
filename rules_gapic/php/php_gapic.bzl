@@ -14,20 +14,21 @@
 
 load("//rules_gapic:gapic.bzl", "gapic_srcjar", "proto_custom_library")
 
-def php_proto_library(name, deps, **kwargs):
+def php_proto_library(name, deps, plugin_args = [], **kwargs):
     srcjar_target_name = name
     proto_custom_library(
         name = srcjar_target_name,
         deps = deps,
         output_type = "php",
         output_suffix = ".srcjar",
+        plugin_args = plugin_args,
         extra_args = [
             "--include_source_info",
         ],
         **kwargs
     )
 
-def php_grpc_library(name, srcs, deps, **kwargs):
+def php_grpc_library(name, srcs, deps, plugin_args = [], **kwargs):
     srcjar_target_name = name
 
     # `deps` is not used now but may be used if php_grpc_library ever tries to "compile" its output
@@ -35,7 +36,7 @@ def php_grpc_library(name, srcs, deps, **kwargs):
         name = srcjar_target_name,
         deps = srcs,
         plugin = Label("@com_github_grpc_grpc//src/compiler:grpc_php_plugin"),
-        plugin_args = ["class_suffix=GrpcClient"],
+        plugin_args = ["class_suffix=GrpcClient"] + plugin_args,
         output_type = "grpc",
         output_suffix = ".srcjar",
         extra_args = [
