@@ -184,6 +184,17 @@ public class PackagingConfigTest {
             ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("<wrong_input>", false, expected));
 
+    //11
+    expected =
+        config(
+            "datatransfer",
+            "v1",
+            "google-cloud-bigquery",
+            "google/cloud/bigquery/datatransfer/v1",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("google.cloud.bigquery.datatransfer.v1.DataTransferService", false, expected));
+
     return params.build();
   }
 
