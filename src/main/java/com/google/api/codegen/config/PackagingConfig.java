@@ -40,7 +40,7 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class PackagingConfig {
   private static final Pattern COMMON_PKG_PATTERN =
       Pattern.compile(
-          "(?i)(?<org>(\\w+\\.){0,2})(?<name>\\w+(\\.\\w+)*)\\.(?<ver>\\w*\\d+[\\w\\d]*)(\\.|$)");
+          "(?i)(?<org>(\\w+\\.)(cloud\\.)*)(?<name>\\w+(\\.\\w+)*)\\.(?<ver>\\w*\\d+[\\w\\d]*)(\\.|$)");
   private static final Pattern NAME_ONLY_PATTERN =
       Pattern.compile("(?i)(^|\\.)(?<name>[a-zA-Z]+)(\\.\\w*)$");
 
