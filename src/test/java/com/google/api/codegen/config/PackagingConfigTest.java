@@ -187,9 +187,9 @@ public class PackagingConfigTest {
     //11
     expected =
         config(
-            "datatransfer",
+            "bigquery-datatransfer",
             "v1",
-            "google-cloud-bigquery",
+            "google-cloud",
             "google/cloud/bigquery/datatransfer/v1",
             false,
             ReleaseLevel.UNSET_RELEASE_LEVEL);
