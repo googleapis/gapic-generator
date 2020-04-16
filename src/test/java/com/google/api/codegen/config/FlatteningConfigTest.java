@@ -220,7 +220,7 @@ public class FlatteningConfigTest {
             .setField(animals)
             .build();
 
-    List<FlatteningConfig> expectedFlatteningConfigs =
+    List<FlatteningConfig> expectedMethodFlatteningConfigs =
         ImmutableList.of(
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
@@ -294,10 +294,130 @@ public class FlatteningConfigTest {
                     destinationFieldSampleOnly,
                     "animals",
                     animalsFieldSampleOnly)));
+
+    // String overrides.
+    List<FlatteningConfig> expectedStringOverloadFlatteningConfigs =
+        ImmutableList.of(
+            // String source, County destination, Fish animal.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldFishResource)),
+            // County source, County destination, Fish animal.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldFishResource)),
+            // County source, Count destination, String animal.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // String source, County destination, Bird animal.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldBirdResource)),
+            // County source, String destination, Bird animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldBirdResource)),
+            // String source, State destination, Fish animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldFishResource)),
+            // County source, State destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // String source, State destination, Bird animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldBirdResource)),
+            // State source, String destination, Fish animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldFishResource)),
+            // State source, String destination, Bird animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldBirdResource)),
+            // State source, County destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // State source, State destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldSampleOnly)));
+
+    ImmutableList.Builder<FlatteningConfig> expectedFlatteningConfigsBuilder =
+        ImmutableList.builder();
+    List<FlatteningConfig> expectedFlatteningConfigs =
+        expectedFlatteningConfigsBuilder
+            .addAll(expectedMethodFlatteningConfigs)
+            .addAll(expectedStringOverloadFlatteningConfigs)
+            .build();
 
     assertThat(flatteningConfigs).containsExactlyElementsIn(expectedFlatteningConfigs);
 
-    List<FlatteningConfig> expectedFlatteningConfigs2 =
+    List<FlatteningConfig> expectedMethodFlatteningConfigs2 =
         ImmutableList.of(
             new AutoValue_FlatteningConfig(
                 ImmutableMap.of(
@@ -340,6 +460,52 @@ public class FlatteningConfigTest {
                     "animals",
                     animalsFieldSampleOnly)));
 
+    List<FlatteningConfig> expectedStringOverloadFlatteningConfigs2 =
+        ImmutableList.of(
+            // String source, County destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldCountyResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // County source, String destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldCountyResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // String source, State destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldSampleOnly,
+                    "destination",
+                    destinationFieldStateResource,
+                    "animals",
+                    animalsFieldSampleOnly)),
+            // State source, String destination, String animals.
+            new AutoValue_FlatteningConfig(
+                ImmutableMap.of(
+                    "source",
+                    sourceFieldStateResource,
+                    "destination",
+                    destinationFieldSampleOnly,
+                    "animals",
+                    animalsFieldSampleOnly)));
+
+    ImmutableList.Builder<FlatteningConfig> expectedFlatteningConfigs2Builder =
+        ImmutableList.builder();
+    List<FlatteningConfig> expectedFlatteningConfigs2 =
+        expectedFlatteningConfigs2Builder
+            .addAll(expectedMethodFlatteningConfigs2)
+            .addAll(expectedStringOverloadFlatteningConfigs2)
+            .build();
     assertThat(FlatteningConfig.withRepeatedResourceInSampleOnly(flatteningConfigs))
         .containsExactlyElementsIn(expectedFlatteningConfigs2);
   }

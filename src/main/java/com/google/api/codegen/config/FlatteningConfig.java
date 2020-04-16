@@ -280,6 +280,13 @@ public abstract class FlatteningConfig {
     if (hasAnyResourceNameParameter(flatteningConfigs)) {
       flatteningConfigs.add(withResourceNamesInSamplesOnly(flatteningConfigs.get(0)));
     }
+
+    // Generate an overload where only one of the resource names are treated as strings,
+    // if there are two or more resource names in the method surface.
+    if (!flatteningConfigs.isEmpty()) {
+      flatteningConfigs.addAll(slidingStringResourceNameConfigs(flatteningConfigs));
+    }
+
     return flatteningConfigs
         .stream()
         .map(ImmutableMap::copyOf)
@@ -398,6 +405,59 @@ public abstract class FlatteningConfig {
     return newFlattenedFieldConfigs;
   }
 
+  // Generate an overload where only one of the resource names are treated as strings,
+  // if there are two or more resource names in the method surface.
+  // More details in https://github.com/googleapis/gapic-generator/issues/3167.
+  // For example, methodName(FooName foo, BarName bar, CarName car) and
+  // methodName(FuuName foo, BarName bar, CarName car) will also have the following overloads.
+  //   - methodName(String, BarName, CarName)
+  //   - methodName(FooName, String, CarName)
+  //   - methodName(FuuName, String, CarName)
+  //   - methodName(FooName, BarName, String)
+  //   - methodName(FuuName, BarName, String)
+  private static List<Map<String, FieldConfig>> slidingStringResourceNameConfigs(
+      List<Map<String, FieldConfig>> flatteningGroups) {
+    ImmutableList.Builder<Map<String, FieldConfig>> newFlatteningConfigs = ImmutableList.builder();
+    Set<Map<String, String>> nameToEntityId = new HashSet<>();
+    String stringTypeName = "String";
+    String nullTypeString = "null";
+    for (Map<String, FieldConfig> flatteningGroup : flatteningGroups) {
+      if (!hasMultipleResourceNameParameters(flatteningGroup)) {
+        continue;
+      }
+      for (Map.Entry<String, FieldConfig> entry : flatteningGroup.entrySet()) {
+        boolean isUniqueSampleOverload =
+            nameToEntityId.add(
+                flatteningGroup
+                    .entrySet()
+                    .stream()
+                    .collect(
+                        ImmutableMap.toImmutableMap(
+                            Map.Entry::getKey,
+                            e ->
+                                (e.equals(entry)
+                                    ? stringTypeName
+                                    : (e.getValue().getResourceNameConfig() == null
+                                        ? nullTypeString
+                                        : e.getValue().getResourceNameConfig().getEntityId())))));
+        if (isUniqueSampleOverload) {
+          newFlatteningConfigs.add(
+              flatteningGroup
+                  .entrySet()
+                  .stream()
+                  .collect(
+                      ImmutableMap.toImmutableMap(
+                          Map.Entry::getKey,
+                          e ->
+                              (e.equals(entry)
+                                  ? e.getValue().withResourceNameInSampleOnly()
+                                  : e.getValue()))));
+        }
+      }
+    }
+    return newFlatteningConfigs.build();
+  }
+
   public static boolean hasAnyRepeatedResourceNameParameter(FlatteningConfig flatteningGroup) {
     // Used in Java to prevent generating a flattened method with List<ResourceName> as a parameter
     // because that has the same type erasure as the version of the flattened method with
@@ -490,6 +550,11 @@ public abstract class FlatteningConfig {
   private static boolean hasAnyResourceNameParameter(
       List<Map<String, FieldConfig>> flatteningGroups) {
     return flatteningGroups.stream().anyMatch(FlatteningConfig::hasAnyResourceNameParameter);
+  }
+
+  private static boolean hasMultipleResourceNameParameters(
+      Map<String, FieldConfig> flatteningGroup) {
+    return flatteningGroup.values().stream().filter(FieldConfig::useResourceNameType).count() > 1;
   }
 
   private static boolean hasAnyResourceNameParameter(Map<String, FieldConfig> flatteningGroup) {

@@ -451,7 +451,7 @@ public class ResourceNameMessageConfigsTest {
             .collect(Collectors.toList());
 
     assertThat(flatteningConfigs).isNotNull();
-    assertThat(flatteningConfigs.size()).isEqualTo(6);
+    assertThat(flatteningConfigs.size()).isEqualTo(8);
 
     // Check the flattening from the Gapic config.
     List<FlatteningConfig> flatteningConfigFromGapicConfigs =
