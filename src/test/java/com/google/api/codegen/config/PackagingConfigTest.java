@@ -184,7 +184,7 @@ public class PackagingConfigTest {
             ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("<wrong_input>", false, expected));
 
-    //11
+    // 11
     expected =
         config(
             "bigquery-datatransfer",
