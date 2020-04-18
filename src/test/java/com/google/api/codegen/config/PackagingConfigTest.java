@@ -212,6 +212,17 @@ public class PackagingConfigTest {
             "grafeas", "v1", "google-cloud", "grafeas/v1", false, ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("grafeas.v1.Grafeas", false, expected));
 
+    // 14
+    expected =
+        config(
+            "logging",
+            "v2",
+            "google-cloud",
+            "google/logging/v2",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("google.logging.v2.ConfigServiceV2", false, expected));
+
     return params.build();
   }
 
