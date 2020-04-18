@@ -206,6 +206,12 @@ public class PackagingConfigTest {
             ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("google.bigtable.admin.v2.BigtableTableAdmin", false, expected));
 
+    // 13
+    expected =
+        config(
+            "grafeas", "v1", "google-cloud", "grafeas/v1", false, ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("grafeas.v1.Grafeas", false, expected));
+
     return params.build();
   }
 

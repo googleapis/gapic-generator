@@ -42,7 +42,7 @@ public abstract class PackagingConfig {
       Pattern.compile(
           "(?i)(?<org>(\\w+\\.)(cloud\\.)*)(?<name>\\w+(\\.\\w+)*)\\.(?<ver>\\w*\\d+[\\w\\d]*)(\\.|$)");
   private static final Pattern NAME_ONLY_PATTERN =
-      Pattern.compile("(?i)(^|\\.)(?<name>[a-zA-Z]+)(\\.\\w*)$");
+      Pattern.compile("(?i)(google\\.|^)(?<name>[a-zA-Z]+)(\\.\\w*)+$");
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String apiName();
