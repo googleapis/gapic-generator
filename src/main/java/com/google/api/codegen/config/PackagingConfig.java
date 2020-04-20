@@ -39,9 +39,10 @@ import org.yaml.snakeyaml.Yaml;
 @AutoValue
 public abstract class PackagingConfig {
   private static final Pattern COMMON_PKG_PATTERN =
-      Pattern.compile("(?i)(?<org>(\\w+\\.){0,2})(?<name>\\w+)\\.(?<ver>\\w*\\d+[\\w\\d]*)(\\.|$)");
+      Pattern.compile(
+          "(?i)(?<org>(\\w+\\.)(cloud\\.)*)(?<name>\\w+(\\.\\w+)*)\\.(?<ver>(v|beta|alpha)\\w*\\d+[\\w\\d]*)(\\.|$)");
   private static final Pattern NAME_ONLY_PATTERN =
-      Pattern.compile("(?i)(^|\\.)(?<name>[a-zA-Z]+)(\\.\\w*)$");
+      Pattern.compile("(?i)(google\\.|^)(?<name>[a-zA-Z]+)(\\.\\w*)+$");
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String apiName();
@@ -196,7 +197,7 @@ public abstract class PackagingConfig {
           m = NAME_ONLY_PATTERN.matcher(interfaceName);
           name = !m.find() ? interfaceName : m.group("name");
         } else {
-          name = m.group("name");
+          name = m.group("name").replace('.', '-');
           org = m.group("org");
           ver = m.group("ver");
         }
