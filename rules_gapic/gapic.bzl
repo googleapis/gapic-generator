@@ -340,19 +340,20 @@ def discogapic_config(name, src, **kwargs):
 def _calculate_import_prefix(strip_import_prefix):
     tokens = strip_import_prefix.split("/")
     new_tokens = [tokens[0]]
-    tokens_len = len(tokens)
-    for i in range(1, tokens_len):
-        t = tokens[i]
+    api_tokens = tokens[1:]
+    # This logic is executed only if import_prefix is not specified by
+    # a user explicitly (so technically there is no enforced coupling to google
+    # cloud domain, it serves only as a convenient default value).
+    if tokens[0] == "google":
+        new_tokens.append("cloud")
+        if tokens[1] == "cloud" or tokens[1] == "privacy":
+            api_tokens = tokens[2:]
+        elif tokens[1] == "devtools":
+            new_tokens.append("devtools")
+            api_tokens = tokens[2:]
 
-        # This logic is executed only if import_prefix is not specified by
-        # a user explicitly (so there is no enforced coupling to google cloud
-        # domain, it serves only as a convenient default value).
-        if i == 1 and tokens[0] == "google" and t != "cloud":
-            new_tokens.append("cloud")
-        if len(t) >= 2 and t[0] == "v" and t[1].isdigit() and i == tokens_len - 1:
-            last_index = len(new_tokens) - 1
-            new_tokens[last_index] = "%s_%s" % (new_tokens[last_index], t)
-        else:
-            new_tokens.append(t)
+    if len(api_tokens) <= 1:
+        api_tokens.insert(0, new_tokens[-1])
+    new_tokens.append("_".join(api_tokens))
     new_tokens.append("proto")
     return "/".join(new_tokens)
