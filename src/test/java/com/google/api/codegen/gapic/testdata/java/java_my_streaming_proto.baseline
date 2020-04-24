@@ -1269,11 +1269,12 @@ public class MockMyStreamingServiceImpl extends MyStreamingServiceImplBase {
   @Override
   public StreamObserver<StreamingRequest> myMethod(
       final StreamObserver<StreamingResponse> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<StreamingRequest> requestObserver =
         new StreamObserver<StreamingRequest>() {
       @Override
       public void onNext(StreamingRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof StreamingResponse) {
           responseObserver.onNext((StreamingResponse) response);
         } else if (response instanceof Exception) {
