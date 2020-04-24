@@ -78,11 +78,12 @@
   @@Override
   public StreamObserver<{@method.requestTypeName}> {@method.name}(
       final StreamObserver<{@method.responseTypeName}> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<{@method.requestTypeName}> requestObserver =
         new StreamObserver<{@method.requestTypeName}>() {
       @@Override
       public void onNext({@method.requestTypeName} value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof {@method.responseTypeName}) {
           responseObserver.onNext(({@method.responseTypeName}) response);
         } else if (response instanceof Exception) {
