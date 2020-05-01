@@ -17,7 +17,7 @@ class ApiVersionedDir {
       Pattern.compile("(?m)^import\\s+\"(?<import>[\\w+\\\\./]+)\"\\s*;\\s*$");
   private static final Pattern PROTO_OPTIONS =
       Pattern.compile(
-          "(?m)^option\\s+(?<optName>\\w+)\\s+=\\s+\"(?<optValue>[\\w./;\\\\]+)\"\\s*;\\s*$");
+          "(?m)^option\\s+(?<optName>\\w+)\\s+=\\s+\"(?<optValue>[\\w./;\\\\\\-]+)\"\\s*;\\s*$");
   private static final Pattern SERVICE =
       Pattern.compile("(?m)^service\\s+(?<service>\\w+)\\s+(\\{)*\\s*$");
   private static final Pattern LANG_PACKAGES =
