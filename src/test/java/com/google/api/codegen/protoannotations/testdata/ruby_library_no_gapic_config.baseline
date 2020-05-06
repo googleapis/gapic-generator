@@ -2913,7 +2913,7 @@ module Library
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
+        "shelves/{shelf}/books/{book_one}~{book_two}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
@@ -2982,12 +2982,14 @@ module Library
 
       # Returns a fully-qualified book resource name string.
       # @param shelf [String]
-      # @param book [String]
+      # @param book_one [String]
+      # @param book_two [String]
       # @return [String]
-      def self.book_path shelf, book
+      def self.book_path shelf, book_one, book_two
         BOOK_PATH_TEMPLATE.render(
           :"shelf" => shelf,
-          :"book" => book
+          :"book_one" => book_one,
+          :"book_two" => book_two
         )
       end
 
@@ -4237,7 +4239,8 @@ module Library
       end
 
       # Test server streaming
-      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to
+      # have the google.api.http option.
       #
       # @param name [String]
       #   The name of the shelf to stream.
@@ -4268,7 +4271,8 @@ module Library
       end
 
       # Test server streaming, non-paged responses.
-      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to
+      # have the google.api.http option.
       #
       # @param name [String]
       #   The name of the shelf whose books we'd like to list.
@@ -4370,8 +4374,10 @@ module Library
         @monolog_about_book.call(request_protos, options)
       end
 
-      # Test samplegen response handling when a client streaming method returns Empty.
-      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      # Test samplegen response handling when a client streaming method returns
+      # Empty.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to
+      # have the google.api.http option.
       #
       # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
       #   The input requests.
@@ -4782,8 +4788,9 @@ module Library
         @streaming_archive_books.call(request_protos, options)
       end
 
-      # Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
-      # New APIs should always create a separate message for a request.
+      # Test using resource messages as request objects. Only used by PubSub
+      # (CreateSubscription) for historical reasons. New APIs should always create
+      # a separate message for a request.
       #
       # @param name [String]
       #   The resource name of the book.

@@ -248,7 +248,7 @@ public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWith
       ApiStreamObserver<DiscussBookRequest> requestObserver =
           libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
 
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -324,7 +324,7 @@ public class BabbleAboutBookCallableCallableStreamingClientEmptyResponseTypeWith
       ApiStreamObserver<DiscussBookRequest> requestObserver =
           libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
 
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -732,7 +732,7 @@ public class FindRelatedBooksCallableCallableListOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
@@ -883,7 +883,7 @@ public class FindRelatedBooksPagedCallableCallablePagedOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
@@ -956,7 +956,7 @@ public class FindRelatedBooksRequestPagedOdyssey {
   /** Testing calling forms */
   public static void sampleFindRelatedBooks() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       List<BookName> names = Arrays.asList(namesElement);
       ShelfName shelvesElement = ShelfName.of("[SHELF]");
       List<ShelfName> shelves = Arrays.asList(shelvesElement);
@@ -1037,7 +1037,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap {
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, "War and Peace");
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
 
       System.out.println("Waiting for operation to complete...");
@@ -1144,7 +1144,7 @@ public class GetBigBookAsyncLongRunningFlattenedAsyncWap2 {
    */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, bigBookName);
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       OperationFuture<Book, GetBigBookMetadata> future = libraryClient.getBigBookAsync(name.toString());
 
       System.out.println("Waiting for operation to complete...");
@@ -1239,7 +1239,7 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap {
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, "War and Peace");
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1351,7 +1351,7 @@ public class GetBigBookAsyncLongRunningRequestAsyncWap2 {
    */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, bigBookName);
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1447,7 +1447,7 @@ public class GetBigBookCallableCallableWap {
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, "War and Peace");
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1558,7 +1558,7 @@ public class GetBigBookCallableCallableWap2 {
    */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, bigBookName);
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1657,7 +1657,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap {
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, "War and Peace");
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1770,7 +1770,7 @@ public class GetBigBookOperationCallableLongRunningCallableWap2 {
    */
   public static void sampleGetBigBook(String shelf, String bigBookName) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, bigBookName);
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -1853,7 +1853,7 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithRes
   /** Test response handling for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
 
       System.out.println("Waiting for operation to complete...");
@@ -1915,7 +1915,7 @@ public class GetBigNothingAsyncLongRunningFlattenedAsyncEmptyResponseTypeWithout
   /** Test default response handling is turned off for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       OperationFuture<Empty, GetBigBookMetadata> future = libraryClient.getBigNothingAsync(name.toString());
 
       System.out.println("Waiting for operation to complete...");
@@ -1977,7 +1977,7 @@ public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithRespo
   /** Test response handling for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2044,7 +2044,7 @@ public class GetBigNothingAsyncLongRunningRequestAsyncEmptyResponseTypeWithoutRe
   /** Test default response handling is turned off for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2107,7 +2107,7 @@ public class GetBigNothingCallableCallableEmptyResponseTypeWithResponseHandling 
   /** Test response handling for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2173,7 +2173,7 @@ public class GetBigNothingCallableCallableEmptyResponseTypeWithoutResponseHandli
   /** Test default response handling is turned off for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2239,7 +2239,7 @@ public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeW
   /** Test response handling for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2307,7 +2307,7 @@ public class GetBigNothingOperationCallableLongRunningCallableEmptyResponseTypeW
   /** Test default response handling is turned off for methods that return empty */
   public static void sampleGetBigNothing() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2372,7 +2372,7 @@ public class GetBookCallableCallableTestOnSuccessMap {
 
   public static void sampleGetBook() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2437,7 +2437,7 @@ public class GetBookFlattenedTestOnSuccessMap {
 
   public static void sampleGetBook() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       Book response = libraryClient.getBook(name.toString());
       String intKeyVal = response.getMapStringValueMap().get(123);
       String booleanKeyVal = response.getMapBoolKeyMap().get(true);
@@ -2497,7 +2497,7 @@ public class GetBookRequestTestOnSuccessMap {
 
   public static void sampleGetBook() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -2582,7 +2582,7 @@ public class MonologAboutBookCallableCallableStreamingClientProg {
       ApiStreamObserver<DiscussBookRequest> requestObserver =
           libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
 
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       DiscussBookRequest request = DiscussBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -3686,8 +3686,8 @@ public class TestFloatAndInt64 {
       String requiredSingularString = "";
       ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-      BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-      BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+      BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String requiredSingularResourceNameCommon = "";
       int requiredSingularFixed32 = 0;
       long requiredSingularFixed64 = 0L;
@@ -3878,7 +3878,7 @@ public class TestResourceNameOneof {
 
   public static void sampleGetBookFromAbsolutelyAnywhere() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "The ID of the book");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -3935,7 +3935,7 @@ public class TestResourceNameOneof2 {
 
   public static void sampleGetBookFromAbsolutelyAnywhere() {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("The Shelf to search for the book", "The ID of the book");
+      BookName name = BookName.ofShelfBookOneBookTwoName("The Shelf to search for the book", "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -4081,7 +4081,7 @@ public class ThisTagShouldBeTheNameOfTheFile {
   /** Testing calling forms */
   public static void sampleGetBigBook(String shelf) {
     try (LibraryClient libraryClient = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName(shelf, "War and Peace");
+      BookName name = BookName.ofShelfBookOneBookTwoName(shelf, "[BOOK_ONE]", "[BOOK_TWO]");
       GetBookRequest request = GetBookRequest.newBuilder()
         .setName(name.toString())
         .build();
@@ -4196,7 +4196,7 @@ public class TuringProgCallableStreamingBidi {
       BidiStream<DiscussBookRequest, Comment> bidiStream =
           libraryClient.discussBookCallable().call();
 
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       Path path = Paths.get("comment_file");
       byte[] data = Files.readAllBytes(path);
       ByteString comment = ByteString.copyFrom(data);
@@ -4418,7 +4418,7 @@ public class LibraryClient implements BackgroundResource {
       PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
 
   private static final PathTemplate BOOK_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book_one}~{book_two}");
 
   private static final PathTemplate BOOK_FROM_ARCHIVE_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("archives/{archive}/books/{book}");
@@ -4479,10 +4479,11 @@ public class LibraryClient implements BackgroundResource {
    * @deprecated Use the {@link BookName} class instead.
    */
   @Deprecated
-  public static final String formatBookName(String shelf, String book) {
+  public static final String formatBookName(String shelf, String bookOne, String bookTwo) {
     return BOOK_PATH_TEMPLATE.instantiate(
         "shelf", shelf,
-        "book", book);
+        "book_one", bookOne,
+        "book_two", bookTwo);
   }
 
   /**
@@ -4646,14 +4647,25 @@ public class LibraryClient implements BackgroundResource {
   }
 
   /**
-   * Parses the book from the given fully-qualified path which
+   * Parses the book_one from the given fully-qualified path which
    * represents a book resource.
    *
    * @deprecated Use the {@link BookName} class instead.
    */
   @Deprecated
-  public static final String parseBookFromBookName(String bookName) {
-    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  public static final String parseBookOneFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book_one");
+  }
+
+  /**
+   * Parses the book_two from the given fully-qualified path which
+   * represents a book resource.
+   *
+   * @deprecated Use the {@link BookName} class instead.
+   */
+  @Deprecated
+  public static final String parseBookTwoFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book_two");
   }
 
   /**
@@ -5701,7 +5713,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book response = libraryClient.getBook(name);
    * }
    * </code></pre>
@@ -5724,7 +5736,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book response = libraryClient.getBook(name.toString());
    * }
    * </code></pre>
@@ -5747,7 +5759,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -5769,7 +5781,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -5930,7 +5942,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   libraryClient.deleteBook(name);
    * }
    * </code></pre>
@@ -5953,7 +5965,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   libraryClient.deleteBook(name.toString());
    * }
    * </code></pre>
@@ -5976,7 +5988,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -5998,7 +6010,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -6019,7 +6031,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.updateBook(name, book);
    * }
@@ -6045,7 +6057,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.updateBook(name.toString(), book);
    * }
@@ -6071,7 +6083,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String optionalFoo = "";
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
@@ -6106,7 +6118,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String optionalFoo = "";
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
@@ -6141,7 +6153,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -6165,7 +6177,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -6188,7 +6200,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF]");
    *   Book response = libraryClient.moveBook(name, otherShelfName);
    * }
@@ -6214,7 +6226,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF]");
    *   Book response = libraryClient.moveBook(name.toString(), otherShelfName.toString());
    * }
@@ -6240,7 +6252,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -6264,7 +6276,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ShelfName otherShelfName = ShelfName.of("[SHELF]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
    *     .setName(name.toString())
@@ -6427,7 +6439,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -6461,7 +6473,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -6495,7 +6507,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -6527,7 +6539,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
    *   SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -6657,8 +6669,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
    *   FolderName folder = FolderName.of("[FOLDER]");
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name, altBookName, place, folder);
@@ -6690,8 +6702,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
    *   FolderName folder = FolderName.of("[FOLDER]");
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name.toString(), altBookName.toString(), place.toString(), folder.toString());
@@ -6723,8 +6735,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
    *   FolderName folder = FolderName.of("[FOLDER]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -6751,8 +6763,8 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
    *   FolderName folder = FolderName.of("[FOLDER]");
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -6778,7 +6790,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name);
    * }
    * </code></pre>
@@ -6801,7 +6813,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name.toString());
    * }
    * </code></pre>
@@ -6824,7 +6836,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -6846,7 +6858,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -6867,7 +6879,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -6898,7 +6910,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -6929,7 +6941,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -6957,7 +6969,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
    *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
@@ -6980,7 +6992,8 @@ public class LibraryClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test server streaming
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to
+   * have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -7004,7 +7017,8 @@ public class LibraryClient implements BackgroundResource {
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Test server streaming, non-paged responses.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to
+   * have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -7035,7 +7049,7 @@ public class LibraryClient implements BackgroundResource {
    *   BidiStream&lt;DiscussBookRequest, Comment&gt; bidiStream =
    *       libraryClient.discussBookCallable().call();
    *
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7077,7 +7091,7 @@ public class LibraryClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7091,8 +7105,10 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Test samplegen response handling when a client streaming method returns Empty.
-   * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+   * Test samplegen response handling when a client streaming method returns
+   * Empty.
+   * gRPC streaming methods don't have an HTTP equivalent and don't need to
+   * have the google.api.http option.
    *
    * Sample code:
    * <pre><code>
@@ -7117,7 +7133,7 @@ public class LibraryClient implements BackgroundResource {
    *   ApiStreamObserver&lt;DiscussBookRequest&gt; requestObserver =
    *       libraryClient.babbleAboutBookCallable().clientStreamingCall(responseObserver);
    *
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7165,7 +7181,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
@@ -7193,7 +7209,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
@@ -7219,7 +7235,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName namesElement = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName namesElement = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
    *   FindRelatedBooksRequest request = FindRelatedBooksRequest.newBuilder()
@@ -7301,7 +7317,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book response = libraryClient.getBigBookAsync(name).get();
    * }
    * </code></pre>
@@ -7325,7 +7341,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book response = libraryClient.getBigBookAsync(name.toString()).get();
    * }
    * </code></pre>
@@ -7349,7 +7365,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7372,7 +7388,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7394,7 +7410,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7415,7 +7431,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   libraryClient.getBigNothingAsync(name).get();
    * }
    * </code></pre>
@@ -7439,7 +7455,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   libraryClient.getBigNothingAsync(name.toString()).get();
    * }
    * </code></pre>
@@ -7463,7 +7479,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7486,7 +7502,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7508,7 +7524,7 @@ public class LibraryClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -7557,8 +7573,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String requiredSingularResourceNameCommon = "";
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -7618,8 +7634,8 @@ public class LibraryClient implements BackgroundResource {
    *   String optionalSingularString = "";
    *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName optionalSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName optionalSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName optionalSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName optionalSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String optionalSingularResourceNameCommon = "";
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
@@ -7943,8 +7959,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String requiredSingularResourceNameCommon = "";
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -8004,8 +8020,8 @@ public class LibraryClient implements BackgroundResource {
    *   String optionalSingularString = "";
    *   ByteString optionalSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName optionalSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName optionalSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName optionalSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName optionalSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String optionalSingularResourceNameCommon = "";
    *   int optionalSingularFixed32 = 0;
    *   long optionalSingularFixed64 = 0L;
@@ -8329,8 +8345,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String requiredSingularResourceNameCommon = "";
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -8471,8 +8487,8 @@ public class LibraryClient implements BackgroundResource {
    *   String requiredSingularString = "";
    *   ByteString requiredSingularBytes = ByteString.copyFromUtf8("");
    *   TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-   *   BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+   *   BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String requiredSingularResourceNameCommon = "";
    *   int requiredSingularFixed32 = 0;
    *   long requiredSingularFixed64 = 0L;
@@ -9685,13 +9701,14 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
-   * New APIs should always create a separate message for a request.
+   * Test using resource messages as request objects. Only used by PubSub
+   * (CreateSubscription) for historical reasons. New APIs should always create
+   * a separate message for a request.
    *
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String author = "";
    *   String title = "";
    *   Book.Rating rating = Book.Rating.GOOD;
@@ -9720,13 +9737,14 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
-   * New APIs should always create a separate message for a request.
+   * Test using resource messages as request objects. Only used by PubSub
+   * (CreateSubscription) for historical reasons. New APIs should always create
+   * a separate message for a request.
    *
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   String author = "";
    *   String title = "";
    *   Book.Rating rating = Book.Rating.GOOD;
@@ -9755,13 +9773,14 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
-   * New APIs should always create a separate message for a request.
+   * Test using resource messages as request objects. Only used by PubSub
+   * (CreateSubscription) for historical reasons. New APIs should always create
+   * a separate message for a request.
    *
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book request = Book.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -9778,13 +9797,14 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
-   * Test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
-   * New APIs should always create a separate message for a request.
+   * Test using resource messages as request objects. Only used by PubSub
+   * (CreateSubscription) for historical reasons. New APIs should always create
+   * a separate message for a request.
    *
    * Sample code:
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
-   *   BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+   *   BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
    *   Book request = Book.newBuilder()
    *     .setName(name.toString())
    *     .build();
@@ -16029,7 +16049,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void createBookTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16143,7 +16163,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16157,7 +16177,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
     Book actualResponse =
         client.getBook(name);
@@ -16181,7 +16201,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
       client.getBook(name);
       Assert.fail("No exception raised");
@@ -16246,7 +16266,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
     client.deleteBook(name);
 
@@ -16268,7 +16288,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
       client.deleteBook(name);
       Assert.fail("No exception raised");
@@ -16280,7 +16300,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16294,7 +16314,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     Book book = Book.newBuilder().build();
 
     Book actualResponse =
@@ -16320,7 +16340,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       Book book = Book.newBuilder().build();
 
       client.updateBook(name, book);
@@ -16333,7 +16353,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void updateBookTest2() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16347,7 +16367,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String optionalFoo = "optionalFoo1822578535";
     Book book = Book.newBuilder().build();
     FieldMask updateMask = FieldMask.newBuilder().build();
@@ -16379,7 +16399,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String optionalFoo = "optionalFoo1822578535";
       Book book = Book.newBuilder().build();
       FieldMask updateMask = FieldMask.newBuilder().build();
@@ -16395,7 +16415,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void moveBookTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16409,7 +16429,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     ShelfName otherShelfName = ShelfName.of("[SHELF]");
 
     Book actualResponse =
@@ -16435,7 +16455,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       ShelfName otherShelfName = ShelfName.of("[SHELF]");
 
       client.moveBook(name, otherShelfName);
@@ -16548,7 +16568,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     ByteString comment = ByteString.copyFromUtf8("95");
     Comment.Stage stage = Comment.Stage.UNSET;
     SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -16580,7 +16600,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       ByteString comment = ByteString.copyFromUtf8("95");
       Comment.Stage stage = Comment.Stage.UNSET;
       SomeMessage2.SomeMessage3.Alignment alignment = SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -16652,7 +16672,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAnywhereTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16664,8 +16684,8 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-    BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+    BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
     FolderName folder = FolderName.of("[FOLDER]");
 
@@ -16694,8 +16714,8 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-      BookName altBookName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+      BookName altBookName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       LocationName place = LocationName.of("[PROJECT]", "[LOCATION]");
       FolderName folder = FolderName.of("[FOLDER]");
 
@@ -16709,7 +16729,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBookFromAbsolutelyAnywhereTest() {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16721,7 +16741,7 @@ public class LibraryClientTest {
       .build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
     BookFromAnywhere actualResponse =
         client.getBookFromAbsolutelyAnywhere(name);
@@ -16745,7 +16765,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
       client.getBookFromAbsolutelyAnywhere(name);
       Assert.fail("No exception raised");
@@ -16760,7 +16780,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String indexName = "default index";
     String indexMapItem = "indexMapItem1918721251";
     Map<String, String> indexMap = new HashMap<>();
@@ -16788,7 +16808,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String indexName = "default index";
       String indexMapItem = "indexMapItem1918721251";
       Map<String, String> indexMap = new HashMap<>();
@@ -16855,7 +16875,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamBooksTest() throws Exception {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -16920,7 +16940,7 @@ public class LibraryClientTest {
       .setComment(comment)
       .build();
     mockLibraryService.addResponse(expectedResponse);
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
       .setName(name.toString())
       .build();
@@ -16945,7 +16965,7 @@ public class LibraryClientTest {
   public void discussBookExceptionTest() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     DiscussBookRequest request = DiscussBookRequest.newBuilder()
       .setName(name.toString())
       .build();
@@ -16973,7 +16993,7 @@ public class LibraryClientTest {
   @SuppressWarnings("all")
   public void findRelatedBooksTest() {
     String nextPageToken = "";
-    BookName namesElement2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName namesElement2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     List<BookName> names2 = Arrays.asList(namesElement2);
     FindRelatedBooksResponse expectedResponse = FindRelatedBooksResponse.newBuilder()
       .setNextPageToken(nextPageToken)
@@ -17078,7 +17098,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void getBigBookTest() throws Exception {
-    BookName name2 = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name2 = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -17098,7 +17118,7 @@ public class LibraryClientTest {
             .build();
     mockLibraryService.addResponse(resultOperation);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
     Book actualResponse =
         client.getBigBookAsync(name).get();
@@ -17122,7 +17142,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
       client.getBigBookAsync(name).get();
       Assert.fail("No exception raised");
@@ -17146,7 +17166,7 @@ public class LibraryClientTest {
             .build();
     mockLibraryService.addResponse(resultOperation);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
     Empty actualResponse =
         client.getBigNothingAsync(name).get();
@@ -17170,7 +17190,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
 
       client.getBigNothingAsync(name).get();
       Assert.fail("No exception raised");
@@ -17231,8 +17251,8 @@ public class LibraryClientTest {
     String requiredSingularString = "requiredSingularString-1949894503";
     ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-    BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-    BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+    BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String requiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002";
     int requiredSingularFixed32 = 720656715;
     long requiredSingularFixed64 = 720656810;
@@ -17292,8 +17312,8 @@ public class LibraryClientTest {
     String optionalSingularString = "optionalSingularString1852995162";
     ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
     TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-    BookName optionalSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-    BookName optionalSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName optionalSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+    BookName optionalSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String optionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657";
     int optionalSingularFixed32 = 1648847958;
     long optionalSingularFixed64 = 1648847863;
@@ -17497,8 +17517,8 @@ public class LibraryClientTest {
       String requiredSingularString = "requiredSingularString-1949894503";
       ByteString requiredSingularBytes = ByteString.copyFromUtf8("-29");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-      BookName requiredSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-      BookName requiredSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName requiredSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+      BookName requiredSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String requiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002";
       int requiredSingularFixed32 = 720656715;
       long requiredSingularFixed64 = 720656810;
@@ -17558,8 +17578,8 @@ public class LibraryClientTest {
       String optionalSingularString = "optionalSingularString1852995162";
       ByteString optionalSingularBytes = ByteString.copyFromUtf8("2");
       TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage = TestOptionalRequiredFlatteningParamsRequest.InnerMessage.newBuilder().build();
-      BookName optionalSingularResourceName = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
-      BookName optionalSingularResourceNameOneof = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName optionalSingularResourceName = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
+      BookName optionalSingularResourceNameOneof = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String optionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657";
       int optionalSingularFixed32 = 1648847958;
       long optionalSingularFixed64 = 1648847863;
@@ -17879,7 +17899,7 @@ public class LibraryClientTest {
     Empty expectedResponse = Empty.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     Book.Rating rating = Book.Rating.GOOD;
@@ -17907,7 +17927,7 @@ public class LibraryClientTest {
     mockLibraryService.addException(exception);
 
     try {
-      BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+      BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
       String author = "author-1406328437";
       String title = "title110371416";
       Book.Rating rating = Book.Rating.GOOD;
@@ -17922,7 +17942,7 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void privateListShelvesTest() {
-    BookName name = BookName.ofShelfBookName("[SHELF]", "[BOOK]");
+    BookName name = BookName.ofShelfBookOneBookTwoName("[SHELF]", "[BOOK_ONE]", "[BOOK_TWO]");
     String author = "author-1406328437";
     String title = "title110371416";
     boolean read = true;
@@ -18005,7 +18025,7 @@ public class LibrarySmokeTest {
   public static void main(String args[]) {
     Logger.getLogger("").setLevel(Level.WARNING);
     try {
-      executeNoCatch(getProjectId());
+      executeNoCatch();
       System.out.println("OK");
     } catch (Exception e) {
       System.err.println("Failed with exception:");
@@ -18014,9 +18034,9 @@ public class LibrarySmokeTest {
     }
   }
 
-  public static void executeNoCatch(String projectId) throws Exception {
+  public static void executeNoCatch() throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
-      BookName name = BookName.ofShelfBookName("testShelf-" + System.currentTimeMillis(), projectId);
+      BookName name = BookName.ofShelfBookOneBookTwoName("testShelf-" + System.currentTimeMillis(), "[BOOK_ONE]", "[BOOK_TWO]");
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
         .setRating(rating)
