@@ -229,9 +229,16 @@ class BazelBuildFileView {
       }
 
       if (protoImport.endsWith(":operations_proto")) {
-        goImports.add(replaceLabelName(protoImport, ":longrunning_go_gapic"));
+        // Disable injection of unused longrunning GAPIC target as dependency.
+        //
+        // TODO(ndietz) enable this dependency once issue is closed:
+        // https://github.com/googleapis/gapic-generator-go/issues/387
+        // goImports.add(replaceLabelName(protoImport, ":longrunning_go_gapic"));
         goImports.add(replaceLabelName(protoImport, ":longrunning_go_proto"));
         goImports.add("@com_google_cloud_go//longrunning:go_default_library");
+        // TODO(ndietz) remove this dependency once issue is closed:
+        // https://github.com/googleapis/gapic-generator-go/issues/387
+        goImports.add("@com_google_cloud_go//longrunning/autogen:go_default_library");
         for (String pi : protoImports) {
           if (pi.startsWith("@com_google_protobuf//")) {
             if (pi.endsWith(":struct_proto")) {
