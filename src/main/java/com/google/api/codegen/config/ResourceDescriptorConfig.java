@@ -80,8 +80,8 @@ public abstract class ResourceDescriptorConfig {
     return new AutoValue_ResourceDescriptorConfig(
         /* isDefinedAtMessageLevel= */ false,
         /* unifiedResourceType= */ "",
-        /*patterns=*/ ImmutableList.of("*"),
-        /*nameField=*/ "",
+        /* patterns= */ ImmutableList.of("*"),
+        /* nameField= */ "",
         /* history= */ ResourceDescriptor.History.HISTORY_UNSPECIFIED,
         /* requiresOneofConfig= */ false,
         /* singlePattern= */ "*",
@@ -232,19 +232,8 @@ public abstract class ResourceDescriptorConfig {
         ImmutableList.copyOf(descriptorConfigMap.values());
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
       ResourceDescriptorConfig childResource = entry.getValue();
-      System.out.println(
-          "DEL: Looking at entry "
-              + entry.getKey()
-              + " : "
-              + entry.getValue()
-              + ", getparent: "
-              + getParentPatternsMap(childResource));
       for (int i = 0; i < allResources.size(); i++) {
         if (childResource.getPatterns().contains("*")) {
-          System.out.println("DEL: Contains pattern wildcard");
-          System.out.println(
-              "DEL: Will use wildcard pattern "
-                  + getWildcardResource(childResource.getAssignedProtoFile()));
           builder.put(
               entry.getKey(),
               Arrays.asList(getWildcardResource(childResource.getAssignedProtoFile())));
