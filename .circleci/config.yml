@@ -130,7 +130,7 @@ anchor_test_ruby_client: &anchor_test_ruby_client
 anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
-    - image: circleci/ruby:2.4-node
+    - image: circleci/ruby:2.5-node
     - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   environment:
     LANGUAGE: ruby
@@ -506,7 +506,8 @@ jobs:
       - run:
           name: Generate and build the Java Compute client
           command: |
-            java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-0.0.5-fatjar.jar \
+            version=`cat workspace/gapic-generator/versions.txt | awk -F: '{ print $3; }'`
+            java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-${version}-fatjar.jar \
                 com.google.api.codegen.GeneratorMain DISCOGAPIC_CODE \
                 --discovery_doc discovery/compute.v1.json -o $COMPUTE_OUT \
                 --gapic_yaml discovery/compute_gapic.yaml --language java
@@ -579,11 +580,11 @@ jobs:
       NOX_COMMANDS: |
         nox --noxfile noxfile.py -s system
     <<: *anchor_verify_and_test_python
-  ruby-2.4-test:
+  ruby-2.5-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake test"
     <<: *anchor_run_ruby
-  ruby-2.4-system-test:
+  ruby-2.5-system-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake acceptance"
       <<: *anchor_auth_vars
@@ -785,7 +786,7 @@ workflows:
       - python-test:
           requires:
             - generate-clients
-      - ruby-2.4-test:
+      - ruby-2.5-test:
           requires:
             - generate-clients
       - python-system-test:
@@ -794,7 +795,7 @@ workflows:
           filters:
             branches:
               only: master
-      - ruby-2.4-system-test:
+      - ruby-2.5-system-test:
           requires:
             - generate-clients
           filters:
