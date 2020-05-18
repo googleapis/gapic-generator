@@ -610,14 +610,14 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-  nodejs-8-test:
+  nodejs-10-test:
     working_directory: /tmp/
     environment:
       LANGUAGE: nodejs
       NODEJS_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/js
       <<: *anchor_artman_vars
     docker:
-      - image: circleci/node:8-stretch-browsers
+      - image: circleci/node:10-stretch-browsers
       - image: gcr.io/gapic-images/gapic-showcase:0.4.0
     steps:
       - attach_workspace:
@@ -808,7 +808,7 @@ workflows:
       - go-1.10-test:
           requires:
             - generate-clients
-      - nodejs-8-test:
+      - nodejs-10-test:
           requires:
             - generate-clients
 
