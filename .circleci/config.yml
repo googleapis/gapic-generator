@@ -506,7 +506,7 @@ jobs:
       - run:
           name: Generate and build the Java Compute client
           command: |
-            version=`cat workspace/gapic-generator/versions.txt | awk -F: '{ print $3; }'`
+            version=`cat workspace/gapic-generator/version.txt`
             java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-${version}-fatjar.jar \
                 com.google.api.codegen.GeneratorMain DISCOGAPIC_CODE \
                 --discovery_doc discovery/compute.v1.json -o $COMPUTE_OUT \
