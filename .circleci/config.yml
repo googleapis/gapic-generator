@@ -316,7 +316,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.7.0
+      SHOWCASE_VERSION: 0.10.1
     steps:
       - checkout:
           path: gapic-generator
@@ -326,13 +326,18 @@ jobs:
             git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Setup showcase protos.
+          # Remove the other showcase protos, testing only uses echo.proto
           command: |
             mkdir showcase-protos
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/showcase_grpc_service_config.json > showcase-protos/google/showcase/v1beta1/showcase_grpc_service_config.json
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
             cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1beta1/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
+            rm showcase-protos/google/showcase/v1beta1/identity.proto
+            rm showcase-protos/google/showcase/v1beta1/messaging.proto
+            rm showcase-protos/google/showcase/v1beta1/testing.proto
 
       - run:
           name: Build and install local toolkit
@@ -528,7 +533,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
+      - image: gcr.io/gapic-images/gapic-showcase:0.10.1
     steps:
       - attach_workspace:
           at: workspace
