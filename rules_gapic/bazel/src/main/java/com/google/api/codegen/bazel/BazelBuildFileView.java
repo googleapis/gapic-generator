@@ -49,12 +49,16 @@ class BazelBuildFileView {
       return;
     }
 
-    String serviceConfigJson = bp.getServiceConfigJsonPath();
-    if (serviceConfigJson == null) {
-      serviceConfigJson = "";
+    // Default grpc_service_config to None, unless there is one present.
+    tokens.put("grpc_service_config", "None");
+    if (bp.getServiceConfigJsonPath() != null) {
+      // Wrap the label in quotes, because the template doesn't supply them
+      // in case that None is supplied, which is a built-in value.
+      tokens.put(
+          "grpc_service_config",
+          "\"" + convertPathToLabel(bp.getProtoPackage(), bp.getServiceConfigJsonPath()) + "\"");
     }
 
-    tokens.put("grpc_service_config", convertPathToLabel(bp.getProtoPackage(), serviceConfigJson));
     tokens.put("gapic_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getGapicYamlPath()));
     tokens.put("service_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getServiceYamlPath()));
 
