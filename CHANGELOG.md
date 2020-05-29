@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.2](https://www.github.com/googleapis/gapic-generator/compare/v2.0.1...v2.0.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* nodejs build_gen uses grpc_service_config ([#3206](https://www.github.com/googleapis/gapic-generator/issues/3206)) ([375959e](https://www.github.com/googleapis/gapic-generator/commit/375959e1e9d8f6bdcaafba1a47a98b96e899e831))
+
 ### [2.0.1](https://www.github.com/googleapis/gapic-generator/compare/v2.0.0...v2.0.1) (2020-05-27)
 
 
