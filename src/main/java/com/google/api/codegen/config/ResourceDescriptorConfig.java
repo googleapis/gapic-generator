@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,6 +75,19 @@ public abstract class ResourceDescriptorConfig {
 
   /** The entity name for the resource config. */
   public abstract String getDerivedEntityName();
+
+  public static ResourceDescriptorConfig getWildcardResource(ProtoFile protoFile) {
+    return new AutoValue_ResourceDescriptorConfig(
+        /* isDefinedAtMessageLevel= */ false,
+        /* unifiedResourceType= */ "",
+        /* patterns= */ ImmutableList.of("*"),
+        /* nameField= */ "",
+        /* history= */ ResourceDescriptor.History.HISTORY_UNSPECIFIED,
+        /* requiresOneofConfig= */ false,
+        /* singlePattern= */ "*",
+        protoFile,
+        /* derivedEntityName= */ "");
+  }
 
   public static ResourceDescriptorConfig from(
       ResourceDescriptor descriptor, ProtoFile assignedProtoFile, boolean isDefinedAtMessageLevel) {
@@ -219,6 +233,13 @@ public abstract class ResourceDescriptorConfig {
     for (Map.Entry<String, ResourceDescriptorConfig> entry : descriptorConfigMap.entrySet()) {
       ResourceDescriptorConfig childResource = entry.getValue();
       for (int i = 0; i < allResources.size(); i++) {
+        if (childResource.getPatterns().contains("*")) {
+          builder.put(
+              entry.getKey(),
+              Arrays.asList(getWildcardResource(childResource.getAssignedProtoFile())));
+          break;
+        }
+
         List<ResourceDescriptorConfig> parentResource =
             matchParentResourceDescriptor(
                 getParentPatternsMap(childResource),

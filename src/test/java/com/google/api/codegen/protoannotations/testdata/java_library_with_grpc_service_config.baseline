@@ -21,7 +21,7 @@ apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-library-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -88,7 +88,7 @@ apply plugin: 'application'
 
 description = 'GAPIC samples for google-cloud-library-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -14487,13 +14487,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setInitialRetryDelay(Duration.ofMillis(200L))
           .setRetryDelayMultiplier(1.3)
           .setMaxRetryDelay(Duration.ofMillis(35000L))
+          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(60000L))
           .setTotalTimeout(Duration.ofMillis(60000L))
           .build();
       definitions.put("retry_policy_1_params", settings);
       settings = RetrySettings.newBuilder()
+          .setRpcTimeoutMultiplier(1.0)
           .build();
       definitions.put("no_retry_params", settings);
       settings = RetrySettings.newBuilder()
+          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(60000L))
           .setTotalTimeout(Duration.ofMillis(60000L))
           .build();
       definitions.put("no_retry_1_params", settings);
@@ -15491,9 +15498,13 @@ public class MyProtoStubSettings extends StubSettings<MyProtoStubSettings> {
       ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
       RetrySettings settings = null;
       settings = RetrySettings.newBuilder()
+          .setRpcTimeoutMultiplier(1.0)
           .build();
       definitions.put("no_retry_params", settings);
       settings = RetrySettings.newBuilder()
+          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(60000L))
           .setTotalTimeout(Duration.ofMillis(60000L))
           .build();
       definitions.put("no_retry_2_params", settings);
@@ -18613,11 +18624,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> discussBook(
       final StreamObserver<Comment> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
         } else if (response instanceof Exception) {
@@ -18643,11 +18655,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> monologAboutBook(
       final StreamObserver<Comment> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
         } else if (response instanceof Exception) {
@@ -18673,11 +18686,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> babbleAboutBook(
       final StreamObserver<Empty> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Empty) {
           responseObserver.onNext((Empty) response);
         } else if (response instanceof Exception) {
@@ -18793,11 +18807,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<ArchiveBooksRequest> streamingArchiveBooks(
       final StreamObserver<ArchiveBooksResponse> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<ArchiveBooksRequest> requestObserver =
         new StreamObserver<ArchiveBooksRequest>() {
       @Override
       public void onNext(ArchiveBooksRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof ArchiveBooksResponse) {
           responseObserver.onNext((ArchiveBooksResponse) response);
         } else if (response instanceof Exception) {

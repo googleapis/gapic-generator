@@ -131,9 +131,9 @@ public class PackagingConfigTest {
     // 6
     expected =
         config(
-            "graph",
+            "home-graph",
             "v1",
-            "google-home",
+            "google-cloud",
             "google/home/graph/v1",
             false,
             ReleaseLevel.UNSET_RELEASE_LEVEL);
@@ -142,9 +142,9 @@ public class PackagingConfigTest {
     // 7
     expected =
         config(
-            "publish",
+            "streetview-publish",
             "v1",
-            "google-streetview",
+            "google-cloud",
             "google/streetview/publish/v1",
             false,
             ReleaseLevel.UNSET_RELEASE_LEVEL);
@@ -165,9 +165,9 @@ public class PackagingConfigTest {
     // 9
     expected =
         config(
-            "admin",
+            "iam-admin",
             "v1",
-            "google-iam",
+            "google-cloud",
             "google/iam/admin/v1",
             false,
             ReleaseLevel.UNSET_RELEASE_LEVEL);
@@ -183,6 +183,45 @@ public class PackagingConfigTest {
             false,
             ReleaseLevel.UNSET_RELEASE_LEVEL);
     params.add(param("<wrong_input>", false, expected));
+
+    // 11
+    expected =
+        config(
+            "bigquery-datatransfer",
+            "v1",
+            "google-cloud",
+            "google/cloud/bigquery/datatransfer/v1",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("google.cloud.bigquery.datatransfer.v1.DataTransferService", false, expected));
+
+    // 12
+    expected =
+        config(
+            "bigtable-admin",
+            "v2",
+            "google-cloud",
+            "google/bigtable/admin/v2",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("google.bigtable.admin.v2.BigtableTableAdmin", false, expected));
+
+    // 13
+    expected =
+        config(
+            "grafeas", "v1", "google-cloud", "grafeas/v1", false, ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("grafeas.v1.Grafeas", false, expected));
+
+    // 14
+    expected =
+        config(
+            "logging",
+            "v2",
+            "google-cloud",
+            "google/logging/v2",
+            false,
+            ReleaseLevel.UNSET_RELEASE_LEVEL);
+    params.add(param("google.logging.v2.ConfigServiceV2", false, expected));
 
     return params.build();
   }

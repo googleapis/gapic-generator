@@ -21,7 +21,7 @@ apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-multiple_services-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -2353,11 +2353,12 @@ public class MockDecrementerServiceImpl extends DecrementerServiceImplBase {
   @Override
   public StreamObserver<DecrementRequest> decrement(
       final StreamObserver<Empty> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DecrementRequest> requestObserver =
         new StreamObserver<DecrementRequest>() {
       @Override
       public void onNext(DecrementRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Empty) {
           responseObserver.onNext((Empty) response);
         } else if (response instanceof Exception) {

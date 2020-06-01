@@ -130,7 +130,7 @@ anchor_test_ruby_client: &anchor_test_ruby_client
 anchor_run_ruby: &anchor_run_ruby
   working_directory: /tmp/
   docker:
-    - image: circleci/ruby:2.4-node
+    - image: circleci/ruby:2.5-node
     - image: gcr.io/gapic-images/gapic-showcase:0.2.0
   environment:
     LANGUAGE: ruby
@@ -316,7 +316,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.7.0
+      SHOWCASE_VERSION: 0.10.1
     steps:
       - checkout:
           path: gapic-generator
@@ -326,13 +326,18 @@ jobs:
             git clone --single-branch https://github.com/googleapis/googleapis.git googleapis
       - run:
           name: Setup showcase protos.
+          # Remove the other showcase protos, testing only uses echo.proto
           command: |
             mkdir showcase-protos
             curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/gapic-showcase-${SHOWCASE_VERSION}-protos.tar.gz | tar -C showcase-protos -xz
+            curl -sL https://github.com/googleapis/gapic-showcase/releases/download/v${SHOWCASE_VERSION}/showcase_grpc_service_config.json > showcase-protos/google/showcase/v1beta1/showcase_grpc_service_config.json
             TEST_SRC="gapic-generator/src/test/java/com/google/api/codegen/testsrc/showcase"
             cp ${TEST_SRC}/showcase.yaml showcase-protos/google/showcase/
             cp ${TEST_SRC}/showcase_gapic.yaml showcase-protos/google/showcase/v1beta1/
             cp ${TEST_SRC}/artman_showcase.yaml showcase-protos/google/showcase/
+            rm showcase-protos/google/showcase/v1beta1/identity.proto
+            rm showcase-protos/google/showcase/v1beta1/messaging.proto
+            rm showcase-protos/google/showcase/v1beta1/testing.proto
 
       - run:
           name: Build and install local toolkit
@@ -414,7 +419,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:1.1.1
+      - image: googleapis/artman:2.0.0
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -506,7 +511,8 @@ jobs:
       - run:
           name: Generate and build the Java Compute client
           command: |
-            java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-0.0.5-fatjar.jar \
+            version=`cat workspace/gapic-generator/version.txt`
+            java -Xmx1024m -cp workspace/gapic-generator/build/libs/gapic-generator-${version}-fatjar.jar \
                 com.google.api.codegen.GeneratorMain DISCOGAPIC_CODE \
                 --discovery_doc discovery/compute.v1.json -o $COMPUTE_OUT \
                 --gapic_yaml discovery/compute_gapic.yaml --language java
@@ -527,7 +533,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-images/gapic-showcase:0.2.0
+      - image: gcr.io/gapic-images/gapic-showcase:0.10.1
     steps:
       - attach_workspace:
           at: workspace
@@ -579,11 +585,11 @@ jobs:
       NOX_COMMANDS: |
         nox --noxfile noxfile.py -s system
     <<: *anchor_verify_and_test_python
-  ruby-2.4-test:
+  ruby-2.5-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake test"
     <<: *anchor_run_ruby
-  ruby-2.4-system-test:
+  ruby-2.5-system-test:
     environment:
       RUBY_TEST_COMMAND: "bundle exec rake acceptance"
       <<: *anchor_auth_vars
@@ -609,14 +615,14 @@ jobs:
       <<: *anchor_auth_vars
     docker:
       - image: circleci/php:7.2.0-cli-stretch
-  nodejs-8-test:
+  nodejs-10-test:
     working_directory: /tmp/
     environment:
       LANGUAGE: nodejs
       NODEJS_GEN_DIR: /tmp/workspace/gapic-generator/artman-genfiles/js
       <<: *anchor_artman_vars
     docker:
-      - image: circleci/node:8-stretch-browsers
+      - image: circleci/node:10-stretch-browsers
       - image: gcr.io/gapic-images/gapic-showcase:0.4.0
     steps:
       - attach_workspace:
@@ -738,7 +744,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:1.1.1
+      - image: googleapis/artman:2.0.0
     steps:
       - attach_workspace:
           at: workspace
@@ -785,7 +791,7 @@ workflows:
       - python-test:
           requires:
             - generate-clients
-      - ruby-2.4-test:
+      - ruby-2.5-test:
           requires:
             - generate-clients
       - python-system-test:
@@ -794,7 +800,7 @@ workflows:
           filters:
             branches:
               only: master
-      - ruby-2.4-system-test:
+      - ruby-2.5-system-test:
           requires:
             - generate-clients
           filters:
@@ -807,7 +813,7 @@ workflows:
       - go-1.10-test:
           requires:
             - generate-clients
-      - nodejs-8-test:
+      - nodejs-10-test:
           requires:
             - generate-clients
 

@@ -21,7 +21,7 @@ apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-my_streaming_service-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -1269,11 +1269,12 @@ public class MockMyStreamingServiceImpl extends MyStreamingServiceImplBase {
   @Override
   public StreamObserver<StreamingRequest> myMethod(
       final StreamObserver<StreamingResponse> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<StreamingRequest> requestObserver =
         new StreamObserver<StreamingRequest>() {
       @Override
       public void onNext(StreamingRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof StreamingResponse) {
           responseObserver.onNext((StreamingResponse) response);
         } else if (response instanceof Exception) {

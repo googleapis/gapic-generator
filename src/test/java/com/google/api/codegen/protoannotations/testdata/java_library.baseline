@@ -21,7 +21,7 @@ apply plugin: 'java'
 
 description = 'GAPIC library for google-cloud-library-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -88,7 +88,7 @@ apply plugin: 'application'
 
 description = 'GAPIC samples for google-cloud-library-v1'
 group = 'com.google.cloud'
-version = '0.0.0-SNAPSHOT'
+version = (findProperty('version') == 'unspecified') ? '0.0.0-SNAPSHOT' : version
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -18609,11 +18609,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> discussBook(
       final StreamObserver<Comment> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
         } else if (response instanceof Exception) {
@@ -18639,11 +18640,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> monologAboutBook(
       final StreamObserver<Comment> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Comment) {
           responseObserver.onNext((Comment) response);
         } else if (response instanceof Exception) {
@@ -18669,11 +18671,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<DiscussBookRequest> babbleAboutBook(
       final StreamObserver<Empty> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<DiscussBookRequest> requestObserver =
         new StreamObserver<DiscussBookRequest>() {
       @Override
       public void onNext(DiscussBookRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof Empty) {
           responseObserver.onNext((Empty) response);
         } else if (response instanceof Exception) {
@@ -18789,11 +18792,12 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
   @Override
   public StreamObserver<ArchiveBooksRequest> streamingArchiveBooks(
       final StreamObserver<ArchiveBooksResponse> responseObserver) {
-    final Object response = responses.remove();
     StreamObserver<ArchiveBooksRequest> requestObserver =
         new StreamObserver<ArchiveBooksRequest>() {
       @Override
       public void onNext(ArchiveBooksRequest value) {
+        requests.add(value);
+        final Object response = responses.remove();
         if (response instanceof ArchiveBooksResponse) {
           responseObserver.onNext((ArchiveBooksResponse) response);
         } else if (response instanceof Exception) {

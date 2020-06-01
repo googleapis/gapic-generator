@@ -49,12 +49,16 @@ class BazelBuildFileView {
       return;
     }
 
-    String serviceConfigJson = bp.getServiceConfigJsonPath();
-    if (serviceConfigJson == null) {
-      serviceConfigJson = "";
+    // Default grpc_service_config to None, unless there is one present.
+    tokens.put("grpc_service_config", "None");
+    if (bp.getServiceConfigJsonPath() != null) {
+      // Wrap the label in quotes, because the template doesn't supply them
+      // in case that None is supplied, which is a built-in value.
+      tokens.put(
+          "grpc_service_config",
+          "\"" + convertPathToLabel(bp.getProtoPackage(), bp.getServiceConfigJsonPath()) + "\"");
     }
 
-    tokens.put("grpc_service_config", convertPathToLabel(bp.getProtoPackage(), serviceConfigJson));
     tokens.put("gapic_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getGapicYamlPath()));
     tokens.put("service_yaml", convertPathToLabel(bp.getProtoPackage(), bp.getServiceYamlPath()));
 
@@ -229,9 +233,16 @@ class BazelBuildFileView {
       }
 
       if (protoImport.endsWith(":operations_proto")) {
-        goImports.add(replaceLabelName(protoImport, ":longrunning_go_gapic"));
+        // Disable injection of unused longrunning GAPIC target as dependency.
+        //
+        // TODO(ndietz) enable this dependency once issue is closed:
+        // https://github.com/googleapis/gapic-generator-go/issues/387
+        // goImports.add(replaceLabelName(protoImport, ":longrunning_go_gapic"));
         goImports.add(replaceLabelName(protoImport, ":longrunning_go_proto"));
         goImports.add("@com_google_cloud_go//longrunning:go_default_library");
+        // TODO(ndietz) remove this dependency once issue is closed:
+        // https://github.com/googleapis/gapic-generator-go/issues/387
+        goImports.add("@com_google_cloud_go//longrunning/autogen:go_default_library");
         for (String pi : protoImports) {
           if (pi.startsWith("@com_google_protobuf//")) {
             if (pi.endsWith(":struct_proto")) {
