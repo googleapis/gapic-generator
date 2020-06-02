@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.0.3](https://www.github.com/googleapis/gapic-generator/compare/v2.0.2...v2.0.3) (2020-06-02)
+
+
+### Bug Fixes
+
+* adds missing whitespace ([#3179](https://www.github.com/googleapis/gapic-generator/issues/3179)) ([17fbb3b](https://www.github.com/googleapis/gapic-generator/commit/17fbb3b38a20d13e69879d845a045dc1f8448a3d)), closes [#3178](https://www.github.com/googleapis/gapic-generator/issues/3178)
+* build_gen use lro gapic as lro dep ([#3215](https://www.github.com/googleapis/gapic-generator/issues/3215)) ([996bbdd](https://www.github.com/googleapis/gapic-generator/commit/996bbdd2d37f3f83a7f30226101dad9465590691))
+
 ### [2.0.2](https://www.github.com/googleapis/gapic-generator/compare/v2.0.1...v2.0.2) (2020-05-29)
 
 
