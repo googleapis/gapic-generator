@@ -25,8 +25,11 @@ import com.google.api.gax.rpc.BidiStreamObserver;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ServerStream;
 import com.google.api.gax.rpc.StreamController;
+import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import com.google.showcase.v1beta1.BlockRequest;
+import com.google.showcase.v1beta1.BlockResponse;
 import com.google.showcase.v1beta1.EchoClient;
 import com.google.showcase.v1beta1.EchoRequest;
 import com.google.showcase.v1beta1.EchoResponse;
@@ -172,7 +175,7 @@ public class ShowcaseTest {
     }
     requestStream.onCompleted();
 
-    latch.await(2, TimeUnit.SECONDS);
+    latch.await(7, TimeUnit.SECONDS);
 
     assertThat(collections).containsExactly("a b c done");
   }
@@ -224,8 +227,35 @@ public class ShowcaseTest {
               }
             });
 
-    latch.await(2, TimeUnit.SECONDS);
+    latch.await(7, TimeUnit.SECONDS);
 
     assertThat(responses).containsExactlyElementsIn(inputs).inOrder();
+  }
+
+  @Test(expected = StatusRuntimeException.class)
+  public void blockTimeout() {
+    try {
+      client.block(
+          BlockRequest.newBuilder()
+              // Set a longer timeout than the 5 seconds specified in the grpc_service_config.
+              .setResponseDelay(Duration.newBuilder().setSeconds(10L).build())
+              .build());
+    } catch (Exception e) {
+      assertThat(e.getCause()).isInstanceOf(StatusRuntimeException.class);
+      StatusRuntimeException error = (StatusRuntimeException) e.getCause();
+      assertThat(error.getStatus().getCode().value()).isEqualTo(Code.DEADLINE_EXCEEDED_VALUE);
+      throw error;
+    }
+  }
+
+  @Test
+  public void block() {
+    BlockResponse result =
+        client.block(
+            BlockRequest.newBuilder()
+                .setResponseDelay(Duration.newBuilder().setSeconds(2L).build())
+                .setSuccess(BlockResponse.newBuilder().setContent("Hello, World!").build())
+                .build());
+    assertThat(result.getContent()).isEqualTo("Hello, World!");
   }
 }

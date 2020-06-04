@@ -160,10 +160,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
       }
     }
 
-    // if gRPC Service Config is given, consume it
+    // Consume gRPC Service Config if it is given with gapic_v2.
     String gRPCServiceConfigPath = options.get(GRPC_SERVICE_CONFIG);
     ServiceConfig gRPCServiceConfig = null;
-    if (!Strings.isNullOrEmpty(gRPCServiceConfigPath)) {
+    if (!Strings.isNullOrEmpty(gRPCServiceConfigPath)
+        && configProto.getConfigSchemaVersion().equals("2.0.0")) {
       ServiceConfig.Builder builder = ServiceConfig.newBuilder();
       FileReader file = new FileReader(gRPCServiceConfigPath);
       JsonFormat.parser().merge(file, builder);
