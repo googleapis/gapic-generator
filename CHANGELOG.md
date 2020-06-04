@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.4](https://www.github.com/googleapis/gapic-generator/compare/v2.0.3...v2.0.4) (2020-06-04)
+
+
+### Bug Fixes
+
+* update gax-java dependency version ([#3213](https://www.github.com/googleapis/gapic-generator/issues/3213)) ([bdaf640](https://www.github.com/googleapis/gapic-generator/commit/bdaf640a56eff853ad76be908981ac7fbbc3a61b))
+
 ### [2.0.3](https://www.github.com/googleapis/gapic-generator/compare/v2.0.2...v2.0.3) (2020-06-02)
 
 
