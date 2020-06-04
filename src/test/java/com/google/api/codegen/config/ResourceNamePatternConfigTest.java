@@ -22,14 +22,14 @@ public class ResourceNamePatternConfigTest {
 
   @Test
   public void testIsFixedPattern() {
-    assertThat(new ResourceNamePatternConfig("_deleted_topic_").isFixedPattern()).isEqualTo(true);
+    assertThat(new ResourceNamePatternConfig("_deleted-topic_").isFixedPattern()).isEqualTo(true);
     assertThat(new ResourceNamePatternConfig("states/{state}/cities/{city}").isFixedPattern())
         .isEqualTo(false);
   }
 
   @Test
   public void testGetCreateMethodName() {
-    assertThat(new ResourceNamePatternConfig("_deleted_topic_").getCreateMethodName())
+    assertThat(new ResourceNamePatternConfig("_deleted-topic_").getCreateMethodName())
         .isEqualTo("ofDeletedTopicName");
     assertThat(new ResourceNamePatternConfig("states/{state}/cities/{city}").getCreateMethodName())
         .isEqualTo("ofStateCityName");
@@ -37,7 +37,7 @@ public class ResourceNamePatternConfigTest {
 
   @Test
   public void testGetBindingVariables() {
-    assertThat(new ResourceNamePatternConfig("_deleted_topic_").getBindingVariables()).isEmpty();
+    assertThat(new ResourceNamePatternConfig("_deleted-topic_").getBindingVariables()).isEmpty();
     assertThat(new ResourceNamePatternConfig("states/{state}/cities/{city}").getBindingVariables())
         .containsExactly("state", "city");
   }
@@ -45,7 +45,7 @@ public class ResourceNamePatternConfigTest {
   @Test
   public void testGetPatternId() {
     ResourceNamePatternConfig pattern;
-    pattern = new ResourceNamePatternConfig("_deleted_topic");
+    pattern = new ResourceNamePatternConfig("_deleted-topic_");
     assertThat(pattern.getPatternId()).isEqualTo("deleted_topic");
     pattern = new ResourceNamePatternConfig("states/{state}/cities/{city}");
     assertThat(pattern.getPatternId()).isEqualTo("state_city");
