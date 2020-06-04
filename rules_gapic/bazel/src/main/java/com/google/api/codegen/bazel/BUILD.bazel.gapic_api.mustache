@@ -107,7 +107,7 @@ go_proto_library(
 go_gapic_library(
     name = "{{name}}_go_gapic",
     srcs = [":{{name}}_proto_with_info"],
-    grpc_service_config = "{{grpc_service_config}}",
+    grpc_service_config = {{grpc_service_config}},
     importpath = "{{go_gapic_importpath}}",
     service_yaml = "{{service_yaml}}",
     deps = [
@@ -242,7 +242,7 @@ load(
 nodejs_gapic_library(
     name = "{{name}}_nodejs_gapic",
     src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    grpc_service_config = {{grpc_service_config}},
     package = "{{package}}",
     service_yaml = "{{service_yaml}}",
     deps = [],

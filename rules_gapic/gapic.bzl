@@ -123,6 +123,7 @@ def _proto_custom_library_impl(ctx):
         )
 
     output_type_name = "--%s_out" % output_type
+    opt_type_name = "--%s_opt" % output_type
     output_paths = [intermediate_output.path]
     extra_inputs = []
     calculated_args = []
@@ -142,8 +143,11 @@ def _proto_custom_library_impl(ctx):
 
     if ctx.attr.plugin_args or plugin_file_args:
         output_paths.insert(0, ",".join(ctx.attr.plugin_args + plugin_file_args))
-
     calculated_args.append("%s=%s" % (output_type_name, ":".join(output_paths)))
+
+    if ctx.attr.opt_args:
+        calculated_args.append("%s=%s" % (opt_type_name, ",".join(ctx.attr.opt_args)))
+
     arguments = \
         ctx.attr.extra_args + \
         calculated_args + \
@@ -200,6 +204,7 @@ proto_custom_library = rule(
             default = {},
         ),
         "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
+        "opt_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
         "extra_args": attr.string_list(mandatory = False, default = []),
         "output_type": attr.string(mandatory = True),
         "output_suffix": attr.string(mandatory = True),

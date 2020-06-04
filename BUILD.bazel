@@ -20,6 +20,7 @@ _COMPILE_DEPS = [
     "@com_google_code_findbugs_jsr305//jar",
     "@com_google_code_gson_gson//jar",
     "@com_google_guava_guava__com_google_api_codegen//jar",
+    "@com_google_guava_failureaccess//jar",
     "@com_google_inject_guice//jar",
     "@com_google_protobuf//:protobuf_java",
     "@com_google_protobuf//:protobuf_java_util",
@@ -78,9 +79,11 @@ proto_library(
 proto_library(
     name = "grpc_service_config_proto",
     srcs = ["src/main/proto/com/google/api/codegen/grpc/service_config.proto"],
-    deps = ["@com_google_protobuf//:wrappers_proto",
-            "@com_google_protobuf//:duration_proto",
-            "@com_google_googleapis//google/rpc:code_proto"],
+    deps = [
+        "@com_google_googleapis//google/rpc:code_proto",
+        "@com_google_protobuf//:duration_proto",
+        "@com_google_protobuf//:wrappers_proto",
+    ],
 )
 
 java_proto_library(
@@ -88,8 +91,8 @@ java_proto_library(
     deps = [
         ":config_proto",
         ":config_v2_proto",
+        ":grpc_service_config_proto",
         ":sample_config_proto",
-        ":grpc_service_config_proto"
     ],
 )
 

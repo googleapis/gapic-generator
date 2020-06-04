@@ -139,9 +139,13 @@ public abstract class GrpcGapicRetryMapping {
       return;
     }
 
-    // apply the RetryPolicy to all methods in the service interface that don't already have an
-    // entry
+    // Apply the RetryPolicy to all methods in the service interface that don't already have an
+    // entry. If the Service is not present in the protos, skip it.
     Interface interProto = protoInterfaces.get(service);
+    if (interProto == null) {
+      return;
+    }
+
     for (Method methodProto : interProto.getMethods()) {
       String fullName = methodProto.getFullName();
       methodCodesMap.putIfAbsent(fullName, codesName);
@@ -155,7 +159,10 @@ public abstract class GrpcGapicRetryMapping {
         .setMaxRetryDelayMillis(Durations.toMillis(retryPolicy.getMaxBackoff()))
         .setInitialRetryDelayMillis(Durations.toMillis(retryPolicy.getInitialBackoff()))
         .setRetryDelayMultiplier(convertFloatToDouble(retryPolicy.getBackoffMultiplier()))
+        .setRpcTimeoutMultiplier(1.0)
         .setTotalTimeoutMillis(timeout)
+        .setMaxRpcTimeoutMillis(timeout)
+        .setInitialRpcTimeoutMillis(timeout)
         .setName(policyName);
   }
 

@@ -294,6 +294,61 @@ public class ResourceDescriptorConfigTest {
     assertThat(childParentResourceMap.get("food.google.com/Sauce")).containsExactly(veggie, meat);
   }
 
+  @Test
+  public void testGetChildParentResourceMap_MultiParentsMultiPatternsWithWildcard() {
+    ResourceDescriptorConfig sauce =
+        ResourceDescriptorConfig.from(
+            ResourceDescriptor.newBuilder()
+                .setType("food.google.com/Sauce")
+                .addPattern("steaks/{steak}/sauces/{sauce}")
+                .addPattern("barbeques/{barbeque}/sauces/{sauce}")
+                .addPattern("tofus/{tofu}/sauces/{sauce}")
+                .addPattern("salads/{salad}/sauces/{sauce}")
+                .addPattern("*")
+                .build(),
+            protoFile,
+            true);
+
+    ResourceDescriptorConfig meat =
+        ResourceDescriptorConfig.from(
+            ResourceDescriptor.newBuilder()
+                .setType("food.google.com/Meat")
+                .addPattern("steaks/{steak}")
+                .addPattern("barbeques/{barbeque}")
+                .build(),
+            protoFile,
+            true);
+
+    ResourceDescriptorConfig veggie =
+        ResourceDescriptorConfig.from(
+            ResourceDescriptor.newBuilder()
+                .setType("food.google.com/Veggie")
+                .addPattern("tofus/{tofu}")
+                .addPattern("salads/{salad}")
+                .build(),
+            protoFile,
+            true);
+
+    ResourceDescriptorConfig wildcard =
+        ResourceDescriptorConfig.from(
+            ResourceDescriptor.newBuilder().addPattern("*").build(), protoFile, false);
+
+    Map<String, ResourceDescriptorConfig> descriptorConfigMap =
+        getDescriptorConfigMap(sauce, meat, veggie);
+    Map<String, List<ResourceDescriptorConfig>> patternResourceDescriptorMap =
+        ResourceDescriptorConfig.getPatternResourceMap(Arrays.asList(sauce, meat, veggie));
+
+    Map<String, List<ResourceDescriptorConfig>> childParentResourceMap =
+        ResourceDescriptorConfig.getChildParentResourceMap(
+            descriptorConfigMap, patternResourceDescriptorMap);
+    System.out.println(
+        "DEL: MAP: " + childParentResourceMap.get("food.google.com/Sauce").toString());
+    System.out.println("DEL: wildcard: " + wildcard.toString());
+
+    assertThat(childParentResourceMap.size()).isEqualTo(1);
+    assertThat(childParentResourceMap.get("food.google.com/Sauce")).containsExactly(wildcard);
+  }
+
   private static Map<String, ResourceDescriptorConfig> getDescriptorConfigMap(
       ResourceDescriptorConfig... resources) {
     ImmutableMap.Builder<String, ResourceDescriptorConfig> builder = ImmutableMap.builder();
