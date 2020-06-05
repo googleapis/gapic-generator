@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/googleapis/gapic-generator/compare/v2.0.3...v2.1.0) (2020-06-05)
+
+
+### Features
+
+* add proto3_optional to proto_custom_library ([#3222](https://www.github.com/googleapis/gapic-generator/issues/3222)) ([9f11f73](https://www.github.com/googleapis/gapic-generator/commit/9f11f7341e0300cbc5b846dd2c6847b08c65e2f8))
+
+
+### Bug Fixes
+
+* update gax-java dependency version ([#3213](https://www.github.com/googleapis/gapic-generator/issues/3213)) ([bdaf640](https://www.github.com/googleapis/gapic-generator/commit/bdaf640a56eff853ad76be908981ac7fbbc3a61b))
+
 ### [2.0.3](https://www.github.com/googleapis/gapic-generator/compare/v2.0.2...v2.0.3) (2020-06-02)
 
 
