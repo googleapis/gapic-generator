@@ -743,8 +743,7 @@ func (c *LibClient) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBo
 }
 
 // StreamShelves test server streaming
-// gRPC streaming methods don't have an HTTP equivalent and don't need to
-// have the google.api.http option.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamShelvesClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.StreamShelves[0:len(c.CallOptions.StreamShelves):len(c.CallOptions.StreamShelves)], opts...)
@@ -761,8 +760,7 @@ func (c *LibClient) StreamShelves(ctx context.Context, req *librarypb.StreamShel
 }
 
 // StreamBooks test server streaming, non-paged responses.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to
-// have the google.api.http option.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamBooksClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.StreamBooks[0:len(c.CallOptions.StreamBooks):len(c.CallOptions.StreamBooks)], opts...)
@@ -810,10 +808,8 @@ func (c *LibClient) MonologAboutBook(ctx context.Context, opts ...gax.CallOption
     return resp, nil
 }
 
-// BabbleAboutBook test samplegen response handling when a client streaming method returns
-// Empty.
-// gRPC streaming methods don't have an HTTP equivalent and don't need to
-// have the google.api.http option.
+// BabbleAboutBook test samplegen response handling when a client streaming method returns Empty.
+// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *LibClient) BabbleAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_BabbleAboutBookClient, error) {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.BabbleAboutBook[0:len(c.CallOptions.BabbleAboutBook):len(c.CallOptions.BabbleAboutBook)], opts...)
@@ -1024,9 +1020,8 @@ func (c *LibClient) StreamingArchiveBooks(ctx context.Context, opts ...gax.CallO
     return resp, nil
 }
 
-// SaveBook test using resource messages as request objects. Only used by PubSub
-// (CreateSubscription) for historical reasons. New APIs should always create
-// a separate message for a request.
+// SaveBook test using resource messages as request objects. Only used by PubSub (CreateSubscription) for historical reasons.
+// New APIs should always create a separate message for a request.
 func (c *LibClient) SaveBook(ctx context.Context, req *librarypb.Book, opts ...gax.CallOption) error {
     ctx = insertMetadata(ctx, c.xGoogMetadata)
     opts = append(c.CallOptions.SaveBook[0:len(c.CallOptions.SaveBook):len(c.CallOptions.SaveBook)], opts...)
