@@ -150,6 +150,7 @@ def _proto_custom_library_impl(ctx):
 
     arguments = \
         ctx.attr.extra_args + \
+        ["--experimental_allow_proto3_optional"] + \
         calculated_args + \
         ["-I{0}={1}".format(path_ignoring_repository(imp), imp.path) for imp in imports.to_list()] + \
         [path_ignoring_repository(src) for src in srcs.to_list()]
