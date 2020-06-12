@@ -284,7 +284,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[SHELF]', '[BOOK]')
+    name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -744,7 +744,7 @@ LibraryServiceClient
 
     client = library_v1.LibraryServiceClient()
 
-    name = client.book_path('[SHELF]', '[BOOK]')
+    name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
     # TODO: Initialize `book`:
     book = {}
@@ -1174,12 +1174,13 @@ class LibraryServiceClient(object):
         )
 
     @classmethod
-    def book_path(cls, shelf, book):
+    def book_path(cls, shelf, book_one, book_two):
         """Return a fully-qualified book string."""
         return google.api_core.path_template.expand(
-            'shelves/{shelf}/books/{book}',
+            'shelves/{shelf}/books/{book_one}~{book_two}',
             shelf=shelf,
-            book=book,
+            book_one=book_one,
+            book_two=book_two,
         )
 
     @classmethod
@@ -1890,7 +1891,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> response = client.get_book(name)
 
@@ -2052,7 +2053,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> client.delete_book(name)
 
@@ -2117,7 +2118,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `book`:
             >>> book = {}
@@ -2202,7 +2203,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> other_shelf_name = client.shelf_path('[SHELF]')
             >>>
             >>> response = client.move_book(name, other_shelf_name)
@@ -2352,7 +2353,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> comment = b''
             >>> stage = enums.Comment.Stage.UNSET
             >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -2493,8 +2494,8 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
-            >>> alt_book_name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+            >>> alt_book_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> place = client.location_path('[PROJECT]', '[LOCATION]')
             >>> folder = client.folder_path('[FOLDER]')
             >>>
@@ -2568,7 +2569,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> response = client.get_book_from_absolutely_anywhere(name)
 
@@ -2637,7 +2638,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> index_name = 'default index'
             >>>
             >>> # TODO: Initialize `index_map_item`:
@@ -2820,7 +2821,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2875,7 +2876,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -2929,7 +2930,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>> request = {'name': name}
             >>>
             >>> requests = [request]
@@ -3140,7 +3141,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> response = client.get_big_book(name)
             >>>
@@ -3219,7 +3220,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> response = client.get_big_nothing(name)
             >>>
@@ -3446,8 +3447,8 @@ class LibraryServiceClient(object):
             >>>
             >>> # TODO: Initialize `required_singular_message`:
             >>> required_singular_message = {}
-            >>> required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
-            >>> required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
+            >>> required_singular_resource_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+            >>> required_singular_resource_name_oneof = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> # TODO: Initialize `required_singular_resource_name_common`:
             >>> required_singular_resource_name_common = ''
@@ -4408,7 +4409,7 @@ class LibraryServiceClient(object):
             >>>
             >>> client = library_v1.LibraryServiceClient()
             >>>
-            >>> name = client.book_path('[SHELF]', '[BOOK]')
+            >>> name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
             >>>
             >>> client.save_book(name)
 
@@ -6075,7 +6076,7 @@ def sample_babble_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
   request = {'name': name}
 
   requests = [request]
@@ -6124,7 +6125,7 @@ def sample_babble_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
   request = {'name': name}
 
   requests = [request]
@@ -6367,7 +6368,7 @@ def sample_get_big_book(shelf):
   client = library_v1.LibraryServiceClient()
 
   # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path(shelf, 'War and Peace')
+  name = client.book_from_archive_path('[ARCHIVE]', 'War and Peace')
 
   operation = client.get_big_book(name)
 
@@ -6445,7 +6446,7 @@ def sample_get_big_book(shelf, big_book_name):
 
   # shelf = 'Novel'
   # big_book_name = 'War and Peace'
-  name = client.book_path(shelf, big_book_name)
+  name = client.book_from_archive_path('[ARCHIVE]', big_book_name)
 
   operation = client.get_big_book(name)
 
@@ -6502,7 +6503,7 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
   operation = client.get_big_nothing(name)
 
@@ -6553,7 +6554,7 @@ def sample_get_big_nothing():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
   operation = client.get_big_nothing(name)
 
@@ -6603,7 +6604,7 @@ def sample_get_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
   response = client.get_book(name)
   int_key_val = response.map_string_value[123]
@@ -6700,7 +6701,7 @@ def sample_monolog_about_book():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
   request = {'name': name}
 
   requests = [request]
@@ -7147,8 +7148,8 @@ def sample_test_optional_required_flattening_params(param_float, param_long):
   required_singular_string = ''
   required_singular_bytes = b''
   required_singular_message = {}
-  required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
-  required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
+  required_singular_resource_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+  required_singular_resource_name_oneof = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
   required_singular_resource_name_common = ''
   required_singular_fixed32 = 0
   required_singular_fixed64 = 0
@@ -7249,7 +7250,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('[SHELF]', 'The ID of the book')
+  name = client.book_from_archive_path('[ARCHIVE]', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Archived book found.')
@@ -7293,7 +7294,7 @@ def sample_get_book_from_absolutely_anywhere():
 
   client = library_v1.LibraryServiceClient()
 
-  name = client.book_path('The Shelf to search for the book', 'The ID of the book')
+  name = client.book_from_archive_path('[ARCHIVE]', 'The ID of the book')
 
   response = client.get_book_from_absolutely_anywhere(name)
   print(u'Book on shelf found.')
@@ -7391,7 +7392,7 @@ def sample_get_big_book(shelf):
   client = library_v1.LibraryServiceClient()
 
   # shelf = 'Novel\\"`\b\t\n\r'
-  name = client.book_path(shelf, 'War and Peace')
+  name = client.book_from_archive_path('[ARCHIVE]', 'War and Peace')
 
   operation = client.get_big_book(name)
 
@@ -7464,7 +7465,7 @@ def sample_discuss_book(image_file_name, stage):
 
   # image_file_name = 'image_file.jpg'
   # stage = enums.Comment.Stage.DRAFT
-  name = client.book_path('[SHELF]', '[BOOK]')
+  name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
   with io.open('comment_file', 'rb') as f:
     comment = f.read()
   comment_2 = {'comment': comment, 'stage': stage}
@@ -7608,7 +7609,7 @@ class TestSystemLibraryService(object):
         project_id = os.environ['PROJECT_ID']
 
         client = library_v1.LibraryServiceClient()
-        name = client.book_path('testShelf-{0}'.format(time.time()), project_id)
+        name = client.book_from_archive_path('[ARCHIVE]', project_id)
         rating = enums.Book.Rating.GOOD
         book = {'rating': rating}
         response = client.update_book(name, book)
@@ -8000,7 +8001,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_book(name)
         assert expected_response == response
@@ -8019,7 +8020,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book(name)
@@ -8077,7 +8078,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         client.delete_book(name)
 
@@ -8095,7 +8096,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.delete_book(name)
@@ -8118,7 +8119,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         book = {}
 
         response = client.update_book(name, book)
@@ -8138,7 +8139,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         book = {}
 
         with pytest.raises(CustomException):
@@ -8162,7 +8163,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         other_shelf_name = client.shelf_path('[SHELF]')
 
         response = client.move_book(name, other_shelf_name)
@@ -8182,7 +8183,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         other_shelf_name = client.shelf_path('[SHELF]')
 
         with pytest.raises(CustomException):
@@ -8233,7 +8234,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -8256,7 +8257,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
@@ -8326,8 +8327,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
-        alt_book_name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+        alt_book_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         place = client.location_path('[PROJECT]', '[LOCATION]')
         folder = client.folder_path('[FOLDER]')
 
@@ -8348,8 +8349,8 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
-        alt_book_name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+        alt_book_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         place = client.location_path('[PROJECT]', '[LOCATION]')
         folder = client.folder_path('[FOLDER]')
 
@@ -8373,7 +8374,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_book_from_absolutely_anywhere(name)
         assert expected_response == response
@@ -8392,7 +8393,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.get_book_from_absolutely_anywhere(name)
@@ -8405,7 +8406,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -8426,7 +8427,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         index_name = 'default index'
         index_map_item = 'indexMapItem1918721251'
         index_map = {'default_key': index_map_item}
@@ -8536,7 +8537,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -8561,7 +8562,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -8585,7 +8586,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -8608,7 +8609,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -8626,7 +8627,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
         request = library_pb2.DiscussBookRequest(**request)
         requests = [request]
@@ -8648,7 +8649,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         request = {'name': name}
 
         request = library_pb2.DiscussBookRequest(**request)
@@ -8763,7 +8764,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_big_book(name)
         result = response.result()
@@ -8789,7 +8790,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_big_book(name)
         exception = response.exception()
@@ -8810,7 +8811,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_big_nothing(name)
         result = response.result()
@@ -8836,7 +8837,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         response = client.get_big_nothing(name)
         exception = response.exception()
@@ -8864,8 +8865,8 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
-        required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
+        required_singular_resource_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+        required_singular_resource_name_oneof = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
@@ -8943,8 +8944,8 @@ class TestLibraryServiceClient(object):
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
         required_singular_message = {}
-        required_singular_resource_name = client.book_path('[SHELF]', '[BOOK]')
-        required_singular_resource_name_oneof = client.book_path('[SHELF]', '[BOOK]')
+        required_singular_resource_name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
+        required_singular_resource_name_oneof = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
         required_singular_resource_name_common = 'requiredSingularResourceNameCommon-1126805002'
         required_singular_fixed32 = 720656715
         required_singular_fixed64 = 720656810
@@ -9203,7 +9204,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup Request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         client.save_book(name)
 
@@ -9221,7 +9222,7 @@ class TestLibraryServiceClient(object):
             client = library_v1.LibraryServiceClient()
 
         # Setup request
-        name = client.book_path('[SHELF]', '[BOOK]')
+        name = client.book_from_archive_path('[ARCHIVE]', '[BOOK]')
 
         with pytest.raises(CustomException):
             client.save_book(name)

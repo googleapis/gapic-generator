@@ -43,6 +43,22 @@ public class ResourceNamePatternConfigTest {
   }
 
   @Test
+  public void testGetBindingVariablesWithComplexResourceIds() {
+    assertThat(
+            new ResourceNamePatternConfig("states/{state}/animals/{animal_1}~{animal_2}")
+                .getBindingVariables())
+        .containsExactly("state", "animal_1", "animal_2");
+    assertThat(
+            new ResourceNamePatternConfig("states/{state}/animals/{foo}.{bar}~{car}-{cdr}_{cadr}")
+                .getBindingVariables())
+        .containsExactly("state", "foo", "bar", "car", "cdr", "cadr");
+    assertThat(
+            new ResourceNamePatternConfig("states/{state}/animals/{foo}.{bar}/prizes/{prize}")
+                .getBindingVariables())
+        .containsExactly("state", "foo", "bar", "prize");
+  }
+
+  @Test
   public void testGetPatternId() {
     ResourceNamePatternConfig pattern;
     pattern = new ResourceNamePatternConfig("_deleted-topic_");
@@ -55,5 +71,18 @@ public class ResourceNamePatternConfigTest {
     assertThat(pattern.getPatternId()).isEqualTo("state_city_mascot_animal");
     pattern = new ResourceNamePatternConfig("states/{state}/mascotAnimals/{mascot_animal}");
     assertThat(pattern.getPatternId()).isEqualTo("state_mascot_animal");
+
+    pattern = new ResourceNamePatternConfig("states/{state}/animals/{animal_id=**}");
+    assertThat(pattern.getPatternId()).isEqualTo("state_animal_id");
+  }
+
+  @Test
+  public void testGetPatternIdWithComplexResourceIds() {
+    ResourceNamePatternConfig pattern =
+        new ResourceNamePatternConfig("states/{state}/animals/{animal_1}~{animal_2}");
+    assertThat(pattern.getPatternId()).isEqualTo("state_animal_1_animal_2");
+    pattern =
+        new ResourceNamePatternConfig("states/{state}/animals/{foo}.{bar}~{car}-{cdr}_{cadr}");
+    assertThat(pattern.getPatternId()).isEqualTo("state_foo_bar_car_cdr_cadr");
   }
 }

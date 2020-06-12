@@ -2913,7 +2913,7 @@ module Library
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        "shelves/{shelf}/books/{book}"
+        "shelves/{shelf}/books/{book_one}~{book_two}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
@@ -2982,12 +2982,14 @@ module Library
 
       # Returns a fully-qualified book resource name string.
       # @param shelf [String]
-      # @param book [String]
+      # @param book_one [String]
+      # @param book_two [String]
       # @return [String]
-      def self.book_path shelf, book
+      def self.book_path shelf, book_one, book_two
         BOOK_PATH_TEMPLATE.render(
           :"shelf" => shelf,
-          :"book" => book
+          :"book_one" => book_one,
+          :"book_two" => book_two
         )
       end
 
