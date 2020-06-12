@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://www.github.com/googleapis/gapic-generator/compare/v2.1.0...v2.2.0) (2020-06-12)
+
+
+### Features
+
+* build_gen all langs use grpc_service_config ([#3226](https://www.github.com/googleapis/gapic-generator/issues/3226)) ([22ce9a7](https://www.github.com/googleapis/gapic-generator/commit/22ce9a7b376f3a51006ed1ef7a1d70527fe3f2ca))
+
 ## [2.1.0](https://www.github.com/googleapis/gapic-generator/compare/v2.0.3...v2.1.0) (2020-06-05)
 
 
