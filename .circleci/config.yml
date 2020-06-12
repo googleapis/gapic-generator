@@ -94,18 +94,6 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
         name: Install nox latest
         command: |
          pip3 install nox
-    - run:
-        name: Prepare for Pubsub testing.
-        command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
-    - run:
-        name: Test Pubsub.
-        <<: *anchor_test_python_client
-    - run:
-        name: Prepare for Speech testing.
-        command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
-    - run:
-        name: Test Speech.
-        <<: *anchor_test_python_client
 
 # Test a Ruby client if generation succeeded.
 anchor_test_ruby_client: &anchor_test_ruby_client
