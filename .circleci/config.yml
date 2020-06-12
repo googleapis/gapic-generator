@@ -145,25 +145,6 @@ anchor_run_ruby: &anchor_run_ruby
     - run:
         <<: *anchor_check_generation
     - run:
-        name: Prepare for Pubsub testing.
-        command: |
-          echo 'export TEST_API="pubsub"' >> $BASH_ENV
-    # https://github.com/googleapis/gapic-generator/issues/2503 blocks Pubsub testing.
-    - run:
-        name: Prepare for Speech testing.
-        command: |
-          echo 'export TEST_API="speech"' >> $BASH_ENV
-    - run:
-        name: Test Speech.
-        <<: *anchor_test_ruby_client
-    - run:
-        name: Prepare for Logging testing.
-        command: |
-          echo 'export TEST_API="logging"' >> $BASH_ENV
-    - run:
-        name: Test Logging.
-        <<: *anchor_test_ruby_client
-    - run:
        name: Prepare to test Showcase.
        command: echo 'export TEST_API="showcase"' >> $BASH_ENV
     - run:
