@@ -27,3 +27,8 @@ switched_rules_by_language(
 )
 
 com_google_protoc_java_resource_names_plugin_repositories(omit_com_google_protobuf = True)
+
+### Dependencies for buildozer
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+go_rules_dependencies()
+go_register_toolchains()

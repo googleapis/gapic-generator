@@ -100,6 +100,26 @@ def com_google_api_codegen_repositories():
         actual = "@error_prone_annotations_maven//jar",
     )
 
+    ## Dependencies for buildozer
+    _maybe(
+        http_archive,
+        name = "io_bazel_rules_go",
+        sha256 = "b27e55d2dcc9e6020e17614ae6e0374818a3e3ce6f2024036e688ada24110444",
+        urls = [
+            "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.21.0/rules_go-v0.21.0.tar.gz",
+            "https://github.com/bazelbuild/rules_go/releases/download/v0.21.0/rules_go-v0.21.0.tar.gz",
+        ],
+    )
+
+    _maybe(
+        http_archive,
+        name = "com_github_bazelbuild_buildtools",
+        strip_prefix = "buildtools-3.2.1",
+        urls = [
+            "https://github.com/bazelbuild/buildtools/archive/3.2.1.tar.gz",
+        ],
+    )
+
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):
     if not name.startswith(strip_repo_prefix):
         return

@@ -1,7 +1,16 @@
+genrule(
+    name = "buildozer_binary",
+    srcs = ["@com_github_bazelbuild_buildtools//buildozer:buildozer"],
+    outs = ["buildozer.bin"],
+    cmd = "cp $(location @com_github_bazelbuild_buildtools//buildozer:buildozer) \"$@\" && chmod +x \"$@\"",
+)
+
 java_binary(
     name = "build_file_generator",
     srcs = glob(["src/main/java/**/*.java"]),
-    resources = glob(["src/main/java/**/*.mustache"]),
+    resources = glob(["src/main/java/**/*.mustache"]) + [
+        ":buildozer_binary",
+    ],
     create_executable = True,
     javacopts = ["-source", "1.8", "-target", "1.8"],
     jvm_flags = ["-Xmx1024m"],

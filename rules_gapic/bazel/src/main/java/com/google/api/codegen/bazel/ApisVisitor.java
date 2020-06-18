@@ -98,9 +98,7 @@ class ApisVisitor extends SimpleFileVisitor<Path> {
     } else if (fileName.endsWith(".proto")) {
       bp.parseProtoFile(fileName, readFile(file));
     } else if (fileName.endsWith(".bazel")) {
-      // Consider merging BUILD.bazel files if it becomes necessary (i.e. people will be doing many
-      // valuable manual edits in their BUILD.bazel files). This will complicate the whole logic
-      // so not doing it for now, hoping it will not be required.
+      bp.parseBazelBuildFile(file);
     } else if (fileName.endsWith(".json")) {
       bp.parseJsonFile(fileName, readFile(file));
     }
