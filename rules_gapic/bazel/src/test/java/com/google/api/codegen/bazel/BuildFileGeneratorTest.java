@@ -79,6 +79,8 @@ public class BuildFileGeneratorTest {
         "google-cloud-example-library-v1-csharp",
         "name",
         "renamed_csharp_rule");
+    buildozer.batchSetAttribute(
+        gapicBuildFilePath, "google-cloud-example-library-v1-java", "name", "renamed_java_rule");
 
     // The following values should NOT be preserved:
     buildozer.batchSetAttribute(
@@ -104,10 +106,25 @@ public class BuildFileGeneratorTest {
     Assert.assertEquals(
         "renamed_csharp_rule",
         buildozer.getAttribute(gapicBuildFilePath, ":%csharp_gapic_assembly_pkg", "name"));
+    Assert.assertEquals(
+        "renamed_java_rule",
+        buildozer.getAttribute(gapicBuildFilePath, ":%java_gapic_assembly_gradle_pkg", "name"));
     // Check that grpc_service_config value is not preserved:
     Assert.assertEquals(
         "library_example_grpc_service_config.json",
         buildozer.getAttribute(gapicBuildFilePath, "library_nodejs_gapic", "grpc_service_config"));
+
+    // Now run with overwrite and verify it actually ignores all the changes
+    ArgsParser argsOverwrite =
+        new ArgsParser(new String[] {"--overwrite", "--src=" + copiedGoogleapis.toString()});
+    new BuildFileGenerator()
+        .generateBuildFiles(argsOverwrite.createApisVisitor(null, tempDirPath.toString()));
+    Assert.assertEquals(
+        ApisVisitor.readFile(gapicBuildFilePath.toString() + ".baseline"),
+        ApisVisitor.readFile(gapicBuildFilePath.toString()));
+    Assert.assertEquals(
+        ApisVisitor.readFile(rawBuildFilePath + ".baseline"),
+        ApisVisitor.readFile(rawBuildFilePath));
   }
 
   @Test

@@ -139,7 +139,7 @@ class ApiVersionedDir {
   //         https://www.googleapis.com/auth/cloud-platform
   private boolean cloudScope;
 
-  // Names of *_gapic_assembly_pkg rules (since they may be overridden by the user)
+  // Names of *_gapic_assembly_* rules (since they may be overridden by the user)
   private Map<String, String> assemblyPkgRulesNames = new HashMap<>();
 
   // Attributes of *_gapic_library rules to be overridden
@@ -326,7 +326,7 @@ class ApiVersionedDir {
 
       // We cannot and we do not want to preserve all the content of the file.
       // We will let the user edit just the following:
-      // - names of the final targets (*_gapic_assembly_pkg) because they are user-facing;
+      // - names of the final targets (*_gapic_assembly_*) because they are user-facing;
       // - extra protoc plugin parameters for *_gapic_library rules.
       List<String> allRules = buildozer.execute(file, "print kind name", ":*");
       for (String rule : allRules) {
@@ -336,7 +336,7 @@ class ApiVersionedDir {
         }
         String kind = split[0];
         String name = split[1];
-        if (kind.endsWith("_gapic_assembly_pkg")) {
+        if (kind.contains("_gapic_assembly_")) {
           this.assemblyPkgRulesNames.put(kind, name);
         } else if (kind.endsWith("_gapic_library")) {
           this.overriddenStringAttributes.put(name, new HashMap<String, String>());

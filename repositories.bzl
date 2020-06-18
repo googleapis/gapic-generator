@@ -60,9 +60,7 @@ def com_google_api_codegen_repositories():
     _maybe(
         http_archive,
         name = "bazel_skylib",
-        sha256 = "bbccf674aa441c266df9894182d80de104cabd19be98be002f6d478aaa31574d",
-        strip_prefix = "bazel-skylib-2169ae1c374aab4a09aa90e65efe1a3aad4e279b",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz"],
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/0.9.0/bazel_skylib-0.9.0.tar.gz"],
     )
 
     _maybe(
@@ -104,11 +102,10 @@ def com_google_api_codegen_repositories():
     _maybe(
         http_archive,
         name = "io_bazel_rules_go",
-        sha256 = "b27e55d2dcc9e6020e17614ae6e0374818a3e3ce6f2024036e688ada24110444",
         urls = [
-            "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.21.0/rules_go-v0.21.0.tar.gz",
-            "https://github.com/bazelbuild/rules_go/releases/download/v0.21.0/rules_go-v0.21.0.tar.gz",
+            "https://github.com/bazelbuild/rules_go/archive/v0.23.3.zip",
         ],
+        strip_prefix = "rules_go-0.23.3",
     )
 
     _maybe(
