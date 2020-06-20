@@ -15,6 +15,7 @@ import java.nio.file.Files;
 //        --src=rules_gapic/bazel/src/test/data/googleapis
 public class BuildFileGenerator {
   public static void main(String[] args) throws IOException {
+    Buildozer.getInstance();
     BuildFileGenerator bfg = new BuildFileGenerator();
     ApisVisitor visitor =
         new ArgsParser(args).createApisVisitor(null, System.getenv("BUILD_WORKSPACE_DIRECTORY"));

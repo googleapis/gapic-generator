@@ -40,12 +40,12 @@ class ArgsParser {
 
   static void printUsage() {
     String helpMessage =
-        "Usage:\n"
-            + "  bazel run //rules_gapic/bazel:build_file_generator -- \n"
-            + "    --src=rules_gapic/bazel/src/test/data/googleapis\n"
+        "Usage (when running from googleapis folder):\n"
+            + "  bazel run //:build_gen -- --src=rules_gapic/bazel/src/test/data/googleapis\n"
             + "\n"
             + "Command line options:\n"
             + "  --src=path: location of googleapis directory\n"
+            + "  --dest=path: destination folder, defaults to the value of --src\n"
             + "  --overwrite: do not preserve any of the manually changed values in the generated BUILD.bazel files\n";
     System.out.println(helpMessage);
   }

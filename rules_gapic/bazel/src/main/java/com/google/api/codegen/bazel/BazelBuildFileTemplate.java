@@ -66,9 +66,7 @@ class BazelBuildFileTemplate {
     for (Map.Entry<String, String> entry : assemblyPkgRulesNames.entrySet()) {
       String kind = entry.getKey();
       String newName = entry.getValue();
-      // Note: if there are multiple *_gapic_assembly_pkg rules for the same language,
-      // this logic will not work
-      String currentName = buildozer.getAttribute(buildBazelPath, ":%" + kind, "name");
+      String currentName = buildozer.getAttribute(buildBazelPath, "%" + kind, "name");
       if (!currentName.equals(newName)) {
         buildozer.batchSetAttribute(buildBazelPath, currentName, "name", newName);
       }

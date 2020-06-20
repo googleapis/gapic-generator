@@ -8,9 +8,8 @@ genrule(
 java_binary(
     name = "build_file_generator",
     srcs = glob(["src/main/java/**/*.java"]),
-    resources = glob(["src/main/java/**/*.mustache"]) + [
-        ":buildozer_binary",
-    ],
+    resources = glob(["src/main/java/**/*.mustache"]),
+    data = [":buildozer_binary"],
     create_executable = True,
     javacopts = ["-source", "1.8", "-target", "1.8"],
     jvm_flags = ["-Xmx1024m"],

@@ -140,11 +140,11 @@ class ApiVersionedDir {
   private boolean cloudScope;
 
   // Names of *_gapic_assembly_* rules (since they may be overridden by the user)
-  private Map<String, String> assemblyPkgRulesNames = new HashMap<>();
+  private final Map<String, String> assemblyPkgRulesNames = new HashMap<>();
 
   // Attributes of *_gapic_library rules to be overridden
-  private Map<String, Map<String, String>> overriddenStringAttributes = new HashMap<>();
-  private Map<String, Map<String, List<String>>> overriddenListAttributes = new HashMap<>();
+  private final Map<String, Map<String, String>> overriddenStringAttributes = new HashMap<>();
+  private final Map<String, Map<String, List<String>>> overriddenListAttributes = new HashMap<>();
 
   void setParent(ApiDir parent) {
     this.parent = parent;
@@ -328,19 +328,29 @@ class ApiVersionedDir {
       // We will let the user edit just the following:
       // - names of the final targets (*_gapic_assembly_*) because they are user-facing;
       // - extra protoc plugin parameters for *_gapic_library rules.
-      List<String> allRules = buildozer.execute(file, "print kind name", ":*");
+      List<String> allRules = buildozer.execute(file, "print kind name", "*");
       for (String rule : allRules) {
         String[] split = rule.split(" ");
         if (split.length != 2) {
+          // some rules e.g. package() don't have "name" attribute, just skip them
           continue;
         }
         String kind = split[0];
         String name = split[1];
         if (kind.contains("_gapic_assembly_")) {
+          if (this.assemblyPkgRulesNames.containsKey(kind)) {
+            // Duplicated rule of the same kind will break our logic for preserving rule name.
+            System.err.println("There are more than one rule of kind " + kind + ".");
+            System.err.println(
+                "Bazel build file generator does not support regenerating BUILD.bazel in this case.");
+            System.err.println(
+                "Please run it with --overwrite option to overwrite the existing BUILD.bazel completely.");
+            throw new RuntimeException("Duplicated rule " + kind);
+          }
           this.assemblyPkgRulesNames.put(kind, name);
         } else if (kind.endsWith("_gapic_library")) {
-          this.overriddenStringAttributes.put(name, new HashMap<String, String>());
-          this.overriddenListAttributes.put(name, new HashMap<String, List<String>>());
+          this.overriddenStringAttributes.put(name, new HashMap<>());
+          this.overriddenListAttributes.put(name, new HashMap<>());
           for (String attr : ApiVersionedDir.PRESERVED_PROTO_LIBRARY_STRING_ATTRIBUTES) {
             String value = buildozer.getAttribute(file, name, attr);
             if (value != null) {

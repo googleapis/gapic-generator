@@ -105,10 +105,10 @@ public class BuildFileGeneratorTest {
             gapicBuildFilePath, "library_nodejs_gapic", "extra_protoc_parameters"));
     Assert.assertEquals(
         "renamed_csharp_rule",
-        buildozer.getAttribute(gapicBuildFilePath, ":%csharp_gapic_assembly_pkg", "name"));
+        buildozer.getAttribute(gapicBuildFilePath, "%csharp_gapic_assembly_pkg", "name"));
     Assert.assertEquals(
         "renamed_java_rule",
-        buildozer.getAttribute(gapicBuildFilePath, ":%java_gapic_assembly_gradle_pkg", "name"));
+        buildozer.getAttribute(gapicBuildFilePath, "%java_gapic_assembly_gradle_pkg", "name"));
     // Check that grpc_service_config value is not preserved:
     Assert.assertEquals(
         "library_example_grpc_service_config.json",
@@ -137,47 +137,39 @@ public class BuildFileGeneratorTest {
     Buildozer buildozer = Buildozer.getInstance();
 
     // Get some attributes
-    Assert.assertEquals("rule1", buildozer.getAttribute(buildBazel, ":rule1", "name"));
-    Assert.assertEquals("attr_value", buildozer.getAttribute(buildBazel, ":rule1", "attr"));
-    Assert.assertEquals(
-        "[value1 value2]", buildozer.getAttribute(buildBazel, ":rule2", "list_attr"));
-
-    // Get some attributes; it's possible to omit a colon in the target name
     Assert.assertEquals("rule1", buildozer.getAttribute(buildBazel, "rule1", "name"));
     Assert.assertEquals("attr_value", buildozer.getAttribute(buildBazel, "rule1", "attr"));
     Assert.assertEquals(
         "[value1 value2]", buildozer.getAttribute(buildBazel, "rule2", "list_attr"));
 
     // Set some attributes and get the result
-    buildozer.setAttribute(buildBazel, ":rule1", "attr", "new_attr_value");
-    buildozer.addAttribute(buildBazel, ":rule2", "list_attr", "value3");
-    Assert.assertEquals("new_attr_value", buildozer.getAttribute(buildBazel, ":rule1", "attr"));
+    buildozer.setAttribute(buildBazel, "rule1", "attr", "new_attr_value");
+    buildozer.addAttribute(buildBazel, "rule2", "list_attr", "value3");
+    Assert.assertEquals("new_attr_value", buildozer.getAttribute(buildBazel, "rule1", "attr"));
     Assert.assertEquals(
-        "[value1 value2 value3]", buildozer.getAttribute(buildBazel, ":rule2", "list_attr"));
+        "[value1 value2 value3]", buildozer.getAttribute(buildBazel, "rule2", "list_attr"));
 
     // Remove attribute
-    Assert.assertEquals(
-        "remove_a", buildozer.getAttribute(buildBazel, ":rule1", "to_be_removed_a"));
-    buildozer.removeAttribute(buildBazel, ":rule1", "to_be_removed_a");
-    Assert.assertEquals(null, buildozer.getAttribute(buildBazel, ":rule1", "to_be_removed_a"));
+    Assert.assertEquals("remove_a", buildozer.getAttribute(buildBazel, "rule1", "to_be_removed_a"));
+    buildozer.removeAttribute(buildBazel, "rule1", "to_be_removed_a");
+    Assert.assertEquals(null, buildozer.getAttribute(buildBazel, "rule1", "to_be_removed_a"));
 
     // Test batch operations
-    buildozer.batchSetAttribute(buildBazel, ":rule1", "attr", "new_batch_attr_value");
-    buildozer.batchAddAttribute(buildBazel, ":rule2", "list_attr", "value4");
-    buildozer.batchRemoveAttribute(buildBazel, ":rule1", "to_be_removed_b");
+    buildozer.batchSetAttribute(buildBazel, "rule1", "attr", "new_batch_attr_value");
+    buildozer.batchAddAttribute(buildBazel, "rule2", "list_attr", "value4");
+    buildozer.batchRemoveAttribute(buildBazel, "rule1", "to_be_removed_b");
     // before commit: old values
-    Assert.assertEquals("new_attr_value", buildozer.getAttribute(buildBazel, ":rule1", "attr"));
+    Assert.assertEquals("new_attr_value", buildozer.getAttribute(buildBazel, "rule1", "attr"));
     Assert.assertEquals(
-        "[value1 value2 value3]", buildozer.getAttribute(buildBazel, ":rule2", "list_attr"));
-    Assert.assertEquals(
-        "remove_b", buildozer.getAttribute(buildBazel, ":rule1", "to_be_removed_b"));
+        "[value1 value2 value3]", buildozer.getAttribute(buildBazel, "rule2", "list_attr"));
+    Assert.assertEquals("remove_b", buildozer.getAttribute(buildBazel, "rule1", "to_be_removed_b"));
     buildozer.commit();
     // after commit: new values
     Assert.assertEquals(
-        "new_batch_attr_value", buildozer.getAttribute(buildBazel, ":rule1", "attr"));
+        "new_batch_attr_value", buildozer.getAttribute(buildBazel, "rule1", "attr"));
     Assert.assertEquals(
-        "[value1 value2 value3 value4]", buildozer.getAttribute(buildBazel, ":rule2", "list_attr"));
-    Assert.assertEquals(null, buildozer.getAttribute(buildBazel, ":rule1", "to_be_removed_b"));
+        "[value1 value2 value3 value4]", buildozer.getAttribute(buildBazel, "rule2", "list_attr"));
+    Assert.assertEquals(null, buildozer.getAttribute(buildBazel, "rule1", "to_be_removed_b"));
   }
 
   // Not using mocking libraries to keep this tool as simple as possible (currently it does not use
