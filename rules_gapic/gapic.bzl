@@ -148,6 +148,12 @@ def _proto_custom_library_impl(ctx):
     if ctx.attr.opt_args:
         calculated_args.append("%s=%s" % (opt_type_name, ",".join(ctx.attr.opt_args)))
 
+    if ctx.attr.opt_file_args:
+        for labels, opt_type_name in ctx.attr.opt_file_args.items():
+            file = labels.files[0]
+            extra_inputs.append(file)
+            calculated_args.append("%s=%s" % (opt_type_name, file.path)))
+
     arguments = \
         ctx.attr.extra_args + \
         ["--experimental_allow_proto3_optional"] + \
@@ -206,6 +212,12 @@ proto_custom_library = rule(
         ),
         "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
         "opt_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
+        "opt_file_args": attr.label_keyed_string_dict(
+            mandatory = False,
+            allow_empty = True,
+            allow_files = True,
+            default = {},
+        ),
         "extra_args": attr.string_list(mandatory = False, default = []),
         "output_type": attr.string(mandatory = True),
         "output_suffix": attr.string(mandatory = True),
