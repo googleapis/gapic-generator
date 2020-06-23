@@ -229,7 +229,7 @@ proto_custom_library = rule(
             default = [],
             doc = """list of opt arguments for the plugin. 
             Will be rendered in protoc command line in the form of "<plugin>_opt=arg1,..."
-            """
+            """,
         ),
         "opt_file_args": attr.label_keyed_string_dict(
             mandatory = False,
