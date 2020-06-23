@@ -152,7 +152,7 @@ def _proto_custom_library_impl(ctx):
         for labels, opt_type_name in ctx.attr.opt_file_args.items():
             file = labels.files[0]
             extra_inputs.append(file)
-            calculated_args.append("%s=%s" % (opt_type_name, file.path)))
+            calculated_args.append("%s=%s" % (opt_type_name, file.path))
 
     arguments = \
         ctx.attr.extra_args + \
