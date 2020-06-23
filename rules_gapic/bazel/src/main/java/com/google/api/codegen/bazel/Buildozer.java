@@ -13,11 +13,13 @@ import java.util.List;
 
 public class Buildozer {
   private static Buildozer instance = null;
-  private File buildozerBinary = null;
+  private static File buildozerBinary = null;
   private final List<String> batch = new ArrayList<String>();
 
-  private Buildozer() throws IOException {
-    buildozerBinary = new File("./rules_gapic/bazel/buildozer.bin");
+  private Buildozer() {
+    if (buildozerBinary == null) {
+      throw new RuntimeException("Buildozer binary path is not set.");
+    }
   }
 
   // General purpose execute method. Runs buildozer with the given command line
@@ -133,5 +135,9 @@ public class Buildozer {
     }
 
     return instance;
+  }
+
+  public static synchronized void setBinaryPath(String path) {
+    buildozerBinary = new File(path);
   }
 }

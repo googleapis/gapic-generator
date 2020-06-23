@@ -16,7 +16,9 @@ public class BuildFileGeneratorTest {
 
   @Test
   public void testGenerateBuildFiles() throws IOException {
-    ArgsParser args = new ArgsParser(new String[] {"--src=" + SRC_DIR});
+    String buildozerPath = getBuildozerPath();
+    ArgsParser args =
+        new ArgsParser(new String[] {"--buildozer=" + buildozerPath, "--src=" + SRC_DIR});
     FileWriter fw = new FileWriter();
     new BuildFileGenerator().generateBuildFiles(args.createApisVisitor(fw, PATH_PREFIX));
 
@@ -46,8 +48,11 @@ public class BuildFileGeneratorTest {
         .start()
         .waitFor();
 
+    String buildozerPath = getBuildozerPath();
     Path copiedGoogleapis = Paths.get(tempDirPath.toString(), "googleapis");
-    ArgsParser args = new ArgsParser(new String[] {"--src=" + copiedGoogleapis.toString()});
+    ArgsParser args =
+        new ArgsParser(
+            new String[] {"--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis.toString()});
     new BuildFileGenerator()
         .generateBuildFiles(args.createApisVisitor(null, tempDirPath.toString()));
 
@@ -64,6 +69,7 @@ public class BuildFileGeneratorTest {
         ApisVisitor.readFile(rawBuildFilePath));
 
     // Now change some values in google/example/library/v1/BUILD.bazel
+    Buildozer.setBinaryPath(buildozerPath);
     Buildozer buildozer = Buildozer.getInstance();
     // The following values should be preserved:
     buildozer.batchSetAttribute(
@@ -116,7 +122,10 @@ public class BuildFileGeneratorTest {
 
     // Now run with overwrite and verify it actually ignores all the changes
     ArgsParser argsOverwrite =
-        new ArgsParser(new String[] {"--overwrite", "--src=" + copiedGoogleapis.toString()});
+        new ArgsParser(
+            new String[] {
+              "--overwrite", "--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis.toString()
+            });
     new BuildFileGenerator()
         .generateBuildFiles(argsOverwrite.createApisVisitor(null, tempDirPath.toString()));
     Assert.assertEquals(
@@ -134,6 +143,8 @@ public class BuildFileGeneratorTest {
     Path buildBazel = Paths.get(tempDirPath.toString(), "BUILD.bazel");
     Files.copy(templateFile, buildBazel);
 
+    String buildozerPath = getBuildozerPath();
+    Buildozer.setBinaryPath(buildozerPath);
     Buildozer buildozer = Buildozer.getInstance();
 
     // Get some attributes
@@ -195,5 +206,13 @@ public class BuildFileGeneratorTest {
       tempDirPath = Paths.get(bazelTempDir);
     }
     return tempDirPath;
+  }
+
+  private static String getBuildozerPath() {
+    String path = System.getProperty("buildozer");
+    if (path == null) {
+      throw new RuntimeException("Use -Dbuildozer=/path/to/buildozer for testing.");
+    }
+    return path;
   }
 }

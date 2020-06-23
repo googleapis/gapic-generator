@@ -57,6 +57,7 @@ class ArgsParser {
       throw new IllegalArgumentException();
     }
 
+    String buildozerPath = parsedArgs.get("--buildozer");
     String gapicApiTemplPath = parsedArgs.get("--gapic_api_templ");
     String rootApiTemplPath = parsedArgs.get("--root_api_templ");
     String rawApiTempl = parsedArgs.get("--raw_api_templ");
@@ -80,6 +81,14 @@ class ArgsParser {
         destPath = Paths.get(relativePathPrefix, destPath.toString());
       }
     }
+
+    if (buildozerPath == null && !overwrite.equals("true")) {
+      System.err.println("This tool requires Buildozer tool to parse BUILD.bazel files.");
+      System.err.println("Please use --buildozer=/path/to/buildozer to point to Buildozer,");
+      System.err.println("or use --overwrite if you want to rewrite all BUILD.bazel files.");
+      throw new IllegalArgumentException();
+    }
+    Buildozer.setBinaryPath(buildozerPath);
 
     return new ApisVisitor(
         srcPath,
