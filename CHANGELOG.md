@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://www.github.com/googleapis/gapic-generator/compare/v2.2.0...v2.3.0) (2020-06-24)
+
+
+### Features
+
+* preserve some values when regenerating BUILD.bazel ([#3237](https://www.github.com/googleapis/gapic-generator/issues/3237)) ([ba34bae](https://www.github.com/googleapis/gapic-generator/commit/ba34baefc8ce09ac5e1b1bf454b928e63b144dd9))
+
 ## [2.2.0](https://www.github.com/googleapis/gapic-generator/compare/v2.1.0...v2.2.0) (2020-06-12)
 
 
