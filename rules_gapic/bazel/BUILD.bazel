@@ -1,7 +1,16 @@
+genrule(
+    name = "buildozer_binary",
+    srcs = ["@com_github_bazelbuild_buildtools//buildozer:buildozer"],
+    outs = ["buildozer.bin"],
+    cmd = "cp $(location @com_github_bazelbuild_buildtools//buildozer:buildozer) \"$@\" && chmod +x \"$@\"",
+)
+
 java_binary(
     name = "build_file_generator",
     srcs = glob(["src/main/java/**/*.java"]),
     resources = glob(["src/main/java/**/*.mustache"]),
+    data = [":buildozer_binary"],
+    args = ["--buildozer=$(location :buildozer_binary)"],
     create_executable = True,
     javacopts = ["-source", "1.8", "-target", "1.8"],
     jvm_flags = ["-Xmx1024m"],
@@ -13,6 +22,7 @@ java_test(
     name = "build_file_generator_test",
     srcs = glob(["src/test/java/**/*.java"]),
     deps = [":build_file_generator"],
-    data = glob(["src/test/data/**/*.*"]),
+    data = glob(["src/test/data/**/*.*"]) + [":buildozer_binary"],
     test_class = "com.google.api.codegen.bazel.BuildFileGeneratorTest",
+    jvm_flags = ["-Dbuildozer=$(location :buildozer_binary)"],
 )
