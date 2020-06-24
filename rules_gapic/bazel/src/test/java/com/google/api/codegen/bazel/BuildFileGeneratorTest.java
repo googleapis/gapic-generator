@@ -51,8 +51,7 @@ public class BuildFileGeneratorTest {
     String buildozerPath = getBuildozerPath();
     Path copiedGoogleapis = Paths.get(tempDirPath.toString(), "googleapis");
     ArgsParser args =
-        new ArgsParser(
-            new String[] {"--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis.toString()});
+        new ArgsParser(new String[] {"--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis});
     new BuildFileGenerator()
         .generateBuildFiles(args.createApisVisitor(null, tempDirPath.toString()));
 
@@ -124,7 +123,7 @@ public class BuildFileGeneratorTest {
     ArgsParser argsOverwrite =
         new ArgsParser(
             new String[] {
-              "--overwrite", "--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis.toString()
+              "--overwrite", "--buildozer=" + buildozerPath, "--src=" + copiedGoogleapis
             });
     new BuildFileGenerator()
         .generateBuildFiles(argsOverwrite.createApisVisitor(null, tempDirPath.toString()));
