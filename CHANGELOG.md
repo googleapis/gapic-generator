@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.3.1](https://www.github.com/googleapis/gapic-generator/compare/v2.3.0...v2.3.1) (2020-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8 ([#3228](https://www.github.com/googleapis/gapic-generator/issues/3228)) ([550cb95](https://www.github.com/googleapis/gapic-generator/commit/550cb959ba4cec7063ccb9f80aa913943384d7e7))
+* **deps:** update dependency puppeteer to v4 ([#3234](https://www.github.com/googleapis/gapic-generator/issues/3234)) ([84fbc59](https://www.github.com/googleapis/gapic-generator/commit/84fbc5901935a5571977cb6b5f1f0c8889817c02))
+
 ## [2.3.0](https://www.github.com/googleapis/gapic-generator/compare/v2.2.0...v2.3.0) (2020-06-24)
 
 
