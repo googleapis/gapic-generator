@@ -21,15 +21,15 @@ import static org.junit.Assert.fail;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.gax.rpc.AbortedException;
 import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.api.gax.rpc.BidiStreamObserver;
 import com.google.api.gax.rpc.ClientStream;
+import com.google.api.gax.rpc.HeaderProvider;
 import com.google.api.gax.rpc.ServerStream;
 import com.google.api.gax.rpc.StreamController;
-import com.google.api.gax.rpc.HeaderProvider;
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
@@ -41,25 +41,24 @@ import com.google.showcase.v1beta1.EchoResponse;
 import com.google.showcase.v1beta1.EchoSettings;
 import com.google.showcase.v1beta1.ExpandRequest;
 import io.grpc.StatusRuntimeException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.Assert;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
-
 
 /** Integration tests via Showcase: https://github.com/googleapis/gapic-showcase */
 @RunWith(JUnit4.class)
@@ -74,8 +73,9 @@ public class ShowcaseTest {
     if (host == null) host = "localhost";
     String port = System.getenv("PORT");
     if (port == null) port = "7469";
-    channelProvider = new ShowcaseTransportChannelProvider(
-        host, Integer.parseInt(port), new ShowcaseHeaderProvider());
+    channelProvider =
+        new ShowcaseTransportChannelProvider(
+            host, Integer.parseInt(port), new ShowcaseHeaderProvider());
 
     // init client for all tests
     client =
