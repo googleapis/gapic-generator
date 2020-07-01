@@ -19,12 +19,17 @@ package com.google.api.showcase;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.api.gax.rpc.AbortedException;
 import com.google.api.gax.rpc.ApiStreamObserver;
 import com.google.api.gax.rpc.BidiStreamObserver;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ServerStream;
 import com.google.api.gax.rpc.StreamController;
+import com.google.api.gax.rpc.HeaderProvider;
 import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
@@ -48,12 +53,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.Assert;
+import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+
 
 /** Integration tests via Showcase: https://github.com/googleapis/gapic-showcase */
 @RunWith(JUnit4.class)
 public class ShowcaseTest {
 
   private EchoClient client;
+  private ShowcaseTransportChannelProvider channelProvider;
 
   @Before
   public void setup() throws Exception {
@@ -61,6 +74,8 @@ public class ShowcaseTest {
     if (host == null) host = "localhost";
     String port = System.getenv("PORT");
     if (port == null) port = "7469";
+    channelProvider = new ShowcaseTransportChannelProvider(
+        host, Integer.parseInt(port), new ShowcaseHeaderProvider());
 
     // init client for all tests
     client =
