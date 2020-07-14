@@ -91,4 +91,9 @@ public class ProtoInterfaceModel implements InterfaceModel {
     return o instanceof ProtoInterfaceModel
         && ((ProtoInterfaceModel) o).protoInterface.equals(this.protoInterface);
   }
+
+  @Override
+  public int hashCode() {
+    return 19 * protoInterface.hashCode();
+  }
 }

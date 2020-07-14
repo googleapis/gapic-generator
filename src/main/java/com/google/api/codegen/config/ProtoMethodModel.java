@@ -138,6 +138,11 @@ public class ProtoMethodModel implements MethodModel {
   }
 
   @Override
+  public int hashCode() {
+    return 19 * method.hashCode();
+  }
+
+  @Override
   public Name asName() {
     return Name.upperCamel(method.getSimpleName());
   }

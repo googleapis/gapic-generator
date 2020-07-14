@@ -40,9 +40,9 @@ public class MultiYamlReader {
       Map<String, Message> supportedConfigTypes) {
     Preconditions.checkArgument(
         inputNames.size() == inputs.size(),
-        "size() of inputNames and inputs not equal: %d != %d",
-        inputNames.size(),
-        inputs.size());
+        String.format(
+            "size() of inputNames and inputs not equal: %d != %d",
+            inputNames.size(), inputs.size()));
     ConfigSource.Builder sourceBuilder = null;
     for (int i = 0; i < inputs.size(); i++) {
       String inputName = inputNames.get(i);
