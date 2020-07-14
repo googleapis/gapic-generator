@@ -62,7 +62,7 @@ public class ProtocGapicWriter implements GapicWriter {
       } else if (value instanceof String) {
         outputStream.append((String) value);
       } else if (value instanceof byte[]) {
-        outputStream.append((byte[]) value);
+        // outputStream.append((byte[]) value);
       } else {
         throw new IllegalArgumentException("Expected one of Doc, String, or byte[]");
       }

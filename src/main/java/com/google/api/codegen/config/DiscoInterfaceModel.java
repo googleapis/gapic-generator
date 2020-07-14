@@ -78,4 +78,9 @@ public class DiscoInterfaceModel implements InterfaceModel {
         && ((DiscoInterfaceModel) o).interfaceName.equals(interfaceName)
         && ((DiscoInterfaceModel) o).apiModel.equals(apiModel);
   }
+
+  @Override
+  public int hashCode() {
+    return 17 * interfaceName.hashCode() + 31 * apiModel.hashCode();
+  }
 }

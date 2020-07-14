@@ -103,8 +103,7 @@ public class ProtoApiModel implements ApiModel {
   public List<ProtoInterfaceModel> getInterfaces(GapicProductConfig productConfig) {
     if (interfaceModels == null) {
       interfaceModels =
-          ProtoModels.getInterfaces(protoModel, productConfig)
-              .stream()
+          ProtoModels.getInterfaces(protoModel, productConfig).stream()
               .map(ProtoInterfaceModel::new)
               .collect(ImmutableList.toImmutableList());
     }
@@ -113,8 +112,7 @@ public class ProtoApiModel implements ApiModel {
 
   @Override
   public List<ProtoTypeRef> getAdditionalTypes() {
-    return getTypes(protoModel)
-        .stream()
+    return getTypes(protoModel).stream()
         .map(ProtoTypeRef::create)
         .collect(ImmutableList.toImmutableList());
   }
@@ -136,5 +134,10 @@ public class ProtoApiModel implements ApiModel {
   @Override
   public boolean equals(Object o) {
     return o instanceof ProtoApiModel && ((ProtoApiModel) o).protoModel.equals(protoModel);
+  }
+
+  @Override
+  public int hashCode() {
+    return 17 * protoModel.hashCode();
   }
 }
