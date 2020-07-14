@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 class BazelBuildFileView {
   private static final Pattern LABEL_NAME = Pattern.compile(":\\w+$");
   private final Map<String, String> tokens = new HashMap<>();
+  private final Map<String, Map<String, String>> overriddenStringAttributes = new HashMap<>();
+  private final Map<String, Map<String, List<String>>> overriddenListAttributes = new HashMap<>();
+  private final Map<String, String> assemblyPkgRulesNames = new HashMap<>();
 
   BazelBuildFileView(ApiVersionedDir bp) {
     if (bp.getProtoPackage() == null) {
@@ -91,6 +94,10 @@ class BazelBuildFileView {
     tokens.put("go_gapic_importpath", goImport);
     tokens.put("go_gapic_test_importpath", goImport.split(";")[0]);
     tokens.put("go_gapic_deps", joinSetWithIndentationNl(mapGoGapicDeps(actualImports)));
+
+    overriddenStringAttributes.putAll(bp.getOverriddenStringAttributes());
+    overriddenListAttributes.putAll(bp.getOverriddenListAttributes());
+    assemblyPkgRulesNames.putAll(bp.getAssemblyPkgRulesNames());
   }
 
   private String assembleGoImportPath(boolean isCloud, String protoPkg, String goPkg) {
@@ -257,5 +264,17 @@ class BazelBuildFileView {
 
   Map<String, String> getTokens() {
     return Collections.unmodifiableMap(this.tokens);
+  }
+
+  Map<String, Map<String, String>> getOverriddenStringAttributes() {
+    return overriddenStringAttributes;
+  }
+
+  Map<String, Map<String, List<String>>> getOverriddenListAttributes() {
+    return overriddenListAttributes;
+  }
+
+  Map<String, String> getAssemblyPkgRulesNames() {
+    return assemblyPkgRulesNames;
   }
 }

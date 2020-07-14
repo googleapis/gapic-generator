@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.4.0](https://www.github.com/googleapis/gapic-generator/compare/v2.3.0...v2.4.0) (2020-06-26)
+
+
+### Features
+
+* add opt_file_args to pass the file arguments to the protoc plugin ([#3239](https://www.github.com/googleapis/gapic-generator/issues/3239)) ([cce9967](https://www.github.com/googleapis/gapic-generator/commit/cce996760223cc3980af8da44e8f0c609dba871c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency mocha to v8 ([#3228](https://www.github.com/googleapis/gapic-generator/issues/3228)) ([550cb95](https://www.github.com/googleapis/gapic-generator/commit/550cb959ba4cec7063ccb9f80aa913943384d7e7))
+* **deps:** update dependency puppeteer to v4 ([#3234](https://www.github.com/googleapis/gapic-generator/issues/3234)) ([84fbc59](https://www.github.com/googleapis/gapic-generator/commit/84fbc5901935a5571977cb6b5f1f0c8889817c02))
+
+## [2.3.0](https://www.github.com/googleapis/gapic-generator/compare/v2.2.0...v2.3.0) (2020-06-24)
+
+
+### Features
+
+* preserve some values when regenerating BUILD.bazel ([#3237](https://www.github.com/googleapis/gapic-generator/issues/3237)) ([ba34bae](https://www.github.com/googleapis/gapic-generator/commit/ba34baefc8ce09ac5e1b1bf454b928e63b144dd9))
+
 ## [2.2.0](https://www.github.com/googleapis/gapic-generator/compare/v2.1.0...v2.2.0) (2020-06-12)
 
 

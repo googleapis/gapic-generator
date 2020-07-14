@@ -1,7 +1,11 @@
 package com.google.api.codegen.bazel;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,6 +43,18 @@ class ApiVersionedDir {
       Pattern.compile("(?m)^type\\s*:\\s*google.api.Service\\s*$");
 
   private static String CLOUD_AUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+
+  private static final String[] PRESERVED_PROTO_LIBRARY_STRING_ATTRIBUTES = {
+    // TypeScript:
+    "package_name", "main_service", "bundle_config", "iam_service",
+    // Other languages: add below
+  };
+
+  private static final String[] PRESERVED_PROTO_LIBRARY_LIST_ATTRIBUTES = {
+    // All languages:
+    "extra_protoc_parameters", "extra_protoc_file_parameters",
+    // Other languages: add below
+  };
 
   // A reference to the object representing the parent dir of this versioned API dir.
   // For example: google/example/library.
@@ -123,6 +139,13 @@ class ApiVersionedDir {
   //         https://www.googleapis.com/auth/cloud-platform
   private boolean cloudScope;
 
+  // Names of *_gapic_assembly_* rules (since they may be overridden by the user)
+  private final Map<String, String> assemblyPkgRulesNames = new HashMap<>();
+
+  // Attributes of *_gapic_library rules to be overridden
+  private final Map<String, Map<String, String>> overriddenStringAttributes = new HashMap<>();
+  private final Map<String, Map<String, List<String>>> overriddenListAttributes = new HashMap<>();
+
   void setParent(ApiDir parent) {
     this.parent = parent;
   }
@@ -181,6 +204,18 @@ class ApiVersionedDir {
 
   boolean getCloudScope() {
     return cloudScope;
+  }
+
+  Map<String, Map<String, String>> getOverriddenStringAttributes() {
+    return overriddenStringAttributes;
+  }
+
+  Map<String, Map<String, List<String>>> getOverriddenListAttributes() {
+    return overriddenListAttributes;
+  }
+
+  Map<String, String> getAssemblyPkgRulesNames() {
+    return assemblyPkgRulesNames;
   }
 
   void parseYamlFile(String fileName, String fileBody) {
@@ -282,6 +317,59 @@ class ApiVersionedDir {
   void parseJsonFile(String fileName, String fileBody) {
     if (fileBody.contains("methodConfig")) {
       serviceConfigJsonPath = fileName;
+    }
+  }
+
+  void parseBazelBuildFile(Path file) {
+    try {
+      Buildozer buildozer = Buildozer.getInstance();
+
+      // We cannot and we do not want to preserve all the content of the file.
+      // We will let the user edit just the following:
+      // - names of the final targets (*_gapic_assembly_*) because they are user-facing;
+      // - extra protoc plugin parameters for *_gapic_library rules.
+      List<String> allRules = buildozer.execute(file, "print kind name", "*");
+      for (String rule : allRules) {
+        String[] split = rule.split(" ");
+        if (split.length != 2) {
+          // some rules e.g. package() don't have "name" attribute, just skip them
+          continue;
+        }
+        String kind = split[0];
+        String name = split[1];
+        if (kind.contains("_gapic_assembly_")) {
+          if (this.assemblyPkgRulesNames.containsKey(kind)) {
+            // Duplicated rule of the same kind will break our logic for preserving rule name.
+            System.err.println("There are more than one rule of kind " + kind + ".");
+            System.err.println(
+                "Bazel build file generator does not support regenerating BUILD.bazel in this case.");
+            System.err.println(
+                "Please run it with --overwrite option to overwrite the existing BUILD.bazel completely.");
+            throw new RuntimeException("Duplicated rule " + kind);
+          }
+          this.assemblyPkgRulesNames.put(kind, name);
+        } else if (kind.endsWith("_gapic_library")) {
+          this.overriddenStringAttributes.put(name, new HashMap<>());
+          this.overriddenListAttributes.put(name, new HashMap<>());
+          for (String attr : ApiVersionedDir.PRESERVED_PROTO_LIBRARY_STRING_ATTRIBUTES) {
+            String value = buildozer.getAttribute(file, name, attr);
+            if (value != null) {
+              this.overriddenStringAttributes.get(name).put(attr, value);
+            }
+          }
+          for (String attr : ApiVersionedDir.PRESERVED_PROTO_LIBRARY_LIST_ATTRIBUTES) {
+            String value = buildozer.getAttribute(file, name, attr);
+            if (value != null && value.startsWith("[") && value.endsWith("]")) {
+              value = value.substring(1, value.length() - 1);
+              String[] values = value.split(" ");
+              this.overriddenListAttributes.get(name).put(attr, Arrays.asList(values));
+            }
+          }
+        }
+      }
+    } catch (IOException exception) {
+      System.err.println(
+          "Error parsing BUILD.bazel file in " + file.toString() + ": " + exception.toString());
     }
   }
 
