@@ -105,7 +105,8 @@ public class Scanner {
         if (escaped) {
           Integer esc = ESCAPES.get(codePoint);
           Preconditions.checkArgument(
-              esc != null, "unrecognized escape '\\%c': %s", (char) codePoint, input);
+              esc != null,
+              String.format("unrecognized escape '\\%c': %s", (char) codePoint, input));
           escaped = false;
           sb.appendCodePoint(esc);
           loc += Character.charCount(esc);
