@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.1](https://www.github.com/googleapis/gapic-generator/compare/v2.4.0...v2.4.1) (2020-07-14)
+
+
+### Bug Fixes
+* fix errorprone bazel errors (#3250)([f1381f9](https://github.com/googleapis/gapic-generator/commit/f1381f999795a62720462d3ec7095b1d566a3653))
+* remove speech library generation from circleci ([#3251](https://www.github.com/googleapis/gapic-generator/issues/3251)) ([965504d](https://www.github.com/googleapis/gapic-generator/commit/965504dfda60c649f37738b2efd022d07ec9d8ce))
+
 ## [2.4.0](https://www.github.com/googleapis/gapic-generator/compare/v2.3.0...v2.4.0) (2020-06-26)
 
 
