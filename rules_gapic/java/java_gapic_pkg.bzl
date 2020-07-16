@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths", "put_dep_in_a_bucket")
+load("//rules_gapic:gapic_pkg.bzl", "construct_package_dir_paths", "put_dep_in_a_bucket", "pkg_tar")
 load("@com_google_api_gax_java_properties//:dependencies.properties.bzl", "PROPERTIES")
 
 def _wrapPropertyNamesInBraces(properties):

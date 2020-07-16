@@ -36,3 +36,54 @@ def put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
         return
     dep_bucket.append(dep)
     processed_deps[dep] = True
+
+def _pkg_tar_impl(ctx):
+    deps = []
+    for dep in ctx.attr.deps:
+        for f in dep.files.to_list():
+            deps.append(f)
+
+    paths = construct_package_dir_paths(
+        ctx.attr.package_dir,
+        ctx.outputs.pkg,
+        ctx.label.name,
+    )
+
+    script = """
+    mkdir -p {package_dir_path}
+    for dep in {deps}; do
+        tar -xzpf $dep -C {package_dir_path}
+    done
+    cd {package_dir_path}/{cd_suffix}
+    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {package_dir}
+    cd -
+    mv {package_dir_path}/{package_dir}.tar.gz {pkg}
+    rm -rf {package_dir_path}
+    """.format(
+        deps = " ".join(["'%s'" % d.path for d in deps]),
+        package_dir_path = paths.package_dir_path,
+        package_dir = paths.package_dir,
+        pkg = ctx.outputs.pkg.path,
+        cd_suffix = "/.." if ctx.attr.package_dir else ".",
+        tar_prefix = paths.package_dir if ctx.attr.package_dir else ".",
+    )
+
+    ctx.actions.run_shell(
+        inputs = deps,
+        command = script,
+        outputs = [ctx.outputs.pkg],
+    )
+
+# The Bazel's native pkg_tar rule behaves weirdly when package_dir parameter
+# is specified (at least on some Linux machines it does not put all the files
+# under the package_dir). As a workaround for that bug we provide the custom
+# implementation of the pkg_tar rule.
+pkg_tar = rule(
+    attrs = {
+        "deps": attr.label_list(mandatory = True),
+        "package_dir": attr.string(mandatory = False, default = ""),
+        "extension": attr.string(mandatory = False, default = "tar.gz"),
+    },
+    outputs = {"pkg": "%{name}.%{extension}"},
+    implementation = _pkg_tar_impl,
+)
