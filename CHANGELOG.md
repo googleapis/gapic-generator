@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.2](https://www.github.com/googleapis/gapic-generator/compare/v2.4.1...v2.4.2) (2020-07-16)
+
+
+### Bug Fixes
+
+* Fix for java_gapic_assembly_gradle_pkg rule. ([#3253](https://www.github.com/googleapis/gapic-generator/issues/3253)) ([a98a2a0](https://www.github.com/googleapis/gapic-generator/commit/a98a2a0edc62214cf2764a1644c32e631318123f))
+
 ### [2.4.1](https://www.github.com/googleapis/gapic-generator/compare/v2.4.0...v2.4.1) (2020-07-14)
 
 
