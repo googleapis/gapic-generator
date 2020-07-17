@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.3](https://www.github.com/googleapis/gapic-generator/compare/v2.4.2...v2.4.3) (2020-07-17)
+
+
+### Bug Fixes
+
+* Fix tar packaging in bazel rules for mac ([#3255](https://www.github.com/googleapis/gapic-generator/issues/3255)) ([216f03f](https://www.github.com/googleapis/gapic-generator/commit/216f03fc6bba591e3607f7cebb4f325910f9e085))
+
 ### [2.4.2](https://www.github.com/googleapis/gapic-generator/compare/v2.4.1...v2.4.2) (2020-07-16)
 
 
