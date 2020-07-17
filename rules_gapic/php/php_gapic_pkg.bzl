@@ -36,8 +36,8 @@ def _php_gapic_src_pkg_impl(ctx):
         mkdir -p {package_dir_path}/proto
         unzip -q -o $gapic_src -d {package_dir_path}
     done
-    cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
+    cd {package_dir_path}/{tar_cd_suffix}
+    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {tar_prefix}/*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     rm -rf {package_dir_path}
@@ -47,7 +47,8 @@ def _php_gapic_src_pkg_impl(ctx):
         package_dir_path = paths.package_dir_path,
         package_dir = paths.package_dir,
         pkg = ctx.outputs.pkg.path,
-        package_dir_expr = paths.package_dir_expr,
+        tar_cd_suffix = paths.tar_cd_suffix,
+        tar_prefix = paths.tar_prefix,
     )
 
     ctx.actions.run_shell(
