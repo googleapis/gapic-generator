@@ -16,9 +16,13 @@ def construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
     if attr_package_dir:
         package_dir = attr_package_dir
         package_dir_expr = "../{}/".format(package_dir)
+        tar_cd_suffix = ".."
+        tar_prefix = attr_package_dir
     else:
         package_dir = label_name
         package_dir_expr = "./"
+        tar_cd_suffix = "."
+        tar_prefix = "."
 
     # We need to include label in the path to eliminate possible output files duplicates
     # (labels are guaranteed to be unique by bazel itself)
@@ -29,6 +33,8 @@ def construct_package_dir_paths(attr_package_dir, out_pkg, label_name):
         package_dir_path = package_dir_path,
         package_dir_sibling_parent = out_pkg,
         package_dir_sibling_basename = label_name,
+        tar_cd_suffix = tar_cd_suffix,
+        tar_prefix = tar_prefix
     )
 
 def put_dep_in_a_bucket(dep, dep_bucket, processed_deps):
@@ -54,8 +60,8 @@ def _pkg_tar_impl(ctx):
     for dep in {deps}; do
         tar -xzpf $dep -C {package_dir_path}
     done
-    cd {package_dir_path}/{cd_suffix}
-    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {package_dir}
+    cd {package_dir_path}/{tar_cd_suffix}
+    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {tar_prefix}/*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     rm -rf {package_dir_path}
@@ -64,8 +70,8 @@ def _pkg_tar_impl(ctx):
         package_dir_path = paths.package_dir_path,
         package_dir = paths.package_dir,
         pkg = ctx.outputs.pkg.path,
-        cd_suffix = "/.." if ctx.attr.package_dir else ".",
-        tar_prefix = paths.package_dir if ctx.attr.package_dir else ".",
+        tar_cd_suffix = paths.tar_cd_suffix,
+        tar_prefix = paths.tar_prefix,
     )
 
     ctx.actions.run_shell(

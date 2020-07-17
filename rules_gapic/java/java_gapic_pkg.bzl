@@ -60,8 +60,8 @@ def _java_gapic_build_configs_pkg_impl(ctx):
         cp $templ {package_dir_path}/
     done
     chmod 644 {package_dir_path}/*
-    cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
+    cd {package_dir_path}/{tar_cd_suffix}
+    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {tar_prefix}/*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
@@ -69,7 +69,8 @@ def _java_gapic_build_configs_pkg_impl(ctx):
         package_dir_path = paths.package_dir_path,
         package_dir = paths.package_dir,
         pkg = ctx.outputs.pkg.path,
-        package_dir_expr = paths.package_dir_expr,
+        tar_cd_suffix = paths.tar_cd_suffix,
+        tar_prefix = paths.tar_prefix,
     )
 
     ctx.actions.run_shell(
@@ -124,8 +125,8 @@ def _java_gapic_srcs_pkg_impl(ctx):
         unzip -q -o $test_src -d {package_dir_path}/src/test/java
         rm -r -f {package_dir_path}/src/test/java/META-INF
     done
-    cd {package_dir_path}
-    tar -zchpf {package_dir}.tar.gz {package_dir_expr}*
+    cd {package_dir_path}/{tar_cd_suffix}
+    tar -zchpf {tar_prefix}/{package_dir}.tar.gz {tar_prefix}/*
     cd -
     mv {package_dir_path}/{package_dir}.tar.gz {pkg}
     """.format(
@@ -135,7 +136,8 @@ def _java_gapic_srcs_pkg_impl(ctx):
         package_dir_path = paths.package_dir_path,
         package_dir = paths.package_dir,
         pkg = ctx.outputs.pkg.path,
-        package_dir_expr = paths.package_dir_expr,
+        tar_cd_suffix = paths.tar_cd_suffix,
+        tar_prefix = paths.tar_prefix,
     )
 
     ctx.actions.run_shell(
