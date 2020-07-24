@@ -27,6 +27,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.tools.framework.model.Diag;
@@ -283,7 +284,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             protoPackage,
             clientPackage,
             language,
-            grpcServiceConfig);
+            grpcServiceConfig,
+            TransportProtocol.GRPC);
 
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {

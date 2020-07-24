@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -94,6 +95,9 @@ public abstract class ClientTestClassView {
   @Nullable // Used in C#
   public abstract String grpcServiceClassName();
 
+  @Nullable
+  public abstract TransportProtocol transportProtocol();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder()
         .apiHasUnaryUnaryMethod(false)
@@ -148,6 +152,8 @@ public abstract class ClientTestClassView {
     public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder transportProtocol(TransportProtocol val);
 
     public abstract ClientTestClassView build();
   }

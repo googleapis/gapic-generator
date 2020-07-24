@@ -40,11 +40,13 @@ def _gapic_srcjar_impl(ctx):
         _set_args(attr.service_yaml, "--service_yaml=", arguments, inputs)
         _set_args(attr.package_yaml2, "--package_yaml2=", arguments, inputs)
         _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
+        _set_args(attr.transport_protocol, "--transport_protocol=", arguments)
     else:
         _set_args(attr.language, "--language=", arguments)
         _set_args(attr.src, "--descriptor=", arguments, inputs)
         _set_args(attr.package, "--package=", arguments)
         _set_args(attr.grpc_service_config, "--grpc_service_config=", arguments, inputs)
+        _set_args(attr.transport_protocol, "--transport_protocol=", arguments)
 
     gapic_generator = ctx.executable.gapic_generator
     ctx.actions.run(
@@ -72,6 +74,7 @@ gapic_srcjar = rule(
         "package": attr.string(mandatory = False),
         "output_suffix": attr.string(mandatory = False, default = ".srcjar"),
         "grpc_service_config": attr.label(mandatory = False, allow_single_file = True),
+        "transport_protocol": attr.string(mandatory = False),
         "gapic_generator": attr.label(
             default = Label("//:gapic_generator"),
             executable = True,

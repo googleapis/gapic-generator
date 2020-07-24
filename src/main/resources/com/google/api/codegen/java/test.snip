@@ -6,19 +6,34 @@
 
   @@javax.annotation.Generated("by GAPIC")
   public class {@xapiTest.testClass.name} {
-    @join mockService : xapiTest.testClass.mockServices
+    @if xapiTest.testClass.transportProtocol == "HTTP"
+      {@httpTestInitialization(xapiTest.testClass)}
+    @else
+      {@grpcTestInitialization(xapiTest.testClass)}
+    @end
+
+    @join test : xapiTest.testClass.testCases
+      {@testCase(test)}
+
+    @end
+  }
+@end
+
+@private grpcTestInitialization(testClass)
+    @join mockService : testClass.mockServices
       private static {@mockService.className} {@mockService.varName};
     @end
+
     private static MockServiceHelper serviceHelper;
-    private {@xapiTest.testClass.apiClassName} client;
+    private {@testClass.apiClassName} client;
     private LocalChannelProvider channelProvider;
 
     @@BeforeClass
     public static void startStaticServer() {
-      @join mockService : xapiTest.testClass.mockServices
+      @join mockService : testClass.mockServices
         {@mockService.varName} = new {@mockService.className}();
       @end
-      serviceHelper = new MockServiceHelper(UUID.randomUUID().toString(), Arrays.<MockGrpcService>asList({@mockServiceArgs(xapiTest.testClass.mockServices)}));
+      serviceHelper = new MockServiceHelper(UUID.randomUUID().toString(), Arrays.<MockGrpcService>asList({@mockServiceArgs(testClass.mockServices)}));
       serviceHelper.start();
     }
 
@@ -31,23 +46,54 @@
     public void setUp() throws IOException {
       serviceHelper.reset();
       channelProvider = serviceHelper.createChannelProvider();
-      {@xapiTest.testClass.apiSettingsClassName} settings = {@xapiTest.testClass.apiSettingsClassName}.newBuilder()
+      {@testClass.apiSettingsClassName} settings = {@testClass.apiSettingsClassName}.newBuilder()
           .setTransportChannelProvider(channelProvider)
           .setCredentialsProvider(NoCredentialsProvider.create())
           .build();
-      client = {@xapiTest.testClass.apiClassName}.create(settings);
+      client = {@testClass.apiClassName}.create(settings);
     }
 
     @@After
     public void tearDown() throws Exception {
       client.close();
     }
+@end
 
-    @join test : xapiTest.testClass.testCases
-      {@testCase(test)}
+@private httpTestInitialization(testClass)
+    private static final List<ApiMethodDescriptor> METHOD_DESCRIPTORS = ImmutableList.copyOf(
+          Lists.<ApiMethodDescriptor>newArrayList(
+            @join test : testClass.testCases on ", ".add(BREAK)
+              {@test.methodDescriptor}
+            @end
+          ));
+    private static final MockHttpService mockService
+        = new MockHttpService(METHOD_DESCRIPTORS, {@testClass.apiStubSettingsClassName}.getDefaultEndpoint());
 
-    @end
-  }
+    private static {@testClass.apiClassName} client;
+    private static {@testClass.apiSettingsClassName} clientSettings;
+
+    @@BeforeClass
+    public static void setUp() throws IOException {
+      clientSettings =
+          {@testClass.apiSettingsClassName}.newBuilder()
+             .setTransportChannelProvider(
+                 {@testClass.apiSettingsClassName}.defaultHttpJsonTransportProviderBuilder()
+                     .setHttpTransport(mockService).build())
+             .setCredentialsProvider(NoCredentialsProvider.create())
+             .build();
+      client =
+         {@testClass.apiClassName}.create(clientSettings);
+    }
+
+    @@After
+    public void cleanUp() {
+      mockService.reset();
+    }
+
+    @@AfterClass
+    public static void tearDown() throws Exception {
+      client.close();
+    }
 @end
 
 @private mockServiceArgs(mockServices)
@@ -252,12 +298,21 @@
 
 @private addResponse(test)
   {@initCode(test.mockResponse.rpcResponseInitCode)}
-  {@test.mockServiceVarName}.addResponse(expectedResponse);
+  @if test.transportProtocol == "HTTP"
+    mockService.addResponse(expectedResponse);
+  @else
+    {@test.mockServiceVarName}.addResponse(expectedResponse);
+  @end
 @end
 
 @private addException(test)
-  StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
-  {@test.mockServiceVarName}.addException(exception);
+  @if test.transportProtocol == "HTTP"
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+  @else
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    {@test.mockServiceVarName}.addException(exception);
+  @end
 @end
 
 @private pagedMethodCall(test)
@@ -297,6 +352,14 @@
 @end
 
 @private unarySuccessAsserts(test)
+  @if test.transportProtocol == "HTTP"
+    {@httpUnarySuccessAsserts(test)}
+  @else
+    {@grpcUnarySuccessAsserts(test)}
+  @end
+@end
+
+@private grpcUnarySuccessAsserts(test)
   List<AbstractMessage> actualRequests = {@test.mockServiceVarName}.getRequests();
   Assert.assertEquals(1, actualRequests.size());
   {@test.requestTypeName} actualRequest = ({@test.requestTypeName})actualRequests.get(0);
@@ -314,6 +377,16 @@
             ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
             GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
   @end
+@end
+
+@private httpUnarySuccessAsserts(test)
+  List<String> actualRequests = mockService.getRequestPaths();
+  Assert.assertEquals(1, actualRequests.size());
+
+  String apiClientHeaderKey = mockService.getRequestHeaders()
+      .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+  Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+      .matcher(apiClientHeaderKey).matches());
 @end
 
 @private assertExpectedParam(assert)

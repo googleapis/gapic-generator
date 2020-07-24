@@ -135,7 +135,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Model model, ConfigProto configProto, TargetLanguage language) {
-    return create(model, configProto, null, null, null, language, null);
+    return create(model, configProto, null, null, null, language, null, TransportProtocol.GRPC);
   }
 
   /**
@@ -159,7 +159,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       @Nullable String protoPackage,
       @Nullable String clientPackage,
       TargetLanguage language,
-      @Nullable ServiceConfig grpcServiceConfig) {
+      @Nullable ServiceConfig grpcServiceConfig,
+      TransportProtocol transportProtocol) {
 
     final String defaultPackage;
     SymbolTable symbolTable = model.getSymbolTable();
@@ -305,7 +306,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       return null;
     }
 
-    TransportProtocol transportProtocol = TransportProtocol.GRPC;
+    // TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
     String clientPackageName;
     LanguageSettingsProto settings =

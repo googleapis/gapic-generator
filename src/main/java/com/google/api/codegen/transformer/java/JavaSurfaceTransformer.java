@@ -635,6 +635,15 @@ public class JavaSurfaceTransformer {
     stubClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     stubClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
 
+    stubClass.transportProtocol(productConfig.getTransportProtocol());
+    if (productConfig.getTransportProtocol() == TransportProtocol.HTTP) {
+      stubClass.callSettingsClassName("HttpJsonCallSettings");
+      stubClass.stubCallableFactoryClassName("HttpJsonStubCallableFactory");
+    } else {
+      stubClass.callSettingsClassName("GrpcCallSettings");
+      stubClass.stubCallableFactoryClassName("GrpcStubCallableFactory");
+    }
+
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
@@ -922,8 +931,17 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
         typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
+        String configSchemaVersion = context.getProductConfig().getConfigSchemaVersion();
+        if (configSchemaVersion == null || configSchemaVersion.startsWith("1.")) {
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
+        } else {
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.FieldsExtractor");
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ProtoRestSerializer");
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ProtoMessageRequestFormatter");
+          typeTable.saveNicknameFor("com.google.api.gax.httpjson.ProtoMessageResponseParser");
+          typeTable.saveNicknameFor("java.util.HashMap");
+        }
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallSettings");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStubCallableFactory");

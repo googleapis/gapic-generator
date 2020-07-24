@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
@@ -85,6 +86,9 @@ public abstract class TestCaseView {
 
   public abstract String grpcMethodName();
 
+  @Nullable
+  public abstract TransportProtocol transportProtocol();
+
   public static Builder newBuilder() {
     return new AutoValue_TestCaseView.Builder();
   }
@@ -145,6 +149,8 @@ public abstract class TestCaseView {
     public abstract Builder methodDescriptor(String val);
 
     public abstract Builder grpcMethodName(String val);
+
+    public abstract Builder transportProtocol(TransportProtocol val);
 
     public abstract TestCaseView build();
   }

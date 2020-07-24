@@ -262,7 +262,7 @@ public class GapicGeneratorFactory {
                   new JavaSurfaceTestTransformer<>(
                       javaTestPathMapper,
                       new JavaGapicSurfaceTransformer(javaTestPathMapper),
-                      "java/grpc_test.snip")));
+                      "java/test.snip")));
         }
       }
       return generators;

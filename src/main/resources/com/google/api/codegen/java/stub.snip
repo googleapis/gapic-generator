@@ -10,7 +10,7 @@
 @snippet generate(classFile)
   {@renderStubFileHeader(classFile.fileHeader)}
 
-  {@classDoc(classFile.classView.doc)}
+  {@classDoc(classFile.classView)}
   @@Generated("by gapic-generator")
   # TODO once stub classes are stable, start using releaseLevelAnnotation
   #@if classFile.classView.releaseLevelAnnotation
@@ -31,10 +31,10 @@
   }
 @end
 
-@private classDoc(doc)
+@private classDoc(classView)
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
-   * gRPC stub implementation for {@doc.serviceTitle}.
+   * {@classView.transportProtocolName} stub implementation for {@classView.doc.serviceTitle}.
    *
    * <p>This class is for advanced usage and reflects the underlying API directly.
    */
@@ -43,7 +43,11 @@
 @private constants(stubClass)
 
   @join methodDescriptor : stubClass.methodDescriptors
-    {@grpcMethodDescriptor(methodDescriptor)}
+    @if stubClass.transportProtocol == "HTTP"
+      {@httpMethodDescriptor(methodDescriptor)}
+    @else
+      {@grpcMethodDescriptor(methodDescriptor)}
+    @end
   @end
   {@""}
 @end
@@ -57,6 +61,79 @@
           .setResponseMarshaller(ProtoUtils.marshaller({@methodDescriptor.responseTypeName}.getDefaultInstance()))
           .build();
 @end
+
+@private httpMethodDescriptor(methodDescriptor)
+  @@InternalApi
+  public static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+      ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+          .setFullMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
+          .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+          .setRequestFormatter(
+              ProtoMessageRequestFormatter.<{@methodDescriptor.requestTypeName}>newBuilder()
+                  .setPath(
+                      "{@methodDescriptor.httpMethod.pathTemplate}",
+                      new FieldsExtractor<{@methodDescriptor.requestTypeName}, Map<String, String>>() {
+                        @@Override
+                        public Map<String, String> extract({@methodDescriptor.requestTypeName} request) {
+                          Map<String, String> fields = new HashMap<>();
+                          ProtoRestSerializer<{@methodDescriptor.requestTypeName}> serializer =
+                              ProtoRestSerializer.create();
+                          {@pathMethodSelectors(methodDescriptor.httpMethod.pathParamSelectors)}
+                          return fields;
+                        }
+                      })
+                  .setQueryParamsExtractor(
+                      new FieldsExtractor<{@methodDescriptor.requestTypeName}, Map<String, List<String>>>() {
+                        @@Override
+                        public Map<String, List<String>> extract({@methodDescriptor.requestTypeName} request) {
+                          Map<String, List<String>> fields = new HashMap<>();
+                          ProtoRestSerializer<{@methodDescriptor.requestTypeName}> serializer =
+                              ProtoRestSerializer.create();
+                          {@queryMethodSelectors(methodDescriptor.httpMethod.queryParamSelectors)}
+                          return fields;
+                        }
+                      })
+                  .setRequestBodyExtractor(
+                      new FieldsExtractor<{@methodDescriptor.requestTypeName}, String>() {
+                        @@Override
+                        public String extract({@methodDescriptor.requestTypeName} request) {
+                          {@bodyMethodSelector(methodDescriptor.httpMethod)}
+                        }
+                      })
+                  .build())
+          .setResponseParser(
+              ProtoMessageResponseParser.<{@methodDescriptor.responseTypeName}>newBuilder()
+                  .setDefaultInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+                  .build())
+          .build();
+@end
+
+@private pathMethodSelectors(methodSelectors)
+  @join methodSelector : @methodSelectors
+    serializer.toPathParam(fields, "{@methodSelector.fullyQualifiedName}", request.{@methodSelectorGetter(methodSelector.gettersChain)});
+  @end
+@end
+
+@private queryMethodSelectors(methodSelectors)
+  @join methodSelector : @methodSelectors
+    serializer.toQueryParam(fields, "{@methodSelector.fullyQualifiedName}", request.{@methodSelectorGetter(methodSelector.gettersChain)});
+  @end
+@end
+
+@private bodyMethodSelector(httpMethod)
+  @if httpMethod.hasBody
+    return ProtoRestSerializer.create().toBody("{@httpMethod.bodySelectors.get(0).fullyQualifiedName}", request.{@methodSelectorGetter(httpMethod.bodySelectors.get(0).gettersChain)});
+  @else
+    return "";
+  @end
+@end
+
+@private methodSelectorGetter(gettersChain)
+  @join getter : gettersChain on "."
+    {@getter}()
+  @end
+@end
+
 
 @private streamingTypeEnum(streamingType)
   @switch streamingType
@@ -84,7 +161,7 @@
     {@apiCallableMember(apiCallable)}
   @end
 
-  private final GrpcStubCallableFactory callableFactory;
+  private final {@stubClass.stubCallableFactoryClassName} callableFactory;
 @end
 
 @private apiCallableMember(callable)
@@ -136,7 +213,7 @@
     return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext);
   }
 
-  public static final {@stubClass.name} create(ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+  public static final {@stubClass.name} create(ClientContext clientContext, {@stubClass.stubCallableFactoryClassName} callableFactory) throws IOException {
     return new {@stubClass.name}({@stubClass.stubSettingsClassName}.newBuilder().build(), clientContext, callableFactory);
   }
 
@@ -154,15 +231,15 @@
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+  protected {@stubClass.name}({@stubClass.stubSettingsClassName} settings, ClientContext clientContext, {@stubClass.stubCallableFactoryClassName} callableFactory) throws IOException {
     this.callableFactory = callableFactory;
     @if stubClass.hasLongRunningOperations
       this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors
-      GrpcCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
-          GrpcCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+      {@stubClass.callSettingsClassName}<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
+          {@stubClass.callSettingsClassName}.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
               .setMethodDescriptor({@methodDescriptor.name})
               @if methodDescriptor.hasHeaderRequestParams
                 .setParamsExtractor(

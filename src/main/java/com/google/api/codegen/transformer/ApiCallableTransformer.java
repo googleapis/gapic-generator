@@ -24,6 +24,8 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -33,17 +35,24 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.codegen.viewmodel.HttpMethodSelectorView;
 import com.google.api.codegen.viewmodel.HttpMethodView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.MethodDescriptorView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.FieldSelector;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ApiCallableTransformer {
 
@@ -212,39 +221,83 @@ public class ApiCallableTransformer {
 
   private HttpMethodView generateHttpFields(MethodContext context) {
     if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      Method method = ((DiscoveryMethodModel) context.getMethodModel()).getDiscoMethod();
-      HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
-      httpMethodView.fullMethodName(method.id());
-      httpMethodView.httpMethod(method.httpMethod());
-      List<String> pathParams = new ArrayList<>(method.pathParams().keySet());
-      List<String> queryParams = new ArrayList<>(method.queryParams().keySet());
-      Collections.sort(pathParams);
-      Collections.sort(queryParams);
-      httpMethodView.pathParams(pathParams);
-      httpMethodView.queryParams(queryParams);
-      httpMethodView.pathTemplate(method.path());
+      if (context.getMethodModel() instanceof DiscoveryMethodModel) {
+        Method method = ((DiscoveryMethodModel) context.getMethodModel()).getDiscoMethod();
+        HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
+        httpMethodView.fullMethodName(method.id());
+        httpMethodView.httpMethod(method.httpMethod());
+        List<String> pathParams = new ArrayList<>(method.pathParams().keySet());
+        List<String> queryParams = new ArrayList<>(method.queryParams().keySet());
+        Collections.sort(pathParams);
+        Collections.sort(queryParams);
+        httpMethodView.pathParams(pathParams);
+        httpMethodView.queryParams(queryParams);
+        httpMethodView.pathTemplate(method.path());
 
-      // TODO(andrealin): handle multiple resource names.
-      DiscoGapicInterfaceConfig interfaceConfig =
-          (DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig();
-      SingleResourceNameConfig nameConfig =
-          interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
-      httpMethodView.resourceNameTypeName(
-          context.getNamer().publicClassName(DiscoGapicParser.getResourceNameName(nameConfig)));
-      // Find the field with the resource name config.
-      for (FieldConfig fieldConfig : context.getMethodConfig().getRequiredFieldConfigs()) {
-        if (fieldConfig.getResourceNameConfig() != null
-            && fieldConfig.getResourceNameConfig().equals(nameConfig)) {
-          httpMethodView.resourceNameFieldName(
-              context
-                  .getNamer()
-                  .privateFieldName(Name.anyCamel(fieldConfig.getField().getNameAsParameter())));
+        // TODO(andrealin): handle multiple resource names.
+        DiscoGapicInterfaceConfig interfaceConfig =
+            (DiscoGapicInterfaceConfig) context.getSurfaceInterfaceContext().getInterfaceConfig();
+        SingleResourceNameConfig nameConfig =
+            interfaceConfig.methodToResourceNameMap().get(context.getMethodConfig());
+        httpMethodView.resourceNameTypeName(
+            context.getNamer().publicClassName(DiscoGapicParser.getResourceNameName(nameConfig)));
+        // Find the field with the resource name config.
+        for (FieldConfig fieldConfig : context.getMethodConfig().getRequiredFieldConfigs()) {
+          if (fieldConfig.getResourceNameConfig() != null
+              && fieldConfig.getResourceNameConfig().equals(nameConfig)) {
+            httpMethodView.resourceNameFieldName(
+                context
+                    .getNamer()
+                    .privateFieldName(Name.anyCamel(fieldConfig.getField().getNameAsParameter())));
+          }
         }
+        return httpMethodView.build();
+      } else if (context.getMethodModel() instanceof ProtoMethodModel) {
+        com.google.api.tools.framework.model.Method method =
+            ((ProtoMethodModel) context.getMethodModel()).getProtoMethod();
+        HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+
+        HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
+        httpMethodView.httpMethod(httpAttr.getMethodKind().toString());
+        httpMethodView.fullMethodName(httpAttr.getRestMethod().getFullName());
+
+        SurfaceNamer namer = context.getNamer();
+        httpMethodView.pathTemplate(
+            httpAttr
+                .getPath()
+                .stream()
+                .map(PathSegment::toString)
+                .collect(Collectors.joining("/", "/", "")));
+
+        httpMethodView.pathParamSelectors(
+            populateMethodSelectors(namer, httpAttr.getPathSelectors()));
+        httpMethodView.queryParamSelectors(
+            populateMethodSelectors(namer, httpAttr.getParamSelectors()));
+        httpMethodView.bodySelectors(populateMethodSelectors(namer, httpAttr.getBodySelectors()));
+
+        return httpMethodView.build();
       }
-      return httpMethodView.build();
-    } else {
-      return null;
     }
+
+    return null;
+  }
+
+  private List<HttpMethodSelectorView> populateMethodSelectors(
+      SurfaceNamer namer, List<FieldSelector> selectors) {
+    ImmutableList.Builder<HttpMethodSelectorView> paramSelectors = ImmutableList.builder();
+
+    for (FieldSelector fs : selectors) {
+      HttpMethodSelectorView.Builder methodSelectorView = HttpMethodSelectorView.newBuilder();
+      methodSelectorView.fullyQualifiedName(Name.anyLower(fs.toString()).toLowerCamel());
+      ImmutableList.Builder<String> gettersChain = ImmutableList.builder();
+      for (Field f : fs.getFields()) {
+        gettersChain.add(namer.getFieldGetFunctionName(new ProtoField(f)));
+      }
+      methodSelectorView.gettersChain(gettersChain.build());
+      paramSelectors.add(methodSelectorView.build());
+    }
+
+    return paramSelectors.build();
   }
 
   public List<ApiCallSettingsView> generateApiCallableSettings(MethodContext context) {

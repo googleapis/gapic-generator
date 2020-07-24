@@ -149,6 +149,14 @@ public class GeneratorMain {
           .argName("GRPC-SERVICE-CONFIG")
           .required(false)
           .build();
+  private static final Option TRANSPORT_PROTOCOL =
+      Option.builder()
+          .longOpt("transport_protocol")
+          .desc("Transport used by the generated clients.")
+          .hasArg()
+          .argName("TRANSPORT-PROTOCOL")
+          .required(false)
+          .build();
 
   public static void printAvailableCommands() {
     System.err.println("  Available artifact types:");
@@ -249,6 +257,7 @@ public class GeneratorMain {
     options.addOption(OUTPUT_OPTION);
     options.addOption(SAMPLE_YAML_NONREQUIRED_OPTION);
     options.addOption(GRPC_SERVICE_CONFIG_OPTION);
+    options.addOption(TRANSPORT_PROTOCOL);
     Option enabledArtifactsOption =
         Option.builder()
             .longOpt("enabled_artifacts")
@@ -299,6 +308,10 @@ public class GeneratorMain {
 
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
 
+    if (cl.getOptionValue(TRANSPORT_PROTOCOL.getLongOpt()) != null) {
+      toolOptions.set(
+          GapicGeneratorApp.TRANSPORT_PROTOCOL, cl.getOptionValue(TRANSPORT_PROTOCOL.getLongOpt()));
+    }
     if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
       toolOptions.set(
           ToolOptions.CONFIG_FILES,

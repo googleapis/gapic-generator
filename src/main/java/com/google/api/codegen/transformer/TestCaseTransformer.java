@@ -229,6 +229,7 @@ public class TestCaseTransformer {
             synchronicity == Synchronicity.Sync
                 ? namer.getGrpcMethodName(method)
                 : namer.getAsyncGrpcMethodName(method))
+        .transportProtocol(methodContext.getProductConfig().getTransportProtocol())
         .build();
   }
 

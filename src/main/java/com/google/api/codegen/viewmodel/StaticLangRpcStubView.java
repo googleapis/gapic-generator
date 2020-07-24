@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -45,6 +46,19 @@ public abstract class StaticLangRpcStubView {
 
   public abstract String parentName();
 
+  public abstract TransportProtocol transportProtocol();
+
+  public String transportProtocolName() {
+    if (transportProtocol() == TransportProtocol.GRPC) {
+      return "gRPC";
+    }
+    return transportProtocol().toString();
+  }
+
+  public abstract String callSettingsClassName();
+
+  public abstract String stubCallableFactoryClassName();
+
   public static StaticLangRpcStubView.Builder newBuilder() {
     return new AutoValue_StaticLangRpcStubView.Builder();
   }
@@ -75,6 +89,12 @@ public abstract class StaticLangRpcStubView {
     public abstract Builder hasLongRunningOperations(boolean val);
 
     public abstract Builder parentName(String apiStubInterfaceName);
+
+    public abstract Builder transportProtocol(TransportProtocol transportProtocol);
+
+    public abstract Builder callSettingsClassName(String val);
+
+    public abstract Builder stubCallableFactoryClassName(String val);
 
     public abstract StaticLangRpcStubView build();
   }
