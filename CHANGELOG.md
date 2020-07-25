@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.4.4](https://www.github.com/googleapis/gapic-generator/compare/v2.4.3...v2.4.4) (2020-07-24)
+
+
+### Bug Fixes
+
+* **deps:** bump protobuf versions for Java artman builds ([#3261](https://www.github.com/googleapis/gapic-generator/issues/3261)) ([8620732](https://www.github.com/googleapis/gapic-generator/commit/8620732e45c50f7d139847e05f10055aa8709c83))
+* **deps:** update dependency puppeteer to v5 ([#3247](https://www.github.com/googleapis/gapic-generator/issues/3247)) ([c52f71b](https://www.github.com/googleapis/gapic-generator/commit/c52f71bdd8cc12c2a9a8431ec1f0c42e5f70ef69))
+
 ### [2.4.3](https://www.github.com/googleapis/gapic-generator/compare/v2.4.2...v2.4.3) (2020-07-17)
 
 
