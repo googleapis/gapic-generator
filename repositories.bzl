@@ -66,9 +66,9 @@ def com_google_api_codegen_repositories():
     _maybe(
         http_archive,
         name = "com_google_googleapis",
-        strip_prefix = "googleapis-84c8ad4e52f8eec8f08a60636cfa597b86969b5c",
+        strip_prefix = "googleapis-dbdd8ddeb6d9556952aa8784d9e48f2566c9911a",
         urls = [
-            "https://github.com/googleapis/googleapis/archive/84c8ad4e52f8eec8f08a60636cfa597b86969b5c.zip",
+            "https://github.com/googleapis/googleapis/archive/dbdd8ddeb6d9556952aa8784d9e48f2566c9911a.zip",
         ],
     )
 
