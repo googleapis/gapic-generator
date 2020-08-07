@@ -243,7 +243,15 @@ public class Name {
   }
 
   public String toUpperCamelAndDigits() {
-    char[] upper = toUpperCamel().toCharArray();
+    return capitalizeDigitsAfterNumbers(toUpperCamel());
+  }
+
+  public String toLowerCamelAndDigits() {
+    return capitalizeDigitsAfterNumbers(toLowerCamel());
+  }
+
+  private String capitalizeDigitsAfterNumbers(String camelCaseIdentifier) {
+    char[] upper = camelCaseIdentifier.toCharArray();
     boolean digit = false;
     for (int i = 0; i < upper.length; i++) {
       if (Character.isDigit(upper[i])) {
