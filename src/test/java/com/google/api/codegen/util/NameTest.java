@@ -27,6 +27,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("");
     assertThat(name.toLowerCamel()).isEqualTo("");
     assertThat(name.toUpperCamel()).isEqualTo("");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("");
   }
 
   @Test
@@ -36,6 +37,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("DOG");
     assertThat(name.toLowerCamel()).isEqualTo("dog");
     assertThat(name.toUpperCamel()).isEqualTo("Dog");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("dog");
   }
 
   @Test
@@ -45,6 +47,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("FACTORY_DECORATOR_DELEGATE_IMPL");
     assertThat(name.toLowerCamel()).isEqualTo("factoryDecoratorDelegateImpl");
     assertThat(name.toUpperCamel()).isEqualTo("FactoryDecoratorDelegateImpl");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("factoryDecoratorDelegateImpl");
   }
 
   @Test
@@ -54,6 +57,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("FACTORY_DECORATOR_DELEGATE_IMPL");
     assertThat(name.toLowerCamel()).isEqualTo("factoryDecoratorDelegateImpl");
     assertThat(name.toUpperCamel()).isEqualTo("FactoryDecoratorDelegateImpl");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("factoryDecoratorDelegateImpl");
   }
 
   @Test
@@ -63,6 +67,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("FACTORY_DECORATOR_DELEGATE_IMPL");
     assertThat(name.toLowerCamel()).isEqualTo("factoryDecoratorDelegateImpl");
     assertThat(name.toUpperCamel()).isEqualTo("FactoryDecoratorDelegateImpl");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("factoryDecoratorDelegateImpl");
   }
 
   @Test
@@ -72,6 +77,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("DOG_2");
     assertThat(name.toLowerCamel()).isEqualTo("dog2");
     assertThat(name.toUpperCamel()).isEqualTo("Dog2");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("dog2");
   }
 
   @Test
@@ -84,12 +90,23 @@ public class NameTest {
   }
 
   @Test
+  public void testUpperWordAndNumberWithCharacter() {
+    Name name = Name.upperCamel("Dog", "V2cc");
+    assertThat(name.toLowerUnderscore()).isEqualTo("dog_v2cc");
+    assertThat(name.toUpperUnderscore()).isEqualTo("DOG_V2CC");
+    assertThat(name.toLowerCamel()).isEqualTo("dogV2cc");
+    assertThat(name.toUpperCamel()).isEqualTo("DogV2cc");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("dogV2Cc");
+  }
+
+  @Test
   public void testLowerWordAndNumber() {
     Name name = Name.lowerCamel("dog", "v2");
     assertThat(name.toLowerUnderscore()).isEqualTo("dog_v2");
     assertThat(name.toUpperUnderscore()).isEqualTo("DOG_V2");
     assertThat(name.toLowerCamel()).isEqualTo("dogV2");
     assertThat(name.toUpperCamel()).isEqualTo("DogV2");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("dogV2");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -119,6 +136,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML_DOG");
     assertThat(name.toLowerCamel()).isEqualTo("iamHttpXmlDog");
     assertThat(name.toUpperCamel()).isEqualTo("IamHttpXmlDog");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("iamHttpXmlDog");
   }
 
   @Test
@@ -128,6 +146,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML");
     assertThat(name.toLowerCamel()).isEqualTo("iamHttpXml");
     assertThat(name.toUpperCamel()).isEqualTo("IamHttpXml");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("iamHttpXml");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -147,6 +166,7 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML_DOG");
     assertThat(name.toLowerCamel()).isEqualTo("iamHTTPXMLDog");
     assertThat(name.toUpperCamel()).isEqualTo("IAMHTTPXMLDog");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("iamHTTPXMLDog");
   }
 
   @Test
@@ -156,5 +176,6 @@ public class NameTest {
     assertThat(name.toUpperUnderscore()).isEqualTo("IAM_HTTP_XML");
     assertThat(name.toLowerCamel()).isEqualTo("iamHTTPXML");
     assertThat(name.toUpperCamel()).isEqualTo("IAMHTTPXML");
+    assertThat(name.toLowerCamelAndDigits()).isEqualTo("iamHTTPXML");
   }
 }
