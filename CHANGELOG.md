@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.5](https://www.github.com/googleapis/gapic-generator/compare/v2.4.4...v2.4.5) (2020-08-07)
+
+
+### Bug Fixes
+
+* Make java lowerCamel methos naming match protobuf java stubs output methods naming. ([#3265](https://www.github.com/googleapis/gapic-generator/issues/3265)) ([4d1eef9](https://www.github.com/googleapis/gapic-generator/commit/4d1eef9608a67220a2b08df5d26335790c8fe1e1))
+
 ### [2.4.4](https://www.github.com/googleapis/gapic-generator/compare/v2.4.3...v2.4.4) (2020-07-24)
 
 
