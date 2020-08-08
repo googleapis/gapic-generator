@@ -266,7 +266,7 @@ public class ApiCallableTransformer {
             httpAttr
                 .getPath()
                 .stream()
-                .map(PathSegment::toString)
+                .map(pathSegment -> normalizePathSegment(pathSegment.toString()))
                 .collect(Collectors.joining("/", "/", "")));
 
         httpMethodView.pathParamSelectors(
@@ -280,6 +280,14 @@ public class ApiCallableTransformer {
     }
 
     return null;
+  }
+
+  private String normalizePathSegment(String pathSegment) {
+    if (!pathSegment.startsWith("{") && !pathSegment.endsWith("}")) {
+      return pathSegment;
+    }
+
+    return Name.from(pathSegment.substring(1, pathSegment.length() - 1)).toLowerCamel();
   }
 
   private List<HttpMethodSelectorView> populateMethodSelectors(
