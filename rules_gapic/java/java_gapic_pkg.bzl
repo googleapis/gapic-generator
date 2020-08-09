@@ -208,9 +208,10 @@ def java_gapic_assembly_gradle_pkg(
 
     if client_deps:
         if transport_protocol == "http":
-            template_label = Label("//rules_gapic/java:resources/gradle/client.gradle.tmpl")
-        else:
             template_label = Label("//rules_gapic/java:resources/gradle/client_disco.gradle.tmpl")
+        else:
+            template_label = Label("//rules_gapic/java:resources/gradle/client.gradle.tmpl")
+
         _java_gapic_gradle_pkg(
             name = client_target,
             template_label = template_label,
