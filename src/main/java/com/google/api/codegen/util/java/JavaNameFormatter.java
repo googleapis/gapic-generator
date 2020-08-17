@@ -66,7 +66,7 @@ public class JavaNameFormatter implements NameFormatter {
 
   @Override
   public String publicMethodName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
+    return wrapIfKeywordOrBuiltIn(name.toLowerCamelAndDigits());
   }
 
   @Override

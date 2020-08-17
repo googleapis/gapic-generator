@@ -137,4 +137,9 @@ public class ProtoApiModel implements ApiModel {
   public boolean equals(Object o) {
     return o instanceof ProtoApiModel && ((ProtoApiModel) o).protoModel.equals(protoModel);
   }
+
+  @Override
+  public int hashCode() {
+    return 17 * protoModel.hashCode();
+  }
 }

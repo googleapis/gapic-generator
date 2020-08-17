@@ -534,7 +534,7 @@ namespace Google.Example.Library.V1.Samples
             while (!done)
             {
                 // Initialize a request
-                BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+                BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
                 Comment comment2 = new Comment
                 {
                     Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
@@ -620,7 +620,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleDiscussBookAsync(string imageFileName, Comment.Types.Stage stage)
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Comment comment2 = new Comment
             {
                 Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
@@ -708,7 +708,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -780,7 +780,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -854,7 +854,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -932,7 +932,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1007,7 +1007,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1084,7 +1084,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1160,7 +1160,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -1231,7 +1231,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -1305,7 +1305,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new[]
             {
@@ -1382,7 +1382,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1456,7 +1456,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1533,7 +1533,7 @@ namespace Google.Example.Library.V1.Samples
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames =
                 {
@@ -1608,7 +1608,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleGetBigBookAsync(string shelf)
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName(shelf, "War and Peace"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "War and Peace"));
             // Poll until the returned long-running operation is complete
             Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(name);
             Book response = (await operation.PollUntilCompletedAsync()).Result;
@@ -1696,7 +1696,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleGetBigBookAsync(string shelf, string bigBookName)
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName(shelf, bigBookName));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", bigBookName));
             // Poll until the returned long-running operation is complete
             Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(name);
             Book response = (await operation.PollUntilCompletedAsync()).Result;
@@ -1771,7 +1771,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName(shelf, "War and Peace")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "War and Peace")),
             };
             // Poll until the returned long-running operation is complete
             Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(request);
@@ -1862,7 +1862,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName(shelf, bigBookName)),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", bigBookName)),
             };
             // Poll until the returned long-running operation is complete
             Operation<Book, GetBigBookMetadata> operation = await libraryServiceClient.GetBigBookAsync(request);
@@ -1935,7 +1935,7 @@ namespace Google.Example.Library.V1.Samples
         public static void SampleGetBigBook(string shelf)
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookNameOneof name = BookNameOneof.From(new BookName(shelf, "War and Peace"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "War and Peace"));
             // Poll until the returned long-running operation is complete
             Book response = libraryServiceClient.GetBigBook(name).PollUntilCompleted().Result;
             // Testing iterating over map fields when both key and value are specified.
@@ -2021,7 +2021,7 @@ namespace Google.Example.Library.V1.Samples
         public static void SampleGetBigBook(string shelf, string bigBookName)
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookNameOneof name = BookNameOneof.From(new BookName(shelf, bigBookName));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", bigBookName));
             // Poll until the returned long-running operation is complete
             Book response = libraryServiceClient.GetBigBook(name).PollUntilCompleted().Result;
             Console.WriteLine(response);
@@ -2094,7 +2094,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName(shelf, "War and Peace")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "War and Peace")),
             };
             // Poll until the returned long-running operation is complete
             Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
@@ -2183,7 +2183,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName(shelf, bigBookName)),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", bigBookName)),
             };
             // Poll until the returned long-running operation is complete
             Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
@@ -2254,7 +2254,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleGetBigNothingAsync()
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Poll until the returned long-running operation is complete
             Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(name);
             await operation.PollUntilCompletedAsync();
@@ -2314,7 +2314,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleGetBigNothingAsync()
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Poll until the returned long-running operation is complete
             Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(name);
             await operation.PollUntilCompletedAsync();
@@ -2375,7 +2375,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Poll until the returned long-running operation is complete
             Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(request);
@@ -2438,7 +2438,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Poll until the returned long-running operation is complete
             Operation<Empty, GetBigBookMetadata> operation = await libraryServiceClient.GetBigNothingAsync(request);
@@ -2497,7 +2497,7 @@ namespace Google.Example.Library.V1.Samples
         public static void SampleGetBigNothing()
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Poll until the returned long-running operation is complete
             libraryServiceClient.GetBigNothing(name).PollUntilCompleted();
             // Got nothing
@@ -2555,7 +2555,7 @@ namespace Google.Example.Library.V1.Samples
         public static void SampleGetBigNothing()
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Poll until the returned long-running operation is complete
             libraryServiceClient.GetBigNothing(name).PollUntilCompleted();
         }
@@ -2614,7 +2614,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Poll until the returned long-running operation is complete
             libraryServiceClient.GetBigNothing(request).PollUntilCompleted();
@@ -2675,7 +2675,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Poll until the returned long-running operation is complete
             libraryServiceClient.GetBigNothing(request).PollUntilCompleted();
@@ -2736,7 +2736,7 @@ namespace Google.Example.Library.V1.Samples
         public static async Task SampleGetBookAsync()
         {
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book response = await libraryServiceClient.GetBookAsync(name);
             string intKeyVal = response.MapStringValue[123];
             string booleanKeyVal = response.MapBoolKey[true];
@@ -2802,7 +2802,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book response = await libraryServiceClient.GetBookAsync(request);
             string intKeyVal = response.MapStringValue[123];
@@ -2866,7 +2866,7 @@ namespace Google.Example.Library.V1.Samples
         public static void SampleGetBook()
         {
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book response = libraryServiceClient.GetBook(name);
             string intKeyVal = response.MapStringValue[123];
             string booleanKeyVal = response.MapBoolKey[true];
@@ -2931,7 +2931,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book response = libraryServiceClient.GetBook(request);
             string intKeyVal = response.MapStringValue[123];
@@ -4210,8 +4210,8 @@ namespace Google.Example.Library.V1.Samples
                 RequiredSingularString = "",
                 RequiredSingularBytes = ByteString.Empty,
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "",
                 RequiredSingularFixed32 = 0,
                 RequiredSingularFixed64 = 0L,
@@ -4328,7 +4328,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "The ID of the book")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "The ID of the book")),
             };
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
             Console.WriteLine("Archived book found.");
@@ -4384,7 +4384,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("The Shelf to search for the book", "The ID of the book")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "The ID of the book")),
             };
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
             Console.WriteLine("Book on shelf found.");
@@ -4509,7 +4509,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName(shelf, "War and Peace")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "War and Peace")),
             };
             // Poll until the returned long-running operation is complete
             Book response = libraryServiceClient.GetBigBook(request).PollUntilCompleted().Result;
@@ -4623,7 +4623,7 @@ namespace Google.Example.Library.V1.Samples
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                     Comment = new Comment
                     {
                         Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
@@ -4712,7 +4712,7 @@ namespace Google.Example.Library.V1.Samples
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             DiscussBookRequest request = new DiscussBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comment = new Comment
                 {
                     Comment = ByteString.CopyFrom(File.ReadAllBytes("comment_file")),
@@ -4819,7 +4819,7 @@ namespace Google.Example.Library.V1.SmokeTests
             LibraryServiceClient client = LibraryServiceClient.Create();
 
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName($"testShelf-{Guid.NewGuid()}", projectId));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", projectId));
             Book book = new Book
             {
                 Rating = Book.Types.Rating.Good,
@@ -5525,7 +5525,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Book response = await libraryServiceClient.GetBookAsync(name);
             // End snippet
@@ -5538,7 +5538,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Book response = libraryServiceClient.GetBook(name);
             // End snippet
@@ -5554,7 +5554,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Book response = await libraryServiceClient.GetBookAsync(request);
@@ -5570,7 +5570,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Book response = libraryServiceClient.GetBook(request);
@@ -5771,7 +5771,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             await libraryServiceClient.DeleteBookAsync(name);
             // End snippet
@@ -5784,7 +5784,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             libraryServiceClient.DeleteBook(name);
             // End snippet
@@ -5800,7 +5800,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             DeleteBookRequest request = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             await libraryServiceClient.DeleteBookAsync(request);
@@ -5816,7 +5816,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             DeleteBookRequest request = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             libraryServiceClient.DeleteBook(request);
@@ -5831,7 +5831,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book book = new Book();
             // Make the request
             Book response = await libraryServiceClient.UpdateBookAsync(name, book);
@@ -5845,7 +5845,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book book = new Book();
             // Make the request
             Book response = libraryServiceClient.UpdateBook(name, book);
@@ -5860,7 +5860,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalFoo = "";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
@@ -5877,7 +5877,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalFoo = "";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
@@ -5897,7 +5897,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             UpdateBookRequest request = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             // Make the request
@@ -5914,7 +5914,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             UpdateBookRequest request = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             // Make the request
@@ -5930,7 +5930,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             ShelfName otherShelfName = new ShelfName("[SHELF]");
             // Make the request
             Book response = await libraryServiceClient.MoveBookAsync(name, otherShelfName);
@@ -5944,7 +5944,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             ShelfName otherShelfName = new ShelfName("[SHELF]");
             // Make the request
             Book response = libraryServiceClient.MoveBook(name, otherShelfName);
@@ -5961,7 +5961,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             MoveBookRequest request = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             // Make the request
@@ -5978,7 +5978,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             MoveBookRequest request = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             // Make the request
@@ -6254,7 +6254,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -6276,7 +6276,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -6301,7 +6301,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -6326,7 +6326,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             AddCommentsRequest request = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -6414,8 +6414,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof altBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof altBookName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
             FolderName folder = new FolderName("[FOLDER]");
             // Make the request
@@ -6430,8 +6430,8 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof altBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof altBookName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
             FolderName folder = new FolderName("[FOLDER]");
             // Make the request
@@ -6449,8 +6449,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
@@ -6468,8 +6468,8 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
@@ -6486,7 +6486,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             BookFromAnywhere response = await libraryServiceClient.GetBookFromAbsolutelyAnywhereAsync(name);
             // End snippet
@@ -6499,7 +6499,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(name);
             // End snippet
@@ -6515,7 +6515,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             BookFromAnywhere response = await libraryServiceClient.GetBookFromAbsolutelyAnywhereAsync(request);
@@ -6531,7 +6531,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
@@ -6546,7 +6546,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -6564,7 +6564,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -6585,7 +6585,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             UpdateBookIndexRequest request = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -6606,7 +6606,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             UpdateBookIndexRequest request = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -6699,7 +6699,7 @@ namespace Google.Example.Library.V1.Snippets
                 // Initialize a request
                 DiscussBookRequest request = new DiscussBookRequest
                 {
-                    BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 };
                 // Stream a request to the server
                 await duplexStream.WriteAsync(request);
@@ -6723,7 +6723,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new List<ShelfName>();
             // Make the request
@@ -6771,7 +6771,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             IEnumerable<BookNameOneof> names = new[]
             {
-                BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             IEnumerable<ShelfName> shelves = new List<ShelfName>();
             // Make the request
@@ -6821,7 +6821,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames = { },
             };
@@ -6872,7 +6872,7 @@ namespace Google.Example.Library.V1.Snippets
             {
                 BookNameOneofs =
                 {
-                    BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                    BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 },
                 ShelvesAsShelfNames = { },
             };
@@ -6955,7 +6955,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Operation<Book, GetBigBookMetadata> response =
                 await libraryServiceClient.GetBigBookAsync(name);
@@ -6987,7 +6987,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Operation<Book, GetBigBookMetadata> response =
                 libraryServiceClient.GetBigBook(name);
@@ -7021,7 +7021,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Operation<Book, GetBigBookMetadata> response =
@@ -7056,7 +7056,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Operation<Book, GetBigBookMetadata> response =
@@ -7090,7 +7090,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Operation<Empty, GetBigBookMetadata> response =
                 await libraryServiceClient.GetBigNothingAsync(name);
@@ -7120,7 +7120,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             // Make the request
             Operation<Empty, GetBigBookMetadata> response =
                 libraryServiceClient.GetBigNothing(name);
@@ -7152,7 +7152,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Operation<Empty, GetBigBookMetadata> response =
@@ -7185,7 +7185,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             Operation<Empty, GetBigBookMetadata> response =
@@ -7249,8 +7249,8 @@ namespace Google.Example.Library.V1.Snippets
             string requiredSingularString = "";
             ByteString requiredSingularBytes = ByteString.Empty;
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string requiredSingularResourceNameCommon = "";
             int requiredSingularFixed32 = 0;
             long requiredSingularFixed64 = 0L;
@@ -7310,8 +7310,8 @@ namespace Google.Example.Library.V1.Snippets
             string optionalSingularString = "";
             ByteString optionalSingularBytes = ByteString.Empty;
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalSingularResourceNameCommon = "";
             int optionalSingularFixed32 = 0;
             long optionalSingularFixed64 = 0L;
@@ -7383,8 +7383,8 @@ namespace Google.Example.Library.V1.Snippets
             string requiredSingularString = "";
             ByteString requiredSingularBytes = ByteString.Empty;
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string requiredSingularResourceNameCommon = "";
             int requiredSingularFixed32 = 0;
             long requiredSingularFixed64 = 0L;
@@ -7444,8 +7444,8 @@ namespace Google.Example.Library.V1.Snippets
             string optionalSingularString = "";
             ByteString optionalSingularBytes = ByteString.Empty;
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalSingularResourceNameCommon = "";
             int optionalSingularFixed32 = 0;
             long optionalSingularFixed64 = 0L;
@@ -7520,8 +7520,8 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredSingularString = "",
                 RequiredSingularBytes = ByteString.Empty,
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "",
                 RequiredSingularFixed32 = 0,
                 RequiredSingularFixed64 = 0L,
@@ -7596,8 +7596,8 @@ namespace Google.Example.Library.V1.Snippets
                 RequiredSingularString = "",
                 RequiredSingularBytes = ByteString.Empty,
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "",
                 RequiredSingularFixed32 = 0,
                 RequiredSingularFixed64 = 0L,
@@ -8026,7 +8026,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string author = "";
             string title = "";
             Book.Types.Rating rating = Book.Types.Rating.Good;
@@ -8042,7 +8042,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string author = "";
             string title = "";
             Book.Types.Rating rating = Book.Types.Rating.Good;
@@ -8061,7 +8061,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             Book request = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             await libraryServiceClient.SaveBookAsync(request);
@@ -8077,7 +8077,7 @@ namespace Google.Example.Library.V1.Snippets
             // Initialize request argument(s)
             Book request = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             // Make the request
             libraryServiceClient.SaveBook(request);
@@ -8833,7 +8833,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -8864,7 +8864,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -8895,7 +8895,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -8924,7 +8924,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9096,11 +9096,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest expectedRequest = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9109,7 +9109,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book response = client.GetBook(name);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
@@ -9125,11 +9125,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest expectedRequest = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9138,7 +9138,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book response = await client.GetBookAsync(name);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
@@ -9154,11 +9154,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9182,11 +9182,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookRequest request = new GetBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9210,13 +9210,13 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest expectedRequest = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             client.DeleteBook(name);
             mockGrpcClient.VerifyAll();
         }
@@ -9231,13 +9231,13 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest expectedRequest = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             await client.DeleteBookAsync(name);
             mockGrpcClient.VerifyAll();
         }
@@ -9252,7 +9252,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest request = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBook(request, It.IsAny<CallOptions>()))
@@ -9272,7 +9272,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             DeleteBookRequest request = new DeleteBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.DeleteBookAsync(request, It.IsAny<CallOptions>()))
@@ -9292,12 +9292,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9306,7 +9306,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book book = new Book();
             Book response = client.UpdateBook(name, book);
             Assert.Same(expectedResponse, response);
@@ -9323,12 +9323,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9337,7 +9337,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             Book book = new Book();
             Book response = await client.UpdateBookAsync(name, book);
             Assert.Same(expectedResponse, response);
@@ -9354,7 +9354,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OptionalFoo = "optionalFoo1822578535",
                 Book = new Book(),
                 UpdateMask = new FieldMask(),
@@ -9362,7 +9362,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9371,7 +9371,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalFoo = "optionalFoo1822578535";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
@@ -9391,7 +9391,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest expectedRequest = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OptionalFoo = "optionalFoo1822578535",
                 Book = new Book(),
                 UpdateMask = new FieldMask(),
@@ -9399,7 +9399,7 @@ namespace Google.Example.Library.V1.Tests
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9408,7 +9408,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalFoo = "optionalFoo1822578535";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
@@ -9428,12 +9428,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest request = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9457,12 +9457,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookRequest request = new UpdateBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Book = new Book(),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9486,12 +9486,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest expectedRequest = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9500,7 +9500,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.MoveBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             ShelfName otherShelfName = new ShelfName("[SHELF]");
             Book response = client.MoveBook(name, otherShelfName);
             Assert.Same(expectedResponse, response);
@@ -9517,12 +9517,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest expectedRequest = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9531,7 +9531,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.MoveBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Book>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             ShelfName otherShelfName = new ShelfName("[SHELF]");
             Book response = await client.MoveBookAsync(name, otherShelfName);
             Assert.Same(expectedResponse, response);
@@ -9548,12 +9548,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest request = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9577,12 +9577,12 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             MoveBookRequest request = new MoveBookRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OtherShelfNameAsShelfName = new ShelfName("[SHELF]"),
             };
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9606,7 +9606,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -9621,7 +9621,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddComments(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -9645,7 +9645,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest expectedRequest = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -9660,7 +9660,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.AddCommentsAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             IEnumerable<Comment> comments = new[]
             {
                 new Comment
@@ -9684,7 +9684,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -9713,7 +9713,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             AddCommentsRequest request = new AddCommentsRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Comments =
                 {
                     new Comment
@@ -9858,14 +9858,14 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9873,8 +9873,8 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBookFromAnywhere(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof altBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof altBookName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
             FolderName folder = new FolderName("[FOLDER]");
             BookFromAnywhere response = client.GetBookFromAnywhere(name, altBookName, place, folder);
@@ -9892,14 +9892,14 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest expectedRequest = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9907,8 +9907,8 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBookFromAnywhereAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<BookFromAnywhere>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof altBookName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof altBookName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             LocationName place = new LocationName("[PROJECT]", "[LOCATION]");
             FolderName folder = new FolderName("[FOLDER]");
             BookFromAnywhere response = await client.GetBookFromAnywhereAsync(name, altBookName, place, folder);
@@ -9926,14 +9926,14 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9956,14 +9956,14 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAnywhereRequest request = new GetBookFromAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                AltBookNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 PlaceAsLocationName = new LocationName("[PROJECT]", "[LOCATION]"),
                 FolderAsFolderName = new FolderName("[FOLDER]"),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9986,11 +9986,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -9998,7 +9998,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBookFromAbsolutelyAnywhere(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             BookFromAnywhere response = client.GetBookFromAbsolutelyAnywhere(name);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
@@ -10014,11 +10014,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest expectedRequest = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -10026,7 +10026,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.GetBookFromAbsolutelyAnywhereAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<BookFromAnywhere>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             BookFromAnywhere response = await client.GetBookFromAbsolutelyAnywhereAsync(name);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
@@ -10042,11 +10042,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -10069,11 +10069,11 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             BookFromAnywhere expectedResponse = new BookFromAnywhere
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -10096,7 +10096,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -10107,7 +10107,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBookIndex(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -10127,7 +10127,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest expectedRequest = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -10138,7 +10138,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.UpdateBookIndexAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string indexName = "default index";
             IDictionary<string, string> indexMap = new Dictionary<string, string>
             {
@@ -10158,7 +10158,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest request = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -10183,7 +10183,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             UpdateBookIndexRequest request = new UpdateBookIndexRequest
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 IndexName = "default index",
                 IndexMap =
                 {
@@ -10255,8 +10255,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredSingularString = "requiredSingularString-1949894503",
                 RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002",
                 RequiredSingularFixed32 = 720656715,
                 RequiredSingularFixed64 = 720656810,
@@ -10316,8 +10316,8 @@ namespace Google.Example.Library.V1.Tests
                 OptionalSingularString = "optionalSingularString1852995162",
                 OptionalSingularBytes = ByteString.CopyFromUtf8("2"),
                 OptionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                OptionalSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                OptionalSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OptionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657",
                 OptionalSingularFixed32 = 1648847958,
                 OptionalSingularFixed64 = 1648847863,
@@ -10382,8 +10382,8 @@ namespace Google.Example.Library.V1.Tests
             string requiredSingularString = "requiredSingularString-1949894503";
             ByteString requiredSingularBytes = ByteString.CopyFromUtf8("-29");
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string requiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002";
             int requiredSingularFixed32 = 720656715;
             long requiredSingularFixed64 = 720656810;
@@ -10443,8 +10443,8 @@ namespace Google.Example.Library.V1.Tests
             string optionalSingularString = "optionalSingularString1852995162";
             ByteString optionalSingularBytes = ByteString.CopyFromUtf8("2");
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657";
             int optionalSingularFixed32 = 1648847958;
             long optionalSingularFixed64 = 1648847863;
@@ -10519,8 +10519,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredSingularString = "requiredSingularString-1949894503",
                 RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002",
                 RequiredSingularFixed32 = 720656715,
                 RequiredSingularFixed64 = 720656810,
@@ -10580,8 +10580,8 @@ namespace Google.Example.Library.V1.Tests
                 OptionalSingularString = "optionalSingularString1852995162",
                 OptionalSingularBytes = ByteString.CopyFromUtf8("2"),
                 OptionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                OptionalSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                OptionalSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                OptionalSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 OptionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657",
                 OptionalSingularFixed32 = 1648847958,
                 OptionalSingularFixed64 = 1648847863,
@@ -10646,8 +10646,8 @@ namespace Google.Example.Library.V1.Tests
             string requiredSingularString = "requiredSingularString-1949894503";
             ByteString requiredSingularBytes = ByteString.CopyFromUtf8("-29");
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof requiredSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string requiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002";
             int requiredSingularFixed32 = 720656715;
             long requiredSingularFixed64 = 720656810;
@@ -10707,8 +10707,8 @@ namespace Google.Example.Library.V1.Tests
             string optionalSingularString = "optionalSingularString1852995162";
             ByteString optionalSingularBytes = ByteString.CopyFromUtf8("2");
             TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage();
-            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
-            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceName = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
+            BookNameOneof optionalSingularResourceNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string optionalSingularResourceNameCommon = "optionalSingularResourceNameCommon-108123657";
             int optionalSingularFixed32 = 1648847958;
             long optionalSingularFixed64 = 1648847863;
@@ -10783,8 +10783,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredSingularString = "requiredSingularString-1949894503",
                 RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002",
                 RequiredSingularFixed32 = 720656715,
                 RequiredSingularFixed64 = 720656810,
@@ -10864,8 +10864,8 @@ namespace Google.Example.Library.V1.Tests
                 RequiredSingularString = "requiredSingularString-1949894503",
                 RequiredSingularBytes = ByteString.CopyFromUtf8("-29"),
                 RequiredSingularMessage = new TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage(),
-                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
-                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                RequiredSingularResourceNameAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
+                RequiredSingularResourceNameOneofAsBookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 RequiredSingularResourceNameCommon = "requiredSingularResourceNameCommon-1126805002",
                 RequiredSingularFixed32 = 720656715,
                 RequiredSingularFixed64 = 720656810,
@@ -11256,7 +11256,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedRequest = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Rating = Book.Types.Rating.Good,
@@ -11265,7 +11265,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.SaveBook(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string author = "author-1406328437";
             string title = "title110371416";
             Book.Types.Rating rating = Book.Types.Rating.Good;
@@ -11283,7 +11283,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             Book expectedRequest = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Rating = Book.Types.Rating.Good,
@@ -11292,7 +11292,7 @@ namespace Google.Example.Library.V1.Tests
             mockGrpcClient.Setup(x => x.SaveBookAsync(expectedRequest, It.IsAny<CallOptions>()))
                 .Returns(new Grpc.Core.AsyncUnaryCall<Empty>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]"));
+            BookNameOneof name = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]"));
             string author = "author-1406328437";
             string title = "title110371416";
             Book.Types.Rating rating = Book.Types.Rating.Good;
@@ -11310,7 +11310,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             Book request = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.SaveBook(request, It.IsAny<CallOptions>()))
@@ -11330,7 +11330,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Operations.OperationsClient>().Object);
             Book request = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
             };
             Empty expectedResponse = new Empty();
             mockGrpcClient.Setup(x => x.SaveBookAsync(request, It.IsAny<CallOptions>()))
@@ -11351,7 +11351,7 @@ namespace Google.Example.Library.V1.Tests
             ListShelvesRequest expectedRequest = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -11377,7 +11377,7 @@ namespace Google.Example.Library.V1.Tests
             ListShelvesRequest expectedRequest = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -11403,7 +11403,7 @@ namespace Google.Example.Library.V1.Tests
             ListShelvesRequest request = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -11428,7 +11428,7 @@ namespace Google.Example.Library.V1.Tests
             ListShelvesRequest request = new ListShelvesRequest();
             Book expectedResponse = new Book
             {
-                BookNameOneof = BookNameOneof.From(new BookName("[SHELF]", "[BOOK]")),
+                BookNameOneof = BookNameOneof.From(new BookFromArchiveName("[ARCHIVE]", "[BOOK]")),
                 Author = "author-1406328437",
                 Title = "title110371416",
                 Read = true,
@@ -27787,105 +27787,6 @@ namespace Google.Example.Library.V1
     }
 
     /// <summary>
-    /// Resource name for the 'book' resource.
-    /// </summary>
-    public sealed partial class BookName : gax::IResourceName, sys::IEquatable<BookName>
-    {
-        private static readonly gax::PathTemplate s_template = new gax::PathTemplate("shelves/{shelf}/books/{book}");
-
-        /// <summary>
-        /// Parses the given book resource name in string form into a new
-        /// <see cref="BookName"/> instance.
-        /// </summary>
-        /// <param name="bookName">The book resource name in string form. Must not be <c>null</c>.</param>
-        /// <returns>The parsed <see cref="BookName"/> if successful.</returns>
-        public static BookName Parse(string bookName)
-        {
-            gax::GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
-            gax::TemplatedResourceName resourceName = s_template.ParseName(bookName);
-            return new BookName(resourceName[0], resourceName[1]);
-        }
-
-        /// <summary>
-        /// Tries to parse the given book resource name in string form into a new
-        /// <see cref="BookName"/> instance.
-        /// </summary>
-        /// <remarks>
-        /// This method still throws <see cref="sys::ArgumentNullException"/> if <paramref name="bookName"/> is null,
-        /// as this would usually indicate a programming error rather than a data error.
-        /// </remarks>
-        /// <param name="bookName">The book resource name in string form. Must not be <c>null</c>.</param>
-        /// <param name="result">When this method returns, the parsed <see cref="BookName"/>,
-        /// or <c>null</c> if parsing fails.</param>
-        /// <returns><c>true</c> if the name was parsed successfully; <c>false</c> otherwise.</returns>
-        public static bool TryParse(string bookName, out BookName result)
-        {
-            gax::GaxPreconditions.CheckNotNull(bookName, nameof(bookName));
-            gax::TemplatedResourceName resourceName;
-            if (s_template.TryParseName(bookName, out resourceName))
-            {
-                result = new BookName(resourceName[0], resourceName[1]);
-                return true;
-            }
-            else
-            {
-                result = null;
-                return false;
-            }
-        }
-
-        /// <summary>Formats the IDs into the string representation of the <see cref="BookName"/>.</summary>
-        /// <param name="shelfId">The <c>shelf</c> ID. Must not be <c>null</c>.</param>
-        /// <param name="bookId">The <c>book</c> ID. Must not be <c>null</c>.</param>
-        /// <returns>The string representation of the <see cref="BookName"/>.</returns>
-        public static string Format(string shelfId, string bookId) =>
-            s_template.Expand(gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId)), gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId)));
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BookName"/> resource name class
-        /// from its component parts.
-        /// </summary>
-        /// <param name="shelfId">The shelf ID. Must not be <c>null</c>.</param>
-        /// <param name="bookId">The book ID. Must not be <c>null</c>.</param>
-        public BookName(string shelfId, string bookId)
-        {
-            ShelfId = gax::GaxPreconditions.CheckNotNull(shelfId, nameof(shelfId));
-            BookId = gax::GaxPreconditions.CheckNotNull(bookId, nameof(bookId));
-        }
-
-        /// <summary>
-        /// The shelf ID. Never <c>null</c>.
-        /// </summary>
-        public string ShelfId { get; }
-
-        /// <summary>
-        /// The book ID. Never <c>null</c>.
-        /// </summary>
-        public string BookId { get; }
-
-        /// <inheritdoc />
-        public gax::ResourceNameKind Kind => gax::ResourceNameKind.Simple;
-
-        /// <inheritdoc />
-        public override string ToString() => s_template.Expand(ShelfId, BookId);
-
-        /// <inheritdoc />
-        public override int GetHashCode() => ToString().GetHashCode();
-
-        /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as BookName);
-
-        /// <inheritdoc />
-        public bool Equals(BookName other) => ToString() == other?.ToString();
-
-        /// <inheritdoc />
-        public static bool operator ==(BookName a, BookName b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
-
-        /// <inheritdoc />
-        public static bool operator !=(BookName a, BookName b) => !(a == b);
-    }
-
-    /// <summary>
     /// Resource name for the 'book_from_archive' resource.
     /// </summary>
     public sealed partial class BookFromArchiveName : gax::IResourceName, sys::IEquatable<BookFromArchiveName>
@@ -27990,7 +27891,6 @@ namespace Google.Example.Library.V1
     /// <remarks>
     /// This resource name will contain one of the following:
     /// <list type="bullet">
-    /// <item><description>BookName: A resource of type 'book'.</description></item>
     /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
     /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
     /// </list>
@@ -28008,19 +27908,14 @@ namespace Google.Example.Library.V1
             Unknown = 0,
 
             /// <summary>
-            /// A resource of type 'book'.
-            /// </summary>
-            BookName = 1,
-
-            /// <summary>
             /// A resource of type 'book_from_archive'.
             /// </summary>
-            BookFromArchiveName = 2,
+            BookFromArchiveName = 1,
 
             /// <summary>
             /// A resource of type 'project_book'.
             /// </summary>
-            ProjectBookName = 3,
+            ProjectBookName = 2,
         }
 
         /// <summary>
@@ -28029,7 +27924,6 @@ namespace Google.Example.Library.V1
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
         /// <list type="bullet">
-        /// <item><description>BookName: A resource of type 'book'.</description></item>
         /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
         /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
@@ -28056,7 +27950,6 @@ namespace Google.Example.Library.V1
         /// <remarks>
         /// To parse successfully the resource name must be one of the following:
         /// <list type="bullet">
-        /// <item><description>BookName: A resource of type 'book'.</description></item>
         /// <item><description>BookFromArchiveName: A resource of type 'book_from_archive'.</description></item>
         /// <item><description>ProjectBookName: A resource of type 'project_book'.</description></item>
         /// </list>
@@ -28071,12 +27964,6 @@ namespace Google.Example.Library.V1
         public static bool TryParse(string name, bool allowUnknown, out BookNameOneof result)
         {
             gax::GaxPreconditions.CheckNotNull(name, nameof(name));
-            BookName bookName;
-            if (BookName.TryParse(name, out bookName))
-            {
-                result = new BookNameOneof(OneofType.BookName, bookName);
-                return true;
-            }
             BookFromArchiveName bookFromArchiveName;
             if (BookFromArchiveName.TryParse(name, out bookFromArchiveName))
             {
@@ -28103,14 +27990,6 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
-        /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="BookName"/>
-        /// </summary>
-        /// <param name="bookName">The <see cref="BookName"/> to be contained within
-        /// the returned <see cref="BookNameOneof"/>. Must not be <c>null</c>.</param>
-        /// <returns>A new <see cref="BookNameOneof"/>, containing <paramref name="bookName"/>.</returns>
-        public static BookNameOneof From(BookName bookName) => new BookNameOneof(OneofType.BookName, bookName);
-
-        /// <summary>
         /// Construct a new instance of <see cref="BookNameOneof"/> from the provided <see cref="BookFromArchiveName"/>
         /// </summary>
         /// <param name="bookFromArchiveName">The <see cref="BookFromArchiveName"/> to be contained within
@@ -28131,7 +28010,6 @@ namespace Google.Example.Library.V1
             switch (type)
             {
                 case OneofType.Unknown: return true; // Anything goes with Unknown.
-                case OneofType.BookName: return name is BookName;
                 case OneofType.BookFromArchiveName: return name is BookFromArchiveName;
                 case OneofType.ProjectBookName: return name is ProjectBookName;
                 default: return false;
@@ -28170,15 +28048,6 @@ namespace Google.Example.Library.V1
             }
             return (T)Name;
         }
-
-        /// <summary>
-        /// Get the contained <see cref="gax::IResourceName"/> as <see cref="BookName"/>.
-        /// </summary>
-        /// <remarks>
-        /// An <see cref="sys::InvalidOperationException"/> will be thrown if this does not
-        /// contain an instance of <see cref="BookName"/>.
-        /// </remarks>
-        public BookName BookName => CheckAndReturn<BookName>(OneofType.BookName);
 
         /// <summary>
         /// Get the contained <see cref="gax::IResourceName"/> as <see cref="BookFromArchiveName"/>.

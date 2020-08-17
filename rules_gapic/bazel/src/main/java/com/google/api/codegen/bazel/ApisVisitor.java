@@ -25,6 +25,7 @@ class ApisVisitor extends SimpleFileVisitor<Path> {
   private final BazelBuildFileTemplate rawApiTempl;
   private final Path srcDir;
   private final Path destDir;
+  private final boolean overwrite;
   private boolean writerMode;
   private final FileWriter fileWriter;
 
@@ -34,12 +35,14 @@ class ApisVisitor extends SimpleFileVisitor<Path> {
       String gapicApiTempl,
       String rootApiTempl,
       String rawApiTempl,
+      boolean overwrite,
       FileWriter fileWriter) {
     this.gapicApiTempl = new BazelBuildFileTemplate(gapicApiTempl);
     this.rootApiTempl = new BazelBuildFileTemplate(rootApiTempl);
     this.rawApiTempl = new BazelBuildFileTemplate(rawApiTempl);
     this.srcDir = srcDir.normalize();
     this.destDir = destDir.normalize();
+    this.overwrite = overwrite;
     this.writerMode = false;
     this.fileWriter =
         (fileWriter != null)
@@ -98,9 +101,10 @@ class ApisVisitor extends SimpleFileVisitor<Path> {
     } else if (fileName.endsWith(".proto")) {
       bp.parseProtoFile(fileName, readFile(file));
     } else if (fileName.endsWith(".bazel")) {
-      // Consider merging BUILD.bazel files if it becomes necessary (i.e. people will be doing many
-      // valuable manual edits in their BUILD.bazel files). This will complicate the whole logic
-      // so not doing it for now, hoping it will not be required.
+      // if --overwrite is given, we don't care what's in the existing BUILD.bazel file.
+      if (!overwrite) {
+        bp.parseBazelBuildFile(file);
+      }
     } else if (fileName.endsWith(".json")) {
       bp.parseJsonFile(fileName, readFile(file));
     }

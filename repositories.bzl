@@ -60,17 +60,15 @@ def com_google_api_codegen_repositories():
     _maybe(
         http_archive,
         name = "bazel_skylib",
-        sha256 = "bbccf674aa441c266df9894182d80de104cabd19be98be002f6d478aaa31574d",
-        strip_prefix = "bazel-skylib-2169ae1c374aab4a09aa90e65efe1a3aad4e279b",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz"],
+        urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/0.9.0/bazel_skylib-0.9.0.tar.gz"],
     )
 
     _maybe(
         http_archive,
         name = "com_google_googleapis",
-        strip_prefix = "googleapis-84c8ad4e52f8eec8f08a60636cfa597b86969b5c",
+        strip_prefix = "googleapis-dbdd8ddeb6d9556952aa8784d9e48f2566c9911a",
         urls = [
-            "https://github.com/googleapis/googleapis/archive/84c8ad4e52f8eec8f08a60636cfa597b86969b5c.zip",
+            "https://github.com/googleapis/googleapis/archive/dbdd8ddeb6d9556952aa8784d9e48f2566c9911a.zip",
         ],
     )
 
@@ -98,6 +96,25 @@ def com_google_api_codegen_repositories():
         native.bind,
         name = "error_prone_annotations",
         actual = "@error_prone_annotations_maven//jar",
+    )
+
+    ## Dependencies for buildozer
+    _maybe(
+        http_archive,
+        name = "io_bazel_rules_go",
+        urls = [
+            "https://github.com/bazelbuild/rules_go/archive/v0.23.3.zip",
+        ],
+        strip_prefix = "rules_go-0.23.3",
+    )
+
+    _maybe(
+        http_archive,
+        name = "com_github_bazelbuild_buildtools",
+        strip_prefix = "buildtools-3.2.1",
+        urls = [
+            "https://github.com/bazelbuild/buildtools/archive/3.2.1.tar.gz",
+        ],
     )
 
 def _maybe(repo_rule, name, strip_repo_prefix = "", **kwargs):

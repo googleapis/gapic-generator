@@ -174,6 +174,11 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
+  public int hashCode() {
+    return 17 * method.hashCode();
+  }
+
+  @Override
   public String getSimpleName() {
     return DiscoGapicParser.methodAsName(method).toLowerCamel();
   }

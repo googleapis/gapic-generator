@@ -145,8 +145,26 @@ def _proto_custom_library_impl(ctx):
         output_paths.insert(0, ",".join(ctx.attr.plugin_args + plugin_file_args))
     calculated_args.append("%s=%s" % (output_type_name, ":".join(output_paths)))
 
+    # taking the file opt args, that come in a form of 
+    # label_list -> arg_name dictionary
+    # and tranforming them to the list of form "arg_name=file"
+    # realistically most of the time there should only be one file per arg name
+    # so the label_list will be of one label only
+    opt_args_strings = []
+    if ctx.attr.opt_file_args:
+        for labels, opt_arg_name in ctx.attr.opt_file_args.items():
+            for file in labels.files.to_list():
+                extra_inputs.append(file)
+                opt_args_strings.append("%s=%s" % (opt_arg_name, file.path))
+
+    # now if there are opt_args given we need to merge the opt_file args
+    # to the opt_args. opt_args are already list of strings so no preprocessing required
     if ctx.attr.opt_args:
-        calculated_args.append("%s=%s" % (opt_type_name, ",".join(ctx.attr.opt_args)))
+        opt_args_strings = ctx.attr.opt_args + opt_args_strings
+
+    # now if there are any opt args we put them into the plugin_opt= protoc param
+    if ctx.attr.opt_args or ctx.attr.opt_file_args:
+        calculated_args.append("%s=%s" % (opt_type_name, ",".join(opt_args_strings)))
 
     arguments = \
         ctx.attr.extra_args + \
@@ -205,7 +223,24 @@ proto_custom_library = rule(
             default = {},
         ),
         "plugin_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
-        "opt_args": attr.string_list(mandatory = False, allow_empty = True, default = []),
+        "opt_args": attr.string_list(
+            mandatory = False,
+            allow_empty = True,
+            default = [],
+            doc = """list of opt arguments for the plugin. 
+            Will be rendered in protoc command line in the form of "<plugin>_opt=arg1,..."
+            """,
+        ),
+        "opt_file_args": attr.label_keyed_string_dict(
+            mandatory = False,
+            allow_empty = True,
+            allow_files = True,
+            default = {},
+            doc = """dictionary for the keyed opt arguments for the plugin that pass a file.
+            File in form of a label goes as the key, the argument name as a value.
+            The result will be rendered in protoc command line in the form of "<plugin>_opt=key1=path/to/file1,..."
+            """,
+        ),
         "extra_args": attr.string_list(mandatory = False, default = []),
         "output_type": attr.string(mandatory = True),
         "output_suffix": attr.string(mandatory = True),

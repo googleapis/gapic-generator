@@ -106,6 +106,11 @@ public class DiscoApiModel implements ApiModel {
     return o instanceof DiscoApiModel && ((DiscoApiModel) o).document.equals(document);
   }
 
+  @Override
+  public int hashCode() {
+    return 19 * document.hashCode();
+  }
+
   public String getDefaultPackageName() {
     return defaultPackageName;
   }

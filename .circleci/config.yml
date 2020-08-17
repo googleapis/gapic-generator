@@ -81,16 +81,12 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
     - run:
        name: Run Showcase Generated Unit Tests.
        command: |
-         nox --session "unit(py='2.7')" \
-             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
          nox --session "unit(py='3.6')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
        when: always
     - run:
        name: Run Showcase Integration Tests.
        command: |
-         nox --session "showcase(py='2.7')" \
-             --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
          nox --session "showcase(py='3.6')" \
              --noxfile /tmp/workspace/gapic-generator/showcase/python/nox.py
        when: always
@@ -103,12 +99,6 @@ anchor_verify_and_test_python: &anchor_verify_and_test_python
         command: echo 'export TEST_API="pubsub-v1"' >> $BASH_ENV
     - run:
         name: Test Pubsub.
-        <<: *anchor_test_python_client
-    - run:
-        name: Prepare for Speech testing.
-        command: echo 'export TEST_API="speech-v1"' >> $BASH_ENV
-    - run:
-        name: Test Speech.
         <<: *anchor_test_python_client
 
 # Test a Ruby client if generation succeeded.
@@ -148,25 +138,6 @@ anchor_run_ruby: &anchor_run_ruby
         <<: *anchor_run_decrypt
     - run:
         <<: *anchor_check_generation
-    - run:
-        name: Prepare for Pubsub testing.
-        command: |
-          echo 'export TEST_API="pubsub"' >> $BASH_ENV
-    # https://github.com/googleapis/gapic-generator/issues/2503 blocks Pubsub testing.
-    - run:
-        name: Prepare for Speech testing.
-        command: |
-          echo 'export TEST_API="speech"' >> $BASH_ENV
-    - run:
-        name: Test Speech.
-        <<: *anchor_test_ruby_client
-    - run:
-        name: Prepare for Logging testing.
-        command: |
-          echo 'export TEST_API="logging"' >> $BASH_ENV
-    - run:
-        name: Test Logging.
-        <<: *anchor_test_ruby_client
     - run:
        name: Prepare to test Showcase.
        command: echo 'export TEST_API="showcase"' >> $BASH_ENV
@@ -256,16 +227,6 @@ anchor_run_php: &anchor_run_php
         when: always
     - run:
         name: Test PHP Pubsub client
-        <<: *anchor_test_php
-    - run:
-        name: Prepare to test Speech
-        command: |
-          echo 'export TEST_API="speech-v1"' >> $BASH_ENV
-          # Need creds for Speech client tests that make live calls to server
-          echo 'export KEY_REQUIRED=true' >> $BASH_ENV
-        when: always
-    - run:
-        name: Test PHP Speech client
         <<: *anchor_test_php
     - run:
         name: Prepare to test Logging
@@ -365,7 +326,7 @@ jobs:
     working_directory: /tmp/
     environment:
       TEST_REPORTS_DIR: /tmp/workspace/bazel/reports/gapic-generator
-      BAZEL_VERSION: 2.0.0
+      BAZEL_VERSION: 3.3.0
       PYTHON_VERSION: 3.5.2
     machine: true
     steps:
@@ -419,7 +380,7 @@ jobs:
           path: reports/gapic-generator
   generate-clients:
     docker:
-      - image: googleapis/artman:2.0.0
+      - image: googleapis/artman:2.4.4
     working_directory: /tmp/
     environment:
       <<: *anchor_artman_vars
@@ -445,16 +406,6 @@ jobs:
             cd workspace/gapic-generator
             python3 generate_clients.py \
                 google/logging/artman_logging.yaml \
-                --user-config=.circleci/artman_config.yaml \
-                --log-dir=${ARTMAN_REPORTS_DIR}
-          when: always
-      - run:
-          name: Generate Speech Libraries
-          command: |
-            cd workspace/gapic-generator
-            # TODO: Move off artman once package2.yaml is no longer needed.
-            python3 generate_clients.py \
-                google/cloud/speech/artman_speech_v1.yaml \
                 --user-config=.circleci/artman_config.yaml \
                 --log-dir=${ARTMAN_REPORTS_DIR}
           when: always
@@ -661,14 +612,6 @@ jobs:
           name: Test Node Pubsub client
           <<: *anchor_test_nodejs_client
       - run:
-          name: Prepare to test Speech
-          command: |
-            echo 'export TEST_API="speech-v1"' >> $BASH_ENV
-          when: always
-      - run:
-          name: Test Node Speech client
-          <<: *anchor_test_nodejs_client
-      - run:
           name: Prepare to test Logging
           command: |
             echo 'export TEST_API="logging-v2"' >> $BASH_ENV
@@ -707,11 +650,9 @@ jobs:
           command: |
             cd $GOPATH/src/cloud.google.com/go
             rm -rf logging/apiv2
-            rm -rf speech/apiv1
             rm -rf pubsub/apiv1
             cd $GOPATH/src/google.golang.org/genproto/googleapis
             rm -rf logging/v2
-            rm -rf cloud/speech
             rm -rf pubsub
       - run:
           name: Copy over generated clients
@@ -723,10 +664,6 @@ jobs:
       - run:
           name: Test Logging
           command: go test cloud.google.com/go/logging/apiv2
-          when: always
-      - run:
-          name: Test Speech
-          command: go test cloud.google.com/go/speech/apiv1
           when: always
       - run:
           name: Test Showcase
@@ -744,7 +681,7 @@ jobs:
     environment:
       ARTMAN_USER_CONFIG: /tmp/workspace/gapic-generator/.circleci/artman_config.yaml
     docker:
-      - image: googleapis/artman:2.0.0
+      - image: googleapis/artman:2.4.4
     steps:
       - attach_workspace:
           at: workspace
