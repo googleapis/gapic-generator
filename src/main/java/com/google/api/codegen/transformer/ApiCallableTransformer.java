@@ -287,7 +287,7 @@ public class ApiCallableTransformer {
       return pathSegment;
     }
 
-    return Name.from(pathSegment.substring(1, pathSegment.length() - 1)).toLowerCamel();
+    return '{' + Name.from(pathSegment.substring(1, pathSegment.length() - 1)).toLowerCamel() + '}';
   }
 
   private List<HttpMethodSelectorView> populateMethodSelectors(
