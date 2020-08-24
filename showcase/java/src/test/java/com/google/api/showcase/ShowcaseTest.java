@@ -279,30 +279,6 @@ public class ShowcaseTest {
   }
 
   @Test
-  public void attemptSequence() {
-    Sequence toCreate =
-        Sequence.newBuilder()
-            .addResponses(
-                Sequence.Response.newBuilder()
-                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
-            .addResponses(
-                Sequence.Response.newBuilder()
-                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
-            .addResponses(
-                Sequence.Response.newBuilder()
-                    .setStatus(Status.newBuilder().setCode(Code.OK_VALUE)))
-            .build();
-    Sequence sequence = seqClient.createSequence(toCreate);
-    assertThat(sequence.getName()).isNotNull();
-
-    seqClient.attemptSequence(sequence.getName());
-
-    SequenceReport report = seqClient.getSequenceReport(sequence.getName() + "/sequenceReport");
-    assertThat(report.getAttemptsList()).isNotNull();
-    assertThat(report.getAttemptsList().size()).isEqualTo(3);
-  }
-
-  @Test
   public void attemptSequenceTimeoutBackoff() {
     Sequence toCreate =
         Sequence.newBuilder()
@@ -327,11 +303,7 @@ public class ShowcaseTest {
     SequenceReport report = seqClient.getSequenceReport(sequence.getName() + "/sequenceReport");
     assertThat(report.getAttemptsList()).isNotNull();
     assertThat(report.getAttemptsList().size()).isEqualTo(3);
-    for (int i = 0; i < report.getAttemptsList().size(); i++) {
-      if (i == 0) {
-        continue;
-      }
-
+    for (int i = 1; i < report.getAttemptsList().size(); i++) {
       SequenceReport.Attempt cur = report.getAttempts(i);
       SequenceReport.Attempt prev = report.getAttempts(i - 1);
       long secondsDiff =
