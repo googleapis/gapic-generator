@@ -28,6 +28,7 @@ import com.google.api.gax.rpc.StreamController;
 import com.google.protobuf.Duration;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import com.google.showcase.v1beta1.AttemptSequenceRequest;
 import com.google.showcase.v1beta1.BlockRequest;
 import com.google.showcase.v1beta1.BlockResponse;
 import com.google.showcase.v1beta1.EchoClient;
@@ -35,6 +36,10 @@ import com.google.showcase.v1beta1.EchoRequest;
 import com.google.showcase.v1beta1.EchoResponse;
 import com.google.showcase.v1beta1.EchoSettings;
 import com.google.showcase.v1beta1.ExpandRequest;
+import com.google.showcase.v1beta1.Sequence;
+import com.google.showcase.v1beta1.SequenceReport;
+import com.google.showcase.v1beta1.SequenceServiceClient;
+import com.google.showcase.v1beta1.SequenceServiceSettings;
 import io.grpc.StatusRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +59,7 @@ import org.junit.runners.JUnit4;
 public class ShowcaseTest {
 
   private EchoClient client;
+  private SequenceServiceClient seqClient;
 
   @Before
   public void setup() throws Exception {
@@ -71,12 +77,23 @@ public class ShowcaseTest {
                     new ShowcaseTransportChannelProvider(
                         host, Integer.parseInt(port), new ShowcaseHeaderProvider()))
                 .build());
+
+    seqClient =
+        SequenceServiceClient.create(
+            SequenceServiceSettings.newBuilder()
+                .setCredentialsProvider(() -> null)
+                .setTransportChannelProvider(
+                    new ShowcaseTransportChannelProvider(
+                        host, Integer.parseInt(port), new ShowcaseHeaderProvider()))
+                .build());
   }
 
   @After
   public void teardown() throws Exception {
     client.shutdownNow();
     client.awaitTermination(5, TimeUnit.SECONDS);
+    seqClient.shutdownNow();
+    seqClient.awaitTermination(5, TimeUnit.SECONDS);
   }
 
   @Test
@@ -238,7 +255,9 @@ public class ShowcaseTest {
       client.block(
           BlockRequest.newBuilder()
               // Set a longer timeout than the 5 seconds specified in the grpc_service_config.
-              .setResponseDelay(Duration.newBuilder().setSeconds(10L).build())
+              .setResponseDelay(Duration.newBuilder().setSeconds(6L).build())
+              .setSuccess(
+                  BlockResponse.newBuilder().setContent("This should timeout by default!").build())
               .build());
     } catch (Exception e) {
       assertThat(e.getCause()).isInstanceOf(StatusRuntimeException.class);
@@ -257,5 +276,67 @@ public class ShowcaseTest {
                 .setSuccess(BlockResponse.newBuilder().setContent("Hello, World!").build())
                 .build());
     assertThat(result.getContent()).isEqualTo("Hello, World!");
+  }
+
+  @Test
+  public void attemptSequence() {
+    Sequence toCreate =
+        Sequence.newBuilder()
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setStatus(Status.newBuilder().setCode(Code.OK_VALUE)))
+            .build();
+    Sequence sequence = seqClient.createSequence(toCreate);
+    assertThat(sequence.getName()).isNotNull();
+
+    seqClient.attemptSequence(sequence.getName());
+
+    SequenceReport report = seqClient.getSequenceReport(sequence.getName() + "/sequenceReport");
+    assertThat(report.getAttemptsList()).isNotNull();
+    assertThat(report.getAttemptsList().size()).isEqualTo(3);
+  }
+
+  @Test
+  public void attemptSequenceTimeoutBackoff() {
+    Sequence toCreate =
+        Sequence.newBuilder()
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setDelay(Duration.newBuilder().setSeconds(2L))
+                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setDelay(Duration.newBuilder().setSeconds(2L))
+                    .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
+            .addResponses(
+                Sequence.Response.newBuilder()
+                    .setStatus(Status.newBuilder().setCode(Code.OK_VALUE)))
+            .build();
+    Sequence sequence = seqClient.createSequence(toCreate);
+    assertThat(sequence.getName()).isNotNull();
+
+    seqClient.attemptSequence(
+        AttemptSequenceRequest.newBuilder().setName(sequence.getName()).build());
+
+    SequenceReport report = seqClient.getSequenceReport(sequence.getName() + "/sequenceReport");
+    assertThat(report.getAttemptsList()).isNotNull();
+    assertThat(report.getAttemptsList().size()).isEqualTo(3);
+    for (int i = 0; i < report.getAttemptsList().size(); i++) {
+      if (i == 0) {
+        continue;
+      }
+
+      SequenceReport.Attempt cur = report.getAttempts(i);
+      SequenceReport.Attempt prev = report.getAttempts(i - 1);
+      long secondsDiff =
+          Math.abs(cur.getAttemptDeadline().getSeconds() - prev.getAttemptDeadline().getSeconds());
+      assertThat(secondsDiff).isGreaterThan(0);
+    }
   }
 }
