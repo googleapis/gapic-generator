@@ -277,7 +277,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
     working_directory: /tmp/workspace
     environment:
-      SHOWCASE_VERSION: 0.10.1
+      SHOWCASE_VERSION: 0.12.0
     steps:
       - checkout:
           path: gapic-generator
@@ -417,6 +417,15 @@ jobs:
                google/showcase/artman_showcase.yaml \
                --user-config=.circleci/artman_config.yaml \
                --log-dir=${ARTMAN_REPORTS_DIR} \
+               --languages java go python php nodejs \
+               --root-dir=/tmp/workspace/showcase-protos
+           mv /tmp/workspace/showcase-protos/google/showcase/v1beta1/sequence.proto /tmp/workspace/
+           sed -i 's/^- name: google\.showcase\.v1beta1\.SequenceService//' /tmp/workspace/showcase-protos/google/showcase/showcase.yaml
+           python3 generate_clients.py \
+               google/showcase/artman_showcase.yaml \
+               --user-config=.circleci/artman_config.yaml \
+               --log-dir=${ARTMAN_REPORTS_DIR} \
+               --languages=ruby \
                --root-dir=/tmp/workspace/showcase-protos
          when: always
       # This step is also required so long as Java's clients rely on a different
@@ -484,7 +493,7 @@ jobs:
       <<: *anchor_artman_vars
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: gcr.io/gapic-images/gapic-showcase:0.10.1
+      - image: gcr.io/gapic-images/gapic-showcase:0.12.0
     steps:
       - attach_workspace:
           at: workspace
