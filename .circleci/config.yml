@@ -417,6 +417,14 @@ jobs:
                google/showcase/artman_showcase.yaml \
                --user-config=.circleci/artman_config.yaml \
                --log-dir=${ARTMAN_REPORTS_DIR} \
+               --languages=java,python,go,php,nodejs \
+               --root-dir=/tmp/workspace/showcase-protos
+           mv /tmp/workspace/showcase-protos/google/showcase/v1beta1/sequence.proto /tmp/workspace/
+           python3 generate_clients.py \
+               google/showcase/artman_showcase.yaml \
+               --user-config=.circleci/artman_config.yaml \
+               --log-dir=${ARTMAN_REPORTS_DIR} \
+               --languages=ruby \
                --root-dir=/tmp/workspace/showcase-protos
          when: always
       # This step is also required so long as Java's clients rely on a different
