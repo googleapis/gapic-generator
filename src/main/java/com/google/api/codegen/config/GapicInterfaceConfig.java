@@ -153,7 +153,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
               retryCodesConfig,
               retrySettingsDefinition.keySet(),
               protoParser,
-              grpcGapicRetryMapping);
+              grpcGapicRetryMapping,
+              interfaceInput.getInterfaceConfigProto().getName());
       if (methodConfigsMap == null) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Error constructing methodConfigMap"));
@@ -245,7 +246,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoParser protoParser,
-      GrpcGapicRetryMapping retryMapping) {
+      GrpcGapicRetryMapping retryMapping,
+      String gapicInterfaceName) {
     Map<String, GapicMethodConfig> methodConfigMapBuilder = new LinkedHashMap<>();
 
     for (Entry<Method, MethodConfigProto> methodEntry : methodsToGenerate.entrySet()) {
@@ -265,7 +267,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
                 retryCodesConfig,
                 retryParamsConfigNames,
                 protoParser,
-                retryMapping);
+                retryMapping,
+                gapicInterfaceName);
       } else {
         methodConfig =
             GapicMethodConfig.createGapicMethodConfigFromGapicYaml(
