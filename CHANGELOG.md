@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.6](https://www.github.com/googleapis/gapic-generator/compare/v2.4.5...v2.4.6) (2020-09-02)
+
+
+### Bug Fixes
+
+* support reroute_to_grpc_interface with grpc_service_config ([#3272](https://www.github.com/googleapis/gapic-generator/issues/3272)) ([231ad97](https://www.github.com/googleapis/gapic-generator/commit/231ad97ba4a05268efbe2c596e3b433e81819507))
+
 ### [2.4.5](https://www.github.com/googleapis/gapic-generator/compare/v2.4.4...v2.4.5) (2020-08-07)
 
 
