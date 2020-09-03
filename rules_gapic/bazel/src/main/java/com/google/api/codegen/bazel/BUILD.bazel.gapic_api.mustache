@@ -337,11 +337,9 @@ csharp_grpc_library(
 
 csharp_gapic_library(
     name = "{{name}}_csharp_gapic",
-    src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    srcs = [":{{name}}_proto_with_info"],
     grpc_service_config = {{grpc_service_config}},
-    package = "{{package}}",
-    service_yaml = "{{service_yaml}}",
+    common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     deps = [
         ":{{name}}_csharp_grpc",
         ":{{name}}_csharp_proto",
