@@ -345,11 +345,9 @@ csharp_grpc_library(
 
 csharp_gapic_library(
     name = "library_csharp_gapic",
-    src = ":library_proto_with_info",
-    gapic_yaml = "library_example_gapic.yaml",
+    srcs = [":library_proto_with_info"],
     grpc_service_config = "library_example_grpc_service_config.json",
-    package = "google.example.library.v1",
-    service_yaml = "//google/example/library:library_example_v1.yaml",
+    common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     deps = [
         ":library_csharp_grpc",
         ":library_csharp_proto",
