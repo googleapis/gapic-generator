@@ -75,7 +75,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ProtoMethodModel methodModel,
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
-      GrpcGapicRetryMapping retryMapping) {
+      GrpcGapicRetryMapping retryMapping,
+      String gapicInterfaceName) {
 
     GrpcStreamingConfig grpcStreaming = null;
     if (isGrpcStreamingMethod(methodModel)) {
@@ -102,7 +103,17 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (retryMapping != null) {
       // use the gRPC ServiceConfig retry as the source
       retryCodesName = retryCodesConfig.getMethodRetryNames().get(methodModel.getSimpleName());
-      retryParamsName = retryMapping.methodParamsMap().get(methodModel.getFullName());
+
+      // The retry_params are mapped to full-qualified names. If the GAPIC config uses the
+      // reroute_to_grpc_interface option, we should use the GAPIC interface name to look up
+      // the retry_params, because the retry config should name them using the same GAPIC interface
+      // name.
+      String fullName = methodModel.getFullName();
+      if (!Strings.isNullOrEmpty(methodConfigProto.getRerouteToGrpcInterface())
+          && !Strings.isNullOrEmpty(gapicInterfaceName)) {
+        fullName = gapicInterfaceName + "." + methodModel.getSimpleName();
+      }
+      retryParamsName = retryMapping.methodParamsMap().get(fullName);
 
       // unknown/unspecified methods get no retry codes or params
       if (Strings.isNullOrEmpty(retryCodesName)) {
@@ -188,7 +199,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
       RetryCodesConfig retryCodesConfig,
       ImmutableSet<String> retryParamsConfigNames,
       ProtoParser protoParser,
-      GrpcGapicRetryMapping retryMapping) {
+      GrpcGapicRetryMapping retryMapping,
+      String gapicInterfaceName) {
     int previousErrors = diagCollector.getErrorCount();
 
     ProtoMethodModel methodModel = new ProtoMethodModel(method);
@@ -206,7 +218,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 methodModel,
                 retryCodesConfig,
                 retryParamsConfigNames,
-                retryMapping)
+                retryMapping,
+                gapicInterfaceName)
             .setPageStreaming(
                 PageStreamingConfig.createPageStreamingConfig(
                     diagCollector,
@@ -279,6 +292,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 methodModel,
                 retryCodesConfig,
                 retryParamsConfigNames,
+                null,
                 null)
             .setPageStreaming(
                 PageStreamingConfig.createPageStreamingConfig(
