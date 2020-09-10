@@ -69,6 +69,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   private final TestDataLocator testDataLocator = MixedPathTestDataLocator.create(this.getClass());
   private final String grpcServiceConfigFileName;
   private ServiceConfig grpcServiceConfig;
+  private final TransportProtocol transportProtocol;
 
   public GapicTestBase2(
       TargetLanguage language,
@@ -79,7 +80,8 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String baselineFile,
       String protoPackage,
       String clientPackage,
-      String grpcServiceConfigFileName) {
+      String grpcServiceConfigFileName,
+      TransportProtocol transportProtocol) {
     this.language = language;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.sampleConfigFileNames = sampleConfigFileNames;
@@ -91,6 +93,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
 
     // Represents the test value for the --package flag.
     this.protoPackage = protoPackage;
+    this.transportProtocol = transportProtocol;
 
     String dir = language.toString().toLowerCase();
     if ("python".equals(dir)) {
@@ -180,6 +183,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String packageConfigFileName,
       String apiName,
       String grpcServiceConfigFileName,
+      TransportProtocol transportProtocol,
       String... baseNames) {
     return createTestConfig(
         language,
@@ -191,6 +195,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
         grpcServiceConfigFileName,
         null,
         null,
+        transportProtocol,
         baseNames);
   }
 
@@ -211,6 +216,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       String grpcServiceConfigFileName,
       String[] sampleConfigFileNames,
       String baseline,
+      TransportProtocol transportProtocol,
       String... baseNames) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
@@ -255,6 +261,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       protoPackage,
       clientPackage,
       grpcServiceConfigFileName,
+      transportProtocol,
       baseNames
     };
   }
@@ -285,7 +292,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
             clientPackage,
             language,
             grpcServiceConfig,
-            TransportProtocol.GRPC);
+            transportProtocol);
 
     if (productConfig == null) {
       for (Diag diag : model.getDiagReporter().getDiagCollector().getDiags()) {

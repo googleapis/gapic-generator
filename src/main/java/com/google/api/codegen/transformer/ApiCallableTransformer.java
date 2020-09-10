@@ -282,7 +282,7 @@ public class ApiCallableTransformer {
   }
 
   private String normalizePathSegment(String pathSegment) {
-    if (!pathSegment.startsWith("{") && !pathSegment.endsWith("}")) {
+    if (!pathSegment.matches("\\{\\w+}")) {
       return pathSegment;
     }
 
