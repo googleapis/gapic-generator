@@ -160,7 +160,7 @@ def java_gapic_assembly_gradle_pkg(
         name,
         deps,
         assembly_name = None,
-        transport_protocol = None,
+        transport = None,
         **kwargs):
     package_dir = name
     if assembly_name:
@@ -207,7 +207,7 @@ def java_gapic_assembly_gradle_pkg(
         grpc_target_dep = ["%s" % grpc_target]
 
     if client_deps:
-        if transport_protocol == "http":
+        if transport == "rest":
             template_label = Label("//rules_gapic/java:resources/gradle/client_disco.gradle.tmpl")
         else:
             template_label = Label("//rules_gapic/java:resources/gradle/client.gradle.tmpl")

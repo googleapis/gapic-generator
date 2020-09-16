@@ -113,9 +113,9 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "The filepath of the JSON gRPC Service Config file.",
           "");
 
-  public static final Option<String> TRANSPORT_PROTOCOL =
+  public static final Option<String> TRANSPORT =
       ToolOptions.createOption(
-          String.class, "transport_protocol", "The generated client transport.", "grpc");
+          String.class, "transport", "The generated client transport.", "grpc");
 
   private ArtifactType artifactType;
 
@@ -213,7 +213,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
     }
 
     String clientPackage = Strings.emptyToNull(options.get(CLIENT_PACKAGE));
-    TransportProtocol tp = TransportProtocol.valueOf(options.get(TRANSPORT_PROTOCOL).toUpperCase());
+    String transport = options.get(TRANSPORT).toLowerCase();
+
+    TransportProtocol tp;
+    if (transport.equals("grpc")) {
+      tp = TransportProtocol.GRPC;
+    } else if (transport.equals("rest")) {
+      tp = TransportProtocol.HTTP;
+    } else {
+      throw new IllegalArgumentException("Unknown transport protocol: " + transport);
+    }
 
     GapicProductConfig productConfig =
         GapicProductConfig.create(
