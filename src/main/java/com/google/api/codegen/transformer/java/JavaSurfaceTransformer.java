@@ -932,7 +932,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
         typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
         String configSchemaVersion = context.getProductConfig().getConfigSchemaVersion();
-        if (configSchemaVersion == null || configSchemaVersion.startsWith("1.")) {
+        if (configSchemaVersion != null && configSchemaVersion.startsWith("1.")) {
           typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
           typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
         } else {

@@ -53,7 +53,7 @@ public class ProtocGapicPluginGeneratorTest {
                 model.getFiles().stream().map(ProtoFile::getProto).collect(Collectors.toList()))
             // Only the file to generate a client for (don't generate dependencies)
             .addFileToGenerate("multiple_services.proto")
-            .setParameter("language=java")
+            .setParameter("language=java,transport=grpc")
             .build();
 
     CodeGeneratorResponse response = ProtocGeneratorMain.generate(codeGeneratorRequest);
@@ -73,6 +73,7 @@ public class ProtocGapicPluginGeneratorTest {
                 model.getFiles().stream().map(ProtoFile::getProto).collect(Collectors.toList()))
             // File does not exist.
             .addFileToGenerate("fuuuuudge.proto")
+            .setParameter("transport=rest")
             .build();
 
     CodeGeneratorResponse response = ProtocGeneratorMain.generate(codeGeneratorRequest);

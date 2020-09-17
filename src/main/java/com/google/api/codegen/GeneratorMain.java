@@ -358,6 +358,7 @@ public class GeneratorMain {
     options.addOption(DESCRIPTOR_SET_OPTION);
     options.addOption(LANGUAGE_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
+    options.addOption(TRANSPORT);
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
 
