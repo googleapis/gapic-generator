@@ -1,0 +1,28 @@
+rebaseMergeAllowed: true
+squashMergeAllowed: true
+mergeCommitAllowed: false
+branchProtectionRules:
+- pattern: master
+  isAdminEnforced: true
+  requiredStatusCheckContexts:
+    - 'ci/circleci: compute-discovery-test'
+    - 'ci/circleci: gapic-generator-bazel-test'
+    - 'ci/circleci: generate-clients'
+    - 'ci/circleci: go-1.10-test'
+    - 'ci/circleci: install-gapic-generator'
+    - 'ci/circleci: java-openjdk8-test'
+    - 'ci/circleci: nodejs-10-test'
+    - 'ci/circleci: php-7.2-test'
+    - 'ci/circleci: python-test'
+    - 'ci/circleci: ruby-2.5-test'
+    - 'ci/circleci: test-baselines'
+    - 'ci/circleci: test-gapic-generator'
+    - 'cla/google'
+  requiredApprovingReviewCount: 1
+  requiresCodeOwnerReviews: true
+  requiresStrictStatusChecks: true
+permissionRules:
+  - team: Googlers
+    permission: pull
+  - team: actools
+    permission: admin
