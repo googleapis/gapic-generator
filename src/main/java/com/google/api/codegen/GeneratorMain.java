@@ -151,8 +151,11 @@ public class GeneratorMain {
           .build();
   private static final Option TRANSPORT =
       Option.builder()
-          .longOpt("transport") // Possible values: grpc, rest or grpc+rest (not supported yet).
-          .desc("Transport used by the generated clients.")
+          .longOpt("transport")
+          .desc(
+              "List of transports to support. Valid transport names ('grpc' or 'rest') are"
+                  + " separated by '+'. Default is 'grpc'. NOTE: for now, GAPICs support only"
+                  + " the first transport in the list.")
           .hasArg()
           .argName("TRANSPORT")
           .required(false)

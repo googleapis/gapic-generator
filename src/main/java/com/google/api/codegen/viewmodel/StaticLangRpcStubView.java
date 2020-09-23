@@ -51,6 +51,8 @@ public abstract class StaticLangRpcStubView {
   public String transportProtocolName() {
     if (transportProtocol() == TransportProtocol.GRPC) {
       return "gRPC";
+    } else if (transportProtocol() == TransportProtocol.HTTP) {
+      return "REST";
     }
     return transportProtocol().toString();
   }

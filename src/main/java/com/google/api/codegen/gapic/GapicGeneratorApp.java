@@ -115,7 +115,11 @@ public class GapicGeneratorApp extends ToolDriverBase {
 
   public static final Option<String> TRANSPORT =
       ToolOptions.createOption(
-          String.class, "transport", "The generated client transport.", "grpc");
+          String.class,
+          "transport",
+          "List of transports to use ('rest' or 'grpc') separated by '+'. NOTE: For now"
+              + " we only support the first transport in the list.",
+          "grpc");
 
   private ArtifactType artifactType;
 

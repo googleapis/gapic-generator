@@ -221,6 +221,8 @@ public class ApiCallableTransformer {
   private HttpMethodView generateHttpFields(MethodContext context) {
     if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
       if (context.getMethodModel() instanceof DiscoveryMethodModel) {
+        // This section is only for DiscoGapic and will be deleted once the generator stops
+        // ingesting Discovery files.
         Method method = ((DiscoveryMethodModel) context.getMethodModel()).getDiscoMethod();
         HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
         httpMethodView.fullMethodName(method.id());
@@ -272,6 +274,7 @@ public class ApiCallableTransformer {
             populateMethodSelectors(namer, httpAttr.getPathSelectors()));
         httpMethodView.queryParamSelectors(
             populateMethodSelectors(namer, httpAttr.getParamSelectors()));
+
         httpMethodView.bodySelectors(populateMethodSelectors(namer, httpAttr.getBodySelectors()));
 
         return httpMethodView.build();

@@ -932,6 +932,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.core.InternalApi");
         typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
         String configSchemaVersion = context.getProductConfig().getConfigSchemaVersion();
+        // Discogapic always uses gapic yaml of version 1.0
         if (configSchemaVersion != null && configSchemaVersion.startsWith("1.")) {
           typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
           typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpResponseParser");
