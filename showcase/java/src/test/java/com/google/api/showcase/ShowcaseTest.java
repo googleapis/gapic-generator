@@ -279,28 +279,42 @@ public class ShowcaseTest {
   }
 
   @Test
-  public void attemptSequenceTimeoutBackoff() {
+  public void attemptSequenceTimeoutBackoff() throws Exception {
+    // Recreate client with smaller timeout-backoff settings.
+    SequenceServiceSettings.Builder builder = seqClient.getSettings().toBuilder();
+    builder
+        .attemptSequenceSettings()
+        .setRetrySettings(
+            builder
+                .attemptSequenceSettings()
+                .retrySettings()
+                .setInitialRpcTimeout(org.threeten.bp.Duration.ofSeconds(2L))
+                .setMaxRpcTimeout(org.threeten.bp.Duration.ofSeconds(2L))
+                .build())
+        .build();
+    SequenceServiceClient s = SequenceServiceClient.create(builder.build());
+
+    long backendDelaySeconds = 1L;
     Sequence toCreate =
         Sequence.newBuilder()
             .addResponses(
                 Sequence.Response.newBuilder()
-                    .setDelay(Duration.newBuilder().setSeconds(2L))
+                    .setDelay(Duration.newBuilder().setSeconds(backendDelaySeconds))
                     .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
             .addResponses(
                 Sequence.Response.newBuilder()
-                    .setDelay(Duration.newBuilder().setSeconds(2L))
+                    .setDelay(Duration.newBuilder().setSeconds(backendDelaySeconds))
                     .setStatus(Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE)))
             .addResponses(
                 Sequence.Response.newBuilder()
                     .setStatus(Status.newBuilder().setCode(Code.OK_VALUE)))
             .build();
-    Sequence sequence = seqClient.createSequence(toCreate);
+    Sequence sequence = s.createSequence(toCreate);
     assertThat(sequence.getName()).isNotNull();
 
-    seqClient.attemptSequence(
-        AttemptSequenceRequest.newBuilder().setName(sequence.getName()).build());
+    s.attemptSequence(AttemptSequenceRequest.newBuilder().setName(sequence.getName()).build());
 
-    SequenceReport report = seqClient.getSequenceReport(sequence.getName() + "/sequenceReport");
+    SequenceReport report = s.getSequenceReport(sequence.getName() + "/sequenceReport");
     assertThat(report.getAttemptsList()).isNotNull();
     assertThat(report.getAttemptsList().size()).isEqualTo(3);
     for (int i = 1; i < report.getAttemptsList().size(); i++) {
@@ -308,7 +322,14 @@ public class ShowcaseTest {
       SequenceReport.Attempt prev = report.getAttempts(i - 1);
       long secondsDiff =
           Math.abs(cur.getAttemptDeadline().getSeconds() - prev.getAttemptDeadline().getSeconds());
+
+      // The difference in the perceived deadline should be equal to
+      // the time it took the server to respond, because a new deadline is set
+      // with each attempt based on the *attempt start time*.
       assertThat(secondsDiff).isGreaterThan(0);
+      assertThat(secondsDiff).isEqualTo(backendDelaySeconds);
     }
+    // clean up extra client
+    s.shutdownNow();
   }
 }
