@@ -16,11 +16,14 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class HttpMethodView {
+  @Nullable
   public abstract List<String> pathParams();
 
+  @Nullable
   public abstract List<String> queryParams();
 
   // Return the HTTP method, e.g. GET, POST
@@ -31,10 +34,25 @@ public abstract class HttpMethodView {
   public abstract String pathTemplate();
 
   // The type name of the ResourceName used by this method.
+  @Nullable
   public abstract String resourceNameTypeName();
 
   // The field name for the method's request object's ResourceName.
+  @Nullable
   public abstract String resourceNameFieldName();
+
+  @Nullable
+  public abstract List<HttpMethodSelectorView> pathParamSelectors();
+
+  @Nullable
+  public abstract List<HttpMethodSelectorView> queryParamSelectors();
+
+  @Nullable
+  public abstract List<HttpMethodSelectorView> bodySelectors();
+
+  public boolean hasBody() {
+    return !bodySelectors().isEmpty();
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_HttpMethodView.Builder();
@@ -55,6 +73,12 @@ public abstract class HttpMethodView {
     public abstract Builder resourceNameTypeName(String name);
 
     public abstract Builder resourceNameFieldName(String name);
+
+    public abstract Builder pathParamSelectors(List<HttpMethodSelectorView> val);
+
+    public abstract Builder queryParamSelectors(List<HttpMethodSelectorView> val);
+
+    public abstract Builder bodySelectors(List<HttpMethodSelectorView> val);
 
     public abstract HttpMethodView build();
   }

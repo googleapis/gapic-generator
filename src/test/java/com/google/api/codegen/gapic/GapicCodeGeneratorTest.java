@@ -16,6 +16,7 @@ package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.TransportProtocol;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
       String protoPackage,
       String clientPackage,
       String grpcServiceConfigFileName,
+      TransportProtocol transportProtocol,
       String[] baseNames) {
     super(
         language,
@@ -49,13 +51,14 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         baseline,
         protoPackage,
         clientPackage,
-        grpcServiceConfigFileName);
+        grpcServiceConfigFileName,
+        transportProtocol);
     this.baseNames = baseNames;
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/gapicconfig");
     getTestDataLocator().addTestDataSource(CodegenTestUtil.class, "testsrc/gapicconfig/samples");
   }
 
-  @Parameters(name = "{5}")
+  @Parameters(name = "{6}")
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
@@ -64,19 +67,22 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             "library",
             null,
+            TransportProtocol.GRPC,
             "another_service"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"longrunning_gapic.yaml"},
             "longrunning_pkg2.yaml",
             "longrunning",
-            null), // Test passing in a proto_package flag.
+            null,
+            TransportProtocol.GRPC), // Test passing in a proto_package flag.
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
             "no_path_templates",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PHP,
             new String[] {"library_gapic.yaml"},
@@ -87,6 +93,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "php_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
@@ -94,19 +101,22 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "multiple_services_pkg2.yaml",
             "multiple_services",
             null,
+            TransportProtocol.GRPC,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
             "no_path_templates",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"my_streaming_proto_gapic.yaml"},
             "my_streaming_proto_pkg2.yaml",
             "my_streaming_proto",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"library_gapic.yaml"},
@@ -117,6 +127,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "java_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
@@ -124,13 +135,15 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             "multiple_services_pkg2.yaml",
             "multiple_services",
             null,
+            TransportProtocol.GRPC,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"longrunning_gapic.yaml"},
             "longrunning_pkg2.yaml",
             "longrunning",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.RUBY,
             new String[] {"library_gapic.yaml"},
@@ -141,19 +154,22 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "ruby_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"no_path_templates_gapic.yaml"},
             "no_path_templates_pkg2.yaml",
             "no_path_templates",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
             null,
+            TransportProtocol.GRPC,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.PYTHON,
@@ -165,19 +181,22 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "python_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"no_path_templates_gapic.yaml"},
             "library_pkg2.yaml",
             "no_path_templates",
-            null),
+            null,
+            TransportProtocol.GRPC),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
             "multiple_services",
             null,
+            TransportProtocol.GRPC,
             "multiple_services_v2"),
         GapicTestBase2.createTestConfig(
             TargetLanguage.NODEJS,
@@ -189,6 +208,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "nodejs_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
             TargetLanguage.CSHARP,
@@ -200,6 +220,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             null,
             sampleConfigFileNames(),
             "csharp_library.baseline",
+            TransportProtocol.GRPC,
             new String[] {"another_service"}));
   }
 

@@ -19,22 +19,26 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodContext;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
+  @Override
+  public abstract boolean resourceNameTypesEnabled();
+
+  @Override
+  public abstract boolean enableMixins();
+
+  @Override
+  public abstract boolean enableGrpcStreaming();
 
   @Override
   public abstract boolean enableStringFormatFunctions();
 
   @Override
   public abstract boolean useStaticCreateMethodForOneofs();
-
-  @Override
-  public boolean resourceNameTypesEnabled() {
-    return true;
-  }
 
   @Override
   public boolean useResourceNameFormatOptionInSample(
@@ -74,11 +78,6 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
   }
 
   @Override
-  public boolean enableMixins() {
-    return true;
-  }
-
-  @Override
   public boolean enableRawOperationCallSettings() {
     return true;
   }
@@ -89,6 +88,11 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
 
   @AutoValue.Builder
   abstract static class Builder {
+    abstract Builder resourceNameTypesEnabled(boolean value);
+
+    abstract Builder enableMixins(boolean value);
+
+    abstract Builder enableGrpcStreaming(boolean value);
 
     abstract Builder enableStringFormatFunctions(boolean value);
 
@@ -109,7 +113,12 @@ public abstract class JavaFeatureConfig extends DefaultFeatureConfig {
       enableStringFormatFunctions =
           resourceNameMessageConfigs == null || resourceNameMessageConfigs.isEmpty();
     }
+    TransportProtocol tp = productConfig.getTransportProtocol();
+
     return JavaFeatureConfig.newBuilder()
+        .resourceNameTypesEnabled(true)
+        .enableMixins(tp != TransportProtocol.HTTP)
+        .enableGrpcStreaming(tp != TransportProtocol.HTTP)
         .enableStringFormatFunctions(enableStringFormatFunctions)
         .useStaticCreateMethodForOneofs(productConfig.getProtoParser().isProtoAnnotationsEnabled())
         .build();

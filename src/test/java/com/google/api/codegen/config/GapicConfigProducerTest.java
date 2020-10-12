@@ -49,7 +49,8 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_config_schema_version.yaml"});
-    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA, null);
+    GapicProductConfig.create(
+        model, configProto, null, null, null, TargetLanguage.JAVA, null, TransportProtocol.GRPC);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml.");
@@ -70,11 +71,13 @@ public class GapicConfigProducerTest {
             model.getDiagReporter().getDiagCollector(),
             locator,
             new String[] {"missing_interface_v1.yaml"});
-    GapicProductConfig.create(model, configProto, null, null, null, TargetLanguage.JAVA, null);
+    GapicProductConfig.create(
+        model, configProto, null, null, null, TargetLanguage.JAVA, null, TransportProtocol.GRPC);
     Diag expectedError =
         Diag.error(
             SimpleLocation.TOPLEVEL,
-            "interface not found: google.example.myproto.v1.MyUnknownProto. Interfaces: [google.example.myproto.v1.MyProto]");
+            "interface not found: google.example.myproto.v1.MyUnknownProto. Interfaces:"
+                + " [google.example.myproto.v1.MyProto]");
     assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isTrue();
     assertThat(model.getDiagReporter().getDiagCollector().getDiags()).contains(expectedError);
   }
@@ -111,7 +114,8 @@ public class GapicConfigProducerTest {
             "google.example.library.v1",
             null,
             TargetLanguage.GO,
-            serviceConfig);
+            serviceConfig,
+            TransportProtocol.GRPC);
 
     assertThat(model.getDiagReporter().getDiagCollector().hasErrors()).isFalse();
     assertThat(product).isNotNull();

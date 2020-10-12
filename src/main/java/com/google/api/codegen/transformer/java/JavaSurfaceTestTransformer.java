@@ -256,6 +256,8 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
         !context.getInterfaceConfig().hasDefaultServiceAddress());
     testClass.missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes());
 
+    testClass.transportProtocol(context.getProductConfig().getTransportProtocol());
+
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
     testFile.outputPath(namer.getSourceFilePath(outputPath, name));

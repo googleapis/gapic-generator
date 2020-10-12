@@ -16,6 +16,7 @@ package com.google.api.codegen.protoannotations;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.common.TargetLanguage;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicTestBase2;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
       String protoPackage,
       String clientPackage,
       String grpcServiceConfigFileName,
+      TransportProtocol transportProtocol,
       String[] baseNames) {
     super(
         language,
@@ -54,7 +56,8 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
         baseline,
         protoPackage,
         clientPackage,
-        grpcServiceConfigFileName);
+        grpcServiceConfigFileName,
+        transportProtocol);
 
     String apiName = baseNames[0];
 
@@ -88,6 +91,20 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
+            "common_resources",
+            "another_service"),
+        GapicTestBase2.createTestConfig(
+            TargetLanguage.JAVA,
+            null,
+            "library_pkg2.yaml",
+            "library",
+            "google.example.library.v1",
+            "com.google.example.library.v1",
+            null,
+            null,
+            "java_library_no_gapic_config_http.baseline",
+            TransportProtocol.HTTP,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -100,6 +117,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -112,6 +130,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -124,6 +143,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_grpc_service_config.json",
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -136,6 +156,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -148,6 +169,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -160,6 +182,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -172,6 +195,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -184,6 +208,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -196,6 +221,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             "library_grpc_service_config.json",
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"),
         GapicTestBase2.createTestConfig(
@@ -208,6 +234,7 @@ public class GapicCodeGeneratorAnnotationsTest extends GapicTestBase2 {
             null,
             null,
             null,
+            TransportProtocol.GRPC,
             "common_resources",
             "another_service"));
   }

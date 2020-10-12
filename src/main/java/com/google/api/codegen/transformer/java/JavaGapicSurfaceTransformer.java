@@ -18,6 +18,7 @@ import com.google.api.codegen.config.GapicInterfaceContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -42,9 +43,11 @@ public class JavaGapicSurfaceTransformer
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String STUB_SETTINGS_TEMPLATE_FILENAME = "java/stub_settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
-  private static final String GRPC_STUB_TEMPLATE_FILENAME = "java/grpc_stub.snip";
+  private static final String STUB_TEMPLATE_FILENAME = "java/stub.snip";
   private static final String GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME =
       "java/grpc_callable_factory.snip";
+  private static final String HTTP_CALLABLE_FACTORY_TEMPLATE_FILENAME =
+      "java/http_callable_factory.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
@@ -60,17 +63,23 @@ public class JavaGapicSurfaceTransformer
         SETTINGS_TEMPLATE_FILENAME,
         STUB_SETTINGS_TEMPLATE_FILENAME,
         STUB_INTERFACE_TEMPLATE_FILENAME,
-        GRPC_STUB_TEMPLATE_FILENAME,
+        STUB_TEMPLATE_FILENAME,
         GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME,
+        HTTP_CALLABLE_FACTORY_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
 
   @Override
   public List<ViewModel> transform(ProtoApiModel model, GapicProductConfig productConfig) {
+    String callableFactoryTemplateName =
+        productConfig.getTransportProtocol() == TransportProtocol.HTTP
+            ? HTTP_CALLABLE_FACTORY_TEMPLATE_FILENAME
+            : GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME;
+
     JavaSurfaceTransformer commonSurfaceTransformer =
         new JavaSurfaceTransformer(
-            pathMapper, this, GRPC_STUB_TEMPLATE_FILENAME, GRPC_CALLABLE_FACTORY_TEMPLATE_FILENAME);
+            pathMapper, this, STUB_TEMPLATE_FILENAME, callableFactoryTemplateName);
     return commonSurfaceTransformer.transform(model, productConfig);
   }
 

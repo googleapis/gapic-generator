@@ -149,6 +149,17 @@ public class GeneratorMain {
           .argName("GRPC-SERVICE-CONFIG")
           .required(false)
           .build();
+  private static final Option TRANSPORT =
+      Option.builder()
+          .longOpt("transport")
+          .desc(
+              "List of transports to support. Valid transport names ('grpc' or 'rest') are"
+                  + " separated by '+'. Default is 'grpc'. NOTE: for now, GAPICs support only"
+                  + " the first transport in the list.")
+          .hasArg()
+          .argName("TRANSPORT")
+          .required(false)
+          .build();
 
   public static void printAvailableCommands() {
     System.err.println("  Available artifact types:");
@@ -249,6 +260,7 @@ public class GeneratorMain {
     options.addOption(OUTPUT_OPTION);
     options.addOption(SAMPLE_YAML_NONREQUIRED_OPTION);
     options.addOption(GRPC_SERVICE_CONFIG_OPTION);
+    options.addOption(TRANSPORT);
     Option enabledArtifactsOption =
         Option.builder()
             .longOpt("enabled_artifacts")
@@ -299,6 +311,9 @@ public class GeneratorMain {
 
     checkFile(toolOptions.get(ToolOptions.DESCRIPTOR_SET));
 
+    if (cl.getOptionValue(TRANSPORT.getLongOpt()) != null) {
+      toolOptions.set(GapicGeneratorApp.TRANSPORT, cl.getOptionValue(TRANSPORT.getLongOpt()));
+    }
     if (cl.getOptionValues(SERVICE_YAML_NONREQUIRED_OPTION.getLongOpt()) != null) {
       toolOptions.set(
           ToolOptions.CONFIG_FILES,
@@ -346,6 +361,7 @@ public class GeneratorMain {
     options.addOption(DESCRIPTOR_SET_OPTION);
     options.addOption(LANGUAGE_OPTION);
     options.addOption(TARGET_API_PROTO_PACKAGE);
+    options.addOption(TRANSPORT);
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
 

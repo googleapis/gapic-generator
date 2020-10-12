@@ -246,8 +246,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public boolean isSupported(MethodModel method) {
-    boolean supported = true;
-    supported &=
+    boolean supported =
         getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
     supported &= getMethodConfig(method).getVisibility() != VisibilityConfig.DISABLED;
     return supported;

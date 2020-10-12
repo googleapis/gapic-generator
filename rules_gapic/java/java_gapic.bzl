@@ -78,6 +78,7 @@ def java_gapic_srcjar(
         package = None,
         service_yaml = None,
         grpc_service_config = None,
+        transport = None,
         **kwargs):
     raw_srcjar_name = "%s_raw" % name
 
@@ -90,6 +91,7 @@ def java_gapic_srcjar(
         language = "java",
         package = package,
         grpc_service_config = grpc_service_config,
+        transport = transport,
         **kwargs
     )
 
@@ -132,6 +134,7 @@ def java_gapic_library(
         package = None,
         gen_resource_name = True,
         grpc_service_config = None,
+        transport = None,
         deps = [],
         test_deps = [],
         **kwargs):
@@ -144,6 +147,7 @@ def java_gapic_library(
         artifact_type = "GAPIC_CODE",
         package = package,
         grpc_service_config = grpc_service_config,
+        transport = transport,
         **kwargs
     )
 
@@ -162,10 +166,7 @@ def java_gapic_library(
         "@com_google_protobuf//:protobuf_java",
         "@com_google_api_api_common//jar",
         "@com_google_api_gax_java//gax:gax",
-        "@com_google_api_gax_java//gax-grpc:gax_grpc",
         "@com_google_guava_guava//jar",
-        "@io_grpc_grpc_java//core:core",
-        "@io_grpc_grpc_java//protobuf:protobuf",
         "@com_google_code_findbugs_jsr305//jar",
         "@org_threeten_threetenbp//jar",
         "@io_opencensus_opencensus_api//jar",
@@ -175,6 +176,17 @@ def java_gapic_library(
         "@javax_annotation_javax_annotation_api//jar",
     ]
 
+    if transport == "rest":
+        actual_deps += [
+            "@com_google_api_gax_java//gax-httpjson:gax_httpjson",
+        ]
+    else:
+        actual_deps += [
+            "@com_google_api_gax_java//gax-grpc:gax_grpc",
+            "@io_grpc_grpc_java//core:core",
+            "@io_grpc_grpc_java//protobuf:protobuf",
+        ]
+
     native.java_library(
         name = name,
         srcs = [":%s.srcjar" % srcjar_name],
@@ -183,15 +195,23 @@ def java_gapic_library(
     )
 
     actual_test_deps = test_deps + [
-        "@com_google_api_gax_java//gax-grpc:gax_grpc_testlib",
         "@com_google_api_gax_java//gax:gax_testlib",
         "@com_google_code_gson_gson//jar",
-        "@io_grpc_grpc_java//auth:auth",
-        "@io_grpc_grpc_netty_shaded//jar",
-        "@io_grpc_grpc_java//stub:stub",
-        "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
         "@junit_junit//jar",
     ]
+
+    if transport == "rest":
+        actual_test_deps += [
+            "@com_google_api_gax_java//gax-httpjson:gax_httpjson_testlib",
+        ]
+    else:
+        actual_test_deps += [
+            "@com_google_api_gax_java//gax-grpc:gax_grpc_testlib",
+            "@io_grpc_grpc_java//auth:auth",
+            "@io_grpc_grpc_netty_shaded//jar",
+            "@io_grpc_grpc_java//stub:stub",
+            "@io_opencensus_opencensus_contrib_grpc_metrics//jar",
+        ]
 
     native.java_library(
         name = "%s_test" % name,

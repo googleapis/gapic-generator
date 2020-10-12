@@ -24,6 +24,7 @@ import com.google.api.codegen.config.DependenciesConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.PackagingConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.grpc.ServiceConfig;
 import com.google.api.codegen.samplegen.v1p2.SampleConfigProto;
 import com.google.api.codegen.util.MultiYamlReader;
@@ -111,6 +112,14 @@ public class GapicGeneratorApp extends ToolDriverBase {
           "grpc_service_config",
           "The filepath of the JSON gRPC Service Config file.",
           "");
+
+  public static final Option<String> TRANSPORT =
+      ToolOptions.createOption(
+          String.class,
+          "transport",
+          "List of transports to use ('rest' or 'grpc') separated by '+'. NOTE: For now"
+              + " we only support the first transport in the list.",
+          "grpc");
 
   private ArtifactType artifactType;
 
@@ -208,6 +217,16 @@ public class GapicGeneratorApp extends ToolDriverBase {
     }
 
     String clientPackage = Strings.emptyToNull(options.get(CLIENT_PACKAGE));
+    String transport = options.get(TRANSPORT).toLowerCase();
+
+    TransportProtocol tp;
+    if (transport.equals("grpc")) {
+      tp = TransportProtocol.GRPC;
+    } else if (transport.equals("rest")) {
+      tp = TransportProtocol.HTTP;
+    } else {
+      throw new IllegalArgumentException("Unknown transport protocol: " + transport);
+    }
 
     GapicProductConfig productConfig =
         GapicProductConfig.create(
@@ -217,7 +236,8 @@ public class GapicGeneratorApp extends ToolDriverBase {
             protoPackage,
             clientPackage,
             language,
-            gRPCServiceConfig);
+            gRPCServiceConfig,
+            tp);
     if (productConfig == null) {
       ToolUtil.reportDiags(model.getDiagReporter().getDiagCollector(), true);
       return;
