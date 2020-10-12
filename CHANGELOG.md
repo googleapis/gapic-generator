@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://www.github.com/googleapis/gapic-generator/compare/v2.4.6...v2.5.0) (2020-10-02)
+
+
+### Features
+
+* update C# to use the micro-generator ([#3285](https://www.github.com/googleapis/gapic-generator/issues/3285)) ([f73bd35](https://www.github.com/googleapis/gapic-generator/commit/f73bd35c63e474e9dfd7c6364ff84d749a870f7e)), closes [#3274](https://www.github.com/googleapis/gapic-generator/issues/3274)
+
 ### [2.4.6](https://www.github.com/googleapis/gapic-generator/compare/v2.4.5...v2.4.6) (2020-09-02)
 
 
