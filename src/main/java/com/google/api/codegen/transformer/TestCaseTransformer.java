@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 /** TestCaseTransformer contains helper methods useful for creating test views. */
 public class TestCaseTransformer {
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer(false);
-  private final TestValueGenerator valueGenerator;
+  private final ValueProducer valueProducer;
   private boolean packageHasMultipleServices;
 
   public TestCaseTransformer(ValueProducer valueProducer) {
@@ -72,7 +72,7 @@ public class TestCaseTransformer {
   }
 
   public TestCaseTransformer(ValueProducer valueProducer, boolean packageHasMultipleServices) {
-    this.valueGenerator = new TestValueGenerator(valueProducer);
+    this.valueProducer = valueProducer;
     this.packageHasMultipleServices = packageHasMultipleServices;
   }
 
@@ -355,7 +355,7 @@ public class TestCaseTransformer {
         .initValueConfigMap(ImmutableMap.of())
         .initFields(responseInitFields(outputType.getFields()))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
-        .valueGenerator(valueGenerator)
+        .valueGenerator(new TestValueGenerator(valueProducer))
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
   }
