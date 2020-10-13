@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://www.github.com/googleapis/gapic-generator/compare/v2.5.0...v2.6.0) (2020-10-12)
+
+
+### Features
+
+* REST GAPIC (REGAPIC) Support for Java ([#3275](https://www.github.com/googleapis/gapic-generator/issues/3275)) ([782d11a](https://www.github.com/googleapis/gapic-generator/commit/782d11a44761e4329349cfeba4e9d1ed494a984b))
+
 ## [2.5.0](https://www.github.com/googleapis/gapic-generator/compare/v2.4.6...v2.5.0) (2020-10-02)
 
 
