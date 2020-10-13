@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.6.1](https://www.github.com/googleapis/gapic-generator/compare/v2.6.0...v2.6.1) (2020-10-13)
+
+
+### Bug Fixes
+
+* use separate value generator in test generation ([#3294](https://www.github.com/googleapis/gapic-generator/issues/3294)) ([9f97d83](https://www.github.com/googleapis/gapic-generator/commit/9f97d83cc02596149a58d7e6ef330125aaa7caa2))
+
 ## [2.6.0](https://www.github.com/googleapis/gapic-generator/compare/v2.5.0...v2.6.0) (2020-10-12)
 
 
