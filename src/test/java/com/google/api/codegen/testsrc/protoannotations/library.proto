@@ -84,6 +84,12 @@ service LibraryService {
     option (google.api.method_signature) = "";
   }
 
+  // Lists shelves.
+  rpc ListAggregatedShelves(AggregatedListShelvesRequest) returns (ListShelvesAggregatedResponse) {
+    option (google.api.http) = { get: "/v1/bookAggregatedShelves" };
+    option (google.api.method_signature) = "";
+  }
+
   // Deletes a shelf.
   rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { delete: "/v1/bookShelves/{name}" };
@@ -669,6 +675,15 @@ message ListShelvesRequest {
   // not be treated as a paged method unless there is a GAPIC config override.
 }
 
+// Request message for LibraryService.ListAggregatedShelves.
+message AggregatedListShelvesRequest {
+  // Requested page size.
+  int32 max_results = 1;
+
+  // A token identifying a page of results the server should return.
+  string page_token = 2;
+}
+
 // Response message for LibraryService.ListShelves.
 message ListShelvesResponse {
   // The list of shelves.
@@ -679,6 +694,15 @@ message ListShelvesResponse {
   // [ListShelvesRequest.page_token][google.example.library.v1.ListShelvesRequest.page_token]
   // field in the subsequent call to `ListShelves` method to retrieve the next
   // page of results.
+  string next_page_token = 2;
+}
+
+// Response message for LibraryService.ListAggregatedShelves.
+message ListShelvesAggregatedResponse {
+  // The map of aggregated shelves of shelves.
+  map<string, Shelf> shelves = 1;
+
+  // A token to retrieve next page of results.
   string next_page_token = 2;
 }
 

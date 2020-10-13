@@ -2297,6 +2297,7 @@ use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\AggregatedListShelvesRequest;
 use Google\Example\Library\V1\ArchiveBooksMetadata;
 use Google\Example\Library\V1\ArchiveBooksRequest;
 use Google\Example\Library\V1\ArchiveBooksResponse;
@@ -2327,6 +2328,7 @@ use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
+use Google\Example\Library\V1\ListShelvesAggregatedResponse;
 use Google\Example\Library\V1\ListShelvesRequest;
 use Google\Example\Library\V1\ListShelvesResponse;
 use Google\Example\Library\V1\ListStringsRequest;
@@ -5186,6 +5188,55 @@ class LibraryServiceGapicClient
     }
 
     /**
+     * Lists shelves.
+     *
+     * Sample code:
+     * ```
+     * $libraryServiceClient = new LibraryServiceClient();
+     * try {
+     *     $response = $libraryServiceClient->listAggregatedShelves();
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type int $maxResults
+     *          Requested page size.
+     *     @type string $pageToken
+     *          A token identifying a page of results the server should return.
+     *     @type RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\ApiCore\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\ApiCore\RetrySettings} for example usage.
+     * }
+     *
+     * @return \Google\Example\Library\V1\ListShelvesAggregatedResponse
+     *
+     * @throws ApiException if the remote call fails
+     * @experimental
+     */
+    public function listAggregatedShelves(array $optionalArgs = [])
+    {
+        $request = new AggregatedListShelvesRequest();
+        if (isset($optionalArgs['maxResults'])) {
+            $request->setMaxResults($optionalArgs['maxResults']);
+        }
+        if (isset($optionalArgs['pageToken'])) {
+            $request->setPageToken($optionalArgs['pageToken']);
+        }
+
+        return $this->startCall(
+            'ListAggregatedShelves',
+            ListShelvesAggregatedResponse::class,
+            $optionalArgs,
+            $request
+        )->wait();
+    }
+
+    /**
      * Creates an inventory. Tests singleton resources.
      *
      * Sample code:
@@ -6243,6 +6294,11 @@ class MyProtoClient extends MyProtoGapicClient
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         },
+        "ListAggregatedShelves": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
         "CreateInventory": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
@@ -6638,6 +6694,10 @@ return [
                 'uriTemplate' => '/v1/testofp',
                 'body' => '*',
             ],
+            'ListAggregatedShelves' => [
+                'method' => 'get',
+                'uriTemplate' => '/v1/bookAggregatedShelves',
+            ],
             'CreateInventory' => [
                 'method' => 'post',
                 'uriTemplate' => '/v1/{parent=projects/*/locations/*/publishers/*}',
@@ -6867,6 +6927,7 @@ use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\ApiCore\Testing\MockTransport;
 use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\AggregatedListShelvesRequest;
 use Google\Example\Library\V1\ArchiveBooksRequest;
 use Google\Example\Library\V1\ArchiveBooksResponse;
 use Google\Example\Library\V1\Book;
@@ -6891,6 +6952,7 @@ use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
+use Google\Example\Library\V1\ListShelvesAggregatedResponse;
 use Google\Example\Library\V1\ListShelvesRequest;
 use Google\Example\Library\V1\ListShelvesResponse;
 use Google\Example\Library\V1\ListStringsRequest;
@@ -9579,6 +9641,70 @@ class LibraryServiceClientTest extends GeneratedTest
 
         try {
             $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $formattedRequiredSingularResourceName, $formattedRequiredSingularResourceNameOneof, $requiredSingularResourceNameCommon, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedResourceNameCommon, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $requiredAnyValue, $requiredStructValue, $requiredValueValue, $requiredListValueValue, $requiredTimeValue, $requiredDurationValue, $requiredFieldMaskValue, $requiredInt32Value, $requiredUint32Value, $requiredInt64Value, $requiredUint64Value, $requiredFloatValue, $requiredDoubleValue, $requiredStringValue, $requiredBoolValue, $requiredBytesValue, $requiredRepeatedAnyValue, $requiredRepeatedStructValue, $requiredRepeatedValueValue, $requiredRepeatedListValueValue, $requiredRepeatedTimeValue, $requiredRepeatedDurationValue, $requiredRepeatedFieldMaskValue, $requiredRepeatedInt32Value, $requiredRepeatedUint32Value, $requiredRepeatedInt64Value, $requiredRepeatedUint64Value, $requiredRepeatedFloatValue, $requiredRepeatedDoubleValue, $requiredRepeatedStringValue, $requiredRepeatedBoolValue, $requiredRepeatedBytesValue);
+            // If the $client method call did not throw, fail the test
+            $this->fail('Expected an ApiException, but no exception was thrown.');
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $transport->popReceivedCalls();
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function listAggregatedShelvesTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        // Mock response
+        $nextPageToken = 'nextPageToken-1530815211';
+        $expectedResponse = new ListShelvesAggregatedResponse();
+        $expectedResponse->setNextPageToken($nextPageToken);
+        $transport->addResponse($expectedResponse);
+
+        $response = $client->listAggregatedShelves();
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $transport->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/ListAggregatedShelves', $actualFuncCall);
+
+
+        $this->assertTrue($transport->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function listAggregatedShelvesExceptionTest()
+    {
+        $transport = $this->createTransport();
+        $client = $this->createClient(['transport' => $transport]);
+
+        $this->assertTrue($transport->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Code::DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           'message' => 'internal error',
+           'code' => Code::DATA_LOSS,
+           'status' => 'DATA_LOSS',
+           'details' => [],
+        ], JSON_PRETTY_PRINT);
+        $transport->addResponse(null, $status);
+
+        try {
+            $client->listAggregatedShelves();
             // If the $client method call did not throw, fail the test
             $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {

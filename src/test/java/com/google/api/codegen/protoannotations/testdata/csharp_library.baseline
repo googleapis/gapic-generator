@@ -7654,6 +7654,56 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        /// <summary>Snippet for ListAggregatedShelvesAsync</summary>
+        public async Task ListAggregatedShelvesAsync()
+        {
+            // Snippet: ListAggregatedShelvesAsync(CallSettings)
+            // Additional: ListAggregatedShelvesAsync(CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Make the request
+            ListShelvesAggregatedResponse response = await libraryServiceClient.ListAggregatedShelvesAsync();
+            // End snippet
+        }
+
+        /// <summary>Snippet for ListAggregatedShelves</summary>
+        public void ListAggregatedShelves()
+        {
+            // Snippet: ListAggregatedShelves(CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Make the request
+            ListShelvesAggregatedResponse response = libraryServiceClient.ListAggregatedShelves();
+            // End snippet
+        }
+
+        /// <summary>Snippet for ListAggregatedShelvesAsync</summary>
+        public async Task ListAggregatedShelvesAsync_RequestObject()
+        {
+            // Snippet: ListAggregatedShelvesAsync(AggregatedListShelvesRequest,CallSettings)
+            // Additional: ListAggregatedShelvesAsync(AggregatedListShelvesRequest,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            // Make the request
+            ListShelvesAggregatedResponse response = await libraryServiceClient.ListAggregatedShelvesAsync(request);
+            // End snippet
+        }
+
+        /// <summary>Snippet for ListAggregatedShelves</summary>
+        public void ListAggregatedShelves_RequestObject()
+        {
+            // Snippet: ListAggregatedShelves(AggregatedListShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            // Make the request
+            ListShelvesAggregatedResponse response = libraryServiceClient.ListAggregatedShelves(request);
+            // End snippet
+        }
+
         /// <summary>Snippet for CreateInventoryAsync</summary>
         public async Task CreateInventoryAsync()
         {
@@ -10927,6 +10977,92 @@ namespace Google.Example.Library.V1.Tests
         }
 
         [Fact]
+        public void ListAggregatedShelves()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AggregatedListShelvesRequest expectedRequest = new AggregatedListShelvesRequest();
+            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListAggregatedShelves(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            ListShelvesAggregatedResponse response = client.ListAggregatedShelves();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ListAggregatedShelvesAsync()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AggregatedListShelvesRequest expectedRequest = new AggregatedListShelvesRequest();
+            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListAggregatedShelvesAsync(expectedRequest, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesAggregatedResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+
+            ListShelvesAggregatedResponse response = await client.ListAggregatedShelvesAsync();
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public void ListAggregatedShelves2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListAggregatedShelves(request, It.IsAny<CallOptions>()))
+                .Returns(expectedResponse);
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ListShelvesAggregatedResponse response = client.ListAggregatedShelves(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
+        public async Task ListAggregatedShelvesAsync2()
+        {
+            Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
+            mockGrpcClient.Setup(x => x.CreateLabelerClient())
+                .Returns(new Mock<Labeler.LabelerClient>().Object);
+            mockGrpcClient.Setup(x => x.CreateOperationsClient())
+                .Returns(new Mock<Operations.OperationsClient>().Object);
+            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            {
+                NextPageToken = "nextPageToken-1530815211",
+            };
+            mockGrpcClient.Setup(x => x.ListAggregatedShelvesAsync(request, It.IsAny<CallOptions>()))
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesAggregatedResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+            LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
+            ListShelvesAggregatedResponse response = await client.ListAggregatedShelvesAsync(request);
+            Assert.Same(expectedResponse, response);
+            mockGrpcClient.VerifyAll();
+        }
+
+        [Fact]
         public void CreateInventory()
         {
             Mock<LibraryService.LibraryServiceClient> mockGrpcClient = new Mock<LibraryService.LibraryServiceClient>(MockBehavior.Strict);
@@ -11687,6 +11823,7 @@ namespace Google.Example.Library.V1
             GetBigNothingSettings = existing.GetBigNothingSettings;
             GetBigNothingOperationsSettings = existing.GetBigNothingOperationsSettings?.Clone();
             TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
+            ListAggregatedShelvesSettings = existing.ListAggregatedShelvesSettings;
             CreateInventorySettings = existing.CreateInventorySettings;
             MoveBooksSettings = existing.MoveBooksSettings;
             ArchiveBooksSettings = existing.ArchiveBooksSettings;
@@ -12522,6 +12659,36 @@ namespace Google.Example.Library.V1
                 timeoutBackoff: GetDefaultTimeoutBackoff(),
                 totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
                 retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="gaxgrpc::CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.ListAggregatedShelves</c> and <c>LibraryServiceClient.ListAggregatedShelvesAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.ListAggregatedShelves</c> and
+        /// <c>LibraryServiceClient.ListAggregatedShelvesAsync</c> <see cref="gaxgrpc::RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="grpccore::StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="grpccore::StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public gaxgrpc::CallSettings ListAggregatedShelvesSettings { get; set; } = gaxgrpc::CallSettings.FromCallTiming(
+            gaxgrpc::CallTiming.FromRetry(new gaxgrpc::RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: gax::Expiration.FromTimeout(sys::TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
             )));
 
         /// <summary>
@@ -21650,6 +21817,107 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+            gaxgrpc::CallSettings callSettings = null) => ListAggregatedShelvesAsync(
+                new AggregatedListShelvesRequest
+                {
+                },
+                callSettings);
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+            st::CancellationToken cancellationToken) => ListAggregatedShelvesAsync(
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual ListShelvesAggregatedResponse ListAggregatedShelves(
+            gaxgrpc::CallSettings callSettings = null) => ListAggregatedShelves(
+                new AggregatedListShelvesRequest
+                {
+                },
+                callSettings);
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+            AggregatedListShelvesRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="st::CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+            AggregatedListShelvesRequest request,
+            st::CancellationToken cancellationToken) => ListAggregatedShelvesAsync(
+                request,
+                gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual ListShelvesAggregatedResponse ListAggregatedShelves(
+            AggregatedListShelvesRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            throw new sys::NotImplementedException();
+        }
+
+        /// <summary>
         /// Creates an inventory. Tests singleton resources.
         /// </summary>
         /// <param name="parent">
@@ -25157,6 +25425,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
+        private readonly gaxgrpc::ApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> _callListAggregatedShelves;
         private readonly gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> _callCreateInventory;
         private readonly gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> _callMoveBooks;
         private readonly gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> _callArchiveBooks;
@@ -25253,6 +25522,8 @@ namespace Google.Example.Library.V1
                 .WithGoogleRequestParam("name", request => request.Name);
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
+            _callListAggregatedShelves = clientHelper.BuildApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse>(
+                GrpcClient.ListAggregatedShelvesAsync, GrpcClient.ListAggregatedShelves, effectiveSettings.ListAggregatedShelvesSettings);
             _callCreateInventory = clientHelper.BuildApiCall<CreateInventoryRequest, Inventory>(
                 GrpcClient.CreateInventoryAsync, GrpcClient.CreateInventory, effectiveSettings.CreateInventorySettings)
                 .WithGoogleRequestParam("parent", request => request.Parent);
@@ -25323,6 +25594,8 @@ namespace Google.Example.Library.V1
             Modify_GetBigNothingApiCall(ref _callGetBigNothing);
             Modify_ApiCall(ref _callTestOptionalRequiredFlatteningParams);
             Modify_TestOptionalRequiredFlatteningParamsApiCall(ref _callTestOptionalRequiredFlatteningParams);
+            Modify_ApiCall(ref _callListAggregatedShelves);
+            Modify_ListAggregatedShelvesApiCall(ref _callListAggregatedShelves);
             Modify_ApiCall(ref _callCreateInventory);
             Modify_CreateInventoryApiCall(ref _callCreateInventory);
             Modify_ApiCall(ref _callMoveBooks);
@@ -25382,6 +25655,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
+        partial void Modify_ListAggregatedShelvesApiCall(ref gaxgrpc::ApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> call);
         partial void Modify_CreateInventoryApiCall(ref gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> call);
         partial void Modify_MoveBooksApiCall(ref gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> call);
         partial void Modify_ArchiveBooksApiCall(ref gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> call);
@@ -25424,6 +25698,7 @@ namespace Google.Example.Library.V1
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_AggregatedListShelvesRequest(ref AggregatedListShelvesRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_CreateInventoryRequest(ref CreateInventoryRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_MoveBooksRequest(ref MoveBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_ArchiveBooksRequest(ref ArchiveBooksRequest request, ref gaxgrpc::CallSettings settings);
@@ -26520,6 +26795,46 @@ namespace Google.Example.Library.V1
         {
             Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
             return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+            AggregatedListShelvesRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_AggregatedListShelvesRequest(ref request, ref callSettings);
+            return _callListAggregatedShelves.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override ListShelvesAggregatedResponse ListAggregatedShelves(
+            AggregatedListShelvesRequest request,
+            gaxgrpc::CallSettings callSettings = null)
+        {
+            Modify_AggregatedListShelvesRequest(ref request, ref callSettings);
+            return _callListAggregatedShelves.Sync(request, callSettings);
         }
 
         /// <summary>

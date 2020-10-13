@@ -45,6 +45,10 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract boolean resourcesFieldIsMap();
 
+  public boolean resourcesFieldAsEntrySet() {
+    return resourceTypeName() != null && resourceTypeName().contains("<");
+  }
+
   public boolean requestHasPageSize() {
     return requestPageSizeSetFunction() != null && requestPageSizeGetFunction() != null;
   }

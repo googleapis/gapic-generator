@@ -2886,6 +2886,23 @@ const ListShelvesRequest = {
 };
 
 /**
+ * Request message for LibraryService.ListAggregatedShelves.
+ *
+ * @property {number} maxResults
+ *   Requested page size.
+ *
+ * @property {string} pageToken
+ *   A token identifying a page of results the server should return.
+ *
+ * @typedef AggregatedListShelvesRequest
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.AggregatedListShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const AggregatedListShelvesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
  * Response message for LibraryService.ListShelves.
  *
  * @property {Object[]} shelves
@@ -2905,6 +2922,23 @@ const ListShelvesRequest = {
  * @see [google.example.library.v1.ListShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
  */
 const ListShelvesResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for LibraryService.ListAggregatedShelves.
+ *
+ * @property {Object.<string, Object>} shelves
+ *   The map of aggregated shelves of shelves.
+ *
+ * @property {string} nextPageToken
+ *   A token to retrieve next page of results.
+ *
+ * @typedef ListShelvesAggregatedResponse
+ * @memberof google.example.library.v1
+ * @see [google.example.library.v1.ListShelvesAggregatedResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+const ListShelvesAggregatedResponse = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
 
@@ -5349,6 +5383,7 @@ class LibraryServiceClient {
       'getBigBook',
       'getBigNothing',
       'testOptionalRequiredFlatteningParams',
+      'listAggregatedShelves',
       'createInventory',
       'moveBooks',
       'archiveBooks',
@@ -7770,6 +7805,55 @@ class LibraryServiceClient {
   }
 
   /**
+   * Lists shelves.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {number} [request.maxResults]
+   *   Requested page size.
+   * @param {string} [request.pageToken]
+   *   A token identifying a page of results the server should return.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing [ListShelvesAggregatedResponse]{@link google.example.library.v1.ListShelvesAggregatedResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing [ListShelvesAggregatedResponse]{@link google.example.library.v1.ListShelvesAggregatedResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   *
+   * const library = require('@google-cloud/library');
+   *
+   * const client = new library.v1.LibraryServiceClient({
+   *   // optional auth parameters.
+   * });
+   *
+   *
+   * client.listAggregatedShelves({})
+   *   .then(responses => {
+   *     const response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
+   */
+  listAggregatedShelves(request, options, callback) {
+    if (options instanceof Function && callback === undefined) {
+      callback = options;
+      options = {};
+    }
+    request = request || {};
+    options = options || {};
+
+    return this._innerApiCalls.listAggregatedShelves(request, options, callback);
+  }
+
+  /**
    * Creates an inventory. Tests singleton resources.
    *
    * @param {Object} request
@@ -8873,6 +8957,11 @@ module.exports = LibraryServiceClient;
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "ListAggregatedShelves": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "CreateInventory": {
@@ -11273,6 +11362,60 @@ describe('LibraryServiceClient', () => {
       );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
+        assert(err instanceof Error);
+        assert.strictEqual(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
+        done();
+      });
+    });
+  });
+
+  describe('listAggregatedShelves', () => {
+    it('invokes listAggregatedShelves without error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock response
+      const nextPageToken = 'nextPageToken-1530815211';
+      const expectedResponse = {
+        nextPageToken: nextPageToken,
+      };
+
+      // Mock Grpc layer
+      client._innerApiCalls.listAggregatedShelves = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
+
+      client.listAggregatedShelves(request, (err, response) => {
+        assert.ifError(err);
+        assert.deepStrictEqual(response, expectedResponse);
+        done();
+      });
+    });
+
+    it('invokes listAggregatedShelves with error', done => {
+      const client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+
+      // Mock request
+      const request = {};
+
+      // Mock Grpc layer
+      client._innerApiCalls.listAggregatedShelves = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
+
+      client.listAggregatedShelves(request, (err, response) => {
         assert(err instanceof Error);
         assert.strictEqual(err.code, FAKE_STATUS_CODE);
         assert(typeof response === 'undefined');

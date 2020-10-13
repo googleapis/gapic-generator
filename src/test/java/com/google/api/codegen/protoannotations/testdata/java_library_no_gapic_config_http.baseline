@@ -147,6 +147,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
@@ -627,6 +628,96 @@ public class LibraryServiceClient implements BackgroundResource {
    */
   public final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return stub.listShelvesCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *
+   *   for (Entry&lt;String, Shelf&gt; element : libraryServiceClient.listAggregatedShelves().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAggregatedShelvesPagedResponse listAggregatedShelves() {
+    AggregatedListShelvesRequest request =
+        AggregatedListShelvesRequest.newBuilder().build();
+    return listAggregatedShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   AggregatedListShelvesRequest request = AggregatedListShelvesRequest.newBuilder().build();
+   *   for (Entry&lt;String, Shelf&gt; element : libraryServiceClient.listAggregatedShelves(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAggregatedShelvesPagedResponse listAggregatedShelves(AggregatedListShelvesRequest request) {
+    return listAggregatedShelvesPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   AggregatedListShelvesRequest request = AggregatedListShelvesRequest.newBuilder().build();
+   *   ApiFuture&lt;ListAggregatedShelvesPagedResponse&gt; future = libraryServiceClient.listAggregatedShelvesPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Entry&lt;String, Shelf&gt; element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<AggregatedListShelvesRequest, ListAggregatedShelvesPagedResponse> listAggregatedShelvesPagedCallable() {
+    return stub.listAggregatedShelvesPagedCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceClient libraryServiceClient = LibraryServiceClient.create()) {
+   *   AggregatedListShelvesRequest request = AggregatedListShelvesRequest.newBuilder().build();
+   *   while (true) {
+   *     ListShelvesAggregatedResponse response = libraryServiceClient.listAggregatedShelvesCallable().call(request);
+   *     for (Entry&lt;String, Shelf&gt; element : response.getShelvesMap()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesCallable() {
+    return stub.listAggregatedShelvesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -5063,6 +5154,94 @@ public class LibraryServiceClient implements BackgroundResource {
     return stub.awaitTermination(duration, unit);
   }
 
+  public static class ListAggregatedShelvesPagedResponse extends AbstractPagedListResponse<
+      AggregatedListShelvesRequest,
+      ListShelvesAggregatedResponse,
+      Entry<String, Shelf>,
+      ListAggregatedShelvesPage,
+      ListAggregatedShelvesFixedSizeCollection> {
+
+    public static ApiFuture<ListAggregatedShelvesPagedResponse> createAsync(
+        PageContext<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> context,
+        ApiFuture<ListShelvesAggregatedResponse> futureResponse) {
+      ApiFuture<ListAggregatedShelvesPage> futurePage =
+          ListAggregatedShelvesPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<ListAggregatedShelvesPage, ListAggregatedShelvesPagedResponse>() {
+            @Override
+            public ListAggregatedShelvesPagedResponse apply(ListAggregatedShelvesPage input) {
+              return new ListAggregatedShelvesPagedResponse(input);
+            }
+          },
+          MoreExecutors.directExecutor());
+    }
+
+    private ListAggregatedShelvesPagedResponse(ListAggregatedShelvesPage page) {
+      super(page, ListAggregatedShelvesFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class ListAggregatedShelvesPage extends AbstractPage<
+      AggregatedListShelvesRequest,
+      ListShelvesAggregatedResponse,
+      Entry<String, Shelf>,
+      ListAggregatedShelvesPage> {
+
+    private ListAggregatedShelvesPage(
+        PageContext<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> context,
+        ListShelvesAggregatedResponse response) {
+      super(context, response);
+    }
+
+    private static ListAggregatedShelvesPage createEmptyPage() {
+      return new ListAggregatedShelvesPage(null, null);
+    }
+
+    @Override
+    protected ListAggregatedShelvesPage createPage(
+        PageContext<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> context,
+        ListShelvesAggregatedResponse response) {
+      return new ListAggregatedShelvesPage(context, response);
+    }
+
+    @Override
+    public ApiFuture<ListAggregatedShelvesPage> createPageAsync(
+        PageContext<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> context,
+        ApiFuture<ListShelvesAggregatedResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class ListAggregatedShelvesFixedSizeCollection extends AbstractFixedSizeCollection<
+      AggregatedListShelvesRequest,
+      ListShelvesAggregatedResponse,
+      Entry<String, Shelf>,
+      ListAggregatedShelvesPage,
+      ListAggregatedShelvesFixedSizeCollection> {
+
+    private ListAggregatedShelvesFixedSizeCollection(List<ListAggregatedShelvesPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static ListAggregatedShelvesFixedSizeCollection createEmptyCollection() {
+      return new ListAggregatedShelvesFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected ListAggregatedShelvesFixedSizeCollection createCollection(
+        List<ListAggregatedShelvesPage> pages, int collectionSize) {
+      return new ListAggregatedShelvesFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
   public static class ListBooksPagedResponse extends AbstractPagedListResponse<
       ListBooksRequest,
       ListBooksResponse,
@@ -5449,6 +5628,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.stub.LibraryServiceStubSettings;
@@ -5458,6 +5638,7 @@ import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 import org.threeten.bp.Duration;
@@ -5517,6 +5698,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
    */
   public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
     return ((LibraryServiceStubSettings) getStubSettings()).listShelvesSettings();
+  }
+
+  /**
+   * Returns the object with the settings used for calls to listAggregatedShelves.
+   */
+  public PagedCallSettings<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).listAggregatedShelvesSettings();
   }
 
   /**
@@ -5864,6 +6052,13 @@ public class LibraryServiceSettings extends ClientSettings<LibraryServiceSetting
      */
     public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
       return getStubSettingsBuilder().listShelvesSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listAggregatedShelves.
+     */
+    public PagedCallSettings.Builder<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings() {
+      return getStubSettingsBuilder().listAggregatedShelvesSettings();
     }
 
     /**
@@ -6727,6 +6922,7 @@ import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.AggregatedListShelvesRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
@@ -6754,11 +6950,13 @@ import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.Inventory;
 import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceSettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesAggregatedResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -6807,6 +7005,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
@@ -6901,6 +7100,7 @@ import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.AggregatedListShelvesRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
@@ -6928,11 +7128,13 @@ import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.Inventory;
 import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceSettings;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesAggregatedResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -6981,6 +7183,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 
@@ -7123,6 +7326,50 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
           .setResponseParser(
               ProtoMessageResponseParser.<ListShelvesResponse>newBuilder()
                   .setDefaultInstance(ListShelvesResponse.getDefaultInstance())
+                  .build())
+          .build();
+  @InternalApi
+  public static final ApiMethodDescriptor<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesMethodDescriptor =
+      ApiMethodDescriptor.<AggregatedListShelvesRequest, ListShelvesAggregatedResponse>newBuilder()
+          .setFullMethodName("google.example.library.v1.LibraryService.ListAggregatedShelves")
+          .setHttpMethod(HttpMethods.GET)
+          .setRequestFormatter(
+              ProtoMessageRequestFormatter.<AggregatedListShelvesRequest>newBuilder()
+                  .setPath(
+                      "/v1/bookAggregatedShelves",
+                      new FieldsExtractor<AggregatedListShelvesRequest, Map<String, String>>() {
+                        @Override
+                        public Map<String, String> extract(AggregatedListShelvesRequest request) {
+                          Map<String, String> fields = new HashMap<>();
+                          ProtoRestSerializer<AggregatedListShelvesRequest> serializer =
+                              ProtoRestSerializer.create();
+
+                          return fields;
+                        }
+                      })
+                  .setQueryParamsExtractor(
+                      new FieldsExtractor<AggregatedListShelvesRequest, Map<String, List<String>>>() {
+                        @Override
+                        public Map<String, List<String>> extract(AggregatedListShelvesRequest request) {
+                          Map<String, List<String>> fields = new HashMap<>();
+                          ProtoRestSerializer<AggregatedListShelvesRequest> serializer =
+                              ProtoRestSerializer.create();
+                          serializer.putQueryParam(fields, "maxResults", request.getMaxResults());
+                          serializer.putQueryParam(fields, "pageToken", request.getPageToken());
+                          return fields;
+                        }
+                      })
+                  .setRequestBodyExtractor(
+                      new FieldsExtractor<AggregatedListShelvesRequest, String>() {
+                        @Override
+                        public String extract(AggregatedListShelvesRequest request) {
+                          return "";
+                        }
+                      })
+                  .build())
+          .setResponseParser(
+              ProtoMessageResponseParser.<ListShelvesAggregatedResponse>newBuilder()
+                  .setDefaultInstance(ListShelvesAggregatedResponse.getDefaultInstance())
                   .build())
           .build();
   @InternalApi
@@ -8264,6 +8511,8 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final UnaryCallable<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesCallable;
+  private final UnaryCallable<AggregatedListShelvesRequest, ListAggregatedShelvesPagedResponse> listAggregatedShelvesPagedCallable;
   private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
@@ -8340,6 +8589,10 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
     HttpJsonCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesTransportSettings =
         HttpJsonCallSettings.<ListShelvesRequest, ListShelvesResponse>newBuilder()
             .setMethodDescriptor(listShelvesMethodDescriptor)
+            .build();
+    HttpJsonCallSettings<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesTransportSettings =
+        HttpJsonCallSettings.<AggregatedListShelvesRequest, ListShelvesAggregatedResponse>newBuilder()
+            .setMethodDescriptor(listAggregatedShelvesMethodDescriptor)
             .build();
     HttpJsonCallSettings<DeleteShelfRequest, Empty> deleteShelfTransportSettings =
         HttpJsonCallSettings.<DeleteShelfRequest, Empty>newBuilder()
@@ -8449,6 +8702,8 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
     this.createShelfCallable = callableFactory.createUnaryCallable(createShelfTransportSettings,settings.createShelfSettings(), clientContext);
     this.getShelfCallable = callableFactory.createUnaryCallable(getShelfTransportSettings,settings.getShelfSettings(), clientContext);
     this.listShelvesCallable = callableFactory.createUnaryCallable(listShelvesTransportSettings,settings.listShelvesSettings(), clientContext);
+    this.listAggregatedShelvesCallable = callableFactory.createUnaryCallable(listAggregatedShelvesTransportSettings,settings.listAggregatedShelvesSettings(), clientContext);
+    this.listAggregatedShelvesPagedCallable = callableFactory.createPagedCallable(listAggregatedShelvesTransportSettings,settings.listAggregatedShelvesSettings(), clientContext);
     this.deleteShelfCallable = callableFactory.createUnaryCallable(deleteShelfTransportSettings,settings.deleteShelfSettings(), clientContext);
     this.mergeShelvesCallable = callableFactory.createUnaryCallable(mergeShelvesTransportSettings,settings.mergeShelvesSettings(), clientContext);
     this.createBookCallable = callableFactory.createUnaryCallable(createBookTransportSettings,settings.createBookSettings(), clientContext);
@@ -8502,6 +8757,14 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
+  }
+
+  public UnaryCallable<AggregatedListShelvesRequest, ListAggregatedShelvesPagedResponse> listAggregatedShelvesPagedCallable() {
+    return listAggregatedShelvesPagedCallable;
+  }
+
+  public UnaryCallable<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesCallable() {
+    return listAggregatedShelvesCallable;
   }
 
   public UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
@@ -9035,6 +9298,7 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.AggregatedListShelvesRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
@@ -9062,10 +9326,12 @@ import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.Inventory;
 import com.google.example.library.v1.InventoryName;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesAggregatedResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -9112,6 +9378,7 @@ import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -9139,6 +9406,14 @@ public abstract class LibraryServiceStub implements BackgroundResource {
 
   public UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     throw new UnsupportedOperationException("Not implemented: listShelvesCallable()");
+  }
+
+  public UnaryCallable<AggregatedListShelvesRequest, ListAggregatedShelvesPagedResponse> listAggregatedShelvesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAggregatedShelvesPagedCallable()");
+  }
+
+  public UnaryCallable<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> listAggregatedShelvesCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAggregatedShelvesCallable()");
   }
 
   public UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
@@ -9332,6 +9607,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.AggregatedListShelvesRequest;
 import com.google.example.library.v1.ArchiveBooksMetadata;
 import com.google.example.library.v1.ArchiveBooksRequest;
 import com.google.example.library.v1.ArchiveBooksResponse;
@@ -9353,11 +9629,13 @@ import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.Inventory;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesAggregatedResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.ListStringsRequest;
@@ -9379,6 +9657,7 @@ import com.google.tagger.v1.TaggerProto.AddTagRequest;
 import com.google.tagger.v1.TaggerProto.AddTagResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 import org.threeten.bp.Duration;
@@ -9430,6 +9709,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final UnaryCallSettings<GetShelfRequest, Shelf> getShelfSettings;
   private final UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+  private final PagedCallSettings<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings;
   private final UnaryCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final UnaryCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final UnaryCallSettings<CreateBookRequest, Book> createBookSettings;
@@ -9479,6 +9759,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
    */
   public UnaryCallSettings<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
     return listShelvesSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to listAggregatedShelves.
+   */
+  public PagedCallSettings<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings() {
+    return listAggregatedShelvesSettings;
   }
 
   /**
@@ -9782,6 +10069,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     createShelfSettings = settingsBuilder.createShelfSettings().build();
     getShelfSettings = settingsBuilder.getShelfSettings().build();
     listShelvesSettings = settingsBuilder.listShelvesSettings().build();
+    listAggregatedShelvesSettings = settingsBuilder.listAggregatedShelvesSettings().build();
     deleteShelfSettings = settingsBuilder.deleteShelfSettings().build();
     mergeShelvesSettings = settingsBuilder.mergeShelvesSettings().build();
     createBookSettings = settingsBuilder.createBookSettings().build();
@@ -9812,6 +10100,41 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
     privateListShelvesSettings = settingsBuilder.privateListShelvesSettings().build();
   }
+
+  private static final PagedListDescriptor<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> LIST_AGGREGATED_SHELVES_PAGE_STR_DESC =
+      new PagedListDescriptor<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>>() {
+        @Override
+        public String emptyToken() {
+          return "";
+        }
+        @Override
+        public AggregatedListShelvesRequest injectToken(AggregatedListShelvesRequest payload, String token) {
+          return AggregatedListShelvesRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public AggregatedListShelvesRequest injectPageSize(AggregatedListShelvesRequest payload, int pageSize) {
+          return AggregatedListShelvesRequest
+            .newBuilder(payload)
+            .setMaxResults(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(AggregatedListShelvesRequest payload) {
+          return payload.getMaxResults();
+        }
+        @Override
+        public String extractNextToken(ListShelvesAggregatedResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Entry<String, Shelf>> extractResources(ListShelvesAggregatedResponse payload) {
+          return payload.getShelvesMap() != null ? payload.getShelvesMap().entrySet() :
+            ImmutableList.<Entry<String, Shelf>>of();
+        }
+      };
 
   private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
@@ -9918,6 +10241,20 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
         }
       };
 
+  private static final PagedListResponseFactory<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> LIST_AGGREGATED_SHELVES_PAGE_STR_FACT =
+      new PagedListResponseFactory<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse>() {
+        @Override
+        public ApiFuture<ListAggregatedShelvesPagedResponse> getFuturePagedResponse(
+            UnaryCallable<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> callable,
+            AggregatedListShelvesRequest request,
+            ApiCallContext context,
+            ApiFuture<ListShelvesAggregatedResponse> futureResponse) {
+          PageContext<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, Entry<String, Shelf>> pageContext =
+              PageContext.create(callable, LIST_AGGREGATED_SHELVES_PAGE_STR_DESC, request, context);
+          return ListAggregatedShelvesPagedResponse.createAsync(pageContext, futureResponse);
+        }
+      };
+
   private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
@@ -9970,6 +10307,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final UnaryCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
     private final UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings;
+    private final PagedCallSettings.Builder<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings;
     private final UnaryCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final UnaryCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final UnaryCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
@@ -10044,6 +10382,9 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       listShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      listAggregatedShelvesSettings = PagedCallSettings.newBuilder(
+          LIST_AGGREGATED_SHELVES_PAGE_STR_FACT);
+
       deleteShelfSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       mergeShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -10109,6 +10450,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
+          listAggregatedShelvesSettings,
           deleteShelfSettings,
           mergeShelvesSettings,
           createBookSettings,
@@ -10160,6 +10502,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listShelvesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.listAggregatedShelvesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -10336,6 +10682,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       createShelfSettings = settings.createShelfSettings.toBuilder();
       getShelfSettings = settings.getShelfSettings.toBuilder();
       listShelvesSettings = settings.listShelvesSettings.toBuilder();
+      listAggregatedShelvesSettings = settings.listAggregatedShelvesSettings.toBuilder();
       deleteShelfSettings = settings.deleteShelfSettings.toBuilder();
       mergeShelvesSettings = settings.mergeShelvesSettings.toBuilder();
       createBookSettings = settings.createBookSettings.toBuilder();
@@ -10370,6 +10717,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
+          listAggregatedShelvesSettings,
           deleteShelfSettings,
           mergeShelvesSettings,
           createBookSettings,
@@ -10433,6 +10781,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<ListShelvesRequest, ListShelvesResponse> listShelvesSettings() {
       return listShelvesSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listAggregatedShelves.
+     */
+    public PagedCallSettings.Builder<AggregatedListShelvesRequest, ListShelvesAggregatedResponse, ListAggregatedShelvesPagedResponse> listAggregatedShelvesSettings() {
+      return listAggregatedShelvesSettings;
     }
 
     /**
@@ -11069,6 +11424,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.Book;
 import static com.google.example.library.v1.LibraryServiceClient.FindRelatedBooksPagedResponse;
+import static com.google.example.library.v1.LibraryServiceClient.ListAggregatedShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryServiceClient.ListStringsPagedResponse;
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
@@ -11089,6 +11445,7 @@ import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.getB
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.getBookFromArchiveMethodDescriptor;
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.getBookMethodDescriptor;
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.getShelfMethodDescriptor;
+import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.listAggregatedShelvesMethodDescriptor;
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.listBooksMethodDescriptor;
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.listShelvesMethodDescriptor;
 import static com.google.example.library.v1.stub.HttpJsonLibraryServiceStub.listStringsMethodDescriptor;
@@ -11130,6 +11487,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -11145,6 +11503,7 @@ public class LibraryServiceClientTest {
           getShelfMethodDescriptor,
           getShelfMethodDescriptor,
           listShelvesMethodDescriptor,
+          listAggregatedShelvesMethodDescriptor,
           deleteShelfMethodDescriptor,
           mergeShelvesMethodDescriptor,
           createBookMethodDescriptor,
@@ -11416,6 +11775,48 @@ public class LibraryServiceClientTest {
 
     try {
       client.listShelves();
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listAggregatedShelvesTest() {
+    String nextPageToken = "";
+    Shelf shelvesItem = Shelf.newBuilder().build();
+    Map<String, Shelf> shelves = new HashMap<>();
+    shelves.put("shelves", shelvesItem);
+    ListShelvesAggregatedResponse expectedResponse = ListShelvesAggregatedResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .putAllShelves(shelves)
+      .build();
+    mockService.addResponse(expectedResponse);
+
+    ListAggregatedShelvesPagedResponse pagedListResponse = client.listAggregatedShelves();
+
+    List<Entry<String, Shelf>> resources = Lists.newArrayList(pagedListResponse.iterateAll());
+    Assert.assertEquals(1, resources.size());
+    Assert.assertEquals(expectedResponse.getShelvesMap().entrySet().iterator().next(), resources.get(0));
+
+    List<String> actualRequests = mockService.getRequestPaths();
+    Assert.assertEquals(1, actualRequests.size());
+
+    String apiClientHeaderKey = mockService.getRequestHeaders()
+        .get(ApiClientHeaderProvider.getDefaultApiClientHeaderKey()).iterator().next();
+    Assert.assertTrue(GaxHttpJsonProperties.getDefaultApiClientHeaderPattern()
+        .matcher(apiClientHeaderKey).matches());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listAggregatedShelvesExceptionTest() throws Exception {
+    ApiException exception = ApiExceptionFactory.createException(new Exception(), FakeStatusCode.of(Code.INVALID_ARGUMENT), false);
+    mockService.addException(exception);
+
+    try {
+      client.listAggregatedShelves();
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
