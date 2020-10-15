@@ -240,9 +240,9 @@ class BazelBuildFileView {
       }
 
       if (protoImport.endsWith(":operations_proto")) {
-        goImports.add(replaceLabelName(protoImport, ":longrunning_go_gapic"));
         goImports.add(replaceLabelName(protoImport, ":longrunning_go_proto"));
         goImports.add("@com_google_cloud_go//longrunning:go_default_library");
+        goImports.add("@com_google_cloud_go//longrunning/autogen:go_default_library");
         for (String pi : protoImports) {
           if (pi.startsWith("@com_google_protobuf//")) {
             if (pi.endsWith(":struct_proto")) {
