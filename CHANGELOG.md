@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.6.2](https://www.github.com/googleapis/gapic-generator/compare/v2.6.1...v2.6.2) (2020-10-19)
+
+
+### Bug Fixes
+
+* use remote lro Go gapic instead of local ([#3299](https://www.github.com/googleapis/gapic-generator/issues/3299)) ([2fe44f7](https://www.github.com/googleapis/gapic-generator/commit/2fe44f7ce21268a63e65e67818737ed5bacf7d97))
+
 ### [2.6.1](https://www.github.com/googleapis/gapic-generator/compare/v2.6.0...v2.6.1) (2020-10-13)
 
 
