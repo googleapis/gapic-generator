@@ -146,7 +146,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        if (type.isMap() && type.isMessage() && type.isRepeated()) {
+        if (type.isMap()) {
           return getMapTypeName(type);
         }
         return getTypeName(type.getMessageType());

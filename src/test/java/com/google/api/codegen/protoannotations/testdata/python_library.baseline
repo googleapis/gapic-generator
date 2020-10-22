@@ -4045,7 +4045,7 @@ class LibraryServiceClient(object):
                 that is provided to the method.
 
         Returns:
-            A :class:`~google.cloud.example.library_v1.types.ListShelvesAggregatedResponse` instance.
+            A :class:`~google.cloud.example.library_v1.types.ListAggregatedShelvesResponse` instance.
 
         Raises:
             google.api_core.exceptions.GoogleAPICallError: If the request
@@ -4063,7 +4063,7 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
-        request = library_pb2.AggregatedListShelvesRequest(
+        request = library_pb2.ListAggregatedShelvesRequest(
             max_results=max_results,
             page_token=page_token,
         )
@@ -9076,7 +9076,7 @@ class TestLibraryServiceClient(object):
         # Setup Expected Response
         next_page_token = 'nextPageToken-1530815211'
         expected_response = {'next_page_token': next_page_token}
-        expected_response = library_pb2.ListShelvesAggregatedResponse(**expected_response)
+        expected_response = library_pb2.ListAggregatedShelvesResponse(**expected_response)
 
         # Mock the API response
         channel = ChannelStub(responses = [expected_response])
@@ -9089,7 +9089,7 @@ class TestLibraryServiceClient(object):
         assert expected_response == response
 
         assert len(channel.requests) == 1
-        expected_request = library_pb2.AggregatedListShelvesRequest()
+        expected_request = library_pb2.ListAggregatedShelvesRequest()
         actual_request = channel.requests[0][1]
         assert expected_request == actual_request
 

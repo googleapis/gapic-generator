@@ -2155,15 +2155,6 @@ module Google
         #     returned from the previous call to `ListShelves` method.
         class ListShelvesRequest; end
 
-        # Request message for LibraryService.ListAggregatedShelves.
-        # @!attribute [rw] max_results
-        #   @return [Integer]
-        #     Requested page size.
-        # @!attribute [rw] page_token
-        #   @return [String]
-        #     A token identifying a page of results the server should return.
-        class AggregatedListShelvesRequest; end
-
         # Response message for LibraryService.ListShelves.
         # @!attribute [rw] shelves
         #   @return [Array<Google::Example::Library::V1::Shelf>]
@@ -2177,6 +2168,15 @@ module Google
         #     page of results.
         class ListShelvesResponse; end
 
+        # Request message for LibraryService.ListAggregatedShelves.
+        # @!attribute [rw] max_results
+        #   @return [Integer]
+        #     Requested page size.
+        # @!attribute [rw] page_token
+        #   @return [String]
+        #     A token identifying a page of results the server should return.
+        class ListAggregatedShelvesRequest; end
+
         # Response message for LibraryService.ListAggregatedShelves.
         # @!attribute [rw] shelves
         #   @return [Hash{String => Google::Example::Library::V1::Shelf}]
@@ -2184,7 +2184,7 @@ module Google
         # @!attribute [rw] next_page_token
         #   @return [String]
         #     A token to retrieve next page of results.
-        class ListShelvesAggregatedResponse; end
+        class ListAggregatedShelvesResponse; end
 
         # Request message for LibraryService.StreamShelves.
         # @!attribute [rw] name
@@ -3577,9 +3577,9 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @yield [result, operation] Access the result along with the RPC operation
-      # @yieldparam result [Google::Example::Library::V1::ListShelvesAggregatedResponse]
+      # @yieldparam result [Google::Example::Library::V1::ListAggregatedShelvesResponse]
       # @yieldparam operation [GRPC::ActiveCall::Operation]
-      # @return [Google::Example::Library::V1::ListShelvesAggregatedResponse]
+      # @return [Google::Example::Library::V1::ListAggregatedShelvesResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
       #   require "library"
@@ -3596,7 +3596,7 @@ module Library
           max_results: max_results,
           page_token: page_token
         }.delete_if { |_, v| v.nil? }
-        req = Google::Gax::to_proto(req, Google::Example::Library::V1::AggregatedListShelvesRequest)
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListAggregatedShelvesRequest)
         @list_aggregated_shelves.call(req, options, &block)
       end
 
@@ -6595,7 +6595,7 @@ describe Library::V1::LibraryServiceClient do
       # Create expected grpc response
       next_page_token = "nextPageToken-1530815211"
       expected_response = { next_page_token: next_page_token }
-      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListShelvesAggregatedResponse)
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListAggregatedShelvesResponse)
 
       # Mock Grpc layer
       mock_method = proc do

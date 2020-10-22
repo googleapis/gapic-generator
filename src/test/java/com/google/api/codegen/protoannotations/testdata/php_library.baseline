@@ -2297,7 +2297,6 @@ use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\Example\Library\V1\AddCommentsRequest;
-use Google\Example\Library\V1\AggregatedListShelvesRequest;
 use Google\Example\Library\V1\ArchiveBooksMetadata;
 use Google\Example\Library\V1\ArchiveBooksRequest;
 use Google\Example\Library\V1\ArchiveBooksResponse;
@@ -2326,9 +2325,10 @@ use Google\Example\Library\V1\GetBookRequest;
 use Google\Example\Library\V1\GetShelfRequest;
 use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
+use Google\Example\Library\V1\ListAggregatedShelvesRequest;
+use Google\Example\Library\V1\ListAggregatedShelvesResponse;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
-use Google\Example\Library\V1\ListShelvesAggregatedResponse;
 use Google\Example\Library\V1\ListShelvesRequest;
 use Google\Example\Library\V1\ListShelvesResponse;
 use Google\Example\Library\V1\ListStringsRequest;
@@ -5213,14 +5213,14 @@ class LibraryServiceGapicClient
      *          {@see Google\ApiCore\RetrySettings} for example usage.
      * }
      *
-     * @return \Google\Example\Library\V1\ListShelvesAggregatedResponse
+     * @return \Google\Example\Library\V1\ListAggregatedShelvesResponse
      *
      * @throws ApiException if the remote call fails
      * @experimental
      */
     public function listAggregatedShelves(array $optionalArgs = [])
     {
-        $request = new AggregatedListShelvesRequest();
+        $request = new ListAggregatedShelvesRequest();
         if (isset($optionalArgs['maxResults'])) {
             $request->setMaxResults($optionalArgs['maxResults']);
         }
@@ -5230,7 +5230,7 @@ class LibraryServiceGapicClient
 
         return $this->startCall(
             'ListAggregatedShelves',
-            ListShelvesAggregatedResponse::class,
+            ListAggregatedShelvesResponse::class,
             $optionalArgs,
             $request
         )->wait();
@@ -6927,7 +6927,6 @@ use Google\ApiCore\ServerStream;
 use Google\ApiCore\Testing\GeneratedTest;
 use Google\ApiCore\Testing\MockTransport;
 use Google\Example\Library\V1\AddCommentsRequest;
-use Google\Example\Library\V1\AggregatedListShelvesRequest;
 use Google\Example\Library\V1\ArchiveBooksRequest;
 use Google\Example\Library\V1\ArchiveBooksResponse;
 use Google\Example\Library\V1\Book;
@@ -6950,9 +6949,10 @@ use Google\Example\Library\V1\GetBookRequest;
 use Google\Example\Library\V1\GetShelfRequest;
 use Google\Example\Library\V1\Inventory;
 use Google\Example\Library\V1\LibraryServiceGrpcClient;
+use Google\Example\Library\V1\ListAggregatedShelvesRequest;
+use Google\Example\Library\V1\ListAggregatedShelvesResponse;
 use Google\Example\Library\V1\ListBooksRequest;
 use Google\Example\Library\V1\ListBooksResponse;
-use Google\Example\Library\V1\ListShelvesAggregatedResponse;
 use Google\Example\Library\V1\ListShelvesRequest;
 use Google\Example\Library\V1\ListShelvesResponse;
 use Google\Example\Library\V1\ListStringsRequest;
@@ -9665,7 +9665,7 @@ class LibraryServiceClientTest extends GeneratedTest
 
         // Mock response
         $nextPageToken = 'nextPageToken-1530815211';
-        $expectedResponse = new ListShelvesAggregatedResponse();
+        $expectedResponse = new ListAggregatedShelvesResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
         $transport->addResponse($expectedResponse);
 

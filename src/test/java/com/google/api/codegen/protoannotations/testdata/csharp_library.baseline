@@ -7662,7 +7662,7 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Make the request
-            ListShelvesAggregatedResponse response = await libraryServiceClient.ListAggregatedShelvesAsync();
+            ListAggregatedShelvesResponse response = await libraryServiceClient.ListAggregatedShelvesAsync();
             // End snippet
         }
 
@@ -7673,34 +7673,34 @@ namespace Google.Example.Library.V1.Snippets
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Make the request
-            ListShelvesAggregatedResponse response = libraryServiceClient.ListAggregatedShelves();
+            ListAggregatedShelvesResponse response = libraryServiceClient.ListAggregatedShelves();
             // End snippet
         }
 
         /// <summary>Snippet for ListAggregatedShelvesAsync</summary>
         public async Task ListAggregatedShelvesAsync_RequestObject()
         {
-            // Snippet: ListAggregatedShelvesAsync(AggregatedListShelvesRequest,CallSettings)
-            // Additional: ListAggregatedShelvesAsync(AggregatedListShelvesRequest,CancellationToken)
+            // Snippet: ListAggregatedShelvesAsync(ListAggregatedShelvesRequest,CallSettings)
+            // Additional: ListAggregatedShelvesAsync(ListAggregatedShelvesRequest,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
-            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            ListAggregatedShelvesRequest request = new ListAggregatedShelvesRequest();
             // Make the request
-            ListShelvesAggregatedResponse response = await libraryServiceClient.ListAggregatedShelvesAsync(request);
+            ListAggregatedShelvesResponse response = await libraryServiceClient.ListAggregatedShelvesAsync(request);
             // End snippet
         }
 
         /// <summary>Snippet for ListAggregatedShelves</summary>
         public void ListAggregatedShelves_RequestObject()
         {
-            // Snippet: ListAggregatedShelves(AggregatedListShelvesRequest,CallSettings)
+            // Snippet: ListAggregatedShelves(ListAggregatedShelvesRequest,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
-            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
+            ListAggregatedShelvesRequest request = new ListAggregatedShelvesRequest();
             // Make the request
-            ListShelvesAggregatedResponse response = libraryServiceClient.ListAggregatedShelves(request);
+            ListAggregatedShelvesResponse response = libraryServiceClient.ListAggregatedShelves(request);
             // End snippet
         }
 
@@ -10984,8 +10984,8 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            AggregatedListShelvesRequest expectedRequest = new AggregatedListShelvesRequest();
-            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            ListAggregatedShelvesRequest expectedRequest = new ListAggregatedShelvesRequest();
+            ListAggregatedShelvesResponse expectedResponse = new ListAggregatedShelvesResponse
             {
                 NextPageToken = "nextPageToken-1530815211",
             };
@@ -10993,7 +10993,7 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
 
-            ListShelvesAggregatedResponse response = client.ListAggregatedShelves();
+            ListAggregatedShelvesResponse response = client.ListAggregatedShelves();
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -11006,16 +11006,16 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            AggregatedListShelvesRequest expectedRequest = new AggregatedListShelvesRequest();
-            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            ListAggregatedShelvesRequest expectedRequest = new ListAggregatedShelvesRequest();
+            ListAggregatedShelvesResponse expectedResponse = new ListAggregatedShelvesResponse
             {
                 NextPageToken = "nextPageToken-1530815211",
             };
             mockGrpcClient.Setup(x => x.ListAggregatedShelvesAsync(expectedRequest, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesAggregatedResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListAggregatedShelvesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
 
-            ListShelvesAggregatedResponse response = await client.ListAggregatedShelvesAsync();
+            ListAggregatedShelvesResponse response = await client.ListAggregatedShelvesAsync();
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -11028,15 +11028,15 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
-            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            ListAggregatedShelvesRequest request = new ListAggregatedShelvesRequest();
+            ListAggregatedShelvesResponse expectedResponse = new ListAggregatedShelvesResponse
             {
                 NextPageToken = "nextPageToken-1530815211",
             };
             mockGrpcClient.Setup(x => x.ListAggregatedShelves(request, It.IsAny<CallOptions>()))
                 .Returns(expectedResponse);
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ListShelvesAggregatedResponse response = client.ListAggregatedShelves(request);
+            ListAggregatedShelvesResponse response = client.ListAggregatedShelves(request);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -11049,15 +11049,15 @@ namespace Google.Example.Library.V1.Tests
                 .Returns(new Mock<Labeler.LabelerClient>().Object);
             mockGrpcClient.Setup(x => x.CreateOperationsClient())
                 .Returns(new Mock<Operations.OperationsClient>().Object);
-            AggregatedListShelvesRequest request = new AggregatedListShelvesRequest();
-            ListShelvesAggregatedResponse expectedResponse = new ListShelvesAggregatedResponse
+            ListAggregatedShelvesRequest request = new ListAggregatedShelvesRequest();
+            ListAggregatedShelvesResponse expectedResponse = new ListAggregatedShelvesResponse
             {
                 NextPageToken = "nextPageToken-1530815211",
             };
             mockGrpcClient.Setup(x => x.ListAggregatedShelvesAsync(request, It.IsAny<CallOptions>()))
-                .Returns(new Grpc.Core.AsyncUnaryCall<ListShelvesAggregatedResponse>(Task.FromResult(expectedResponse), null, null, null, null));
+                .Returns(new Grpc.Core.AsyncUnaryCall<ListAggregatedShelvesResponse>(Task.FromResult(expectedResponse), null, null, null, null));
             LibraryServiceClient client = new LibraryServiceClientImpl(mockGrpcClient.Object, null);
-            ListShelvesAggregatedResponse response = await client.ListAggregatedShelvesAsync(request);
+            ListAggregatedShelvesResponse response = await client.ListAggregatedShelvesAsync(request);
             Assert.Same(expectedResponse, response);
             mockGrpcClient.VerifyAll();
         }
@@ -21825,9 +21825,9 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+        public virtual stt::Task<ListAggregatedShelvesResponse> ListAggregatedShelvesAsync(
             gaxgrpc::CallSettings callSettings = null) => ListAggregatedShelvesAsync(
-                new AggregatedListShelvesRequest
+                new ListAggregatedShelvesRequest
                 {
                 },
                 callSettings);
@@ -21841,7 +21841,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
+        public virtual stt::Task<ListAggregatedShelvesResponse> ListAggregatedShelvesAsync(
             st::CancellationToken cancellationToken) => ListAggregatedShelvesAsync(
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
 
@@ -21854,9 +21854,9 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual ListShelvesAggregatedResponse ListAggregatedShelves(
+        public virtual ListAggregatedShelvesResponse ListAggregatedShelves(
             gaxgrpc::CallSettings callSettings = null) => ListAggregatedShelves(
-                new AggregatedListShelvesRequest
+                new ListAggregatedShelvesRequest
                 {
                 },
                 callSettings);
@@ -21873,8 +21873,8 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
-            AggregatedListShelvesRequest request,
+        public virtual stt::Task<ListAggregatedShelvesResponse> ListAggregatedShelvesAsync(
+            ListAggregatedShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             throw new sys::NotImplementedException();
@@ -21892,8 +21892,8 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
-            AggregatedListShelvesRequest request,
+        public virtual stt::Task<ListAggregatedShelvesResponse> ListAggregatedShelvesAsync(
+            ListAggregatedShelvesRequest request,
             st::CancellationToken cancellationToken) => ListAggregatedShelvesAsync(
                 request,
                 gaxgrpc::CallSettings.FromCancellationToken(cancellationToken));
@@ -21910,8 +21910,8 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual ListShelvesAggregatedResponse ListAggregatedShelves(
-            AggregatedListShelvesRequest request,
+        public virtual ListAggregatedShelvesResponse ListAggregatedShelves(
+            ListAggregatedShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
             throw new sys::NotImplementedException();
@@ -25425,7 +25425,7 @@ namespace Google.Example.Library.V1
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigBook;
         private readonly gaxgrpc::ApiCall<GetBookRequest, lro::Operation> _callGetBigNothing;
         private readonly gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
-        private readonly gaxgrpc::ApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> _callListAggregatedShelves;
+        private readonly gaxgrpc::ApiCall<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> _callListAggregatedShelves;
         private readonly gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> _callCreateInventory;
         private readonly gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> _callMoveBooks;
         private readonly gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> _callArchiveBooks;
@@ -25522,7 +25522,7 @@ namespace Google.Example.Library.V1
                 .WithGoogleRequestParam("name", request => request.Name);
             _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
                 GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
-            _callListAggregatedShelves = clientHelper.BuildApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse>(
+            _callListAggregatedShelves = clientHelper.BuildApiCall<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse>(
                 GrpcClient.ListAggregatedShelvesAsync, GrpcClient.ListAggregatedShelves, effectiveSettings.ListAggregatedShelvesSettings);
             _callCreateInventory = clientHelper.BuildApiCall<CreateInventoryRequest, Inventory>(
                 GrpcClient.CreateInventoryAsync, GrpcClient.CreateInventory, effectiveSettings.CreateInventorySettings)
@@ -25655,7 +25655,7 @@ namespace Google.Example.Library.V1
         partial void Modify_GetBigBookApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_GetBigNothingApiCall(ref gaxgrpc::ApiCall<GetBookRequest, lro::Operation> call);
         partial void Modify_TestOptionalRequiredFlatteningParamsApiCall(ref gaxgrpc::ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> call);
-        partial void Modify_ListAggregatedShelvesApiCall(ref gaxgrpc::ApiCall<AggregatedListShelvesRequest, ListShelvesAggregatedResponse> call);
+        partial void Modify_ListAggregatedShelvesApiCall(ref gaxgrpc::ApiCall<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> call);
         partial void Modify_CreateInventoryApiCall(ref gaxgrpc::ApiCall<CreateInventoryRequest, Inventory> call);
         partial void Modify_MoveBooksApiCall(ref gaxgrpc::ApiCall<MoveBooksRequest, MoveBooksResponse> call);
         partial void Modify_ArchiveBooksApiCall(ref gaxgrpc::ApiCall<ArchiveBooksRequest, ArchiveBooksResponse> call);
@@ -25698,7 +25698,7 @@ namespace Google.Example.Library.V1
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_AddLabelRequest(ref gtv::AddLabelRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref gaxgrpc::CallSettings settings);
-        partial void Modify_AggregatedListShelvesRequest(ref AggregatedListShelvesRequest request, ref gaxgrpc::CallSettings settings);
+        partial void Modify_ListAggregatedShelvesRequest(ref ListAggregatedShelvesRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_CreateInventoryRequest(ref CreateInventoryRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_MoveBooksRequest(ref MoveBooksRequest request, ref gaxgrpc::CallSettings settings);
         partial void Modify_ArchiveBooksRequest(ref ArchiveBooksRequest request, ref gaxgrpc::CallSettings settings);
@@ -26809,11 +26809,11 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override stt::Task<ListShelvesAggregatedResponse> ListAggregatedShelvesAsync(
-            AggregatedListShelvesRequest request,
+        public override stt::Task<ListAggregatedShelvesResponse> ListAggregatedShelvesAsync(
+            ListAggregatedShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            Modify_AggregatedListShelvesRequest(ref request, ref callSettings);
+            Modify_ListAggregatedShelvesRequest(ref request, ref callSettings);
             return _callListAggregatedShelves.Async(request, callSettings);
         }
 
@@ -26829,11 +26829,11 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override ListShelvesAggregatedResponse ListAggregatedShelves(
-            AggregatedListShelvesRequest request,
+        public override ListAggregatedShelvesResponse ListAggregatedShelves(
+            ListAggregatedShelvesRequest request,
             gaxgrpc::CallSettings callSettings = null)
         {
-            Modify_AggregatedListShelvesRequest(ref request, ref callSettings);
+            Modify_ListAggregatedShelvesRequest(ref request, ref callSettings);
             return _callListAggregatedShelves.Sync(request, callSettings);
         }
 
