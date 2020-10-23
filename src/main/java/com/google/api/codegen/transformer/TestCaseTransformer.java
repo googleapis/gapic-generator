@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.metacode.InitCodeLineType.MapInitLine;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -88,6 +89,7 @@ public class TestCaseTransformer {
         clientMethodType,
         Synchronicity.Sync,
         null,
+        null,
         null);
   }
 
@@ -98,7 +100,8 @@ public class TestCaseTransformer {
       ClientMethodType clientMethodType,
       Synchronicity synchronicity,
       InitCodeContext requestObjectInitCodeContext,
-      MethodContext requestObjectMethodContext) {
+      MethodContext requestObjectMethodContext,
+      TargetLanguage targetLanguage) {
     MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
@@ -224,7 +227,7 @@ public class TestCaseTransformer {
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .clientHasDefaultInstance(methodContext.getInterfaceConfig().hasDefaultInstance())
-        .methodDescriptor(getMethodDescriptorName(methodContext))
+        .methodDescriptor(getMethodDescriptorName(methodContext, targetLanguage))
         .grpcMethodName(
             synchronicity == Synchronicity.Sync
                 ? namer.getGrpcMethodName(method)
@@ -233,8 +236,9 @@ public class TestCaseTransformer {
         .build();
   }
 
-  private String getMethodDescriptorName(MethodContext context) {
-    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+  private String getMethodDescriptorName(MethodContext context, TargetLanguage targetLanguage) {
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)
+        && targetLanguage != TargetLanguage.PHP) {
       TypeName rpcStubClassName =
           new TypeName(
               context
