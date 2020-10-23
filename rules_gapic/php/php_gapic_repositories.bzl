@@ -72,7 +72,7 @@ def php_gapic_repositories():
     _maybe(
         http_file,
         name = "php_cs_fixer",
-        urls = ["https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.9.1/php-cs-fixer.phar"],
+        urls = ["https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.2/php-cs-fixer.phar"],
     )
 
     _maybe(
