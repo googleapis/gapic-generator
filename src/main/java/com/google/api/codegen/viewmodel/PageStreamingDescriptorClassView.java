@@ -45,7 +45,7 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract boolean resourcesFieldIsMap();
 
-  public boolean resourcesFieldAsEntrySet() {
+  public boolean resourcesFieldIsEntrySet() {
     return resourceTypeName() != null && resourceTypeName().contains("<");
   }
 

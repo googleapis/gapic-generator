@@ -323,7 +323,7 @@
     List<{@pageStreamingResponseView.resourceTypeName}> {@pageStreamingResponseView.resourcesVarName} = Lists.newArrayList(pagedListResponse.{@pageStreamingResponseView.resourcesIterateMethod}());
     Assert.assertEquals(1, {@pageStreamingResponseView.resourcesVarName}.size());
     @if pageStreamingResponseView.hasExpectedValueTransformFunction
-      @if and(pageStreamingResponseView.resourcesFieldIsMap, pageStreamingResponseView.resourcesFieldAsEntrySet)
+      @if and(pageStreamingResponseView.resourcesFieldIsMap, pageStreamingResponseView.resourcesFieldIsEntrySet)
         Assert.assertEquals({@pageStreamingResponseView.expectedValueTransformFunction}(\
             expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().entrySet().iterator().next()),
             {@pageStreamingResponseView.resourcesVarName}.get(0));
@@ -333,7 +333,7 @@
             {@pageStreamingResponseView.resourcesVarName}.get(0));
       @end
     @else
-      @if and(pageStreamingResponseView.resourcesFieldIsMap, pageStreamingResponseView.resourcesFieldAsEntrySet)
+      @if and(pageStreamingResponseView.resourcesFieldIsMap, pageStreamingResponseView.resourcesFieldIsEntrySet)
         Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().entrySet().iterator().next(), {@pageStreamingResponseView.resourcesVarName}.get(0));
       @else
         Assert.assertEquals(expectedResponse.{@pageStreamingResponseView.resourcesFieldGetterName}().get(0), {@pageStreamingResponseView.resourcesVarName}.get(0));

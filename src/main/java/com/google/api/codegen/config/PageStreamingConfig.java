@@ -244,6 +244,8 @@ public abstract class PageStreamingConfig {
     ProtoField tokenField = methodModel.getInputField(pagingParams.getNameForPageToken());
     ProtoField pageSizeField = methodModel.getInputField(pagingParams.getNameForPageSize());
     if (pageSizeField == null) {
+      // TODO: recognizing max_results field as a page size field is transport specific but it may
+      //       change in the future.
       if (language == TargetLanguage.JAVA && transportProtocol == TransportProtocol.HTTP) {
         pageSizeField = methodModel.getInputField(pagingParams.getNameForMaxResults());
       }

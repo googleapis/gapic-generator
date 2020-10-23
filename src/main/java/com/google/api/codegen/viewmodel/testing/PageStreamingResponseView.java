@@ -30,7 +30,7 @@ public abstract class PageStreamingResponseView {
 
   public abstract Boolean resourcesFieldIsMap();
 
-  public boolean resourcesFieldAsEntrySet() {
+  public boolean resourcesFieldIsEntrySet() {
     return resourceTypeName() != null && resourceTypeName().contains("<");
   }
 
