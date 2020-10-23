@@ -244,6 +244,7 @@ type CallOptions struct {
     GetBigBook []gax.CallOption
     GetBigNothing []gax.CallOption
     TestOptionalRequiredFlatteningParams []gax.CallOption
+    ListAggregatedShelves []gax.CallOption
     CreateInventory []gax.CallOption
     MoveBooks []gax.CallOption
     ArchiveBooks []gax.CallOption
@@ -305,6 +306,7 @@ func defaultCallOptions() *CallOptions {
         GetBigBook: retry[[2]string{"default", "non_idempotent"}],
         GetBigNothing: retry[[2]string{"default", "non_idempotent"}],
         TestOptionalRequiredFlatteningParams: retry[[2]string{"default", "non_idempotent"}],
+        ListAggregatedShelves: retry[[2]string{"default", "idempotent"}],
         CreateInventory: retry[[2]string{"default", "non_idempotent"}],
         MoveBooks: retry[[2]string{"default", "non_idempotent"}],
         ArchiveBooks: retry[[2]string{"default", "non_idempotent"}],
@@ -926,6 +928,22 @@ func (c *LibClient) TestOptionalRequiredFlatteningParams(ctx context.Context, re
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
         resp, err = c.client.TestOptionalRequiredFlatteningParams(ctx, req, settings.GRPC...)
+        return err
+    }, opts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+// ListAggregatedShelves lists shelves.
+func (c *LibClient) ListAggregatedShelves(ctx context.Context, req *librarypb.ListAggregatedShelvesRequest, opts ...gax.CallOption) (*librarypb.ListAggregatedShelvesResponse, error) {
+    ctx = insertMetadata(ctx, c.xGoogMetadata)
+    opts = append(c.CallOptions.ListAggregatedShelves[0:len(c.CallOptions.ListAggregatedShelves):len(c.CallOptions.ListAggregatedShelves)], opts...)
+    var resp *librarypb.ListAggregatedShelvesResponse
+    err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
+        var err error
+        resp, err = c.client.ListAggregatedShelves(ctx, req, settings.GRPC...)
         return err
     }, opts...)
     if err != nil {
@@ -1949,6 +1967,24 @@ func ExampleClient_TestOptionalRequiredFlatteningParams() {
     _ = resp
 }
 
+func ExampleClient_ListAggregatedShelves() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.ListAggregatedShelvesRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.ListAggregatedShelves(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
 func ExampleClient_CreateInventory() {
     ctx := context.Background()
     c, err := library.NewClient(ctx)
@@ -2203,6 +2239,18 @@ func (s *mockLibraryServer) ListShelves(ctx context.Context, req *librarypb.List
         return nil, s.err
     }
     return s.resps[0].(*librarypb.ListShelvesResponse), nil
+}
+
+func (s *mockLibraryServer) ListAggregatedShelves(ctx context.Context, req *librarypb.ListAggregatedShelvesRequest) (*librarypb.ListAggregatedShelvesResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.ListAggregatedShelvesResponse), nil
 }
 
 func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
@@ -4826,6 +4874,59 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     }
 
     resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
+}
+func TestLibraryServiceListAggregatedShelves(t *testing.T) {
+    var nextPageToken string = "nextPageToken-1530815211"
+    var expectedResponse = &librarypb.ListAggregatedShelvesResponse{
+        NextPageToken: nextPageToken,
+    }
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var request *librarypb.ListAggregatedShelvesRequest = &librarypb.ListAggregatedShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListAggregatedShelves(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceListAggregatedShelvesError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = gstatus.Error(errCode, "test error")
+
+    var request *librarypb.ListAggregatedShelvesRequest = &librarypb.ListAggregatedShelvesRequest{}
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.ListAggregatedShelves(context.Background(), request)
 
     if st, ok := gstatus.FromError(err); !ok {
         t.Errorf("got error %v, expected grpc error", err)

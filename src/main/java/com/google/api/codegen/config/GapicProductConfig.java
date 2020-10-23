@@ -100,6 +100,12 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public abstract String getConfigSchemaVersion();
 
+  public boolean isDiscogapic() {
+    return (getTransportProtocol() == TransportProtocol.HTTP
+        && getConfigSchemaVersion() != null
+        && getConfigSchemaVersion().startsWith("1."));
+  }
+
   @Nullable
   public abstract Boolean enableStringFormattingFunctionsOverride();
 
@@ -360,6 +366,7 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs,
             resourceNameConfigs,
             language,
+            transportProtocol,
             protoParser,
             grpcGapicRetryMapping);
 
@@ -719,6 +726,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       TargetLanguage language,
+      TransportProtocol transportProtocol,
       ProtoParser protoParser,
       GrpcGapicRetryMapping grpcGapicRetryMapping) {
     // Return value; maps interface names to their InterfaceConfig.
@@ -728,11 +736,11 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       String serviceFullName = interfaceInput.getServiceFullName();
       String interfaceNameOverride = languageSettings.getInterfaceNamesMap().get(serviceFullName);
-
       GapicInterfaceConfig interfaceConfig =
           GapicInterfaceConfig.createInterfaceConfig(
               diagCollector,
               language,
+              transportProtocol,
               defaultPackageName,
               interfaceInput,
               interfaceNameOverride,
@@ -845,7 +853,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that has no corresponding annotation",
+                "Found single resource name \"%s\" in GAPIC config that has no corresponding"
+                    + " annotation",
                 key));
       }
       if (annotationResourceNameConfigs.get(annotationsStyleKey).getResourceNameType()
@@ -853,7 +862,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
-                "Found single resource name \"%s\" in GAPIC config that had entity name matching a non-single resource annotation: %s",
+                "Found single resource name \"%s\" in GAPIC config that had entity name matching a"
+                    + " non-single resource annotation: %s",
                 key,
                 annotationResourceNameConfigs.get(key)));
       }

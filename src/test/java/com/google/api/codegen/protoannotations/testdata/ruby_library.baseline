@@ -2288,6 +2288,24 @@ module Google
         #     page of results.
         class ListShelvesResponse; end
 
+        # Request message for LibraryService.ListAggregatedShelves.
+        # @!attribute [rw] max_results
+        #   @return [Integer]
+        #     Requested page size.
+        # @!attribute [rw] page_token
+        #   @return [String]
+        #     A token identifying a page of results the server should return.
+        class ListAggregatedShelvesRequest; end
+
+        # Response message for LibraryService.ListAggregatedShelves.
+        # @!attribute [rw] shelves
+        #   @return [Hash{String => Google::Example::Library::V1::Shelf}]
+        #     The map of aggregated shelves of shelves.
+        # @!attribute [rw] next_page_token
+        #   @return [String]
+        #     A token to retrieve next page of results.
+        class ListAggregatedShelvesResponse; end
+
         # Request message for LibraryService.StreamShelves.
         # @!attribute [rw] name
         #   @return [String]
@@ -3570,6 +3588,11 @@ module Library
         @test_optional_required_flattening_params = Google::Gax.create_api_call(
           @library_service_stub.method(:test_optional_required_flattening_params),
           defaults["test_optional_required_flattening_params"],
+          exception_transformer: exception_transformer
+        )
+        @list_aggregated_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:list_aggregated_shelves),
+          defaults["list_aggregated_shelves"],
           exception_transformer: exception_transformer
         )
         @create_inventory = Google::Gax.create_api_call(
@@ -5459,6 +5482,39 @@ module Library
         @test_optional_required_flattening_params.call(req, options, &block)
       end
 
+      # Lists shelves.
+      #
+      # @param max_results [Integer]
+      #   Requested page size.
+      # @param page_token [String]
+      #   A token identifying a page of results the server should return.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @yield [result, operation] Access the result along with the RPC operation
+      # @yieldparam result [Google::Example::Library::V1::ListAggregatedShelvesResponse]
+      # @yieldparam operation [GRPC::ActiveCall::Operation]
+      # @return [Google::Example::Library::V1::ListAggregatedShelvesResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library"
+      #
+      #   library_client = Library::Library.new(version: :v1)
+      #   response = library_client.list_aggregated_shelves
+
+      def list_aggregated_shelves \
+          max_results: nil,
+          page_token: nil,
+          options: nil,
+          &block
+        req = {
+          max_results: max_results,
+          page_token: page_token
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListAggregatedShelvesRequest)
+        @list_aggregated_shelves.call(req, options, &block)
+      end
+
       # Creates an inventory. Tests singleton resources.
       #
       # @param parent [String]
@@ -6041,6 +6097,11 @@ end
         "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "ListAggregatedShelves": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
           "retry_params_name": "default"
         },
         "CreateInventory": {
@@ -10807,6 +10868,70 @@ describe Library::V1::LibraryServiceClient do
               required_repeated_bool_value,
               required_repeated_bytes_value
             )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'list_aggregated_shelves' do
+    custom_error = CustomTestError_v1.new "Custom test error for Library::V1::LibraryServiceClient#list_aggregated_shelves."
+
+    it 'invokes list_aggregated_shelves without error' do
+      # Create expected grpc response
+      next_page_token = "nextPageToken-1530815211"
+      expected_response = { next_page_token: next_page_token }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListAggregatedShelvesResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        OpenStruct.new(execute: expected_response)
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:list_aggregated_shelves, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_aggregated_shelves")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          response = client.list_aggregated_shelves
+
+          # Verify the response
+          assert_equal(expected_response, response)
+
+          # Call method with block
+          client.list_aggregated_shelves do |response, operation|
+            # Verify the response
+            assert_equal(expected_response, response)
+            refute_nil(operation)
+          end
+        end
+      end
+    end
+
+    it 'invokes list_aggregated_shelves with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub_v1.new(:list_aggregated_shelves, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockLibraryServiceCredentials_v1.new("list_aggregated_shelves")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::V1::Credentials.stub(:default, mock_credentials) do
+          client = Library::Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError, CustomTestError_v1 do
+            client.list_aggregated_shelves
           end
 
           # Verify the GaxError wrapped the custom error that was raised.
