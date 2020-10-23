@@ -388,7 +388,11 @@ public class TestCaseTransformer {
       FieldModel field = config.getResourcesField();
       InitCodeNode initCodeNode;
       if (field.isRepeated()) {
-        initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
+        if (field.isMap()) {
+          initCodeNode = InitCodeNode.create(field.getNameAsParameter());
+        } else {
+          initCodeNode = InitCodeNode.createSingletonList(config.getResourcesFieldName());
+        }
       } else {
         initCodeNode = InitCodeNode.create(field.getNameAsParameter());
       }

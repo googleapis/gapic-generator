@@ -191,6 +191,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   static GapicMethodConfig createGapicMethodConfigFromProto(
       DiagCollector diagCollector,
       TargetLanguage language,
+      TransportProtocol transportProtocol,
       String defaultPackageName,
       @Nonnull MethodConfigProto methodConfigProto,
       Method method,
@@ -208,7 +209,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
         getFieldNamePatterns(method, messageConfigs);
     List<String> requiredFields = protoParser.getRequiredFields(method);
     ResourceNameTreatment defaultResourceNameTreatment = ResourceNameTreatment.UNSET_TREATMENT;
-
     GapicMethodConfig.Builder builder =
         createCommonMethodConfig(
                 diagCollector,
@@ -222,6 +222,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 gapicInterfaceName)
             .setPageStreaming(
                 PageStreamingConfig.createPageStreamingConfig(
+                    language,
+                    transportProtocol,
                     diagCollector,
                     defaultPackageName,
                     methodModel,
