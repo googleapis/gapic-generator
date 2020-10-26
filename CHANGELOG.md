@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://www.github.com/googleapis/gapic-generator/compare/v2.6.2...v2.7.0) (2020-10-23)
+
+
+### Features
+
+* Java REGAPIC Pagination implementation ([#3295](https://www.github.com/googleapis/gapic-generator/issues/3295)) ([52a2e70](https://www.github.com/googleapis/gapic-generator/commit/52a2e70494c38b15c6f92a668fb1d1f634f432c3))
+
 ### [2.6.2](https://www.github.com/googleapis/gapic-generator/compare/v2.6.1...v2.6.2) (2020-10-19)
 
 
