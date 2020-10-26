@@ -435,6 +435,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
+      if (isRestOnlyTransport()) {
+        throw new RuntimeException("Streaming methods invalid for REST-only transport");
+      }
       GrpcStreamingConfig grpcStreamingConfig =
           context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
