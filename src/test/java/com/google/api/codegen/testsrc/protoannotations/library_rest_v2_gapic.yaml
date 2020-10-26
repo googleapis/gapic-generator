@@ -1,0 +1,602 @@
+type: com.google.api.codegen.ConfigProto
+config_schema_version: 2.0.0
+language_settings:
+  java:
+    package_name: com.google.example.library.v1
+    interface_names:
+      google.example.library.v1.LibraryService: Library
+    release_level: GA
+  python:
+    package_name: google.cloud.example.library_v1.gapic
+  go:
+    # Intentionally changed from the gRPC package name.
+    # See: https://github.com/googleapis/toolkit/issues/320
+    package_name: cloud.google.com/go/library/apiv1
+    domain_layer_location: cloud.google.com/go/library
+    interface_names:
+      google.example.library.v1.LibraryService: LibClient
+  ruby:
+    # Note that package_name for ruby is intentionally changed
+    # from the gRPC package name of the API to test the generated
+    # code. See: https://github.com/googleapis/toolkit/issues/309
+    package_name: Library::V1
+  # Use default PHP package name.
+  nodejs:
+    package_name: library.v1
+    domain_layer_location: google-cloud
+  csharp:
+    package_name: Google.Example.Library.V1
+interfaces:
+  - name: google.example.library.v1.MyProto
+    methods:
+      - name: MyMethod
+        retry_params_name: default
+        timeout_millis: 1000
+  - name: google.example.library.v1.LibraryService
+    lang_doc:
+      java: >
+        Also see this awesome doc there!
+        and there!
+        and everywhere!
+      go: >
+        Write more docs here as an offering to the Great Gopher
+    retry_codes_def:
+      - name: idempotent
+        retry_codes:
+          - UNAVAILABLE
+          - DEADLINE_EXCEEDED
+      - name: non_idempotent
+        retry_codes: []
+    retry_params_def:
+      - name: default
+        initial_retry_delay_millis: 100
+        retry_delay_multiplier: 1.2
+        max_retry_delay_millis: 1000
+        initial_rpc_timeout_millis: 300
+        rpc_timeout_multiplier: 1.3
+        max_rpc_timeout_millis: 3000
+        total_timeout_millis: 30000
+    deprecated_collections:
+    # Test generating a deprecated resource name that has the same entity name
+    # as a non-deprecated one
+    - entity_name: project_book
+      name_pattern: "projects/{project}/books/{book}"
+    # Test generating a deprecated resource name with a unique entity name
+    - entity_name: book_from_archive
+      name_pattern: "archives/{archive}/books/{book}"
+    - entity_name: book
+      name_pattern: "shelves/{shelf}/books/{book}"
+      language_overrides:
+      - language: java
+        entity_name: shelf_book
+    smoke_test:
+      method: UpdateBook
+      init_fields:
+        - name%shelf="testShelf-$RANDOM"
+        - name%book=$PROJECT_ID
+        - book . rating=GOOD
+    methods:
+      - name: CreateShelf
+        retry_params_name: default
+        timeout_millis: 1000
+      - name: GetShelf
+        retry_params_name: default
+        timeout_millis: 2000
+        sample_value_sets:
+        - id: test_default_calling_form_unary
+          title: test_default_calling_form_unary
+          description: "Test default calling forms for unary methods."
+          parameters:
+            defaults:
+            - name%shelf="my-shelf"
+          on_success:
+          - print:
+              - "The theme of the shelf is: %s"
+              - $resp.theme
+        - id: test_setting_up_empty_objects_in_request
+          title: test_setting_up_empty_objects_in_request
+          description: "Test setting up empty objects in the request objects."
+          parameters:
+            defaults:
+            - name%shelf="my-shelf"
+            - message={}
+            - string_builder={}
+            attributes:
+            - parameter: message
+              description: "we can set up this empty nested object now"
+          on_success:
+          - print:
+            - "Shelf found."
+        samples:
+          standalone:
+          - region_tag: sample_get_shelf
+            value_sets: test_default_calling_form_unary
+          - region_tag: test_setting_up_empty_objects_in_request
+            value_sets: test_setting_up_empty_objects_in_request
+      - name: ListShelves
+        page_streaming:
+          request:
+            token_field: page_token
+          response:
+            token_field: next_page_token
+            resources_field: shelves
+        retry_params_name: default
+        timeout_millis: 3000
+        sample_value_sets:
+        - id: "test_default_calling_form_paging"
+          title: "test default calling form for paging"
+          description: "Test default calling form for paging methods."
+          on_success:
+            - print:
+              - "shelf name: %s"
+              - $resp
+        samples:
+          standalone:
+          - value_sets: [test_default_calling_form_paging]
+            region_tag: "test_default_calling_form_for_paging"
+      - name: DeleteShelf
+        retry_codes_name: idempotent
+        retry_params_name: default
+        timeout_millis: 4000
+        sample_value_sets:
+          - id: empty_response_type_with_response_handling
+            title: "Test response handling for methods that return empty"
+            description: "Test response handling for methods that return empty"
+            on_success:
+              - comment: "Shelf deleted"
+              - print: "Shelf deleted."
+          - id: empty_response_type_without_response_handling
+            title: "Test default response handling is turned off for methods that return empty"
+            description: "Test default response handling is turned off for methods that return empty"
+        samples:
+          standalone:
+            - calling_forms: ".*"
+              value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+      - name: MergeShelves
+        retry_params_name: default
+        timeout_millis: 5000
+      - name: CreateBook
+        retry_params_name: default
+        timeout_millis: 6000
+      - name: PublishSeries
+        retry_params_name: default
+        timeout_millis: 7000
+        batching:
+          thresholds:
+            element_count_threshold: 6
+            element_count_limit: 7
+            request_byte_threshold: 100000
+            request_byte_limit: 150000
+            delay_threshold_millis: 500
+          batch_descriptor:
+            batched_field: books
+            discriminator_fields:
+              - edition
+              - shelf.name
+            subresponse_field: book_names
+        sample_code_init_fields:
+          - series_uuid.series_string=foobar
+        sample_value_sets:
+          # callingFormCheck: pi_version java: Flattened Request Callable
+          # callingFormCheck: pi_version nodejs: Request
+          # callingFormCheck: pi_version py: Request
+          - id: pi_version
+            title: "Pi version"
+            description: "Testing <@calling forms>"
+            parameters:
+              defaults:
+                - shelf.name=Math
+                - series_uuid.series_string=xyz3141592654
+                - edition=123
+              attributes:
+                - parameter: shelf.name
+                  sample_argument_name: shelf_name
+                  description: "The name of the shelf where books are published to."
+                - parameter: edition
+                  sample_argument_name: edition
+                  description: "The edition of the series."
+            on_success:
+              - comment:
+                  - "%% %% %% output handling %% %% %% %%"
+              - comment:
+                  - "%s ago\n\nour fathers brought forth upon this continent\n"
+                  - four_score_and_seven_years
+              - comment:
+                  - |+
+                    a new nation
+                    conceived in liberty
+
+                    and dedicated to the proposition that %s.
+                  - all_men_are_created_equal
+              - comment:
+                  - "Do something with %s one by one"
+                  - book_names
+              - define: book_names = $resp.book_names
+              - loop:
+                  variable: title
+                  collection: $resp.book_names
+                  body:
+                    - comment:
+                        - "Now we deal with %s!"
+                        - this_single_book
+                    - print:
+                        - "\t%%`` The book's title: \"%s\", \\\nand the book costs $50.00 ``%%"
+                        - title
+              - print:
+                  - "The first book is: %s"
+                  - $resp.book_names[0]
+              - print:
+                  - "The author of the first book is: %s"
+                  - $resp.books[0].author
+              - print:
+                  - "That's all!"
+              - print:
+                  - "series_uuid: %s"
+                  - $resp.series_uuid.series_bytes
+            # callingFormCheck: second_edition java: Flattened Request Callable
+            # callingFormCheck: second_edition nodejs: Request
+            # callingFormCheck: second_edition py: Request
+          - id: second_edition
+            title: "Second edition"
+            description: "Testing calling forms"
+            parameters:
+              defaults:
+                - edition=2
+          - id: test_request_object_field_comments
+            title: "request object field comments"
+            description: "Test request object field comments"
+            parameters:
+              defaults:
+                - shelf.name%shelf="math"
+                - shelf.theme=Math
+                - shelf.internal_theme=Statistics
+                - series_uuid.series_bytes="xyz3141592654"
+                - edition=123
+              attributes:
+                - parameter: shelf.internal_theme
+                  description: "Comment on a primitive field"
+                - parameter: series_uuid.series_bytes
+                  read_file: true
+                  description: "Comment on a file input field"
+                - parameter: series_uuid
+                  description: "Comment on a message"
+                  # TODO(hzyi): this comment is currently not generated because resource name
+                  # entities are inline literals. We need to revisit this issue when we start
+                  # looking at making inline literals configurable
+                - parameter: shelf.name%shelf
+                  description: "Comment on a resource name entity"
+                - parameter: shelf.name
+                  description: "Comment on a resource name"
+                - parameter: edition
+                  description: "A super long long long long long long long long long long long long long long comment that tests word wrapping"
+                - parameter: shelf.theme
+                  description: "A super long comment\nwraps words at newline characters\nas well"
+          - id: test_write_to_file
+            title: "test writing fields to files"
+            description: "Testing write fields to files."
+            on_success:
+              - comment: "testing writing bytes field."
+              - write_file:
+                  file_name:
+                  - "uuid_of_series_with_book_%s.raw"
+                  - $resp.book_names[0]
+                  contents: $resp.series_uuid.series_bytes
+              - comment: "testing writing string field."
+              - write_file:
+                  file_name:
+                  - "series_uuid_in_plain_text.txt"
+                  contents: $resp.series_uuid.series_string
+        samples:
+          in_code:
+            - calling_forms: [callable]
+              value_sets: [pi_version]
+          api_explorer:
+            - calling_forms: [request_based, callable]
+              value_sets: [second_edition, pi_version]
+            - calling_forms: callable
+              value_sets: [pi_version]
+          standalone:
+            - calling_forms: ".*"
+              value_sets: [second_edition, pi_version]
+              region_tag: "canonical"
+            - calling_forms: callable
+              value_sets: ["sample_code_init_fields"]       # implicit, from deprecated field
+            - calling_forms: request
+              value_sets: ["test_request_object_field_comments"]
+            - calling_forms: request
+              value_sets: ["test_write_to_file"]
+      - name: GetBook
+        retry_params_name: default
+        timeout_millis: 8000
+        sample_value_sets:
+          - id: not_here
+            title: "Non-existent book"
+            description: "This value set should never be used"
+            parameters:
+              defaults:
+                - name="Unreal book"
+          - id: test_on_success_map
+            title: "test maps in response handling"
+            description: |
+              When there is a very long description for a sample file we can split
+              the description into multiple lines and the samples will be just fine
+            parameters:
+              defaults:
+                - name="test_on_success_map"
+            on_success:
+              - define: int_key_val = $resp.map_string_value{123}
+              - define: boolean_key_val = $resp.map_bool_key{true}
+              - define: map_value_field = $resp.map_message_value{"key"}.field
+              - print:
+                  - "Test printing map fields: %s"
+                  - $resp.map_list_value_value{"quoted_key"}
+              - print:
+                  - "Test printing enum fields of a map value: %s"
+                  - $resp.map_message_value{"key"}.alignment
+        samples:
+          in_code:
+            - calling_forms: "foo"
+              value_sets: not_here
+          standalone:
+            - calling_forms: ".*"
+              value_sets: test_on_success_map
+      - name: ListBooks
+        retry_params_name: default
+        timeout_millis: 10000
+        sample_code_init_fields:
+          # Set the sample_code_init_field for an optional field
+          - filter="book-filter-string"
+      - name: DeleteBook
+        retry_codes_name: idempotent
+        retry_params_name: default
+        timeout_millis: 10000
+      - name: UpdateBook
+        retry_codes_name: idempotent
+        retry_params_name: default
+        timeout_millis: 10000
+      - name: MoveBook
+        retry_codes_name: non_idempotent
+        retry_params_name: default
+        timeout_millis: 10000
+      - name: ListStrings
+        retry_params_name: default
+        timeout_millis: 10000
+      - name: AddComments
+        retry_params_name: default
+        timeout_millis: 10000
+        # Test batching with minimal settings (no flow control)
+        batching:
+          thresholds:
+            element_count_threshold: 6
+            request_byte_threshold: 100000
+            delay_threshold_millis: 500
+          batch_descriptor:
+            batched_field: comments
+            discriminator_fields:
+              - name
+        sample_code_init_fields:
+          - comments[0].comment
+          - comments[0].stage
+          - comments[0].alignment
+      - name: GetBookFromArchive
+        retry_params_name: default
+        timeout_millis: 10000
+        surface_treatments:
+          - include_languages:
+              - go
+            visibility: DISABLED
+      - name: GetBookFromAnywhere
+        retry_params_name: default
+        timeout_millis: 10000
+      - name: GetBookFromAbsolutelyAnywhere
+        retry_codes_name: idempotent
+        retry_params_name: default
+        timeout_millis: 10000
+        sample_value_sets:
+        - id: test_resource_name_oneof
+          parameters:
+            defaults:
+            - name%archive_path="The archive to search for the book"
+            - name%book="The ID of the book"
+          on_success:
+          - print: ["Archived book found."]
+        - id: test_resource_name_oneof_2
+          parameters:
+            defaults:
+            - name%shelf="The Shelf to search for the book"
+            - name%book="The ID of the book"
+          on_success:
+          - print: ["Book on shelf found."]
+        samples:
+          standalone:
+          - region_tag: test_resource_name_oneof
+            value_sets: [test_resource_name_oneof]
+          - region_tag: test_resource_name_oneof_2
+            value_sets: [test_resource_name_oneof_2]
+      - name: UpdateBookIndex
+        retry_codes_name: idempotent
+        retry_params_name: default
+        timeout_millis: 10000
+        sample_code_init_fields:
+          - index_name="default index"
+          - index_map{"default_key"}
+      - name: FindRelatedBooks
+        retry_params_name: default
+        timeout_millis: 3000
+        sample_code_init_fields:
+          - names[0]
+        # TODO(michaelbausor): support %-entity notation for list elements
+        #- names[1]%shelf=my_shelf
+        #- names[1]%book=my_first_book
+        sample_value_sets:
+          # callingFormCheck: odyssey java: FlattenedPaged RequestPaged CallableList CallablePaged
+          # callingFormCheck: odyssey nodejs: RequestAsyncPaged RequestAsyncPagedAll
+          # callingFormCheck: odyssey py: RequestPaged RequestPagedAll
+          - id: odyssey
+            title: "The Odyssey"
+            description: "Testing calling forms"
+            parameters:
+              defaults:
+                - names[0]=Odyssey
+                - shelves[0]=Classics
+            on_success:
+              - define: book = $resp
+              - print:
+                  - 'Here''s a related book: %s'
+                  - book
+        samples:
+          in_code:
+            - calling_forms: ".*"
+              value_sets: odyssey
+          standalone:
+            - calling_forms: ".*"
+              value_sets: odyssey
+          api_explorer:
+            - calling_forms: ".*"
+              value_sets: odyssey
+      - name: AddTag
+        retry_params_name: default
+        timeout_millis: 60000
+        surface_treatments:
+          - include_languages:
+              - go
+              - java
+              - php
+              - nodejs
+              - csharp
+              - ruby
+              - python
+            visibility: DISABLED
+      - name: AddLabel
+        retry_params_name: default
+        timeout_millis: 60000
+        reroute_to_grpc_interface: google.tagger.v1.Labeler
+        surface_treatments:
+          - include_languages:
+              - go
+              - java
+            visibility: PACKAGE
+            release_level: DEPRECATED
+      - name: GetBigBook
+        retry_codes_name: non_idempotent
+        retry_params_name: default
+        timeout_millis: 60000
+        long_running:
+          initial_poll_delay_millis: 3000
+          poll_delay_multiplier: 1.3
+          max_poll_delay_millis: 30000
+          total_poll_timeout_millis: 86400000
+        sample_value_sets:
+          # callingFormCheck: wap java: LongRunningFlattenedAsync LongRunningRequestAsync Callable LongRunningCallable
+          # callingFormCheck: wap nodejs: LongRunningEventEmitter LongRunningPromise
+          # callingFormCheck: wap py: LongRunningPromise
+          - id: wap
+            title: "GetBigBook: 'War and Peace'"
+            description: "Testing calling forms"
+            parameters:
+              defaults:
+                - name%shelf="Novel\\\"`\b\t\n\r"
+                - name%book="War and Peace"
+              attributes:
+                - parameter: name%shelf
+                  sample_argument_name: shelf
+            on_success:
+              - comment:
+                  - "Testing iterating over map fields when both key and value are specified."
+              - loop:
+                  map: $resp.map_list_value_value
+                  key: my_key
+                  value: my_value
+                  body:
+                    - print:
+                        - "key: %s, value: %s"
+                        - my_key
+                        - my_value
+              - comment:
+                  - "Testing iterating over map fields when only key is specified."
+              - loop:
+                  map: $resp.map_list_value_value
+                  key: another_key
+                  body:
+                    - print:
+                        - "key: %s"
+                        - another_key
+              - comment:
+                  - "Testing iterating over map fields when only value is specified."
+              - loop:
+                  map: $resp.map_list_value_value
+                  value: another_value
+                  body:
+                    - print:
+                        - "value: %s"
+                        - another_value
+              - print:
+                  - "name: %s"
+                  - $resp.name
+              - print:
+                  - "author: %s"
+                  - $resp.author
+          - id: wap2
+            title: "GetBigBook: 'War and Peace'"
+            description: "Testing resource name overlap"
+            parameters:
+              defaults:
+                - name%shelf=Novel
+                - name%book="War and Peace"
+              attributes:
+                - parameter: name%shelf
+                  sample_argument_name: shelf
+                  description: "Test word wrapping for long lines. This is a long comment. The name of the shelf to retrieve the big book from."
+                - parameter: name%book
+                  sample_argument_name: big_book_name
+                  description: "The name of the book."
+        samples:
+          standalone:
+            - calling_forms: ".*"
+              value_sets: ".*"
+              region_tag: hopper
+            - value_sets: wap
+              region_tag: "this_tag_should_be_the_name_of_the_file"
+      - name: GetBigNothing
+        retry_codes_name: non_idempotent
+        retry_params_name: default
+        timeout_millis: 60000
+        long_running:
+          initial_poll_delay_millis: 3000
+          poll_delay_multiplier: 1.3
+          max_poll_delay_millis: 60000
+          total_poll_timeout_millis: 600000
+        sample_value_sets:
+          - id: empty_response_type_with_response_handling
+            title: "Test response handling for methods that return empty"
+            description: "Test response handling for methods that return empty"
+            on_success:
+              - comment: "Got nothing"
+              - print: "Got nothing."
+          - id: empty_response_type_without_response_handling
+            title: "Test default response handling is turned off for methods that return empty"
+            description: "Test default response handling is turned off for methods that return empty"
+        samples:
+          standalone:
+            - calling_forms: ".*"
+              value_sets: [empty_response_type_with_response_handling, empty_response_type_without_response_handling]
+      - name: TestOptionalRequiredFlatteningParams
+        samples:
+          standalone:
+          - value_sets: [test_float_and_int64]
+            region_tag: test_float_and_int64
+        sample_value_sets:
+        - id: test_float_and_int64
+          parameters:
+            defaults:
+            - required_singular_float=1.2345
+            - required_singular_int64=67890
+            attributes:
+            - parameter: required_singular_float
+              sample_argument_name: param_float
+            - parameter: required_singular_int64
+              sample_argument_name: param_long
+        retry_params_name: default
+    # Intentionally leave out PrivateGetBook method from GAPIC config.
+# Force Java client to have the formatting string functions.
+enable_string_format_functions_override: true
