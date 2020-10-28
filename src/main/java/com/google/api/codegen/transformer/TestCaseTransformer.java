@@ -238,7 +238,7 @@ public class TestCaseTransformer {
 
   private String getMethodDescriptorName(MethodContext context, TargetLanguage targetLanguage) {
     if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)
-        && targetLanguage != TargetLanguage.PHP) {
+        && targetLanguage == TargetLanguage.JAVA) {
       TypeName rpcStubClassName =
           new TypeName(
               context
