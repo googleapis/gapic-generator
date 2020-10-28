@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.java;
 
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.FlatteningConfigs;
@@ -37,6 +38,7 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
+import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -311,7 +313,14 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
                   valueGenerator);
           testCaseViews.add(
               testCaseTransformer.createTestCaseView(
-                  methodContext, testNameTable, initCodeContext, clientMethodType));
+                  methodContext,
+                  testNameTable,
+                  initCodeContext,
+                  clientMethodType,
+                  Synchronicity.Sync,
+                  null,
+                  null,
+                  TargetLanguage.JAVA));
         }
       } else {
         MethodContext methodContext = context.asRequestMethodContext(method);
@@ -325,7 +334,14 @@ public class JavaSurfaceTestTransformer<ApiModelT extends ApiModel>
                 valueGenerator);
         TestCaseView testCaseView =
             testCaseTransformer.createTestCaseView(
-                methodContext, testNameTable, initCodeContext, clientMethodType);
+                methodContext,
+                testNameTable,
+                initCodeContext,
+                clientMethodType,
+                Synchronicity.Sync,
+                null,
+                null,
+                TargetLanguage.JAVA);
         testCaseViews.add(testCaseView);
       }
     }

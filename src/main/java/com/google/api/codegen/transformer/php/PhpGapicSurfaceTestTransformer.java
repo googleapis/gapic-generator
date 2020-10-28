@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceContext;
@@ -34,7 +33,6 @@ import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -215,14 +213,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer<Pr
 
       testCaseViews.add(
           testCaseTransformer.createTestCaseView(
-              methodContext,
-              testNameTable,
-              initCodeContext,
-              clientMethodType,
-              Synchronicity.Sync,
-              null,
-              null,
-              TargetLanguage.PHP));
+              methodContext, testNameTable, initCodeContext, clientMethodType));
     }
     return testCaseViews;
   }
