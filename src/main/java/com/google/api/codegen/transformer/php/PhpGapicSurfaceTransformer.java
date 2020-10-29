@@ -167,7 +167,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
         serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
 
     apiImplClass.templateFileName(API_IMPL_TEMPLATE_FILENAME);
-    apiImplClass.isRestOnlyTransport(isRestOnlyTransport());
+    apiImplClass.supportsGrpcTransport(supportsGrpcTransport());
     apiImplClass.protoFilename(context.getInterface().getFile().getSimpleName());
     String implName = namer.getApiWrapperClassImplName(context.getInterfaceConfig());
     apiImplClass.name(implName);
@@ -195,16 +195,16 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     apiImplClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
-    if (isRestOnlyTransport()) {
-      apiImplClass.grpcClientTypeName("");
-      apiImplClass.stubs(new ArrayList<>());
-    } else {
+    if (supportsGrpcTransport()) {
       String grpcClientTypeName =
           namer.getAndSaveNicknameForGrpcClientTypeName(
               context.getImportTypeTable(), context.getInterfaceModel());
       apiImplClass.grpcClientTypeName(grpcClientTypeName);
 
       apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
+    } else {
+      apiImplClass.grpcClientTypeName("");
+      apiImplClass.stubs(new ArrayList<>());
     }
 
     apiImplClass.apiMethods(methods.stream().collect(Collectors.toList()));
@@ -435,7 +435,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
-      if (isRestOnlyTransport()) {
+      if (!supportsGrpcTransport()) {
         throw new RuntimeException("Streaming methods invalid for REST-only transport");
       }
       GrpcStreamingConfig grpcStreamingConfig =
@@ -465,7 +465,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
-    if (!isRestOnlyTransport()) {
+    if (supportsGrpcTransport()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
     }
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RetrySettings");
@@ -544,7 +544,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     throw new IllegalStateException("A HTTP method must be defined.");
   }
 
-  private boolean isRestOnlyTransport() {
-    return productConfig.getTransportProtocol().equals(TransportProtocol.HTTP);
+  private boolean supportsGrpcTransport() {
+    return productConfig.getTransportProtocol().equals(TransportProtocol.GRPC);
   }
 }

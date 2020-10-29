@@ -262,7 +262,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.grpcTransportClassName(namer.getGrpcTransportClassName(context.getInterfaceConfig()));
     xapiClass.grpcTransportImportName(
         namer.getGrpcTransportImportName(context.getInterfaceConfig()));
-    xapiClass.isRestOnlyTransport(false);
+    xapiClass.supportsGrpcTransport(true);
 
     // Generate the view for the API class.
     xapiClass.name(name);
