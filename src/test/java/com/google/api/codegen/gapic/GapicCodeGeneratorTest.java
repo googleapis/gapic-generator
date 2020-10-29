@@ -96,18 +96,6 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             TransportProtocol.GRPC,
             new String[] {"another_service"}),
         GapicTestBase2.createTestConfig(
-            TargetLanguage.PHP,
-            new String[] {"library_gapic.yaml"},
-            "library_pkg2.yaml",
-            "library",
-            null,
-            null,
-            null,
-            sampleConfigFileNames(),
-            "php_rest_transport.baseline",
-            TransportProtocol.HTTP,
-            new String[] {"another_service"}),
-        GapicTestBase2.createTestConfig(
             TargetLanguage.JAVA,
             new String[] {"multiple_services_gapic.yaml"},
             "multiple_services_pkg2.yaml",
