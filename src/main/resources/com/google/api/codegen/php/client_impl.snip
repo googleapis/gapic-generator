@@ -135,7 +135,7 @@
             'gcpApiConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_grpc_config.json',
             'credentialsConfig' => [
                 @if xapiClass.hasDefaultServiceScopes
-                    'scopes' => self::$serviceScopes,
+                    'defaultScopes' => self::$serviceScopes,
                 @end
             ],
             'transportConfig' => [
@@ -168,7 +168,7 @@
         {@""} * @@param string ${@param.name}
     @end
      * @@return string The formatted {@function.entityName} resource.
-    @if function.isResourceNameDeprecated 
+    @if function.isResourceNameDeprecated
      {@""} * @@deprecated Multi-pattern resource names will have unified formatting functions.
      {@""} *             This helper function will be deleted in the next major version.
     @else
