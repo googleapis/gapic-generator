@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.7.1](https://www.github.com/googleapis/gapic-generator/compare/v2.7.0...v2.7.1) (2020-11-12)
+
+
+### Bug Fixes
+
+* update protobuf to 3.13.0 ([#3307](https://www.github.com/googleapis/gapic-generator/issues/3307)) ([65490f3](https://www.github.com/googleapis/gapic-generator/commit/65490f3f3881071ce4b905707c575a8c55cd762e))
+
 ## [2.7.0](https://www.github.com/googleapis/gapic-generator/compare/v2.6.2...v2.7.0) (2020-10-23)
 
 
