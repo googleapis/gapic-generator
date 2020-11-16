@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.8.0](https://www.github.com/googleapis/gapic-generator/compare/v2.7.0...v2.8.0) (2020-11-13)
+
+
+### Features
+
+* switch PHP GAPICs to use default scopes ([#3306](https://www.github.com/googleapis/gapic-generator/issues/3306)) ([f6ec598](https://www.github.com/googleapis/gapic-generator/commit/f6ec5980156e48f7609b33493e8c3c7876f6d51a))
+
+
+### Bug Fixes
+
+* update protobuf to 3.13.0 ([#3307](https://www.github.com/googleapis/gapic-generator/issues/3307)) ([65490f3](https://www.github.com/googleapis/gapic-generator/commit/65490f3f3881071ce4b905707c575a8c55cd762e))
+
+## [2.7.0](https://www.github.com/googleapis/gapic-generator/compare/v2.6.2...v2.7.0) (2020-10-23)
+
+
+### Features
+
+* Java REGAPIC Pagination implementation ([#3295](https://www.github.com/googleapis/gapic-generator/issues/3295)) ([52a2e70](https://www.github.com/googleapis/gapic-generator/commit/52a2e70494c38b15c6f92a668fb1d1f634f432c3))
+
 ### [2.6.2](https://www.github.com/googleapis/gapic-generator/compare/v2.6.1...v2.6.2) (2020-10-19)
 
 

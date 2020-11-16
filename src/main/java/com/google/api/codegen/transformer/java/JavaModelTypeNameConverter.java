@@ -146,6 +146,9 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
+        if (type.isMap()) {
+          return getMapTypeName(type);
+        }
         return getTypeName(type.getMessageType());
       case TYPE_ENUM:
         return getEnumTypeName(type.getEnumType());
@@ -223,6 +226,12 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
     String longName = packageName + "." + shortName;
 
     return new TypeName(longName, shortName);
+  }
+
+  private TypeName getMapTypeName(TypeRef type) {
+    TypeName keyTypeName = getTypeName(type.getMapKeyField().getType());
+    TypeName valueTypeName = getTypeName(type.getMapValueField().getType());
+    return new TypeName("java.util.Map.Entry", "Entry", "%s<%i, %i>", keyTypeName, valueTypeName);
   }
 
   private TypeName getEnumTypeName(ProtoElement elem) {

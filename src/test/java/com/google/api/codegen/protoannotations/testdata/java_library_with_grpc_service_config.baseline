@@ -8610,6 +8610,62 @@ public class LibraryClient implements BackgroundResource {
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *
+   *   ListAggregatedShelvesResponse response = libraryClient.listAggregatedShelves();
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAggregatedShelvesResponse listAggregatedShelves() {
+    ListAggregatedShelvesRequest request =
+        ListAggregatedShelvesRequest.newBuilder().build();
+    return listAggregatedShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ListAggregatedShelvesRequest request = ListAggregatedShelvesRequest.newBuilder().build();
+   *   ListAggregatedShelvesResponse response = libraryClient.listAggregatedShelves(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAggregatedShelvesResponse listAggregatedShelves(ListAggregatedShelvesRequest request) {
+    return listAggregatedShelvesCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ListAggregatedShelvesRequest request = ListAggregatedShelvesRequest.newBuilder().build();
+   *   ApiFuture&lt;ListAggregatedShelvesResponse&gt; future = libraryClient.listAggregatedShelvesCallable().futureCall(request);
+   *   // Do something
+   *   ListAggregatedShelvesResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesCallable() {
+    return stub.listAggregatedShelvesCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
    * Creates an inventory. Tests singleton resources.
    *
    * Sample code:
@@ -10645,6 +10701,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
   }
 
   /**
+   * Returns the object with the settings used for calls to listAggregatedShelves.
+   */
+  public UnaryCallSettings<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings() {
+    return ((LibraryServiceStubSettings) getStubSettings()).listAggregatedShelvesSettings();
+  }
+
+  /**
    * Returns the object with the settings used for calls to createInventory.
    */
   public UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings() {
@@ -11025,6 +11088,13 @@ public class LibrarySettings extends ClientSettings<LibrarySettings> {
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return getStubSettingsBuilder().testOptionalRequiredFlatteningParamsSettings();
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listAggregatedShelves.
+     */
+    public UnaryCallSettings.Builder<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings() {
+      return getStubSettingsBuilder().listAggregatedShelvesSettings();
     }
 
     /**
@@ -11753,6 +11823,8 @@ import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
+import com.google.example.library.v1.ListAggregatedShelvesRequest;
+import com.google.example.library.v1.ListAggregatedShelvesResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -11944,6 +12016,8 @@ import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibrarySettings;
+import com.google.example.library.v1.ListAggregatedShelvesRequest;
+import com.google.example.library.v1.ListAggregatedShelvesResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -12208,6 +12282,13 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
           .setRequestMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()))
           .setResponseMarshaller(ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()))
           .build();
+  private static final MethodDescriptor<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesMethodDescriptor =
+      MethodDescriptor.<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse>newBuilder()
+          .setType(MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName("google.example.library.v1.LibraryService/ListAggregatedShelves")
+          .setRequestMarshaller(ProtoUtils.marshaller(ListAggregatedShelvesRequest.getDefaultInstance()))
+          .setResponseMarshaller(ProtoUtils.marshaller(ListAggregatedShelvesResponse.getDefaultInstance()))
+          .build();
   private static final MethodDescriptor<CreateInventoryRequest, Inventory> createInventoryMethodDescriptor =
       MethodDescriptor.<CreateInventoryRequest, Inventory>newBuilder()
           .setType(MethodDescriptor.MethodType.UNARY)
@@ -12296,6 +12377,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
+  private final UnaryCallable<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesCallable;
   private final UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable;
   private final UnaryCallable<MoveBooksRequest, MoveBooksResponse> moveBooksCallable;
   private final UnaryCallable<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksCallable;
@@ -12612,6 +12694,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
         GrpcCallSettings.<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>newBuilder()
             .setMethodDescriptor(testOptionalRequiredFlatteningParamsMethodDescriptor)
             .build();
+    GrpcCallSettings<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesTransportSettings =
+        GrpcCallSettings.<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse>newBuilder()
+            .setMethodDescriptor(listAggregatedShelvesMethodDescriptor)
+            .build();
     GrpcCallSettings<CreateInventoryRequest, Inventory> createInventoryTransportSettings =
         GrpcCallSettings.<CreateInventoryRequest, Inventory>newBuilder()
             .setMethodDescriptor(createInventoryMethodDescriptor)
@@ -12713,6 +12799,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     this.getBigNothingOperationCallable = callableFactory.createOperationCallable(
         getBigNothingTransportSettings,settings.getBigNothingOperationSettings(), clientContext, this.operationsStub);
     this.testOptionalRequiredFlatteningParamsCallable = callableFactory.createUnaryCallable(testOptionalRequiredFlatteningParamsTransportSettings,settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+    this.listAggregatedShelvesCallable = callableFactory.createUnaryCallable(listAggregatedShelvesTransportSettings,settings.listAggregatedShelvesSettings(), clientContext);
     this.createInventoryCallable = callableFactory.createUnaryCallable(createInventoryTransportSettings,settings.createInventorySettings(), clientContext);
     this.moveBooksCallable = callableFactory.createUnaryCallable(moveBooksTransportSettings,settings.moveBooksSettings(), clientContext);
     this.archiveBooksCallable = callableFactory.createUnaryCallable(archiveBooksTransportSettings,settings.archiveBooksSettings(), clientContext);
@@ -12867,6 +12954,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
 
   public UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     return testOptionalRequiredFlatteningParamsCallable;
+  }
+
+  public UnaryCallable<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesCallable() {
+    return listAggregatedShelvesCallable;
   }
 
   public UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable() {
@@ -13267,6 +13358,8 @@ import static com.google.example.library.v1.LibraryClient.FindRelatedBooksPagedR
 import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
+import com.google.example.library.v1.ListAggregatedShelvesRequest;
+import com.google.example.library.v1.ListAggregatedShelvesResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -13474,6 +13567,10 @@ public abstract class LibraryServiceStub implements BackgroundResource {
     throw new UnsupportedOperationException("Not implemented: testOptionalRequiredFlatteningParamsCallable()");
   }
 
+  public UnaryCallable<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAggregatedShelvesCallable()");
+  }
+
   public UnaryCallable<CreateInventoryRequest, Inventory> createInventoryCallable() {
     throw new UnsupportedOperationException("Not implemented: createInventoryCallable()");
   }
@@ -13604,6 +13701,8 @@ import static com.google.example.library.v1.LibraryClient.ListBooksPagedResponse
 import static com.google.example.library.v1.LibraryClient.ListShelvesPagedResponse;
 import static com.google.example.library.v1.LibraryClient.ListStringsPagedResponse;
 import com.google.example.library.v1.LibraryServiceGrpc;
+import com.google.example.library.v1.ListAggregatedShelvesRequest;
+import com.google.example.library.v1.ListAggregatedShelvesResponse;
 import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
@@ -13710,6 +13809,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   private final UnaryCallSettings<GetBookRequest, Operation> getBigNothingSettings;
   private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
   private final UnaryCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+  private final UnaryCallSettings<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings;
   private final UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings;
   private final UnaryCallSettings<MoveBooksRequest, MoveBooksResponse> moveBooksSettings;
   private final UnaryCallSettings<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings;
@@ -13932,6 +14032,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
   }
 
   /**
+   * Returns the object with the settings used for calls to listAggregatedShelves.
+   */
+  public UnaryCallSettings<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings() {
+    return listAggregatedShelvesSettings;
+  }
+
+  /**
    * Returns the object with the settings used for calls to createInventory.
    */
   public UnaryCallSettings<CreateInventoryRequest, Inventory> createInventorySettings() {
@@ -14104,6 +14211,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
     getBigNothingOperationSettings = settingsBuilder.getBigNothingOperationSettings().build();
     testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
+    listAggregatedShelvesSettings = settingsBuilder.listAggregatedShelvesSettings().build();
     createInventorySettings = settingsBuilder.createInventorySettings().build();
     moveBooksSettings = settingsBuilder.moveBooksSettings().build();
     archiveBooksSettings = settingsBuilder.archiveBooksSettings().build();
@@ -14465,6 +14573,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
     private final UnaryCallSettings.Builder<GetBookRequest, Operation> getBigNothingSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationSettings;
     private final UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
+    private final UnaryCallSettings.Builder<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings;
     private final UnaryCallSettings.Builder<CreateInventoryRequest, Inventory> createInventorySettings;
     private final UnaryCallSettings.Builder<MoveBooksRequest, MoveBooksResponse> moveBooksSettings;
     private final UnaryCallSettings.Builder<ArchiveBooksRequest, ArchiveBooksResponse> archiveBooksSettings;
@@ -14594,6 +14703,8 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
 
       testOptionalRequiredFlatteningParamsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
+      listAggregatedShelvesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
+
       createInventorySettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
 
       moveBooksSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();
@@ -14634,6 +14745,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
+          listAggregatedShelvesSettings,
           createInventorySettings,
           moveBooksSettings,
           archiveBooksSettings,
@@ -14776,6 +14888,10 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("no_retry_1_codes"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("no_retry_1_params"));
 
+      builder.listAggregatedShelvesSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
+
       builder.createInventorySettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("retry_policy_1_codes"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("retry_policy_1_params"));
@@ -14896,6 +15012,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       getBigNothingOperationSettings = settings.getBigNothingOperationSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
+      listAggregatedShelvesSettings = settings.listAggregatedShelvesSettings.toBuilder();
       createInventorySettings = settings.createInventorySettings.toBuilder();
       moveBooksSettings = settings.moveBooksSettings.toBuilder();
       archiveBooksSettings = settings.archiveBooksSettings.toBuilder();
@@ -14929,6 +15046,7 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
           getBigBookSettings,
           getBigNothingSettings,
           testOptionalRequiredFlatteningParamsSettings,
+          listAggregatedShelvesSettings,
           createInventorySettings,
           moveBooksSettings,
           archiveBooksSettings,
@@ -15163,6 +15281,13 @@ public class LibraryServiceStubSettings extends StubSettings<LibraryServiceStubS
      */
     public UnaryCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
       return testOptionalRequiredFlatteningParamsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listAggregatedShelves.
+     */
+    public UnaryCallSettings.Builder<ListAggregatedShelvesRequest, ListAggregatedShelvesResponse> listAggregatedShelvesSettings() {
+      return listAggregatedShelvesSettings;
     }
 
     /**
@@ -17647,6 +17772,43 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
+  public void listAggregatedShelvesTest() {
+    String nextPageToken = "nextPageToken-1530815211";
+    ListAggregatedShelvesResponse expectedResponse = ListAggregatedShelvesResponse.newBuilder()
+      .setNextPageToken(nextPageToken)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    ListAggregatedShelvesResponse actualResponse =
+        client.listAggregatedShelves();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<AbstractMessage> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    ListAggregatedShelvesRequest actualRequest = (ListAggregatedShelvesRequest)actualRequests.get(0);
+
+    Assert.assertTrue(
+        channelProvider.isHeaderSent(
+            ApiClientHeaderProvider.getDefaultApiClientHeaderKey(),
+            GaxGrpcProperties.getDefaultApiClientHeaderPattern()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void listAggregatedShelvesExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      client.listAggregatedShelves();
+      Assert.fail("No exception raised");
+    } catch (InvalidArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void createInventoryTest() {
     InventoryName name = InventoryName.of("[PROJECT]", "[LOCATION]", "[PUBLISHER]");
     Inventory expectedResponse = Inventory.newBuilder()
@@ -18355,6 +18517,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
     if (response instanceof ListShelvesResponse) {
       requests.add(request);
       responseObserver.onNext((ListShelvesResponse) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void listAggregatedShelves(ListAggregatedShelvesRequest request,
+    StreamObserver<ListAggregatedShelvesResponse> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof ListAggregatedShelvesResponse) {
+      requests.add(request);
+      responseObserver.onNext((ListAggregatedShelvesResponse) response);
       responseObserver.onCompleted();
     } else if (response instanceof Exception) {
       responseObserver.onError((Exception) response);

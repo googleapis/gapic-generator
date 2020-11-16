@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.common.TargetLanguage;
 import com.google.api.codegen.configgen.ProtoPageStreamingTransformer;
 import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.util.ProtoParser;
@@ -222,6 +223,8 @@ public abstract class PageStreamingConfig {
 
   /** package-private for use by {@link GapicMethodConfig}. */
   static PageStreamingConfig createPageStreamingConfig(
+      TargetLanguage language,
+      TransportProtocol transportProtocol,
       DiagCollector diagCollector,
       String defaultPackageName,
       ProtoMethodModel methodModel,
@@ -237,10 +240,18 @@ public abstract class PageStreamingConfig {
 
     // Toggle pagination based on presence of paging params.
     // See https://cloud.google.com/apis/design/design_patterns for API pagination pattern.
-    ProtoField tokenField = methodModel.getInputField(ProtoPagingParameters.nameForPageToken());
-    ProtoField pageSizeField = methodModel.getInputField(ProtoPagingParameters.nameForPageSize());
+    ProtoPagingParameters pagingParams = new ProtoPagingParameters();
+    ProtoField tokenField = methodModel.getInputField(pagingParams.getNameForPageToken());
+    ProtoField pageSizeField = methodModel.getInputField(pagingParams.getNameForPageSize());
+    if (pageSizeField == null) {
+      // TODO: Conform to design doc spec, once approved, for using non-standard paging fields
+      //       (such as max_results for page_size)
+      if (language == TargetLanguage.JAVA && transportProtocol == TransportProtocol.HTTP) {
+        pageSizeField = methodModel.getInputField(pagingParams.getNameForMaxResults());
+      }
+    }
     ProtoField responseTokenField =
-        methodModel.getOutputField(ProtoPagingParameters.nameForNextPageToken());
+        methodModel.getOutputField(pagingParams.getNameForNextPageToken());
     if (tokenField != null && responseTokenField != null && pageSizeField != null) {
       PagingFields pagingFields =
           PagingFields.newBuilder()

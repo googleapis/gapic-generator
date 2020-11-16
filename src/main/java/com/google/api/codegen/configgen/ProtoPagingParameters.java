@@ -21,10 +21,11 @@ import java.util.List;
 public class ProtoPagingParameters implements PagingParameters {
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
-  private static final String PARAMETER_MAX_RESULTS = "page_size";
+  private static final String PARAMETER_PAGE_SIZE = "page_size";
+  private static final String PARAMETER_MAX_RESULTS = "max_results";
 
   private static final ImmutableList<String> IGNORED_PARAMETERS =
-      ImmutableList.of(PARAMETER_PAGE_TOKEN, PARAMETER_MAX_RESULTS);
+      ImmutableList.of(PARAMETER_PAGE_TOKEN, PARAMETER_PAGE_SIZE);
 
   @Override
   public String getNameForPageToken() {
@@ -33,7 +34,7 @@ public class ProtoPagingParameters implements PagingParameters {
 
   @Override
   public String getNameForPageSize() {
-    return PARAMETER_MAX_RESULTS;
+    return PARAMETER_PAGE_SIZE;
   }
 
   @Override
@@ -46,15 +47,7 @@ public class ProtoPagingParameters implements PagingParameters {
     return IGNORED_PARAMETERS;
   }
 
-  public static String nameForPageToken() {
-    return PARAMETER_PAGE_TOKEN;
-  }
-
-  public static String nameForPageSize() {
+  public String getNameForMaxResults() {
     return PARAMETER_MAX_RESULTS;
-  }
-
-  public static String nameForNextPageToken() {
-    return PARAMETER_NEXT_PAGE_TOKEN;
   }
 }
