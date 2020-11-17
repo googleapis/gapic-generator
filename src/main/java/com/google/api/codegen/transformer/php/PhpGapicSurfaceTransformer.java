@@ -196,6 +196,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     apiImplClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
     if (supportsGrpcTransport()) {
+      // PHP generates a client that supports both gRPC and REST
       String grpcClientTypeName =
           namer.getAndSaveNicknameForGrpcClientTypeName(
               context.getImportTypeTable(), context.getInterfaceModel());
@@ -203,6 +204,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
       apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
     } else {
+      // PHP generates a client that only supports REST
       apiImplClass.grpcClientTypeName("");
       apiImplClass.stubs(new ArrayList<>());
     }
@@ -436,7 +438,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
       if (!supportsGrpcTransport()) {
-        throw new RuntimeException("Streaming methods invalid for REST-only transport");
+        throw new RuntimeException("Streaming methods only valid for gRPC transport");
       }
       GrpcStreamingConfig grpcStreamingConfig =
           context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
@@ -465,13 +467,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
-    if (supportsGrpcTransport()) {
-      typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
-    }
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RetrySettings");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Transport\\TransportInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
     typeTable.saveNicknameFor("\\Google\\Auth\\FetchAuthTokenInterface");
+
+    if (supportsGrpcTransport()) {
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
+    }
 
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
