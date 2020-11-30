@@ -147,44 +147,14 @@ go_gapic_assembly_pkg(
 ##############################################################################
 load(
     "@com_google_googleapis_imports//:imports.bzl",
-    "moved_proto_library",
-    "py_gapic_assembly_pkg",
-    "py_gapic_library",
-    "py_grpc_library",
-    "py_proto_library",
-)
-
-moved_proto_library(
-    name = "{{name}}_moved_proto",
-    srcs = [":{{name}}_proto"],
-    deps = [
-        {{proto_deps}}
-    ],
-)
-
-py_proto_library(
-    name = "{{name}}_py_proto",
-    plugin = "@protoc_docs_plugin//:docs_plugin",
-    deps = [":{{name}}_moved_proto"],
-)
-
-py_grpc_library(
-    name = "{{name}}_py_grpc",
-    srcs = [":{{name}}_moved_proto"],
-    deps = [":{{name}}_py_proto"],
+     py_gapic_assembly_pkg = "py_gapic_assembly_pkg2",
+     py_gapic_library = "py_gapic_library2",
 )
 
 py_gapic_library(
     name = "{{name}}_py_gapic",
-    src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    srcs = [":{{name}}_proto"],
     grpc_service_config = {{grpc_service_config}},
-    package = "{{package}}",
-    service_yaml = "{{service_yaml}}",
-    deps = [
-        ":{{name}}_py_grpc",
-        ":{{name}}_py_proto",
-    ],
 )
 
 # Open Source Packages
@@ -192,8 +162,6 @@ py_gapic_assembly_pkg(
     name = "{{assembly_name}}-{{version}}-py",
     deps = [
         ":{{name}}_py_gapic",
-        ":{{name}}_py_grpc",
-        ":{{name}}_py_proto",
     ],
 )
 
