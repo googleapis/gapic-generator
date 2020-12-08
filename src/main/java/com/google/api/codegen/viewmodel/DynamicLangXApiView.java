@@ -128,6 +128,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String grpcTransportImportName();
 
+  public abstract boolean supportsGrpcTransport();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -214,6 +216,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder grpcTransportClassName(String val);
 
     public abstract Builder grpcTransportImportName(String val);
+
+    public abstract Builder supportsGrpcTransport(boolean val);
 
     public abstract DynamicLangXApiView build();
   }

@@ -27,6 +27,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -73,6 +74,7 @@ import java.util.stream.Collectors;
 
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP. */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoApiModel> {
+  private GapicProductConfig productConfig;
   private Model serviceModel;
   private GapicCodePathMapper pathMapper;
   private ServiceTransformer serviceTransformer;
@@ -98,6 +100,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
 
   public PhpGapicSurfaceTransformer(
       GapicProductConfig productConfig, GapicCodePathMapper pathMapper, Model serviceModel) {
+    this.productConfig = productConfig;
     this.serviceModel = serviceModel;
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
@@ -164,6 +167,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
         serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
 
     apiImplClass.templateFileName(API_IMPL_TEMPLATE_FILENAME);
+    apiImplClass.supportsGrpcTransport(supportsGrpcTransport());
     apiImplClass.protoFilename(context.getInterface().getFile().getSimpleName());
     String implName = namer.getApiWrapperClassImplName(context.getInterfaceConfig());
     apiImplClass.name(implName);
@@ -191,14 +195,21 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     apiImplClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     apiImplClass.interfaceKey(context.getInterface().getFullName());
-    String grpcClientTypeName =
-        namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getImportTypeTable(), context.getInterfaceModel());
-    apiImplClass.grpcClientTypeName(grpcClientTypeName);
+    if (supportsGrpcTransport()) {
+      // PHP generates a client that supports both gRPC and REST
+      String grpcClientTypeName =
+          namer.getAndSaveNicknameForGrpcClientTypeName(
+              context.getImportTypeTable(), context.getInterfaceModel());
+      apiImplClass.grpcClientTypeName(grpcClientTypeName);
+
+      apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
+    } else {
+      // PHP generates a client that only supports REST
+      apiImplClass.grpcClientTypeName("");
+      apiImplClass.stubs(new ArrayList<>());
+    }
 
     apiImplClass.apiMethods(methods.stream().collect(Collectors.toList()));
-
-    apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     apiImplClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     apiImplClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
@@ -426,6 +437,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getGrpcStreamingMethods()) {
+      if (!supportsGrpcTransport()) {
+        throw new RuntimeException("Streaming methods only valid for gRPC transport");
+      }
       GrpcStreamingConfig grpcStreamingConfig =
           context.asRequestMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
@@ -453,11 +467,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     typeTable.saveNicknameFor("\\Google\\ApiCore\\CredentialsWrapper");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\GapicClientTrait");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\PathTemplate");
-    typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\RetrySettings");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\Transport\\TransportInterface");
     typeTable.saveNicknameFor("\\Google\\ApiCore\\ValidationException");
     typeTable.saveNicknameFor("\\Google\\Auth\\FetchAuthTokenInterface");
+
+    if (supportsGrpcTransport()) {
+      typeTable.saveNicknameFor("\\Google\\ApiCore\\RequestParamsHeaderDescriptor");
+    }
 
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("\\Google\\ApiCore\\LongRunning\\OperationsClient");
@@ -528,5 +545,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     }
 
     throw new IllegalStateException("A HTTP method must be defined.");
+  }
+
+  private boolean supportsGrpcTransport() {
+    return productConfig.getTransportProtocol().equals(TransportProtocol.GRPC);
   }
 }

@@ -132,7 +132,9 @@
             @end
             'clientConfig' => __DIR__ . '{@xapiClass.clientConfigPath}',
             'descriptorsConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_descriptor_config.php',
-            'gcpApiConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_grpc_config.json',
+            @if xapiClass.supportsGrpcTransport
+                'gcpApiConfigPath' => __DIR__ . '/../resources/{@xapiClass.clientConfigName}_grpc_config.json',
+            @end
             'credentialsConfig' => [
                 @if xapiClass.hasDefaultServiceScopes
                     'defaultScopes' => self::$serviceScopes,
@@ -155,6 +157,17 @@
     @end
     @if xapiClass.hasFormatOrParseResourceFunctions
         {@parseNameFunction(xapiClass)}
+    @end
+    @if not(xapiClass.supportsGrpcTransport)
+    private static function defaultTransport()
+    {
+        return 'rest';
+    }
+
+    private static function getSupportedTransports()
+    {
+        return ['rest'];
+    }
     @end
     {@""}
 @end
@@ -348,24 +361,43 @@
      *           path to a JSON file, or a PHP array containing the decoded JSON data.
      *           By default this settings points to the default client config file, which is provided
      *           in the resources folder.
-     *     @@type string|TransportInterface $transport
-     *           The transport used for executing network requests. May be either the string `rest`
-     *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
-     *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
-     *           {@@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
-     *           object is provided, any settings in $transportConfig, and any $serviceAddress
-     *           setting, will be ignored.
-     *     @@type array $transportConfig
-     *           Configuration options that will be used to construct the transport. Options for
-     *           each supported transport type should be passed in a key for that transport. For
-     *           example:
-     *           $transportConfig = [
-     *               'grpc' => [...],
-     *               'rest' => [...]
-     *           ];
-     *           See the {@@see \Google\ApiCore\Transport\GrpcTransport::build()} and
-     *           {@@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
-     *           supported options.
+     @if xapiClass.supportsGrpcTransport
+         *     @@type string|TransportInterface $transport
+         *           The transport used for executing network requests. May be either the string `rest`
+         *           or `grpc`. Defaults to `grpc` if gRPC support is detected on the system.
+         *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
+         *           {@@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+         *           object is provided, any settings in $transportConfig, and any $serviceAddress
+         *           setting, will be ignored.
+         *     @@type array $transportConfig
+         *           Configuration options that will be used to construct the transport. Options for
+         *           each supported transport type should be passed in a key for that transport. For
+         *           example:
+         *           $transportConfig = [
+         *               'grpc' => [...],
+         *               'rest' => [...]
+         *           ];
+         *           See the {@@see \Google\ApiCore\Transport\GrpcTransport::build()} and
+         *           {@@see \Google\ApiCore\Transport\RestTransport::build()} methods for the
+         *           supported options.
+    @else
+         *     @@type string|TransportInterface $transport
+         *           The transport used for executing network requests. At the moment, only supports
+         *           `rest`.
+         *           *Advanced usage*: Additionally, it is possible to pass in an already instantiated
+         *           {@@see \Google\ApiCore\Transport\TransportInterface} object. Note that when this
+         *           object is provided, any settings in $transportConfig, and any $serviceAddress
+         *           setting, will be ignored.
+         *     @@type array $transportConfig
+         *           Configuration options that will be used to construct the transport. Options for
+         *           each supported transport type should be passed in a key for that transport. For
+         *           example:
+         *           $transportConfig = [
+         *               'rest' => [...]
+         *           ];
+         *           See the {@@see \Google\ApiCore\Transport\RestTransport::build()} method for the
+         *           supported options.
+     @end
      * }
      * @@throws ValidationException
      * @@experimental
