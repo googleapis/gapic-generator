@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://www.github.com/googleapis/gapic-generator/compare/v2.8.0...v2.9.0) (2020-12-08)
+
+
+### Features
+
+* generate GAPIC metadata file for Node.js by default ([#3313](https://www.github.com/googleapis/gapic-generator/issues/3313)) ([887ddd9](https://www.github.com/googleapis/gapic-generator/commit/887ddd96bbda8bbf1ad5fb1c72f5f62afeea95f9))
+
 ## [2.8.0](https://www.github.com/googleapis/gapic-generator/compare/v2.7.0...v2.8.0) (2020-11-13)
 
 
