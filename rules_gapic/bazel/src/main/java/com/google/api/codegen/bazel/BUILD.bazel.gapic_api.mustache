@@ -219,7 +219,9 @@ load(
 
 nodejs_gapic_library(
     name = "{{name}}_nodejs_gapic",
+    package_name = "@google-cloud/{{name}}",
     src = ":{{name}}_proto_with_info",
+    extra_protoc_parameters = ["metadata"],
     grpc_service_config = {{grpc_service_config}},
     package = "{{package}}",
     service_yaml = "{{service_yaml}}",
