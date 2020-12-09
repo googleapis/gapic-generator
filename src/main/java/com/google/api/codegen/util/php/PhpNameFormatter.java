@@ -31,15 +31,6 @@ public class PhpNameFormatter implements NameFormatter {
     }
   }
 
-  private String wrapIfFunctionKeyword(String name) {
-    // PHP keywords are case-insensitive.
-    if (FUNCTION_KEYWORD_SET.contains(name.toLowerCase())) {
-      return name + "_";
-    } else {
-      return name;
-    }
-  }
-
   @Override
   public String publicClassName(Name name) {
     return wrapIfKeywordOrBuiltIn(name.toUpperCamel());
@@ -72,17 +63,17 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String publicMethodName(Name name) {
-    return wrapIfFunctionKeyword(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
   public String privateMethodName(Name name) {
-    return wrapIfFunctionKeyword(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
   public String staticFunctionName(Name name) {
-    return wrapIfFunctionKeyword(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
@@ -191,18 +182,5 @@ public class PhpNameFormatter implements NameFormatter {
               "__METHOD__",
               "__NAMESPACE__",
               "__TRAIT__")
-          .build();
-
-  private static final ImmutableSet<String> FUNCTION_KEYWORD_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "__halt_compiler",
-              "abstract",
-              "final",
-              "function",
-              "private",
-              "protected",
-              "public",
-              "static")
           .build();
 }
