@@ -65,6 +65,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +207,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
     } else {
       // PHP generates a client that only supports REST
       apiImplClass.grpcClientTypeName("");
-      apiImplClass.stubs(new ArrayList<>());
+      apiImplClass.stubs(Collections.emptyList());
     }
 
     apiImplClass.apiMethods(methods.stream().collect(Collectors.toList()));
