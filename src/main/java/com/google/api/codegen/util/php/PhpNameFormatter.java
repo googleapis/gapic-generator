@@ -63,17 +63,17 @@ public class PhpNameFormatter implements NameFormatter {
 
   @Override
   public String publicMethodName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
   public String privateMethodName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
   public String staticFunctionName(Name name) {
-    return wrapIfKeywordOrBuiltIn(name.toLowerCamel());
+    return name.toLowerCamel();
   }
 
   @Override
