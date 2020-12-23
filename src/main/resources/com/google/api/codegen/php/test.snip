@@ -308,7 +308,11 @@
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
             $this->assertSame(1, count(${@pageStreamingResponseView.resourcesVarName}));
-            $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
+            @if pageStreamingResponseView.resourcesFieldIsMap
+                {@mapFieldPageStreamingAsserts(pageStreamingResponseView, test.mockResponse.rpcResponseInitCode)}
+            @else
+                $this->assertEquals($expectedResponse->{@pageStreamingResponseView.resourcesFieldGetterName}()[0], ${@pageStreamingResponseView.resourcesVarName}[0]);
+            @end
         @end
 
         {@singleCallSuccessAsserts(test)}
@@ -550,6 +554,17 @@
         @else
             $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
                 $actualValue);
+        @end
+    @end
+@end
+
+@private mapFieldPageStreamingAsserts(view, initCode)
+    @join line : initCode.lines
+        @if line.lineType == "MapInitLine"
+            @join mapEntry : line.initEntries on ","
+                $this->assertEquals(
+                    $expectedResponse->{@view.resourcesFieldGetterName}()[{@mapEntry.key}], ${@view.resourcesVarName}[{@mapEntry.key}]);
+            @end
         @end
     @end
 @end

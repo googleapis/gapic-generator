@@ -247,13 +247,8 @@ public abstract class PageStreamingConfig {
       // TODO: Conform to design doc spec, once approved, for using non-standard paging fields
       //       (such as max_results for page_size)
       if (transportProtocol == TransportProtocol.HTTP) {
-        if (language == TargetLanguage.JAVA) {
+        if (language == TargetLanguage.JAVA || language == TargetLanguage.PHP) {
           pageSizeField = methodModel.getInputField(pagingParams.getNameForMaxResults());
-        } else if (language == TargetLanguage.PHP) {
-          FieldModel resourcesField = ProtoPageStreamingTransformer.getResourcesField(methodModel);
-          if (resourcesField != null && !resourcesField.isMap()) {
-            pageSizeField = methodModel.getInputField(pagingParams.getNameForMaxResults());
-          }
         }
       }
     }
