@@ -562,6 +562,8 @@
     @join line : initCode.lines
         @if line.lineType == "MapInitLine"
             @join mapEntry : line.initEntries on ","
+                $this->assertArrayHasKey({@mapEntry.key}, $expectedResponse->{@view.resourcesFieldGetterName}());
+                $this->assertArrayHasKey({@mapEntry.key}, ${@view.resourcesVarName});
                 $this->assertEquals($expectedResponse->{@view.resourcesFieldGetterName}()[{@mapEntry.key}], ${@view.resourcesVarName}[{@mapEntry.key}]);
             @end
         @end
