@@ -48,7 +48,7 @@ class ShowcaseIntegrationTest extends TestCase
      */
     public function testUnary($client)
     {
-        $response = $client->echo([
+        $response = $client->echo_([
             'content' => '"Wales snail hail fails!" wails Gail'
         ]);
         $this->assertEquals(
@@ -65,7 +65,7 @@ class ShowcaseIntegrationTest extends TestCase
     public function testFailUnary($client)
     {
         try {
-            $client->echo([
+            $client->echo_([
                 'error' => (new Status())
                     ->setCode(Code::INVALID_ARGUMENT)
                     ->setMessage("Unary error message"),
