@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.10.1](https://www.github.com/googleapis/gapic-generator/compare/v2.10.0...v2.10.1) (2020-12-30)
+
+
+### Reverts
+
+* Revert "fix: don't change PHP functions which are reserved words  (#3317)" (#3322) ([9c22369](https://www.github.com/googleapis/gapic-generator/commit/9c2236970ad655c070281bea691aade3e3a7084e)), closes [#3317](https://www.github.com/googleapis/gapic-generator/issues/3317) [#3322](https://www.github.com/googleapis/gapic-generator/issues/3322)
+
 ## [2.10.0](https://www.github.com/googleapis/gapic-generator/compare/v2.9.0...v2.10.0) (2020-12-24)
 
 
