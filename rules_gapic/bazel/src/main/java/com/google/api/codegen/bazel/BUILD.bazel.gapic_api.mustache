@@ -61,11 +61,9 @@ java_grpc_library(
 
 java_gapic_library(
     name = "{{name}}_java_gapic",
-    src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    srcs = [":{{name}}_proto_with_info"],
     grpc_service_config = {{grpc_service_config}},
     package = "{{package}}",
-    service_yaml = "{{service_yaml}}",
     test_deps = [
         ":{{name}}_java_grpc",{{java_gapic_test_deps}}
     ],
@@ -147,44 +145,14 @@ go_gapic_assembly_pkg(
 ##############################################################################
 load(
     "@com_google_googleapis_imports//:imports.bzl",
-    "moved_proto_library",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
-    "py_grpc_library",
-    "py_proto_library",
-)
-
-moved_proto_library(
-    name = "{{name}}_moved_proto",
-    srcs = [":{{name}}_proto"],
-    deps = [
-        {{proto_deps}}
-    ],
-)
-
-py_proto_library(
-    name = "{{name}}_py_proto",
-    plugin = "@protoc_docs_plugin//:docs_plugin",
-    deps = [":{{name}}_moved_proto"],
-)
-
-py_grpc_library(
-    name = "{{name}}_py_grpc",
-    srcs = [":{{name}}_moved_proto"],
-    deps = [":{{name}}_py_proto"],
 )
 
 py_gapic_library(
     name = "{{name}}_py_gapic",
-    src = ":{{name}}_proto_with_info",
-    gapic_yaml = "{{gapic_yaml}}",
+    srcs = [":{{name}}_proto"],
     grpc_service_config = {{grpc_service_config}},
-    package = "{{package}}",
-    service_yaml = "{{service_yaml}}",
-    deps = [
-        ":{{name}}_py_grpc",
-        ":{{name}}_py_proto",
-    ],
 )
 
 # Open Source Packages
@@ -192,8 +160,6 @@ py_gapic_assembly_pkg(
     name = "{{assembly_name}}-{{version}}-py",
     deps = [
         ":{{name}}_py_gapic",
-        ":{{name}}_py_grpc",
-        ":{{name}}_py_proto",
     ],
 )
 
@@ -253,7 +219,9 @@ load(
 
 nodejs_gapic_library(
     name = "{{name}}_nodejs_gapic",
+    package_name = "@google-cloud/{{name}}",
     src = ":{{name}}_proto_with_info",
+    extra_protoc_parameters = ["metadata"],
     grpc_service_config = {{grpc_service_config}},
     package = "{{package}}",
     service_yaml = "{{service_yaml}}",
@@ -338,8 +306,8 @@ csharp_grpc_library(
 csharp_gapic_library(
     name = "{{name}}_csharp_gapic",
     srcs = [":{{name}}_proto_with_info"],
-    grpc_service_config = {{grpc_service_config}},
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
+    grpc_service_config = {{grpc_service_config}},
     deps = [
         ":{{name}}_csharp_grpc",
         ":{{name}}_csharp_proto",

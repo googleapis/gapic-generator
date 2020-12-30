@@ -248,6 +248,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
             : ClientMethodType.AsyncRequestObjectCallSettingsMethod,
         synchronicity,
         null,
+        null,
         null);
   }
 
@@ -289,6 +290,7 @@ public class CSharpGapicUnitTestTransformer implements ModelToViewTransformer<Pr
         clientMethodType,
         synchronicity,
         initCodeRequestObjectContext,
-        requestContext);
+        requestContext,
+        null);
   }
 }

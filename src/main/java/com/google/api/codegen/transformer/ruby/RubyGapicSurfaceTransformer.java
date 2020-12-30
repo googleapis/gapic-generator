@@ -189,6 +189,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer<Proto
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
+    xapiClass.supportsGrpcTransport(true);
 
     xapiClass.apiMethods(methods);
 

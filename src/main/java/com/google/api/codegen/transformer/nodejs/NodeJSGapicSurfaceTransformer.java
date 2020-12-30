@@ -189,6 +189,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer<Pro
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
+    xapiClass.supportsGrpcTransport(true);
 
     xapiClass.apiMethods(new ArrayList<>(methods));
 
