@@ -154,7 +154,11 @@
     // Iterate over pages of elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
+        @if apiMethod.pageStreamingView.resourcesFieldIsMap
+        foreach ($page as $key => $element) {
+        @else
         foreach ($page as $element) {
+        @end
             // doSomethingWith($element);
         }
     }
@@ -163,7 +167,11 @@
 @private pagedAllSampleCode(apiMethod)
     // Iterate through all elements
     $pagedResponse = {@methodCallSampleCode(apiMethod)};
+    @if apiMethod.pageStreamingView.resourcesFieldIsMap
+    foreach ($pagedResponse->iterateAllElements() as $key => $element) {
+    @else
     foreach ($pagedResponse->iterateAllElements() as $element) {
+    @end
         // doSomethingWith($element);
     }
 @end
