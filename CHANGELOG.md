@@ -1,5 +1,25 @@
 # Changelog
 
+### [2.10.1](https://www.github.com/googleapis/gapic-generator/compare/v2.10.0...v2.10.1) (2020-12-30)
+
+
+### Reverts
+
+* Revert "fix: don't change PHP functions which are reserved words  (#3317)" (#3322) ([9c22369](https://www.github.com/googleapis/gapic-generator/commit/9c2236970ad655c070281bea691aade3e3a7084e)), closes [#3317](https://www.github.com/googleapis/gapic-generator/issues/3317) [#3322](https://www.github.com/googleapis/gapic-generator/issues/3322)
+
+## [2.10.0](https://www.github.com/googleapis/gapic-generator/compare/v2.9.0...v2.10.0) (2020-12-24)
+
+
+### Features
+
+* add DIREGAPIC support for PHP ([#3305](https://www.github.com/googleapis/gapic-generator/issues/3305)) ([0456289](https://www.github.com/googleapis/gapic-generator/commit/04562898ae3c15199dcc5c2f45670edf3ac58886))
+* add page streaming for php ([#3318](https://www.github.com/googleapis/gapic-generator/issues/3318)) ([6de594b](https://www.github.com/googleapis/gapic-generator/commit/6de594b3c4bc95abaeac4f603627a7b686e4a7a6))
+
+
+### Bug Fixes
+
+* don't change PHP functions which are reserved words  ([#3317](https://www.github.com/googleapis/gapic-generator/issues/3317)) ([3ff8ca9](https://www.github.com/googleapis/gapic-generator/commit/3ff8ca91ff8023549dc8d95cee29277520ef87ce))
+
 ## [2.9.0](https://www.github.com/googleapis/gapic-generator/compare/v2.8.0...v2.9.0) (2020-12-08)
 
 

@@ -41,6 +41,8 @@ public abstract class PageStreamingDescriptorView {
 
   public abstract String resourcesGetMethodName();
 
+  public abstract Boolean resourcesFieldIsMap();
+
   public abstract String methodName();
 
   public abstract String transportMethodName();
@@ -74,6 +76,8 @@ public abstract class PageStreamingDescriptorView {
     public abstract Builder resourcesFieldName(String val);
 
     public abstract Builder resourcesGetMethodName(String val);
+
+    public abstract Builder resourcesFieldIsMap(Boolean val);
 
     public abstract Builder methodName(String val);
 
