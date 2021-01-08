@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.10.2](https://www.github.com/googleapis/gapic-generator/compare/v2.10.1...v2.10.2) (2021-01-08)
+
+
+### Bug Fixes
+
+* preserve the value of opt_args parameter ([#3319](https://www.github.com/googleapis/gapic-generator/issues/3319)) ([60a2d2c](https://www.github.com/googleapis/gapic-generator/commit/60a2d2c3925e131dbba56f667111645820a3af5e))
+
 ### [2.10.1](https://www.github.com/googleapis/gapic-generator/compare/v2.10.0...v2.10.1) (2020-12-30)
 
 
