@@ -52,7 +52,10 @@ class ApiVersionedDir {
 
   private static final String[] PRESERVED_PROTO_LIBRARY_LIST_ATTRIBUTES = {
     // All languages:
-    "extra_protoc_parameters", "extra_protoc_file_parameters",
+    "extra_protoc_parameters",
+    "extra_protoc_file_parameters",
+    // Python:
+    "opt_args",
     // Other languages: add below
   };
 
