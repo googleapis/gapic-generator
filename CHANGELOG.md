@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.10.3](https://www.github.com/googleapis/gapic-generator/compare/v2.10.2...v2.10.3) (2021-01-20)
+
+
+### Bug Fixes
+
+* **build_gen:** include httpbody import for java/go ([#3329](https://www.github.com/googleapis/gapic-generator/issues/3329)) ([5b30a46](https://www.github.com/googleapis/gapic-generator/commit/5b30a46b0c63492262425e46fa81beca6fc2a1cb))
+
 ### [2.10.2](https://www.github.com/googleapis/gapic-generator/compare/v2.10.1...v2.10.2) (2021-01-08)
 
 
