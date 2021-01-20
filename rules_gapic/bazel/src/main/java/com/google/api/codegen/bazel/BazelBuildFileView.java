@@ -176,7 +176,8 @@ class BazelBuildFileView {
     for (String protoImport : protoImports) {
       if (protoImport.endsWith(":iam_policy_proto") || protoImport.endsWith(":policy_proto")) {
         javaImports.add(replaceLabelName(protoImport, ":iam_java_proto"));
-      } else if (protoImport.endsWith(":service_proto")) {
+      } else if (protoImport.endsWith(":service_proto")
+          || protoImport.endsWith(":httpbody_proto")) {
         javaImports.add(replaceLabelName(protoImport, ":api_java_proto"));
       }
     }
@@ -257,6 +258,8 @@ class BazelBuildFileView {
         goImports.add(replaceLabelName(protoImport, ":iam_go_proto"));
       } else if (protoImport.endsWith(":service_proto")) {
         goImports.add(replaceLabelName(protoImport, ":serviceconfig_go_proto"));
+      } else if (protoImport.endsWith(":httpbody_proto")) {
+        goImports.add(replaceLabelName(protoImport, ":httpbody_go_proto"));
       }
     }
     return goImports;
