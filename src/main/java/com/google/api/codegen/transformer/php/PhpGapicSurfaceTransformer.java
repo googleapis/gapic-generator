@@ -407,7 +407,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer<ProtoA
       SurfaceNamer namer, Set<String> templateVars) {
     List<RestPlaceholderConfigView> placeholderViews = new ArrayList<>(templateVars.size());
 
-    for (String var : templateVars) {
+    List<String> templateVarsList = new ArrayList<>(templateVars);
+    Collections.sort(templateVarsList);
+    for (String var : templateVarsList) {
       placeholderViews.add(generateRestPlaceholderConfigView(namer, var));
     }
 
