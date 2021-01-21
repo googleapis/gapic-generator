@@ -50,7 +50,7 @@ def _py_gapic_src_pkg_impl(ctx):
     done
 
     # Replace 555 (forced by Bazel) permissions with 644
-    find {package_dir_path} -type f -exec chmod 644 {{}} \;
+    find {package_dir_path} -type f -exec chmod 644 {{}} \\;
 
     for srcjar_src in {srcjar_srcs}; do
         unzip -q -o $srcjar_src -d {package_dir_path}
