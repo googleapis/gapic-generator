@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.10.4](https://www.github.com/googleapis/gapic-generator/compare/v2.10.3...v2.10.4) (2021-01-21)
+
+
+### Bug Fixes
+
+* **python:** use '\' for string escapes ([#3335](https://www.github.com/googleapis/gapic-generator/issues/3335)) ([e37a4b9](https://www.github.com/googleapis/gapic-generator/commit/e37a4b9f892dc3a393723c5e32736661c80e527e))
+
 ### [2.10.3](https://www.github.com/googleapis/gapic-generator/compare/v2.10.2...v2.10.3) (2021-01-20)
 
 
