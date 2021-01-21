@@ -47,7 +47,7 @@ def _py_gapic_postprocessed_srcjar_impl(ctx):
         zip -q -r {output_dir_name}-smoke-test.srcjar empty_file
         zip -d {output_dir_name}-smoke-test.srcjar empty_file
     fi
-    zip -q -r {output_dir_name}.srcjar . -i \*.py
+    zip -q -r {output_dir_name}.srcjar . -i \\*.py
     popd
     mv {output_dir_path}/{output_dir_name}.srcjar {output_main}
     mv {output_dir_path}/{output_dir_name}-test.srcjar {output_test}
