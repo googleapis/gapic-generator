@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.10.5](https://www.github.com/googleapis/gapic-generator/compare/v2.10.4...v2.10.5) (2021-04-22)
+
+
+### Bug Fixes
+
+* remove unused package option from java_gapic_library [gapic-generator] ([#3341](https://www.github.com/googleapis/gapic-generator/issues/3341)) ([857e2aa](https://www.github.com/googleapis/gapic-generator/commit/857e2aab8017ecbb2abc9adc02d8571c02f94b3b))
+* Use a deterministic ordering for rest placeholders ([#3333](https://www.github.com/googleapis/gapic-generator/issues/3333)) ([267e4dd](https://www.github.com/googleapis/gapic-generator/commit/267e4ddd2ca043e14601104f6f4b91212970cbb6))
+
 ### [2.10.4](https://www.github.com/googleapis/gapic-generator/compare/v2.10.3...v2.10.4) (2021-01-21)
 
 
