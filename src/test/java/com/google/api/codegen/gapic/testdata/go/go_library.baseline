@@ -213,6 +213,7 @@ import (
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
+    emptypbpb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // CallOptions contains the retry settings for each method of LibClient.
@@ -2004,10 +2005,10 @@ package library
 import (
     pb ""
 
-    emptypb "github.com/golang/protobuf/ptypes/empty"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
+    emptypbpb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 import (
@@ -2086,7 +2087,7 @@ func (s *mockLibraryServer) ListShelves(ctx context.Context, req *librarypb.List
     return s.resps[0].(*librarypb.ListShelvesResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) (*emptypbpb.Empty, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2095,7 +2096,7 @@ func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.Dele
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*emptypb.Empty), nil
+    return s.resps[0].(*emptypbpb.Empty), nil
 }
 
 func (s *mockLibraryServer) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
@@ -2158,7 +2159,7 @@ func (s *mockLibraryServer) ListBooks(ctx context.Context, req *librarypb.ListBo
     return s.resps[0].(*librarypb.ListBooksResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) (*emptypbpb.Empty, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2167,7 +2168,7 @@ func (s *mockLibraryServer) DeleteBook(ctx context.Context, req *librarypb.Delet
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*emptypb.Empty), nil
+    return s.resps[0].(*emptypbpb.Empty), nil
 }
 
 func (s *mockLibraryServer) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
@@ -2206,7 +2207,7 @@ func (s *mockLibraryServer) ListStrings(ctx context.Context, req *librarypb.List
     return s.resps[0].(*librarypb.ListStringsResponse), nil
 }
 
-func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) (*emptypbpb.Empty, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2215,7 +2216,7 @@ func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddC
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*emptypb.Empty), nil
+    return s.resps[0].(*emptypbpb.Empty), nil
 }
 
 func (s *mockLibraryServer) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
@@ -2242,7 +2243,7 @@ func (s *mockLibraryServer) GetBookFromAbsolutelyAnywhere(ctx context.Context, r
     return s.resps[0].(*librarypb.BookFromAnywhere), nil
 }
 
-func (s *mockLibraryServer) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypbpb.Empty, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2251,7 +2252,7 @@ func (s *mockLibraryServer) UpdateBookIndex(ctx context.Context, req *librarypb.
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*emptypb.Empty), nil
+    return s.resps[0].(*emptypbpb.Empty), nil
 }
 
 func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
@@ -2350,7 +2351,7 @@ func (s *mockLibraryServer) BabbleAboutBook(stream librarypb.LibraryService_Babb
     if s.err != nil {
         return s.err
     }
-    return stream.SendAndClose(s.resps[0].(*emptypb.Empty))
+    return stream.SendAndClose(s.resps[0].(*emptypbpb.Empty))
 }
 
 func (s *mockLibraryServer) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
@@ -2450,7 +2451,7 @@ func (s *mockLibraryServer) StreamingArchiveBooks(stream librarypb.LibraryServic
     return nil
 }
 
-func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (*emptypbpb.Empty, error) {
     md, _ := metadata.FromIncomingContext(ctx)
     if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
         return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
@@ -2459,7 +2460,7 @@ func (s *mockLibraryServer) SaveBook(ctx context.Context, req *librarypb.Book) (
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*emptypb.Empty), nil
+    return s.resps[0].(*emptypbpb.Empty), nil
 }
 
 func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
@@ -2783,7 +2784,7 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteShelf(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -3190,7 +3191,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteBook(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -3446,7 +3447,7 @@ func TestLibraryServiceListStringsError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceAddComments(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -3652,7 +3653,7 @@ func TestLibraryServiceGetBookFromAbsolutelyAnywhereError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceUpdateBookIndex(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -4015,7 +4016,7 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceBabbleAboutBook(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -4304,7 +4305,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBigNothing(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -4784,7 +4785,7 @@ func TestLibraryServiceStreamingArchiveBooksError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceSaveBook(t *testing.T) {
-    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
+    var expectedResponse *emptypbpb.Empty = &emptypbpb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil

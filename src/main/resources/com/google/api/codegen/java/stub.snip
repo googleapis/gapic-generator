@@ -116,7 +116,13 @@
 
 @private queryMethodSelectors(methodSelectors)
   @join methodSelector : @methodSelectors
-    serializer.putQueryParam(fields, "{@methodSelector.fullyQualifiedName}", request.{@methodSelectorGetter(methodSelector.gettersChain)});
+    @if methodSelector.isProto3Optional
+      if (request.{@methodSelectorGetter(methodSelector.gettersHasChain)}) {
+        serializer.putQueryParam(fields, "{@methodSelector.fullyQualifiedName}", request.{@methodSelectorGetter(methodSelector.gettersChain)});
+      }
+    @else
+      serializer.putQueryParam(fields, "{@methodSelector.fullyQualifiedName}", request.{@methodSelectorGetter(methodSelector.gettersChain)});
+    @end
   @end
 @end
 

@@ -300,10 +300,23 @@ public class ApiCallableTransformer {
       HttpMethodSelectorView.Builder methodSelectorView = HttpMethodSelectorView.newBuilder();
       methodSelectorView.fullyQualifiedName(Name.anyLower(fs.toString()).toLowerCamel());
       ImmutableList.Builder<String> gettersChain = ImmutableList.builder();
+      ImmutableList.Builder<String> gettersHasChain = ImmutableList.builder();
+      ProtoField pf = null;
       for (Field f : fs.getFields()) {
-        gettersChain.add(namer.getFieldGetFunctionName(new ProtoField(f)));
+        if (pf != null) {
+          gettersHasChain.add(namer.getFieldGetFunctionName(pf));
+        }
+        pf = new ProtoField(f);
+        gettersChain.add(namer.getFieldGetFunctionName(pf));
       }
       methodSelectorView.gettersChain(gettersChain.build());
+      if (pf != null && pf.getProtoField().getProto().getProto3Optional()) {
+        gettersHasChain.add(namer.getFieldHasFunctionName(pf));
+        methodSelectorView.gettersHasChain(gettersHasChain.build());
+      } else {
+        methodSelectorView.gettersHasChain(ImmutableList.of());
+      }
+
       paramSelectors.add(methodSelectorView.build());
     }
 
