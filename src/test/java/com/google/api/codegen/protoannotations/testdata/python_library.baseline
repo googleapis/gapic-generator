@@ -2013,6 +2013,12 @@ class LibraryServiceClient(object):
                 client_info=self._client_info,
             )
 
+        # Sanity check: We have some fields which are mutually exclusive;
+        # raise ValueError if more than one is sent.
+        google.api_core.protobuf_helpers.check_oneof(
+            filter_=filter_,
+        )
+
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
