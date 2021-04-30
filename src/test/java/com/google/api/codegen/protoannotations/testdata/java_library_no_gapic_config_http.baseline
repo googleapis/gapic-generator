@@ -7660,7 +7660,9 @@ public class HttpJsonLibraryServiceStub extends LibraryServiceStub {
                               ProtoRestSerializer.create();
                           serializer.putQueryParam(fields, "pageSize", request.getPageSize());
                           serializer.putQueryParam(fields, "pageToken", request.getPageToken());
-                          serializer.putQueryParam(fields, "filter", request.getFilter());
+                          if (request.hasFilter()) {
+                            serializer.putQueryParam(fields, "filter", request.getFilter());
+                          }
                           return fields;
                         }
                       })

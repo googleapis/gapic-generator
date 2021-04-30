@@ -390,6 +390,21 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  public String getFieldHasFunctionName(FieldModel field) {
+    return getFieldHasFunctionName(
+        field.getNameAsParameterName(),
+        MapType.ofMap(field.isMap()),
+        Cardinality.ofRepeated(field.isRepeated()));
+  }
+
+  public String getFieldHasFunctionName(Name identifier, MapType mapType, Cardinality cardinality) {
+    if (mapType == MapType.IS_MAP && cardinality == Cardinality.IS_REPEATED) {
+      throw new IllegalArgumentException("Maps and repeated fields don't have has*() methods");
+    } else {
+      return publicMethodName(Name.from("has").join(identifier));
+    }
+  }
+
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     return getFieldGetFunctionName(
