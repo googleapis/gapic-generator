@@ -179,8 +179,14 @@ public class Name {
 
   private static boolean isLowerUnderscore(String identifier) {
     Character underscore = Character.valueOf('_');
-    for (Character ch : identifier.toCharArray()) {
-      if (!Character.isLowerCase(ch) && !ch.equals(underscore) && !Character.isDigit(ch)) {
+    char[] chars = identifier.toCharArray();
+    for (int i = 0; i < chars.length; i++) {
+      Character ch = chars[i];
+      if (!Character.isLowerCase(ch)
+          && !ch.equals(underscore)
+          && !Character.isDigit(ch)
+          && !(i == 0 && Character.isUpperCase(ch))
+          && !(i == 1 && Character.isUpperCase(ch) && underscore.equals(chars[0]))) {
         return false;
       }
     }
