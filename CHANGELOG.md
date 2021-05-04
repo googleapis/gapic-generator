@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.11.1](https://www.github.com/googleapis/gapic-generator/compare/v2.11.0...v2.11.1) (2021-05-04)
+
+
+### Bug Fixes
+
+* Support field names lie `I_p_address` as valid. ([#3359](https://www.github.com/googleapis/gapic-generator/issues/3359)) ([98e4733](https://www.github.com/googleapis/gapic-generator/commit/98e47337f68c4d1be06c4a716d18abd21b20a2a9))
+
 ## [2.11.0](https://www.github.com/googleapis/gapic-generator/compare/v2.10.4...v2.11.0) (2021-04-30)
 
 
