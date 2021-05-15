@@ -1,7 +1,7 @@
 package com.google.api.codegen.viewmodel;
 
-import com.google.auto.value.AutoValue;
-import java.util.List;
+imports com.google.auto.value.AutoValue;
+imports java.util.List;
 
 @AutoValue
 public abstract class HttpMethodSelectorView {
