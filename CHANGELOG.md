@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.11.2](https://www.github.com/googleapis/gapic-generator/compare/v2.11.1...v2.11.2) (2021-10-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency is-docker to v3 ([#3378](https://www.github.com/googleapis/gapic-generator/issues/3378)) ([5bc35e2](https://www.github.com/googleapis/gapic-generator/commit/5bc35e21f6f27d485fadc43298eecd86796cb259))
+
 ### [2.11.1](https://www.github.com/googleapis/gapic-generator/compare/v2.11.0...v2.11.1) (2021-05-04)
 
 
